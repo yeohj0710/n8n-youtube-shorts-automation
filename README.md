@@ -1,0 +1,38 @@
+# n8n Local Video Runner
+
+Local n8n setup for the 하루건강약사 image+BGM Shorts workflow.
+
+## What It Does
+
+- Runs n8n locally on `http://localhost:5678/`
+- Generates image and BGM through KIE
+- Renders a static-card MP4 locally with ffmpeg
+- Uploads to YouTube as private through the YouTube OAuth2 credential
+
+## Local Paths
+
+- n8n runner: `C:\dev\n8n-local`
+- rendered videos: `C:\dev\n8n-local\renders`
+- workflow export: `workflows\n8n_하루건강약사_수동실행.json`
+- startup script: `scripts\start-n8n.ps1`
+- renderer: `scripts\render-static-card.mjs`
+
+## Commands
+
+```powershell
+npm install
+npm run start
+npm run import
+npm run export:workflow
+```
+
+## Secrets
+
+Do not commit credentials, n8n databases, rendered outputs, or OAuth secrets.
+
+Required local credentials in n8n:
+
+- `Header Auth account` for KIE API
+- `YouTube account` for YouTube OAuth2 API
+
+Use `http://localhost:5678/rest/oauth2-credential/callback` as the local OAuth redirect URI.

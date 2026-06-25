@@ -1,0 +1,1422 @@
+{
+  "name": "하루건강약사 - 로컬 n8n 이미지+BGM 업로드",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "로컬 n8n 업로드 버전\n\n- 음성 생성 없음\n- KIE 이미지 생성\n- KIE BGM 생성\n- 로컬 ffmpeg 정적 카드 MP4 렌더\n- YouTube private 업로드 켜짐\n- 실행하면 KIE 크레딧만 사용",
+        "height": 200,
+        "width": 470
+      },
+      "id": "e69caa07-76b6-43cb-a82a-b2e2de887eb1",
+      "name": "Format Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2032,
+        2256
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "29000a16-13fc-4e7d-a0f9-0b5617e48c39",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        2064,
+        2576
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "function bool(value, fallback = false) {\n  if (value === undefined || value === null || value === '') return fallback;\n  if (typeof value === 'boolean') return value;\n  if (typeof value === 'number') return value !== 0;\n  if (typeof value === 'string') return ['true', '1', 'yes', 'y', 'on'].includes(value.trim().toLowerCase());\n  return Boolean(value);\n}\n\nfunction normalizeSunoModel(value) {\n  const raw = String(value || '').trim();\n  if (!raw) return 'V5_5';\n  if (raw.toLowerCase() === 'suno-v5_5') return 'V5_5';\n  if (raw.toLowerCase() === 'suno-v5') return 'V5';\n  return raw;\n}\n\nconst first = $input.first()?.json ?? {};\nconst isWebhook = first.body !== undefined && first.headers !== undefined;\nconst incoming = isWebhook ? (first.body || {}) : first;\nconst dryRun = bool(incoming.dry_run, bool(incoming.test_mode, false));\n\nconst model_config = {\n  prompt_model: incoming.PROMPT_MODEL || incoming.prompt_model || 'claude-opus-4-7',\n  image_model: incoming.IMAGE_MODEL || incoming.image_model || 'gpt-image-2-text-to-image',\n  image_edit_model: incoming.IMAGE_EDIT_MODEL || incoming.image_edit_model || 'gpt-image-2-image-to-image',\n  music_model: incoming.MUSIC_MODEL || incoming.music_model || 'suno-v5_5',\n};\n\nconst config = {\n  run_mode: dryRun ? 'dry_run' : 'live_upload',\n  test_mode: dryRun,\n  dry_run: dryRun,\n  use_live_kie_ai: !dryRun && bool(incoming.use_live_kie_ai, true),\n  use_live_image: !dryRun && bool(incoming.use_live_image, true),\n  use_live_bgm: !dryRun && bool(incoming.use_live_bgm, true),\n  use_live_render: !dryRun && bool(incoming.use_live_render, true),\n  allow_youtube_upload: !dryRun && bool(incoming.allow_youtube_upload, true),\n  youtube_privacy_status: 'private',\n  rank_count: Number(incoming.rank_count || 7),\n  duration_seconds: Number(incoming.duration_seconds || 38),\n  kie_ai_model: incoming.kie_ai_model || model_config.prompt_model,\n  kie_image_model: incoming.kie_image_model || model_config.image_model,\n  kie_image_edit_model: incoming.kie_image_edit_model || model_config.image_edit_model,\n  kie_bgm_model_requested: incoming.kie_bgm_model || model_config.music_model,\n  kie_bgm_model: normalizeSunoModel(incoming.kie_bgm_model || model_config.music_model),\n  render_provider: incoming.render_provider || 'local_ffmpeg_static_card',\n  local_render_dir: incoming.local_render_dir || 'C:/dev/n8n-local/renders',\n  local_render_script: incoming.local_render_script || 'C:/dev/n8n-local/scripts/render-static-card.mjs',\n  ffmpeg_path:\n    incoming.ffmpeg_path ||\n    'C:/Users/hjyeo/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe',\n  node_path: incoming.node_path || 'C:/Program Files/nodejs/node.exe',\n  poll_interval_seconds: Number(incoming.poll_interval_seconds || 30),\n  image_poll_interval_seconds: Number(incoming.image_poll_interval_seconds || 120),\n  youtube_category_id: String(incoming.youtube_category_id || '27'),\n  region_code: incoming.region_code || 'KR',\n  timezone: incoming.timezone || 'Asia/Seoul',\n  rss_url:\n    incoming.rss_url ||\n    'https://news.google.com/rss/search?q=%EA%B1%B4%EA%B0%95%20%EC%88%98%EB%A9%B4%20%ED%98%88%EB%8B%B9%20%EC%9A%B4%EB%8F%99%20%EC%98%81%EC%96%91&hl=ko&gl=KR&ceid=KR:ko',\n  topic_candidates: Array.isArray(incoming.topic_candidates) ? incoming.topic_candidates : [],\n  notify_slack: !dryRun && bool(incoming.notify_slack, false),\n  slack_webhook_url: incoming.slack_webhook_url || '',\n  trigger_type: isWebhook ? 'webhook' : 'manual_or_schedule',\n  model_config,\n};\n\nreturn [{ json: { config, incoming, trigger: { type: config.trigger_type, received_at: new Date().toISOString() } } }];"
+      },
+      "id": "b9d35d0c-8314-4e37-82bb-c3379a7eeab6",
+      "name": "Load Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2352,
+        2576
+      ]
+    },
+    {
+      "parameters": {
+        "content": "필요 credential:\n- KIE API Header Auth\n- YouTube OAuth2 API\n\n기본 실행은 live_upload입니다.\n- KIE Claude/Image/BGM 실행\n- 로컬 ffmpeg 정적 카드 렌더\n- YouTube private 업로드 실행\n- BGM 기본 켜짐\n- dry_run=true 또는 test_mode=true일 때만 mock/skip",
+        "height": 170,
+        "width": 430
+      },
+      "id": "bfad6f23-0c08-4ad7-852a-4c6954150b94",
+      "name": "Credentials",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2640,
+        2256
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$json.config.rss_url}}",
+        "options": {}
+      },
+      "id": "eebb1fe1-e4ea-46d4-89b0-52fd5ec5f170",
+      "name": "Fetch Health RSS",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        2624,
+        2576
+      ],
+      "alwaysOutputData": true,
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Load Config').first().json;\nconst cfg = base.config;\nconst rssItems = $input.all().map((item) => item.json || {});\n\nfunction clean(value) {\n  return String(value || '')\n    .replace(/<[^>]*>/g, ' ')\n    .replace(/\\s+/g, ' ')\n    .trim();\n}\n\nconst manual = (cfg.topic_candidates || []).map((entry, index) => {\n  if (typeof entry === 'string') return { title: clean(entry), source: 'manual', score: 100 - index };\n  return { title: clean(entry.title || entry.topic || entry.name), source: entry.source || 'manual', score: Number(entry.score || 100 - index) };\n});\n\nconst rss = rssItems\n  .filter((item) => item && !item.error)\n  .map((item, index) => ({ title: clean(item.title), source: 'rss', url: item.link || item.guid || '', score: 80 - index }))\n  .filter((candidate) => candidate.title);\n\nconst evergreen = [\n  '의사들이 자주 말하는 기력 회복에 도움 되는 음식',\n  '50대 이후 아침에 먹으면 좋은 음식',\n  '혈당을 덜 흔드는 식후 습관',\n  '잠을 방해하는 저녁 습관',\n  '염증 관리에 도움 될 수 있는 생활 습관',\n  '무릎 부담을 줄이는 걷기 습관',\n].map((title, index) => ({ title, source: 'evergreen', score: 60 - index }));\n\nconst seen = new Set();\nconst topic_candidates = [...manual, ...rss, ...evergreen].filter((candidate) => {\n  const key = candidate.title.toLowerCase();\n  if (!candidate.title || seen.has(key)) return false;\n  seen.add(key);\n  return true;\n}).slice(0, 15);\n\nconst schema = {\n  theme: '랭킹 주제',\n  hook_title: '큰 화면 제목. 예: 의사들이 추천하는 기력 회복 음식 BEST 7',\n  subtitle: '짧은 보조 문구',\n  rank_items: [\n    { rank: 7, name: '항목명', reason: '짧은 이유', caution: '주의 문구 또는 빈 문자열' },\n  ],\n  video_script: '35~45초 영상 문구. N위부터 1위까지 빠르게 소개. 과장 금지.',\n  description: 'YouTube 설명. 일반 건강 정보/진료 대체 아님 포함',\n  tags: ['건강정보', '시니어건강'],\n  pinned_comment: '고정댓글용 댓글',\n  bgm_prompt: 'English prompt for instrumental background music, no vocals, original, calm but catchy',\n  medical_claims: ['건강 주장 목록'],\n  safety_notes: ['피한 표현'],\n};\n\nconst prompt = [\n  'Create one Korean YouTube Shorts pack in the style of viral ranking/list health shorts.',\n  'The visual format is one vertical card: big title + ranked list from N위 to 1위.',\n  'Target: Korean middle-aged/senior audience.',\n  'Use curiosity hooks, but do not make false medical claims.',\n  'Return strict JSON only. No markdown.',\n  'Rules:',\n  '- No cure, guaranteed treatment, guaranteed disease prevention.',\n  '- No medication/supplement dosage or prescription change.',\n  '- Avoid \"염증이 대변으로 빠진다\" unless rewritten safely as general lifestyle support.',\n  '- Use \"도움 될 수 있습니다\", \"개인차가 있습니다\".',\n  '- Include disclaimer: general health information, not medical care.',\n  '- Ranking count must be exactly ' + cfg.rank_count + '.',\n  '- Use ranks descending: ' + cfg.rank_count + '위 ... 1위.',\n  'Schema:',\n  JSON.stringify(schema),\n  'Candidates:',\n  JSON.stringify(topic_candidates, null, 2),\n].join('\\n\\n');\n\nconst kie_claude_request = {\n  model: cfg.kie_ai_model,\n  stream: false,\n  max_tokens: 2400,\n  messages: [{ role: 'user', content: prompt }],\n};\n\nreturn [{ json: { ...base, topic_candidates, kie_claude_request } }];"
+      },
+      "id": "a1f077c9-455f-4074-8ebd-40ed0a291d43",
+      "name": "Build Viral Rank Pack Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2912,
+        2576
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.use_live_kie_ai}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "6cf7174a-c852-4378-b428-f907ef8b87d4",
+      "name": "Use Live KIE Claude?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        2576
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/claude/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.kie_claude_request) }}",
+        "options": {}
+      },
+      "id": "bd6c9a6f-2eb4-41e9-9133-b9fda4ebd7e2",
+      "name": "KIE Claude Generate Pack",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3536,
+        2400
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Build Viral Rank Pack Request').first().json;\nconst response = $input.first().json || {};\n\nfunction tryParseJson(value) {\n  if (typeof value !== 'string') return value;\n  const trimmed = value.trim();\n  if (!trimmed) return value;\n  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return value;\n  try { return JSON.parse(trimmed); } catch (error) { return value; }\n}\n\nfunction looksLikeWrapper(value) {\n  return Boolean(\n    value &&\n    typeof value === 'object' &&\n    (\n      value.content !== undefined ||\n      value.message !== undefined ||\n      value.data !== undefined ||\n      value.response !== undefined ||\n      value.output_text !== undefined ||\n      value.text !== undefined\n    )\n  );\n}\n\nfunction collectText(value, depth = 0) {\n  if (!value || depth > 6) return '';\n\n  if (typeof value === 'string') {\n    const parsed = tryParseJson(value);\n    if (parsed !== value && looksLikeWrapper(parsed)) return collectText(parsed, depth + 1);\n    return value;\n  }\n\n  if (Array.isArray(value)) {\n    return value.map((entry) => collectText(entry, depth + 1)).filter(Boolean).join('\\n');\n  }\n\n  if (Array.isArray(value.content)) {\n    const text = value.content.map((part) => collectText(part, depth + 1)).filter(Boolean).join('\\n');\n    if (text) return text;\n  }\n\n  if (value.message && Array.isArray(value.message.content)) {\n    const text = value.message.content.map((part) => collectText(part, depth + 1)).filter(Boolean).join('\\n');\n    if (text) return text;\n  }\n\n  for (const key of ['output_text', 'text', 'data', 'result', 'response']) {\n    const text = collectText(value[key], depth + 1);\n    if (text) return text;\n  }\n\n  return '';\n}\n\nfunction parseJsonText(text) {\n  const fence = String.fromCharCode(96, 96, 96);\n  const trimmed = String(text || '')\n    .trim()\n    .replace(new RegExp('^' + fence + 'json\\\\s*', 'i'), '')\n    .replace(new RegExp('^' + fence + '\\\\s*', 'i'), '')\n    .replace(new RegExp(fence + '$', 'i'), '')\n    .trim();\n\n  try {\n    return JSON.parse(trimmed);\n  } catch (error) {\n    const start = trimmed.indexOf('{');\n    const end = trimmed.lastIndexOf('}');\n    if (start >= 0 && end > start) return JSON.parse(trimmed.slice(start, end + 1));\n    throw error;\n  }\n}\n\nfunction validatePack(pack) {\n  const issues = [];\n  if (!pack || typeof pack !== 'object') issues.push('pack is not an object');\n  if (!pack.hook_title) issues.push('missing hook_title');\n  if (!Array.isArray(pack.rank_items) || pack.rank_items.length < 1) issues.push('missing rank_items');\n  if (!pack.video_script) issues.push('missing video_script');\n  if (!pack.description) issues.push('missing description');\n  if (issues.length) throw new Error('KIE Claude pack parse produced invalid pack: ' + issues.join(', ') + '. Raw response: ' + JSON.stringify(response));\n}\n\nif (response.error || response.code || String(response.msg || '').toLowerCase().includes('unauthorized')) {\n  throw new Error('KIE Claude failed: ' + JSON.stringify(response));\n}\n\nconst rawText = collectText(response);\nif (!rawText) {\n  throw new Error('KIE Claude returned no parseable text: ' + JSON.stringify(response));\n}\n\nconst pack = parseJsonText(rawText);\nvalidatePack(pack);\n\nreturn [{\n  json: {\n    ...base,\n    pack,\n    ai_source: 'kie_claude',\n    kie_claude_raw: response,\n    kie_claude_parse_error: null,\n  },\n}];"
+      },
+      "id": "0153bac3-d465-4fc8-93b9-d8f75441c414",
+      "name": "Parse KIE Claude Pack",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3824,
+        2400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nif (!dryRun) {\n  throw new Error('Live run reached Mock Viral Rank Pack. Check Load Config: use_live_kie_ai must be true, and KIE auth/credits must work.');\n}\nconst pack = {\n  theme: '기력 회복에 도움 될 수 있는 음식',\n  hook_title: '의사들이 자주 말하는 기력 회복 음식 BEST 7',\n  subtitle: '아침 식탁에 자주 올리면 좋은 음식',\n  rank_items: [\n    { rank: 7, name: '달걀', reason: '단백질과 비타민 B군을 챙기기 쉽습니다.', caution: '알레르기가 있으면 피하세요.' },\n    { rank: 6, name: '두부', reason: '부담이 적고 단백질 보충에 좋습니다.', caution: '' },\n    { rank: 5, name: '바나나', reason: '운동 전후 간단한 에너지 보충에 좋습니다.', caution: '혈당 관리 중이면 양을 조절하세요.' },\n    { rank: 4, name: '귀리', reason: '포만감과 식이섬유를 함께 챙길 수 있습니다.', caution: '' },\n    { rank: 3, name: '고등어', reason: '단백질과 오메가3 지방산을 얻을 수 있습니다.', caution: '짜게 조리하지 마세요.' },\n    { rank: 2, name: '그릭요거트', reason: '단백질과 칼슘 보충에 도움이 될 수 있습니다.', caution: '당이 많은 제품은 피하세요.' },\n    { rank: 1, name: '콩류', reason: '식물성 단백질과 미네랄을 함께 챙길 수 있습니다.', caution: '소화가 불편하면 조금씩 시작하세요.' },\n  ],\n  video_script:\n    '기력이 자주 떨어진다면 식탁부터 확인해 보세요. 7위 달걀, 단백질과 비타민 B군을 챙기기 쉽습니다. 6위 두부, 부담이 적고 단백질 보충에 좋습니다. 5위 바나나, 운동 전후 간단한 에너지 보충에 좋습니다. 4위 귀리, 포만감과 식이섬유를 함께 챙길 수 있습니다. 3위 고등어, 단백질과 오메가3 지방산을 얻을 수 있습니다. 2위 그릭요거트, 단백질과 칼슘 보충에 도움이 될 수 있습니다. 1위 콩류, 식물성 단백질과 미네랄을 함께 챙길 수 있습니다. 이 영상은 일반 건강 정보이며 진료를 대신하지 않습니다.',\n  description:\n    '기력 회복에 도움 될 수 있는 음식 7가지를 짧게 정리했습니다. 개인 상태에 따라 다르며, 이 콘텐츠는 일반 건강 정보이고 진료를 대신하지 않습니다.\\n#건강정보 #시니어건강 #생활습관 #음식추천 #쇼츠',\n  tags: ['건강정보', '시니어건강', '생활습관', '음식추천', '기력회복', 'shorts'],\n  pinned_comment:\n    '개인 질환, 복용 중인 약, 알레르기에 따라 맞지 않을 수 있습니다. 이 영상은 일반 건강 정보이며 진료를 대신하지 않습니다.',\n  bgm_prompt:\n    'original instrumental background music, calm but catchy Korean health shorts mood, light percussion, warm synth, no vocals, loopable, royalty-free style',\n  medical_claims: ['일부 음식은 단백질, 식이섬유, 미네랄 섭취에 도움 될 수 있다.'],\n  safety_notes: ['치료/완치/기적 표현을 사용하지 않음', '개인차와 진료 대체 아님 안내 포함'],\n};\nreturn [{ json: { ...data, pack, ai_source: 'mock' } }];"
+      },
+      "id": "a39c0785-e8cc-4b3f-ae54-a576a39830cd",
+      "name": "Mock Viral Rank Pack",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3536,
+        2672
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst pack = data.pack || {};\nconst allText = [\n  pack.theme,\n  pack.hook_title,\n  pack.subtitle,\n  pack.video_script,\n  pack.description,\n  pack.pinned_comment,\n  ...(pack.rank_items || []).flatMap((item) => [item.name, item.reason, item.caution]),\n  ...(pack.medical_claims || []),\n].filter(Boolean).join('\\n');\n\nconst lowered = allText.toLowerCase();\nconst issues = [];\nconst patterns = [\n  { pattern: /(완치|치료된다|치료해|낫는다|예방된다|막아준다|보장|100%|기적|즉시 효과)/, issue: '치료/완치/보장 표현' },\n  { pattern: /(약을 끊|처방을 중단|복용을 중단|의사 대신|병원 가지)/, issue: '처방 변경/진료 회피' },\n  { pattern: /(\\d+\\s?(mg|g|iu|알|정|캡슐))/, issue: '복용량/용량 표현' },\n  { pattern: /(독소 제거|해독|디톡스|피가 맑아|염증이 대변|염증을 싹|대변으로 빠)/, issue: '근거 약한 자극 표현' },\n];\n\nfor (const item of patterns) {\n  if (item.pattern.test(lowered)) issues.push(item.issue);\n}\n\nif (!/(일반\\s*건강\\s*정보|진료를\\s*대신하지|의료진|전문가)/.test(allText)) {\n  issues.push('일반 정보/진료 대체 아님 문구 부족');\n}\n\nif (!Array.isArray(pack.rank_items) || pack.rank_items.length < 3) issues.push('랭킹 항목 부족');\nif (!pack.video_script) issues.push('영상 문구 없음');\nif (!pack.hook_title) issues.push('큰 제목 없음');\n\nconst highRisk = issues.some((issue) => ['치료/완치/보장 표현', '처방 변경/진료 회피', '복용량/용량 표현', '근거 약한 자극 표현'].includes(issue));\nconst pass = !highRisk && issues.length <= 1;\n\nreturn [{ json: { ...data, blocked: !pass, medical_review: { pass, risk_level: highRisk ? 'high' : issues.length ? 'medium' : 'low', issues, checked_at: new Date().toISOString() } } }];"
+      },
+      "id": "6afe9e2b-c800-46e3-bc2b-8ba8d3cfa097",
+      "name": "Medical Safety Review",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4096,
+        2528
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.medical_review.pass}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "3c4acb05-3d3b-4ab8-b794-5157d42a0b11",
+      "name": "Medical Review Passed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        4384,
+        2528
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nreturn [{ json: { ...data, result_stage: 'blocked_by_medical_review', youtube: { skipped: true, reason: 'medical_review_failed' }, comment: { skipped: true, reason: 'medical_review_failed' } } }];"
+      },
+      "id": "da205f46-d366-4aa2-90fa-60dcec1e6284",
+      "name": "Prepare Blocked Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4656,
+        2736
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst pack = data.pack;\nconst cfg = data.config;\nconst LF = String.fromCharCode(10);\n\nconst sortedItems = (pack.rank_items || []).sort((a, b) => Number(b.rank) - Number(a.rank));\n\nconst rankLines = sortedItems\n  .map((item) => item.rank + '위 ' + item.name + ' - ' + item.reason)\n  .join(LF);\n\nconst shortRankLines = sortedItems\n  .map((item) => item.rank + '위 ' + item.name)\n  .join(LF);\n\nconst bgm_payload = {\n  prompt: pack.bgm_prompt || 'original instrumental background music, calm but catchy Korean health shorts mood, no vocals, loopable, royalty-free style',\n  model: cfg.kie_bgm_model,\n  soundLoop: true,\n  soundTempo: 96,\n  soundKey: 'C',\n  grabLyrics: false,\n};\n\nconst imagePrompt = [\n  'Create a clean vertical Korean YouTube Shorts ranking-card background.',\n  'Aspect ratio 9:16.',\n  'Visual concept: calm everyday lifestyle, soft morning light, tidy desk, warm home interior, simple abstract shapes.',\n  'Design: bright, trustworthy, high-contrast, large blank center area for later title and ranked list overlay.',\n  'No people, no readable text, no logos, no brands, no product packaging.',\n].join(' ');\n\nconst image_payload = {\n  model: cfg.kie_image_model,\n  input: {\n    prompt: imagePrompt,\n    aspect_ratio: '9:16',\n  },\n};\n\nreturn [{ json: { ...data, rank_lines: rankLines, short_rank_lines: shortRankLines, bgm_payload, image_payload } }];"
+      },
+      "id": "d12444a3-2df9-4f04-a368-99812559f2df",
+      "name": "Prepare Image and BGM Payloads",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4656,
+        2400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.use_live_bgm}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "4ff1d1a5-cfb3-4602-8e9d-330b0663f913",
+      "name": "Use Live BGM?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        6672,
+        2368
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/generate/sounds",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.bgm_payload) }}",
+        "options": {}
+      },
+      "id": "6c178fdc-8dc9-4416-b463-cb337651db22",
+      "name": "KIE Create BGM Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6960,
+        2224
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Use Live BGM?').first().json;\nconst response = $input.first().json || {};\nconst taskId = response.data?.taskId || response.taskId || response.id || null;\nreturn [{ json: { ...base, bgm_create_response: response, bgm_task_id: taskId } }];"
+      },
+      "id": "32a46966-14d5-4bde-833e-0df4811c4b47",
+      "name": "Normalize BGM Task",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7232,
+        2224
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{$json.config.poll_interval_seconds}}"
+      },
+      "id": "612a92d9-b415-45a5-8088-8893e15aa08b",
+      "name": "Wait BGM 30s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        7520,
+        2224
+      ],
+      "webhookId": "96d9eeaf-058a-422f-a004-371197b23ee2"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/generate/record-info",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{$json.bgm_task_id}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "23e8e1db-e684-44fa-afa9-3572334a8953",
+      "name": "KIE Get BGM Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        7792,
+        2224
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Normalize BGM Task').first().json;\nconst response = $input.first().json || {};\nconst data = response.data || response;\nconst status = String(data.status || data.state || '').toUpperCase();\nconst sunoData = data.response?.sunoData || data.sunoData || [];\nconst first = Array.isArray(sunoData) ? sunoData[0] : null;\nconst bgmUrl = first?.audioUrl || first?.streamAudioUrl || data.audioUrl || null;\nconst failed = ['CREATE_TASK_FAILED', 'GENERATE_AUDIO_FAILED', 'CALLBACK_EXCEPTION', 'SENSITIVE_WORD_ERROR', 'FAIL', 'FAILED', 'ERROR'].includes(status);\nreturn [{ json: { ...base, bgm_poll_response: response, bgm_state: status, bgm_failed: failed, bgm_audio_url: bgmUrl } }];"
+      },
+      "id": "0e68a2f1-1917-4be8-ba91-434c2012b672",
+      "name": "Parse BGM Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8080,
+        2224
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nif (!dryRun) {\n  throw new Error('Live run reached Mock BGM Result. Check Load Config: use_live_bgm must be true, and KIE BGM auth/credits must work.');\n}\nreturn [{ json: { ...data, bgm_audio_url: null, bgm_state: 'dry_run_disabled' } }];"
+      },
+      "id": "23a6b583-bcc3-4298-9962-8562457e2eee",
+      "name": "Mock BGM Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6960,
+        2496
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.use_live_render}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "f0d1083e-2af6-41b6-ba6e-1d9fd92b83ee",
+      "name": "Use Live Render?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        8352,
+        2368
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nif (!dryRun) {\n  throw new Error('Live run reached Mock Render Result. Check Load Config: use_live_render must be true.');\n}\nreturn [{\n  json: {\n    ...data,\n    result_stage: 'dry_run_no_render',\n    rendered_video_url: null,\n    youtube: {\n      skipped: true,\n      reason: 'dry_run: render skipped',\n      privacy_status_if_enabled: data.config.youtube_privacy_status\n    },\n    comment: { skipped: true, reason: 'No rendered MP4' }\n  }\n}];"
+      },
+      "id": "1916a396-4c91-4336-ab2f-1397ef4d4b99",
+      "name": "Mock Render Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8640,
+        2496
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst cfg = data.config || {};\nconst pack = data.pack || {};\nconst items = (pack.rank_items || []).sort((a, b) => Number(b.rank) - Number(a.rank));\n\nif (!data.image_url) {\n  throw new Error('Local render requires image_url from Parse Image Result.');\n}\nif (!data.bgm_audio_url) {\n  throw new Error('Local render requires bgm_audio_url from Parse BGM Result. BGM must be live.');\n}\n\nconst renderId = 'health_' + Date.now() + '_' + Math.random().toString(16).slice(2, 8);\nconst duration = Number(cfg.duration_seconds || 38);\nconst title = pack.hook_title || pack.theme || '건강 랭킹 BEST ' + (cfg.rank_count || items.length || 7);\nconst subtitle = pack.subtitle || '일반 건강 정보 · 개인차가 있습니다';\n\nconst render_payload = {\n  render_id: renderId,\n  title,\n  subtitle,\n  items,\n  image_url: data.image_url,\n  bgm_audio_url: data.bgm_audio_url,\n  duration,\n  width: 1080,\n  height: 1920,\n  output_dir: cfg.local_render_dir,\n  ffmpeg_path: cfg.ffmpeg_path,\n};\n\nconst payloadBase64 = Buffer.from(JSON.stringify(render_payload), 'utf8').toString('base64');\nconst quote = (value) => '\"' + String(value).replace(/\"/g, '\\\"') + '\"';\nconst render_command = [\n  quote(cfg.node_path || 'node'),\n  quote(cfg.local_render_script),\n  quote(payloadBase64),\n].join(' ');\n\nreturn [{\n  json: {\n    ...data,\n    render_id: renderId,\n    render_provider: 'local_ffmpeg_static_card',\n    render_payload,\n    render_payload_base64: payloadBase64,\n    render_command,\n  },\n}];"
+      },
+      "id": "80d6705e-295f-4149-b846-156d13d790ff",
+      "name": "Prepare Local FFmpeg Render",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8640,
+        2224
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst { spawnSync } = require(\"child_process\");\n\nconst nodePath = data.config?.node_path || \"C:/Program Files/nodejs/node.exe\";\nconst scriptPath = data.config?.local_render_script || \"C:/dev/n8n-local/scripts/render-static-card.mjs\";\nconst payload = data.render_payload_base64;\nif (!payload) {\n  throw new Error(\"Missing render_payload_base64 for local render.\");\n}\n\nconst result = spawnSync(nodePath, [scriptPath, payload], {\n  encoding: \"utf8\",\n  timeout: 10 * 60 * 1000,\n  windowsHide: true,\n  maxBuffer: 20 * 1024 * 1024,\n});\n\nreturn [{\n  json: {\n    ...data,\n    exitCode: result.status ?? 0,\n    stdout: result.stdout || \"\",\n    stderr: result.stderr || \"\",\n    error: result.error ? result.error.message : undefined,\n    signal: result.signal || null,\n  },\n}];"
+      },
+      "id": "acbaccb4-966b-465b-a8ba-6073746e0d6f",
+      "name": "Local FFmpeg Render",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8912,
+        2224
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Prepare Local FFmpeg Render').first().json;\nconst response = $input.first().json || {};\n\nif (response.error || Number(response.exitCode || 0) !== 0) {\n  throw new Error('Local ffmpeg render failed: ' + (response.stderr || response.stdout || response.error || JSON.stringify(response)));\n}\n\nconst stdout = String(response.stdout || '').trim();\nconst jsonLine = stdout.split(/\\r?\\n/).reverse().find((line) => line.trim().startsWith('{'));\nif (!jsonLine) {\n  throw new Error('Local renderer returned no JSON: ' + JSON.stringify(response));\n}\n\nconst parsed = JSON.parse(jsonLine);\nif (!parsed.ok || !parsed.output_path) {\n  throw new Error('Local renderer returned invalid output: ' + JSON.stringify(parsed));\n}\n\nreturn [{\n  json: {\n    ...base,\n    local_render_response: response,\n    render_status: 'succeeded',\n    output_path: parsed.output_path,\n    rendered_video_url: parsed.output_path,\n    card_path: parsed.card_path || null,\n    bgm_download_path: parsed.audio_path || null,\n    render_failed: false,\n  },\n}];"
+      },
+      "id": "55a9895b-1891-4f9e-9f2e-64fe90ce539c",
+      "name": "Parse Local Render Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9200,
+        2224
+      ]
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{$json.output_path}}",
+        "options": {
+          "fileExtension": "mp4",
+          "fileName": "={{$json.render_id + \".mp4\"}}",
+          "mimeType": "video/mp4",
+          "dataPropertyName": "data"
+        }
+      },
+      "id": "da82fe76-cc1f-4df3-a3af-2ddba4735bb9",
+      "name": "Read Rendered MP4",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        9456,
+        2368
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Parse Local Render Result').first().json;\nconst input = $input.first();\nreturn [{ json: { ...base, mp4_binary_ready: !!input.binary?.data }, binary: input.binary }];"
+      },
+      "id": "39728e0b-d9b4-4b35-a591-1325cdefa7c1",
+      "name": "Attach Downloaded MP4",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9728,
+        2368
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.allow_youtube_upload}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "1cb2df3f-6f06-4575-859d-69b9280296fb",
+      "name": "Allow YouTube Upload?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        10016,
+        2368
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{$json.pack.hook_title}}",
+        "regionCode": "={{$json.config.region_code}}",
+        "categoryId": "={{$json.config.youtube_category_id}}",
+        "options": {
+          "defaultLanguage": "ko",
+          "description": "={{$json.pack.description}}",
+          "embeddable": true,
+          "notifySubscribers": false,
+          "privacyStatus": "private",
+          "selfDeclaredMadeForKids": false,
+          "tags": "={{$json.pack.tags.join(\",\")}}"
+        }
+      },
+      "id": "74e782b9-18bb-467b-a95d-e6805a450920",
+      "name": "YouTube Upload Private",
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        10288,
+        2224
+      ],
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "l7YqloikIKiIOtOq",
+          "name": "YouTube account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Attach Downloaded MP4').first().json;\nconst upload = $input.first().json || {};\nconst videoId = upload.uploadId || upload.id || upload.videoId || upload.items?.[0]?.id || null;\nreturn [{ json: { ...base, youtube: { skipped: false, privacy_status: 'private', video_id: videoId, url: videoId ? 'https://www.youtube.com/watch?v=' + videoId : null, raw: upload } } }];"
+      },
+      "id": "21835258-44cf-4283-b7bc-47131098e39f",
+      "name": "Normalize YouTube Upload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        10576,
+        2224
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.googleapis.com/youtube/v3/commentThreads",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "youTubeOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "part",
+              "value": "snippet"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ snippet: { videoId: $json.youtube.video_id, topLevelComment: { snippet: { textOriginal: $json.pack.pinned_comment } } } }) }}",
+        "options": {}
+      },
+      "id": "3ffc4b8f-3e3d-468e-8b5f-5f57f59c6daa",
+      "name": "Post Top-Level Comment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        10848,
+        2224
+      ],
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "l7YqloikIKiIOtOq",
+          "name": "YouTube account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Normalize YouTube Upload').first().json;\nconst response = $input.first().json || {};\nreturn [{ json: { ...base, comment: { created: !response.error, id: response.id || response.items?.[0]?.id || null, raw: response, note: 'Top-level comment created. API pin unsupported.' } } }];"
+      },
+      "id": "4a6b7f60-99b9-4000-813b-05b5c831e39c",
+      "name": "Attach Comment Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        11136,
+        2224
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nif (!dryRun) {\n  throw new Error('Live run reached Skip YouTube Upload. Check Load Config: allow_youtube_upload must be true and rendered_video_url must exist.');\n}\nreturn [{\n  json: {\n    ...data,\n    result_stage: 'dry_run_no_upload',\n    youtube: {\n      skipped: true,\n      reason: 'dry_run: youtube upload skipped',\n      privacy_status_if_enabled: data.config.youtube_privacy_status\n    },\n    comment: { skipped: true, reason: 'No YouTube upload' }\n  }\n}];"
+      },
+      "id": "402d647f-db55-487f-b595-602a67bc6c0e",
+      "name": "Skip YouTube Upload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        10288,
+        2512
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst pack = data.pack || {};\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nlet status = dryRun ? 'dry_run_complete' : 'completed';\nif (data.result_stage === 'blocked_by_medical_review') status = 'blocked_by_medical_review';\nelse if (data.result_stage) status = data.result_stage;\nelse if (data.youtube && !data.youtube.skipped) status = 'uploaded_private';\nelse if (!dryRun && data.rendered_video_url) status = 'rendered_not_uploaded';\nelse if (data.youtube?.skipped) status = dryRun ? 'dry_run_no_upload' : 'youtube_upload_skipped';\nelse if (!data.rendered_video_url) status = dryRun ? 'dry_run_no_render' : 'missing_rendered_video';\n\nconst result = {\n  ok:\n    !String(status).includes('blocked') &&\n    !String(status).includes('failed') &&\n    !String(status).includes('missing') &&\n    !String(status).includes('disabled') &&\n    !String(status).includes('skipped') &&\n    !String(status).includes('no_render') &&\n    !String(status).includes('no_upload'),\n  status,\n  run_mode: data.config?.run_mode || (dryRun ? 'dry_run' : 'live_upload'),\n  test_mode: dryRun,\n  format: 'viral_rank_card',\n  title: pack.hook_title || null,\n  rank_count: Array.isArray(pack.rank_items) ? pack.rank_items.length : 0,\n  rank_items: pack.rank_items || [],\n  medical_review: data.medical_review || null,\n  bgm_audio_url: data.bgm_audio_url || null,\n  image_url: data.image_url || null,\n  rendered_video_url: data.rendered_video_url || null,\n  render_id: data.render_id || null,\n  output_path: data.output_path || null,\n  model_config: data.config?.model_config || null,\n  youtube: data.youtube || { skipped: true },\n  comment: data.comment || { skipped: true },\n};\n\nconst notification_text = [\n  '상태: ' + status,\n  '실행모드: ' + result.run_mode,\n  '포맷: 건강 랭킹 카드형 쇼츠',\n  '제목: ' + (pack.hook_title || '-'),\n  '검수: ' + (data.medical_review?.pass ? 'PASS' : 'FAIL'),\n  '영상: ' + (data.rendered_video_url || '-'),\n  'YouTube: ' + (data.youtube?.url || data.youtube?.reason || '-'),\n].join('\\\\n');\n\nreturn [{ json: { ...data, result, notification_text } }];"
+      },
+      "id": "2aed73d5-7672-4a90-b1bb-a4107cd5cabc",
+      "name": "Final Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        11408,
+        2512
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.notify_slack && !!$json.config.slack_webhook_url}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "3016a71f-b79b-46a9-a741-1dd2ba3ec9c6",
+      "name": "Notify Slack?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        11696,
+        2512
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$json.config.slack_webhook_url}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: $json.notification_text }) }}",
+        "options": {}
+      },
+      "id": "66f24ea2-7da2-4f59-aa39-a6bac8e91cd9",
+      "name": "Send Slack Webhook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        11968,
+        2368
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Notify Slack?').first().json; const response = $input.first().json || {}; return [{ json: { ...base, slack: { sent: !response.error, response } } }];"
+      },
+      "id": "c3a1d03d-bcf4-4be9-af41-42e7091abb96",
+      "name": "Attach Slack Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        12256,
+        2368
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.trigger_type === \"webhook\"}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "25e46c93-c053-4571-bf25-f6d95643cade",
+      "name": "Is Webhook Run?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        12528,
+        2512
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json.result}}",
+        "options": {}
+      },
+      "id": "4920f75c-0516-496e-987c-c02e29072dcb",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        12816,
+        2368
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nreturn [{ json: data }];"
+      },
+      "id": "798f9a46-096c-4d56-9bd7-99492618fc09",
+      "name": "Done - Manual or Schedule",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        12816,
+        2672
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.use_live_image}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "8d423f51-a089-42b1-bca1-5ce92da1d7c9",
+      "name": "Use Live Image?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        4944,
+        2400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.image_payload) }}",
+        "options": {}
+      },
+      "id": "fb7bbf69-d53f-485d-b014-f60d99e8bc43",
+      "name": "KIE Create Image Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5216,
+        2112
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Prepare Image and BGM Payloads').first().json;\nconst response = $input.first().json || {};\nif (response.error || (response.code && Number(response.code) !== 200)) {\n  throw new Error('KIE image create failed: ' + JSON.stringify(response));\n}\nconst taskId = response.data?.taskId || response.taskId || response.id || null;\nif (!taskId) {\n  throw new Error('KIE image create returned no taskId: ' + JSON.stringify(response));\n}\nreturn [{ json: { ...base, image_create_response: response, image_task_id: taskId } }];"
+      },
+      "id": "2cb71070-c7d8-4f1f-820c-7273a964e0ee",
+      "name": "Normalize Image Task",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5504,
+        2112
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{$json.config.image_poll_interval_seconds || 120}}"
+      },
+      "id": "09ea7925-61df-4dfc-bdaa-2764c29de5db",
+      "name": "Wait Image 30s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        5776,
+        2112
+      ],
+      "webhookId": "d5480533-2e8a-4514-a763-b0e88010d2f4"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/jobs/recordInfo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{$json.image_task_id}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a6ea6074-f453-441a-991a-e6425f3bdfd4",
+      "name": "KIE Get Image Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6064,
+        2112
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Normalize Image Task').first().json;\nconst response = $input.first().json || {};\nconst data = response.data || response;\nconst state = String(data.state || data.status || '').toLowerCase();\nlet resultJson = data.resultJson || data.result_json || null;\nif (typeof resultJson === 'string' && resultJson.trim()) {\n  try { resultJson = JSON.parse(resultJson); } catch (error) { resultJson = { raw: data.resultJson, parse_error: error.message }; }\n}\nconst urls =\n  resultJson?.resultUrls ||\n  resultJson?.result_urls ||\n  resultJson?.imageUrls ||\n  resultJson?.images ||\n  resultJson?.urls ||\n  data.response?.resultUrls ||\n  data.resultUrls ||\n  data.imageUrls ||\n  [];\nconst first = Array.isArray(urls) ? urls[0] : urls;\nconst imageUrl = typeof first === 'string' ? first : first?.url || first?.imageUrl || first?.src || null;\nconst apiCode = Number(response.code ?? data.code ?? 200);\nconst failed =\n  ['fail', 'failed', 'error'].includes(state) ||\n  Boolean(data.failCode || data.failMsg || response.error) ||\n  (apiCode !== 200 && apiCode !== 0);\n\nif (failed) {\n  throw new Error('KIE image failed. state=' + state + ', taskId=' + (base.image_task_id || '-') + ', message=' + (data.failMsg || response.msg || response.error || ''));\n}\n\nif (!imageUrl) {\n  throw new Error('KIE image is not ready yet. state=' + (state || 'unknown') + ', taskId=' + (base.image_task_id || '-') + '. Increase image_poll_interval_seconds or rerun this image poll later.');\n}\n\nreturn [{ json: { ...base, image_poll_response: response, image_state: state || 'succeeded', image_failed: false, image_url: imageUrl } }];"
+      },
+      "id": "2f4ad5ea-ece3-410e-be20-4c5c7887270b",
+      "name": "Parse Image Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6336,
+        2112
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nif (!dryRun) {\n  throw new Error('Live run reached Mock Image Result. Check Load Config: use_live_image must be true, and KIE image auth/credits must work.');\n}\nreturn [{ json: { ...data, image_url: null, image_state: 'mock_skipped' } }];"
+      },
+      "id": "8ba5cf14-d473-47d2-8371-07e292a54753",
+      "name": "Mock Image Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5216,
+        2528
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Load Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Config": {
+      "main": [
+        [
+          {
+            "node": "Fetch Health RSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Health RSS": {
+      "main": [
+        [
+          {
+            "node": "Build Viral Rank Pack Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Viral Rank Pack Request": {
+      "main": [
+        [
+          {
+            "node": "Use Live KIE Claude?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use Live KIE Claude?": {
+      "main": [
+        [
+          {
+            "node": "KIE Claude Generate Pack",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mock Viral Rank Pack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Claude Generate Pack": {
+      "main": [
+        [
+          {
+            "node": "Parse KIE Claude Pack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse KIE Claude Pack": {
+      "main": [
+        [
+          {
+            "node": "Medical Safety Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock Viral Rank Pack": {
+      "main": [
+        [
+          {
+            "node": "Medical Safety Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Medical Safety Review": {
+      "main": [
+        [
+          {
+            "node": "Medical Review Passed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Medical Review Passed?": {
+      "main": [
+        [
+          {
+            "node": "Prepare Image and BGM Payloads",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Blocked Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Blocked Result": {
+      "main": [
+        [
+          {
+            "node": "Final Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Image and BGM Payloads": {
+      "main": [
+        [
+          {
+            "node": "Use Live Image?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use Live BGM?": {
+      "main": [
+        [
+          {
+            "node": "KIE Create BGM Task",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mock BGM Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Create BGM Task": {
+      "main": [
+        [
+          {
+            "node": "Normalize BGM Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize BGM Task": {
+      "main": [
+        [
+          {
+            "node": "Wait BGM 30s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait BGM 30s": {
+      "main": [
+        [
+          {
+            "node": "KIE Get BGM Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Get BGM Task": {
+      "main": [
+        [
+          {
+            "node": "Parse BGM Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse BGM Result": {
+      "main": [
+        [
+          {
+            "node": "Use Live Render?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock BGM Result": {
+      "main": [
+        [
+          {
+            "node": "Use Live Render?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use Live Render?": {
+      "main": [
+        [
+          {
+            "node": "Prepare Local FFmpeg Render",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mock Render Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock Render Result": {
+      "main": [
+        [
+          {
+            "node": "Final Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Downloaded MP4": {
+      "main": [
+        [
+          {
+            "node": "Allow YouTube Upload?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Allow YouTube Upload?": {
+      "main": [
+        [
+          {
+            "node": "YouTube Upload Private",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip YouTube Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube Upload Private": {
+      "main": [
+        [
+          {
+            "node": "Normalize YouTube Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize YouTube Upload": {
+      "main": [
+        [
+          {
+            "node": "Post Top-Level Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Top-Level Comment": {
+      "main": [
+        [
+          {
+            "node": "Attach Comment Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Comment Result": {
+      "main": [
+        [
+          {
+            "node": "Final Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip YouTube Upload": {
+      "main": [
+        [
+          {
+            "node": "Final Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Final Result": {
+      "main": [
+        [
+          {
+            "node": "Notify Slack?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Slack?": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is Webhook Run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Slack Webhook": {
+      "main": [
+        [
+          {
+            "node": "Attach Slack Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Slack Result": {
+      "main": [
+        [
+          {
+            "node": "Is Webhook Run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Webhook Run?": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Done - Manual or Schedule",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use Live Image?": {
+      "main": [
+        [
+          {
+            "node": "KIE Create Image Task",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mock Image Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Create Image Task": {
+      "main": [
+        [
+          {
+            "node": "Normalize Image Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Image Task": {
+      "main": [
+        [
+          {
+            "node": "Wait Image 30s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Image 30s": {
+      "main": [
+        [
+          {
+            "node": "KIE Get Image Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Get Image Task": {
+      "main": [
+        [
+          {
+            "node": "Parse Image Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Image Result": {
+      "main": [
+        [
+          {
+            "node": "Use Live BGM?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock Image Result": {
+      "main": [
+        [
+          {
+            "node": "Use Live BGM?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Local FFmpeg Render": {
+      "main": [
+        [
+          {
+            "node": "Local FFmpeg Render",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Local FFmpeg Render": {
+      "main": [
+        [
+          {
+            "node": "Parse Local Render Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Local Render Result": {
+      "main": [
+        [
+          {
+            "node": "Read Rendered MP4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Rendered MP4": {
+      "main": [
+        [
+          {
+            "node": "Attach Downloaded MP4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {},
+  "versionId": "f5d52af5-1fc6-49c8-b217-786f923ee49b",
+  "triggerCount": 0
+}

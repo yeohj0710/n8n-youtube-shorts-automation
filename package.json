@@ -1,0 +1,15 @@
+{
+  "name": "n8n-local-video-runner",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Local n8n runner with ffmpeg static-card rendering",
+  "scripts": {
+    "start": "powershell -ExecutionPolicy Bypass -File ./scripts/start-n8n.ps1",
+    "import": "powershell -ExecutionPolicy Bypass -File ./scripts/import-workflow.ps1",
+    "export:workflow": "node ./scripts/export-workflow-from-db.mjs"
+  },
+  "dependencies": {
+    "n8n": "2.26.8",
+    "sharp": "^0.34.5"
+  }
+}
