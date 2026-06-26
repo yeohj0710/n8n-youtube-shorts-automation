@@ -32,6 +32,9 @@ Latest known workflow:
 - Keep n8n Cloud and local n8n separate. Local render/upload depends on local paths and will not work in n8n Cloud without redesign.
 - Do not add TTS, Veo, or Creatomate back into this workflow. User wants static ranked-card Shorts: one full 9:16 GPT image + BGM + local ffmpeg MP4.
 - Do not overlay text in local ffmpeg. GPT image generation must render the final Korean title and ranked list inside the image itself.
+- Ranked cards must show `1위` at the top, then `2위`, `3위`, etc. Do not sort `7위` first.
+- BGM must target Korean ages 50-60: warm, calm, premium health-program mood, slow around 76 BPM, no vocals, no EDM, no heavy drums.
+- Image prompt must push premium modern infographic quality: crisp Korean typography, sharp edges, high contrast, no blur, no retro/cheap clipart look.
 - Default YouTube upload privacy is public. Existing private videos are a public-publishing action; get explicit confirmation before changing old videos to public.
 - Do not run the full workflow without considering cost and side effects. It spends KIE credits and can upload a public YouTube video.
 
@@ -224,6 +227,18 @@ Fix:
 - Keep prompt as clean Korean Shorts ranked-card final image.
 - The image prompt must include the exact visible Korean title/subtitle/rank list.
 - Do not ask for a blank center area or later text overlay.
+
+### YouTube Shows `[Music]` Captions
+
+Cause:
+
+The workflow does not upload captions. `[Music]` is usually YouTube automatic captions or the viewer's CC setting.
+
+Fix/limits:
+
+- The upload node should not set `defaultLanguage`; this reduces language hints that can trigger auto-caption behavior.
+- There is no reliable n8n YouTube upload-node switch to disable YouTube automatic captions globally.
+- If it appears only in playback, turn CC off in the player or adjust caption settings in YouTube Studio.
 
 ### Image/BGM Not Ready
 

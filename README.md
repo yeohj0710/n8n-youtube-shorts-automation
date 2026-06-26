@@ -9,6 +9,13 @@ Local n8n setup for the 하루건강약사 image+BGM Shorts workflow.
 - Renders a full-card GPT image into an MP4 locally with ffmpeg
 - Uploads to YouTube as public through the YouTube OAuth2 credential
 
+## Quality Rules
+
+- The GPT image is the complete 9:16 card, including all Korean title/list text.
+- The list order is `1위` first at the top.
+- BGM targets Korean ages 50-60: calm, warm, premium, slow, no vocals.
+- Local ffmpeg does not add text overlays; it only sharpens/resizes the final image and muxes BGM.
+
 ## Local Paths
 
 - n8n runner: `C:\dev\n8n-local`

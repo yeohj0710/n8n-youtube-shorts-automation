@@ -68,7 +68,8 @@ const [imageBuffer, audioBuffer] = await Promise.all([
 await fs.writeFile(audioPath, audioBuffer);
 
 await sharp(imageBuffer)
-  .resize(width, height, { fit: 'cover', position: 'center' })
+  .resize(width, height, { fit: 'cover', position: 'center', kernel: sharp.kernel.lanczos3 })
+  .sharpen({ sigma: 0.45, m1: 0.8, m2: 1.15 })
   .png()
   .toFile(cardPath);
 
@@ -83,7 +84,8 @@ await run(ffmpegPath, [
   '-vf', 'format=yuv420p',
   '-c:v', 'libx264',
   '-preset', 'veryfast',
-  '-crf', '22',
+  '-tune', 'stillimage',
+  '-crf', '18',
   '-c:a', 'aac',
   '-b:a', '192k',
   '-shortest',
