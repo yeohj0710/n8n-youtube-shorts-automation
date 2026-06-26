@@ -1,8 +1,8 @@
 # n8n Local Runner Agent Notes
 
-This repo is the deployable source for the user's local n8n video workflow runner.
+This repo is the source of truth for the user's local n8n YouTube Shorts workflow.
 
-Primary local path:
+Primary path:
 
 `C:\dev\n8n-local`
 
@@ -14,30 +14,39 @@ GitHub repo:
 
 `https://github.com/yeohj0710/n8n-local.git`
 
-## Hard Rules
+Latest known workflow:
 
-- Do not commit secrets, tokens, OAuth client secrets, API keys, `.n8n`, `node_modules`, `renders`, `binary-data`, logs, SQLite databases, or cache folders.
-- Do not print or repeat secret values in final answers.
-- Do not use `127.0.0.1:5678` for n8n OAuth work. Use `http://localhost:5678/`.
-- Do not re-import an old workflow JSON over the local n8n DB unless intentionally resetting the user's node layout.
-- Before editing workflow JSON, export/read the current workflow from the local DB first. The user manually adjusted node positions and does not want them moved back.
-- If a workflow edit is needed, prefer patching the current DB-exported workflow, then import that exact file.
+- ID: `mxrYb3maJS31gEYC`
+- Name: `하루건강약사 - 로컬 n8n 이미지+BGM 업로드`
+- Export: `C:\dev\n8n-local\workflows\n8n_하루건강약사_수동실행.json`
+- Current shape: image + BGM + local ffmpeg render + YouTube private upload
+
+## Non-Negotiables
+
+- Do not commit secrets, tokens, OAuth client secrets, API keys, `.n8n`, SQLite DBs, `node_modules`, `renders`, `binary-data`, logs, or cache folders.
+- Do not print or repeat secret values in chat or commits.
+- Do not use `127.0.0.1:5678` for n8n OAuth. Use `http://localhost:5678/`.
+- Do not create duplicate workflow JSON files unless explicitly asked. Fix the existing workflow/source in place.
+- Do not re-import an old workflow JSON over the local DB unless intentionally resetting the user's manual node layout.
+- Before editing workflow JSON, export/read the current workflow from the local DB first.
 - Keep n8n Cloud and local n8n separate. Local render/upload depends on local paths and will not work in n8n Cloud without redesign.
+- Do not add TTS, Veo, or Creatomate back into this workflow. User wants static ranked-card Shorts: generated image + BGM + local ffmpeg MP4.
+- Do not run the full workflow without considering cost and side effects. It spends KIE credits and can upload a private YouTube video.
 
 ## Important Paths
 
 - Runner root: `C:\dev\n8n-local`
-- n8n user folder / DB: `C:\dev\n8n-local\.n8n`
-- n8n SQLite DB: `C:\dev\n8n-local\.n8n\database.sqlite`
+- n8n user folder: `C:\dev\n8n-local\.n8n`
+- n8n DB: `C:\dev\n8n-local\.n8n\database.sqlite`
 - Render outputs: `C:\dev\n8n-local\renders`
 - Binary storage: `C:\dev\n8n-local\binary-data`
 - Startup script: `C:\dev\n8n-local\scripts\start-n8n.ps1`
 - Hidden startup launcher: `C:\dev\n8n-local\scripts\start-n8n-hidden.vbs`
-- Renderer script: `C:\dev\n8n-local\scripts\render-static-card.mjs`
+- Renderer: `C:\dev\n8n-local\scripts\render-static-card.mjs`
 - Workflow export script: `C:\dev\n8n-local\scripts\export-workflow-from-db.mjs`
 - Workflow import script: `C:\dev\n8n-local\scripts\import-workflow.ps1`
-- Repo workflow export: `C:\dev\n8n-local\workflows\n8n_하루건강약사_수동실행.json`
-- Original Google Drive folder: `G:\내 드라이브\영상 편집\유튜브 닌자`
+- Original user folder: `G:\내 드라이브\영상 편집\유튜브 닌자`
+- Saved YouTube OAuth client secret note: `G:\내 드라이브\영상 편집\유튜브 닌자\etc\youtube_oauth_client_secret.txt`
 
 ## Commands
 
@@ -51,7 +60,7 @@ npm run import
 git status --short --branch
 ```
 
-Check local n8n is alive:
+Check local n8n:
 
 ```powershell
 Invoke-WebRequest -UseBasicParsing -Uri 'http://localhost:5678/rest/settings' -TimeoutSec 20
@@ -69,138 +78,112 @@ $procs | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
 Start-Process -FilePath 'wscript.exe' -ArgumentList '"C:\dev\n8n-local\scripts\start-n8n-hidden.vbs"' -WindowStyle Hidden
 ```
 
-## Current Workflow Design
+If port-kill is needed, do not use `$PID` as a loop variable in PowerShell. It is reserved.
 
-Workflow:
+```powershell
+$procIds = Get-NetTCPConnection -LocalPort 5678 -State Listen -ErrorAction SilentlyContinue |
+  Select-Object -ExpandProperty OwningProcess -Unique
+foreach ($procId in $procIds) {
+  Stop-Process -Id $procId -Force
+}
+```
 
-`하루건강약사 - 로컬 n8n 이미지+BGM 업로드`
+## Runtime Environment
 
-Runtime path:
+`scripts\start-n8n.ps1` must set these:
 
-- Manual trigger
-- Build rank pack
-- KIE Claude text generation
-- KIE image generation
-- KIE BGM generation
-- Local static-card MP4 render with ffmpeg
-- Read generated MP4 from disk
-- YouTube private upload
-- Optional top-level YouTube comment
+```powershell
+$env:N8N_USER_FOLDER = $Root
+$env:N8N_HOST = "localhost"
+$env:N8N_PORT = "5678"
+$env:N8N_PROTOCOL = "http"
+$env:WEBHOOK_URL = "http://localhost:5678/"
+$env:N8N_DEFAULT_BINARY_DATA_MODE = "filesystem"
+$env:N8N_BINARY_DATA_STORAGE_PATH = $BinaryFolder
+$env:N8N_RESTRICT_FILE_ACCESS_TO = "$DefaultFilesFolder;$RenderFolder"
+$env:NODE_FUNCTION_ALLOW_BUILTIN = "crypto,child_process"
+$env:FFMPEG_PATH = $Ffmpeg
+$env:LOCAL_RENDER_DIR = $RenderFolder
+$env:LOCAL_RENDER_SCRIPT = (Join-Path $Root "scripts\render-static-card.mjs")
+```
 
-No TTS path should be used.
+Known ffmpeg path:
 
-No Veo/video-generation path should be used.
+`C:\Users\hjyeo\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1-full_build\bin\ffmpeg.exe`
 
-No Creatomate path should be used.
+## Workflow Flow
 
-The target channel style is static ranked-card Shorts: generate an image, overlay Korean ranking text, add BGM, render an MP4 locally.
+Expected path:
+
+1. Manual Trigger
+2. Load Config
+3. Fetch Health RSS
+4. Build Viral Rank Pack Request
+5. KIE Claude text pack or mock pack
+6. Medical Safety Review
+7. Prepare Image and BGM Payloads
+8. KIE image generation
+9. KIE BGM generation
+10. Local ffmpeg static-card render
+11. Read rendered MP4 from disk
+12. YouTube private upload
+13. Optional top-level comment
+14. Final result
+
+Do not reintroduce:
+
+- TTS path
+- Veo video-generation path
+- Creatomate render path
 
 ## Credentials
 
-Credentials are stored in the local n8n DB, not in git.
+Credentials live in the local n8n DB, not in git.
 
-Expected local n8n credentials:
+Expected local credentials:
 
-- `Header Auth account` for KIE API
-- `YouTube account` for YouTube OAuth2 API
+- KIE: `Header Auth account`, type `httpHeaderAuth`, known ID `MV5JVbdiJSoVx9O8`
+- YouTube: `YouTube account`, type `youTubeOAuth2Api`, known ID `l7YqloikIKiIOtOq`
 
-KIE uses Header Auth:
+KIE Header Auth:
 
 - Header name: `Authorization`
 - Header value shape: `Bearer <KIE_API_KEY>`
 
-YouTube OAuth redirect URI must be:
+YouTube OAuth:
 
-`http://localhost:5678/rest/oauth2-credential/callback`
+- Redirect URI: `http://localhost:5678/rest/oauth2-credential/callback`
+- Use local n8n opened at `http://localhost:5678/`
+- If Google Cloud asks for security, 2-step verification may be required.
+- YouTube upload itself normally does not need a paid Google Cloud service; KIE credits are the paid generation cost.
 
-If OAuth callback says `Unauthorized`, first check that the user opened local n8n through `localhost`, not `127.0.0.1`.
+## Known Failures
 
-## Known Pitfalls And Fixes
-
-### OAuth Callback Unauthorized
+### OAuth Callback `Unauthorized`
 
 Cause:
 
-The n8n editor was opened at `127.0.0.1`, but Google OAuth returned to `localhost`. Browser cookies/sessions do not match.
+The editor was opened at `127.0.0.1`, but Google OAuth returns to `localhost`. Browser session/cookie does not match.
 
 Fix:
 
-- Use `http://localhost:5678/`
+- Open `http://localhost:5678/`
 - Reopen credential page through `localhost`
 - Save credential
 - Click `Sign in with Google` again
 
-### `process is not defined` In Code Node
+### YouTube `Unable to sign without access token`
 
 Cause:
 
-n8n Code nodes do not expose Node's `process` object.
+The YouTube OAuth credential exists but has no valid access token.
 
 Fix:
 
-- Do not use `process.env` or `process.execPath` inside workflow Code nodes.
-- Use fixed local paths from `Load Config`:
-  - `C:/dev/n8n-local/renders`
-  - `C:/dev/n8n-local/scripts/render-static-card.mjs`
-  - `C:/Program Files/nodejs/node.exe`
-
-### `Unrecognized node type: n8n-nodes-base.executeCommand`
-
-Cause:
-
-This n8n install did not recognize the Execute Command node.
-
-Fix:
-
-- Use a Code node named `Local FFmpeg Render`.
-- Inside it, call `child_process.spawnSync`.
-- Ensure `scripts/start-n8n.ps1` has:
-
-```powershell
-$env:NODE_FUNCTION_ALLOW_BUILTIN = "crypto,child_process"
-```
-
-### `Access to the file is not allowed`
-
-Cause:
-
-n8n file read nodes only allow configured file-access paths. Rendered MP4s are written to `C:\dev\n8n-local\renders`.
-
-Fix:
-
-`scripts/start-n8n.ps1` must include:
-
-```powershell
-$env:N8N_RESTRICT_FILE_ACCESS_TO = "$DefaultFilesFolder;$RenderFolder"
-```
-
-Then restart local n8n.
-
-### Workflow Node Positions Keep Moving
-
-Cause:
-
-Importing an older JSON rewrites workflow node positions and can undo the user's manual layout changes.
-
-Fix:
-
-- Export current DB workflow first with `npm run export:workflow`.
-- Patch the exported JSON in `workflows\`.
-- Import only after the user has saved their current layout, or after exporting the current DB.
-- Never rerun old conversion scripts over the user's edited layout.
-
-### BGM Pending Then Render Fails
-
-Cause:
-
-KIE BGM can still be `PENDING` after the first 30-second wait. If `bgm_audio_url` is still empty, `Prepare Local FFmpeg Render` must not run yet.
-
-Fix:
-
-- Keep `Parse BGM Result -> BGM Ready?`.
-- If true, continue to `Use Live Render?`.
-- If false, run `Wait BGM Retry 90s -> KIE Get BGM Task Retry -> Parse BGM Result Final`.
-- `Parse BGM Result Final` should throw a BGM-specific error if URL is still missing, instead of letting render fail with missing `bgm_audio_url`.
+- Open credential `YouTube account`
+- Confirm Client ID and Client Secret are filled
+- Confirm redirect URI in Google Cloud exactly matches `http://localhost:5678/rest/oauth2-credential/callback`
+- Click `Sign in with Google` from local n8n via `localhost`
 
 ### KIE `Unauthorized`
 
@@ -210,83 +193,206 @@ Missing or malformed KIE Authorization header.
 
 Fix:
 
-- Confirm local n8n has `Header Auth account`.
-- Header name must be `Authorization`.
-- Header value must be `Bearer <key>`.
-- Quick API credit checks are safe and do not generate paid media.
+- Confirm credential `Header Auth account`
+- Header name must be `Authorization`
+- Header value must be `Bearer <key>`
+- Quick KIE credit checks are safe; media generation consumes credits.
 
 ### KIE Image Policy Failure
 
 Cause:
 
-KIE image task can fail if prompt triggers upstream content policy.
+Image prompt triggered upstream content policy.
 
 Fix:
 
-- Avoid medical claims, doctor impersonation, logos, fake authority, before/after, or cure/treatment wording in image prompts.
-- Keep image prompt as a clean Korean Shorts ranking-card background with room for overlay text.
+- Avoid cure/treatment claims, fake doctor authority, medical logos, before/after, disease claims, or impersonation.
+- Keep prompt as clean Korean Shorts ranked-card background with space for text overlay.
 
-## Workflow QA Checklist
+### Image/BGM Not Ready
 
-Run these before claiming the workflow source is healthy:
+Cause:
+
+KIE tasks can return `generating` or `PENDING` after the first wait.
+
+Fix:
+
+- Do not let render nodes run until `image_url` and `bgm_audio_url` exist.
+- Current BGM guard must remain:
+  - `Parse BGM Result -> BGM Ready?`
+  - true: `Use Live Render?`
+  - false: `Wait BGM Retry 90s -> KIE Get BGM Task Retry -> Parse BGM Result Final`
+- If final retry still has no URL, throw a BGM-specific error before render.
+
+### `Local render requires bgm_audio_url`
+
+Cause:
+
+`Prepare Local FFmpeg Render` got input with `bgm_audio_url=null`, usually because BGM was still `PENDING` or a middle node was run without full upstream context.
+
+Fix:
+
+- Full workflow run: use the BGM retry guard above.
+- Middle-node run: do not execute `Prepare Local FFmpeg Render` alone unless the prior execution data contains `image_url` and `bgm_audio_url`.
+
+### `process is not defined`
+
+Cause:
+
+n8n Code nodes do not expose Node's `process` object.
+
+Fix:
+
+- Do not use `process.env` or `process.execPath` inside workflow Code nodes.
+- Use fixed paths from `Load Config`.
+
+### `Unrecognized node type: n8n-nodes-base.executeCommand`
+
+Cause:
+
+This local n8n install did not recognize the Execute Command node.
+
+Fix:
+
+- Use Code node `Local FFmpeg Render`.
+- Inside it, call `child_process.spawnSync`.
+- Keep `NODE_FUNCTION_ALLOW_BUILTIN = "crypto,child_process"` in startup env.
+
+### `Access to the file is not allowed`
+
+Cause:
+
+n8n read-file nodes can only access configured paths. Rendered MP4s are under `C:\dev\n8n-local\renders`.
+
+Fix:
+
+```powershell
+$env:N8N_RESTRICT_FILE_ACCESS_TO = "$DefaultFilesFolder;$RenderFolder"
+```
+
+Then restart n8n.
+
+### Workflow Node Positions Keep Moving
+
+Cause:
+
+Importing stale workflow JSON rewrites positions and undoes the user's manual layout cleanup.
+
+Fix:
+
+- Always run `npm run export:workflow` before editing workflow JSON.
+- Patch the exported JSON in `workflows\`.
+- Import only after the user's current DB layout is exported.
+- Do not run old conversion scripts over the current layout.
+
+### PowerShell Korean Path Mojibake
+
+Cause:
+
+Windows PowerShell 5 can misread UTF-8 Korean literals in `.ps1`.
+
+Fix:
+
+- Avoid hardcoding Korean filenames inside PowerShell scripts.
+- Prefer finding `workflows\*.json` with `Get-ChildItem`.
+- Node scripts can write UTF-8 Korean filenames safely.
+
+## Inspecting Executions
+
+n8n execution data in SQLite uses `flatted`, not plain nested JSON.
+
+Use this pattern:
+
+```powershell
+$script = @'
+const { parse } = require('flatted');
+const sqlite3 = require('sqlite3');
+const db = new sqlite3.Database('C:/dev/n8n-local/.n8n/database.sqlite', sqlite3.OPEN_READONLY);
+db.get('select data from execution_data where executionId=?', [5], (e, row) => {
+  if (e) throw e;
+  const d = parse(row.data);
+  const runData = d.resultData?.runData || {};
+  console.log(Object.keys(runData));
+  db.close();
+});
+'@
+$script | node -
+```
+
+Useful recent root-cause finding:
+
+- Executions 5 and 6 reached `Parse BGM Result`
+- `bgm_state` was `PENDING`
+- `bgm_audio_url` was `null`
+- `Prepare Local FFmpeg Render` then failed
+- Fix was BGM readiness branch + retry
+
+## Workflow QA
+
+Run before claiming healthy:
 
 ```powershell
 node --check .\scripts\render-static-card.mjs
 node --check .\scripts\export-workflow-from-db.mjs
 ```
 
-Check workflow Code node syntax and known bad patterns:
+Code-node syntax and bad-pattern check:
 
 ```powershell
-node -e "const fs=require('fs'); const wf=JSON.parse(fs.readFileSync('workflows/n8n_하루건강약사_수동실행.json','utf8')); const bad=[]; const processHits=[]; const executeCommandHits=[]; for(const n of wf.nodes){const c=n.parameters?.jsCode; if(c){try{new Function(c)}catch(e){bad.push({node:n.name,error:e.message})} if(c.includes('process.')) processHits.push(n.name);} if(String(n.type||'').includes('executeCommand')) executeCommandHits.push(n.name);} console.log(JSON.stringify({bad,processHits,executeCommandHits},null,2)); if(bad.length||processHits.length||executeCommandHits.length) process.exit(1);"
+node -e "const fs=require('fs'); const path=require('path'); const p=path.join('workflows',fs.readdirSync('workflows').find(f=>f.endsWith('.json'))); const wf=JSON.parse(fs.readFileSync(p,'utf8')); const bad=[]; const processHits=[]; const executeCommandHits=[]; for(const n of wf.nodes){const c=n.parameters?.jsCode; if(c){try{new Function(c)}catch(e){bad.push({node:n.name,error:e.message})} if(c.includes('process.')) processHits.push(n.name);} if(String(n.type||'').includes('executeCommand')) executeCommandHits.push(n.name);} console.log(JSON.stringify({id:wf.id,name:wf.name,nodes:wf.nodes.length,bad,processHits,executeCommandHits,hasBgmReady:!!wf.nodes.find(n=>n.name==='BGM Ready?')},null,2)); if(bad.length||processHits.length||executeCommandHits.length||!wf.nodes.find(n=>n.name==='BGM Ready?')) process.exit(1);"
 ```
 
 Expected:
 
-- `bad` is empty
-- `processHits` is empty
-- `executeCommandHits` is empty
+- `bad` empty
+- `processHits` empty
+- `executeCommandHits` empty
+- `hasBgmReady` true
 
-Check no obvious secrets are staged before pushing:
+Check no secrets:
 
 ```powershell
-git diff --cached --name-only
-git diff --cached --stat
-git status --short --ignored
+rg -n "GOCSPX|Bearer [A-Za-z0-9_\-.]+|AIza|client_secret|api[_-]?key" . -g "!node_modules/**" -g "!.n8n/**" -g "!renders/**" -g "!binary-data/**"
 ```
 
-## Git Rules
+## Git
 
-The repo intentionally tracks source and exported workflow only.
-
-Commit these:
+Track:
 
 - `.gitignore`
 - `AGENTS.md`
 - `README.md`
 - `package.json`
 - `package-lock.json`
-- `scripts/export-workflow-from-db.mjs`
-- `scripts/import-workflow.ps1`
-- `scripts/render-static-card.mjs`
-- `scripts/start-n8n.ps1`
-- `scripts/start-n8n-hidden.vbs`
-- `workflows/n8n_하루건강약사_수동실행.json`
+- `scripts\*.ps1`
+- `scripts\*.vbs`
+- `scripts\*.mjs`
+- `workflows\n8n_하루건강약사_수동실행.json`
 
-Do not commit:
+Never track:
 
-- `.n8n/`
-- `.cache/`
-- `node_modules/`
-- `renders/`
-- `binary-data/`
-- `logs/`
-- any `*secret*`, `*credential*`, or `*.sqlite*`
+- `.n8n\`
+- `.cache\`
+- `node_modules\`
+- `renders\`
+- `binary-data\`
+- `logs\`
+- `*.sqlite*`
+- `*secret*`
+- `*credential*`
+- `*credentials*`
 
-## User Preference
+Recent known commits:
 
-- Keep answers terse and direct.
-- Do not create duplicate workflow files unless explicitly asked.
-- Fix the existing workflow/source in place.
-- Do not move nodes far apart or overwrite manual layout.
-- If a browser workflow is involved, tell the user exactly what to click next.
+- `1866316`: baseline expanded `AGENTS.md`
+- `74a8ed8`: BGM polling before local render
+
+## User Preferences
+
+- Answer terse and direct.
+- In Korean when the user writes Korean.
+- Tell the user exact clicks only when browser UI action is needed.
+- Keep workflow files from multiplying.
+- Preserve the user's node layout.
+- Existing workflow > new workflow.
+- Avoid speculative fixes. Inspect DB/workflow first.
