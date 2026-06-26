@@ -224,6 +224,18 @@ Fix:
   - false: `Wait BGM Retry 90s -> KIE Get BGM Task Retry -> Parse BGM Result Final`
 - If final retry still has no URL, throw a BGM-specific error before render.
 
+### Medical Review Blocks Safe Sleep Content
+
+Cause:
+
+The dosage regex was too broad. It was meant to catch real dose text such as `3 tablets` or `1 pill`, but it false-positive matched the Korean phrase equivalent to `BEST 7, I will tell you` because `7` was followed by the first syllable of `tell`.
+
+Fix:
+
+- Keep dosage detection, but require a real unit boundary/suffix.
+- Do not match the Korean pill unit when it is the first syllable of another normal word.
+- `Medical Safety Review` now returns `issue_matches`, so inspect the exact matched substring before changing policy again.
+
 ### `Local render requires bgm_audio_url`
 
 Cause:
