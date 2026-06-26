@@ -6,8 +6,8 @@ Local n8n setup for the 하루건강약사 image+BGM Shorts workflow.
 
 - Runs n8n locally on `http://localhost:5678/`
 - Generates image and BGM through KIE
-- Renders a static-card MP4 locally with ffmpeg
-- Uploads to YouTube as private through the YouTube OAuth2 credential
+- Renders a full-card GPT image into an MP4 locally with ffmpeg
+- Uploads to YouTube as public through the YouTube OAuth2 credential
 
 ## Local Paths
 

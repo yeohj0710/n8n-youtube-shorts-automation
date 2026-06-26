@@ -19,7 +19,7 @@ Latest known workflow:
 - ID: `mxrYb3maJS31gEYC`
 - Name: `하루건강약사 - 로컬 n8n 이미지+BGM 업로드`
 - Export: `C:\dev\n8n-local\workflows\n8n_하루건강약사_수동실행.json`
-- Current shape: image + BGM + local ffmpeg render + YouTube private upload
+- Current shape: full-card GPT image + BGM + local ffmpeg render + YouTube public upload
 
 ## Non-Negotiables
 
@@ -30,8 +30,10 @@ Latest known workflow:
 - Do not re-import an old workflow JSON over the local DB unless intentionally resetting the user's manual node layout.
 - Before editing workflow JSON, export/read the current workflow from the local DB first.
 - Keep n8n Cloud and local n8n separate. Local render/upload depends on local paths and will not work in n8n Cloud without redesign.
-- Do not add TTS, Veo, or Creatomate back into this workflow. User wants static ranked-card Shorts: generated image + BGM + local ffmpeg MP4.
-- Do not run the full workflow without considering cost and side effects. It spends KIE credits and can upload a private YouTube video.
+- Do not add TTS, Veo, or Creatomate back into this workflow. User wants static ranked-card Shorts: one full 9:16 GPT image + BGM + local ffmpeg MP4.
+- Do not overlay text in local ffmpeg. GPT image generation must render the final Korean title and ranked list inside the image itself.
+- Default YouTube upload privacy is public. Existing private videos are a public-publishing action; get explicit confirmation before changing old videos to public.
+- Do not run the full workflow without considering cost and side effects. It spends KIE credits and can upload a public YouTube video.
 
 ## Important Paths
 
@@ -124,9 +126,9 @@ Expected path:
 7. Prepare Image and BGM Payloads
 8. KIE image generation
 9. KIE BGM generation
-10. Local ffmpeg static-card render
+10. Local ffmpeg full-card image render
 11. Read rendered MP4 from disk
-12. YouTube private upload
+12. YouTube public upload
 13. Optional top-level comment
 14. Final result
 
@@ -219,7 +221,9 @@ Image prompt triggered upstream content policy.
 Fix:
 
 - Avoid cure/treatment claims, fake doctor authority, medical logos, before/after, disease claims, or impersonation.
-- Keep prompt as clean Korean Shorts ranked-card background with space for text overlay.
+- Keep prompt as clean Korean Shorts ranked-card final image.
+- The image prompt must include the exact visible Korean title/subtitle/rank list.
+- Do not ask for a blank center area or later text overlay.
 
 ### Image/BGM Not Ready
 

@@ -4,7 +4,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "로컬 n8n 업로드 버전\n\n- 음성 생성 없음\n- KIE 이미지 생성\n- KIE BGM 생성\n- 로컬 ffmpeg 정적 카드 MP4 렌더\n- YouTube private 업로드 켜짐\n- 실행하면 KIE 크레딧만 사용",
+        "content": "로컬 n8n 업로드 버전\n\n- 음성 생성 없음\n- KIE 이미지 생성\n- KIE BGM 생성\n- 로컬 ffmpeg 정적 카드 MP4 렌더\n- YouTube public 업로드 켜짐\n- 실행하면 KIE 크레딧만 사용",
         "height": 200,
         "width": 470
       },
@@ -30,7 +30,7 @@
     },
     {
       "parameters": {
-        "jsCode": "function bool(value, fallback = false) {\n  if (value === undefined || value === null || value === '') return fallback;\n  if (typeof value === 'boolean') return value;\n  if (typeof value === 'number') return value !== 0;\n  if (typeof value === 'string') return ['true', '1', 'yes', 'y', 'on'].includes(value.trim().toLowerCase());\n  return Boolean(value);\n}\n\nfunction normalizeSunoModel(value) {\n  const raw = String(value || '').trim();\n  if (!raw) return 'V5_5';\n  if (raw.toLowerCase() === 'suno-v5_5') return 'V5_5';\n  if (raw.toLowerCase() === 'suno-v5') return 'V5';\n  return raw;\n}\n\nconst first = $input.first()?.json ?? {};\nconst isWebhook = first.body !== undefined && first.headers !== undefined;\nconst incoming = isWebhook ? (first.body || {}) : first;\nconst dryRun = bool(incoming.dry_run, bool(incoming.test_mode, false));\n\nconst model_config = {\n  prompt_model: incoming.PROMPT_MODEL || incoming.prompt_model || 'claude-opus-4-7',\n  image_model: incoming.IMAGE_MODEL || incoming.image_model || 'gpt-image-2-text-to-image',\n  image_edit_model: incoming.IMAGE_EDIT_MODEL || incoming.image_edit_model || 'gpt-image-2-image-to-image',\n  music_model: incoming.MUSIC_MODEL || incoming.music_model || 'suno-v5_5',\n};\n\nconst config = {\n  run_mode: dryRun ? 'dry_run' : 'live_upload',\n  test_mode: dryRun,\n  dry_run: dryRun,\n  use_live_kie_ai: !dryRun && bool(incoming.use_live_kie_ai, true),\n  use_live_image: !dryRun && bool(incoming.use_live_image, true),\n  use_live_bgm: !dryRun && bool(incoming.use_live_bgm, true),\n  use_live_render: !dryRun && bool(incoming.use_live_render, true),\n  allow_youtube_upload: !dryRun && bool(incoming.allow_youtube_upload, true),\n  youtube_privacy_status: 'private',\n  rank_count: Number(incoming.rank_count || 7),\n  duration_seconds: Number(incoming.duration_seconds || 38),\n  kie_ai_model: incoming.kie_ai_model || model_config.prompt_model,\n  kie_image_model: incoming.kie_image_model || model_config.image_model,\n  kie_image_edit_model: incoming.kie_image_edit_model || model_config.image_edit_model,\n  kie_bgm_model_requested: incoming.kie_bgm_model || model_config.music_model,\n  kie_bgm_model: normalizeSunoModel(incoming.kie_bgm_model || model_config.music_model),\n  render_provider: incoming.render_provider || 'local_ffmpeg_static_card',\n  local_render_dir: incoming.local_render_dir || 'C:/dev/n8n-local/renders',\n  local_render_script: incoming.local_render_script || 'C:/dev/n8n-local/scripts/render-static-card.mjs',\n  ffmpeg_path:\n    incoming.ffmpeg_path ||\n    'C:/Users/hjyeo/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe',\n  node_path: incoming.node_path || 'C:/Program Files/nodejs/node.exe',\n  poll_interval_seconds: Number(incoming.poll_interval_seconds || 30),\n  image_poll_interval_seconds: Number(incoming.image_poll_interval_seconds || 120),\n  youtube_category_id: String(incoming.youtube_category_id || '27'),\n  region_code: incoming.region_code || 'KR',\n  timezone: incoming.timezone || 'Asia/Seoul',\n  rss_url:\n    incoming.rss_url ||\n    'https://news.google.com/rss/search?q=%EA%B1%B4%EA%B0%95%20%EC%88%98%EB%A9%B4%20%ED%98%88%EB%8B%B9%20%EC%9A%B4%EB%8F%99%20%EC%98%81%EC%96%91&hl=ko&gl=KR&ceid=KR:ko',\n  topic_candidates: Array.isArray(incoming.topic_candidates) ? incoming.topic_candidates : [],\n  notify_slack: !dryRun && bool(incoming.notify_slack, false),\n  slack_webhook_url: incoming.slack_webhook_url || '',\n  trigger_type: isWebhook ? 'webhook' : 'manual_or_schedule',\n  model_config,\n};\n\nreturn [{ json: { config, incoming, trigger: { type: config.trigger_type, received_at: new Date().toISOString() } } }];"
+        "jsCode": "function bool(value, fallback = false) {\n  if (value === undefined || value === null || value === '') return fallback;\n  if (typeof value === 'boolean') return value;\n  if (typeof value === 'number') return value !== 0;\n  if (typeof value === 'string') return ['true', '1', 'yes', 'y', 'on'].includes(value.trim().toLowerCase());\n  return Boolean(value);\n}\n\nfunction normalizeSunoModel(value) {\n  const raw = String(value || '').trim();\n  if (!raw) return 'V5_5';\n  if (raw.toLowerCase() === 'suno-v5_5') return 'V5_5';\n  if (raw.toLowerCase() === 'suno-v5') return 'V5';\n  return raw;\n}\n\nconst first = $input.first()?.json ?? {};\nconst isWebhook = first.body !== undefined && first.headers !== undefined;\nconst incoming = isWebhook ? (first.body || {}) : first;\nconst dryRun = bool(incoming.dry_run, bool(incoming.test_mode, false));\nconst privacyInput = incoming.youtube_privacy_status || incoming.YOUTUBE_PRIVACY_STATUS || 'public';\nconst requestedPrivacy = ['public', 'unlisted', 'private'].includes(String(privacyInput).toLowerCase())\n  ? String(privacyInput).toLowerCase()\n  : 'public';\n\nconst model_config = {\n  prompt_model: incoming.PROMPT_MODEL || incoming.prompt_model || 'claude-opus-4-7',\n  image_model: incoming.IMAGE_MODEL || incoming.image_model || 'gpt-image-2-text-to-image',\n  image_edit_model: incoming.IMAGE_EDIT_MODEL || incoming.image_edit_model || 'gpt-image-2-image-to-image',\n  music_model: incoming.MUSIC_MODEL || incoming.music_model || 'suno-v5_5',\n};\n\nconst config = {\n  run_mode: dryRun ? 'dry_run' : 'live_upload',\n  test_mode: dryRun,\n  dry_run: dryRun,\n  use_live_kie_ai: !dryRun && bool(incoming.use_live_kie_ai, true),\n  use_live_image: !dryRun && bool(incoming.use_live_image, true),\n  use_live_bgm: !dryRun && bool(incoming.use_live_bgm, true),\n  use_live_render: !dryRun && bool(incoming.use_live_render, true),\n  allow_youtube_upload: !dryRun && bool(incoming.allow_youtube_upload, true),\n  youtube_privacy_status: requestedPrivacy,\n  rank_count: Number(incoming.rank_count || 7),\n  duration_seconds: Number(incoming.duration_seconds || 38),\n  kie_ai_model: incoming.kie_ai_model || model_config.prompt_model,\n  kie_image_model: incoming.kie_image_model || model_config.image_model,\n  kie_image_edit_model: incoming.kie_image_edit_model || model_config.image_edit_model,\n  kie_bgm_model_requested: incoming.kie_bgm_model || model_config.music_model,\n  kie_bgm_model: normalizeSunoModel(incoming.kie_bgm_model || model_config.music_model),\n  render_provider: incoming.render_provider || 'local_ffmpeg_full_image_card',\n  local_render_dir: incoming.local_render_dir || 'C:/dev/n8n-local/renders',\n  local_render_script: incoming.local_render_script || 'C:/dev/n8n-local/scripts/render-static-card.mjs',\n  ffmpeg_path:\n    incoming.ffmpeg_path ||\n    'C:/Users/hjyeo/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe',\n  node_path: incoming.node_path || 'C:/Program Files/nodejs/node.exe',\n  poll_interval_seconds: Number(incoming.poll_interval_seconds || 30),\n  image_poll_interval_seconds: Number(incoming.image_poll_interval_seconds || 120),\n  youtube_category_id: String(incoming.youtube_category_id || '27'),\n  region_code: incoming.region_code || 'KR',\n  timezone: incoming.timezone || 'Asia/Seoul',\n  rss_url:\n    incoming.rss_url ||\n    'https://news.google.com/rss/search?q=%EA%B1%B4%EA%B0%95%20%EC%88%98%EB%A9%B4%20%ED%98%88%EB%8B%B9%20%EC%9A%B4%EB%8F%99%20%EC%98%81%EC%96%91&hl=ko&gl=KR&ceid=KR:ko',\n  topic_candidates: Array.isArray(incoming.topic_candidates) ? incoming.topic_candidates : [],\n  notify_slack: !dryRun && bool(incoming.notify_slack, false),\n  slack_webhook_url: incoming.slack_webhook_url || '',\n  trigger_type: isWebhook ? 'webhook' : 'manual_or_schedule',\n  model_config,\n};\n\nreturn [{ json: { config, incoming, trigger: { type: config.trigger_type, received_at: new Date().toISOString() } } }];"
       },
       "id": "b9d35d0c-8314-4e37-82bb-c3379a7eeab6",
       "name": "Load Config",
@@ -43,7 +43,7 @@
     },
     {
       "parameters": {
-        "content": "필요 credential:\n- KIE API Header Auth\n- YouTube OAuth2 API\n\n기본 실행은 live_upload입니다.\n- KIE Claude/Image/BGM 실행\n- 로컬 ffmpeg 정적 카드 렌더\n- YouTube private 업로드 실행\n- BGM 기본 켜짐\n- dry_run=true 또는 test_mode=true일 때만 mock/skip",
+        "content": "필요 credential:\n- KIE API Header Auth\n- YouTube OAuth2 API\n\n기본 실행은 live_upload입니다.\n- KIE Claude/Image/BGM 실행\n- 로컬 ffmpeg 정적 카드 렌더\n- YouTube public 업로드 실행\n- BGM 기본 켜짐\n- dry_run=true 또는 test_mode=true일 때만 mock/skip",
         "height": 170,
         "width": 430
       },
@@ -222,7 +222,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const data = $input.first().json;\nconst pack = data.pack;\nconst cfg = data.config;\nconst LF = String.fromCharCode(10);\n\nconst sortedItems = (pack.rank_items || []).sort((a, b) => Number(b.rank) - Number(a.rank));\n\nconst rankLines = sortedItems\n  .map((item) => item.rank + '위 ' + item.name + ' - ' + item.reason)\n  .join(LF);\n\nconst shortRankLines = sortedItems\n  .map((item) => item.rank + '위 ' + item.name)\n  .join(LF);\n\nconst bgm_payload = {\n  prompt: pack.bgm_prompt || 'original instrumental background music, calm but catchy Korean health shorts mood, no vocals, loopable, royalty-free style',\n  model: cfg.kie_bgm_model,\n  soundLoop: true,\n  soundTempo: 96,\n  soundKey: 'C',\n  grabLyrics: false,\n};\n\nconst imagePrompt = [\n  'Create a clean vertical Korean YouTube Shorts ranking-card background.',\n  'Aspect ratio 9:16.',\n  'Visual concept: calm everyday lifestyle, soft morning light, tidy desk, warm home interior, simple abstract shapes.',\n  'Design: bright, trustworthy, high-contrast, large blank center area for later title and ranked list overlay.',\n  'No people, no readable text, no logos, no brands, no product packaging.',\n].join(' ');\n\nconst image_payload = {\n  model: cfg.kie_image_model,\n  input: {\n    prompt: imagePrompt,\n    aspect_ratio: '9:16',\n  },\n};\n\nreturn [{ json: { ...data, rank_lines: rankLines, short_rank_lines: shortRankLines, bgm_payload, image_payload } }];"
+        "jsCode": "const data = $input.first().json;\nconst pack = data.pack || {};\nconst cfg = data.config || {};\nconst LF = String.fromCharCode(10);\nconst rankSuffix = String.fromCharCode(50948);\n\nconst sortedItems = [...(pack.rank_items || [])].sort((a, b) => Number(b.rank) - Number(a.rank));\n\nconst rankLines = sortedItems\n  .map((item) => item.rank + rankSuffix + ' ' + item.name + ' - ' + item.reason)\n  .join(LF);\n\nconst shortRankLines = sortedItems\n  .map((item) => item.rank + rankSuffix + ' ' + item.name)\n  .join(LF);\n\nconst cardRows = sortedItems\n  .map((item) => {\n    const reason = String(item.reason || item.caution || '').replace(/\\s+/g, ' ').trim();\n    return item.rank + rankSuffix + ' ' + item.name + (reason ? ' - ' + reason : '');\n  })\n  .join(LF);\n\nconst title = pack.hook_title || pack.theme || ('Health ranking BEST ' + (cfg.rank_count || sortedItems.length || 7));\nconst subtitle = pack.subtitle || 'General health information';\nconst visibleText = [\n  'TITLE: ' + title,\n  'SUBTITLE: ' + subtitle,\n  'LIST ROWS:',\n  cardRows || shortRankLines,\n  'FOOTER: ?? ?? ?? ? ??? ???? ????',\n].filter(Boolean).join(LF);\n\nconst bgm_payload = {\n  prompt: pack.bgm_prompt || 'original instrumental background music, calm but catchy Korean health shorts mood, no vocals, loopable, royalty-free style',\n  model: cfg.kie_bgm_model,\n  soundLoop: true,\n  soundTempo: 96,\n  soundKey: 'C',\n  grabLyrics: false,\n};\n\nconst imagePrompt = [\n  'Create one finished 9:16 Korean YouTube Shorts infographic card image. It must look like a high-performing Korean health ranking Shorts thumbnail/frame, not a photo background with later text overlay.',\n  'This is the final video frame. All title/list/footer text must be drawn inside the image. Do not leave blank areas for later editing.',\n  'Use the exact visible Korean text below. Keep ranks descending. Preserve Korean spelling. Do not invent new medical claims.',\n  visibleText,\n  'Layout requirements: full canvas filled; bold top title band; subtitle below title; 7 compact ranked rows; each row has rank badge, small simple icon, item name, and short reason; strong border; high contrast; readable on mobile.',\n  'Visual style: dense 2D infographic card, Korean senior-health Shorts style, cream/navy/teal/yellow/sky-blue accent palette, rounded row pills, small emoji-like illustrations, subtle paper texture or flat editorial background.',\n  'Avoid: empty lifestyle-photo background, transparent dark overlay panel, tiny unreadable text, cropped text, brand logos, medical logos, product packaging, fake doctor identity, before-after imagery, cure/treatment guarantees.',\n  'If space is tight, prioritize readable title and ranked rows over decoration.',\n].join(LF);\n\nconst image_payload = {\n  model: cfg.kie_image_model,\n  input: {\n    prompt: imagePrompt,\n    aspect_ratio: '9:16',\n  },\n};\n\nreturn [{ json: { ...data, rank_lines: rankLines, short_rank_lines: shortRankLines, visible_card_text: visibleText, bgm_payload, image_payload } }];"
       },
       "id": "d12444a3-2df9-4f04-a368-99812559f2df",
       "name": "Prepare Image and BGM Payloads",
@@ -407,7 +407,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const data = $input.first().json;\nconst cfg = data.config || {};\nconst pack = data.pack || {};\nconst items = (pack.rank_items || []).sort((a, b) => Number(b.rank) - Number(a.rank));\n\nif (!data.image_url) {\n  throw new Error('Local render requires image_url from Parse Image Result.');\n}\nif (!data.bgm_audio_url) {\n  throw new Error('Local render requires bgm_audio_url from Parse BGM Result. BGM must be live.');\n}\n\nconst renderId = 'health_' + Date.now() + '_' + Math.random().toString(16).slice(2, 8);\nconst duration = Number(cfg.duration_seconds || 38);\nconst title = pack.hook_title || pack.theme || '건강 랭킹 BEST ' + (cfg.rank_count || items.length || 7);\nconst subtitle = pack.subtitle || '일반 건강 정보 · 개인차가 있습니다';\n\nconst render_payload = {\n  render_id: renderId,\n  title,\n  subtitle,\n  items,\n  image_url: data.image_url,\n  bgm_audio_url: data.bgm_audio_url,\n  duration,\n  width: 1080,\n  height: 1920,\n  output_dir: cfg.local_render_dir,\n  ffmpeg_path: cfg.ffmpeg_path,\n};\n\nconst payloadBase64 = Buffer.from(JSON.stringify(render_payload), 'utf8').toString('base64');\nconst quote = (value) => '\"' + String(value).replace(/\"/g, '\\\"') + '\"';\nconst render_command = [\n  quote(cfg.node_path || 'node'),\n  quote(cfg.local_render_script),\n  quote(payloadBase64),\n].join(' ');\n\nreturn [{\n  json: {\n    ...data,\n    render_id: renderId,\n    render_provider: 'local_ffmpeg_static_card',\n    render_payload,\n    render_payload_base64: payloadBase64,\n    render_command,\n  },\n}];"
+        "jsCode": "const data = $input.first().json;\nconst cfg = data.config || {};\n\nif (!data.image_url) {\n  throw new Error('Local render requires final image_url from Parse Image Result.');\n}\nif (!data.bgm_audio_url) {\n  throw new Error('Local render requires bgm_audio_url from Parse BGM Result. BGM must be live.');\n}\n\nconst renderId = 'health_' + Date.now() + '_' + Math.random().toString(16).slice(2, 8);\nconst duration = Number(cfg.duration_seconds || 38);\n\nconst render_payload = {\n  render_id: renderId,\n  image_url: data.image_url,\n  bgm_audio_url: data.bgm_audio_url,\n  duration,\n  width: 1080,\n  height: 1920,\n  output_dir: cfg.local_render_dir,\n  ffmpeg_path: cfg.ffmpeg_path,\n  card_is_final: true,\n};\n\nconst payloadBase64 = Buffer.from(JSON.stringify(render_payload), 'utf8').toString('base64');\nconst quote = (value) => '\"' + String(value).replace(/\"/g, '\\\"') + '\"';\nconst render_command = [\n  quote(cfg.node_path || 'node'),\n  quote(cfg.local_render_script),\n  quote(payloadBase64),\n].join(' ');\n\nreturn [{\n  json: {\n    ...data,\n    render_id: renderId,\n    render_provider: 'local_ffmpeg_full_image_card',\n    render_payload,\n    render_payload_base64: payloadBase64,\n    render_command,\n  },\n}];"
       },
       "id": "80d6705e-295f-4149-b846-156d13d790ff",
       "name": "Prepare Local FFmpeg Render",
@@ -508,13 +508,13 @@
           "description": "={{$json.pack.description}}",
           "embeddable": true,
           "notifySubscribers": false,
-          "privacyStatus": "private",
+          "privacyStatus": "={{$json.config.youtube_privacy_status || \"public\"}}",
           "selfDeclaredMadeForKids": false,
           "tags": "={{$json.pack.tags.join(\",\")}}"
         }
       },
       "id": "74e782b9-18bb-467b-a95d-e6805a450920",
-      "name": "YouTube Upload Private",
+      "name": "YouTube Upload Public",
       "type": "n8n-nodes-base.youTube",
       "typeVersion": 1,
       "position": [
@@ -530,7 +530,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const base = $('Attach Downloaded MP4').first().json;\nconst upload = $input.first().json || {};\nconst videoId = upload.uploadId || upload.id || upload.videoId || upload.items?.[0]?.id || null;\nreturn [{ json: { ...base, youtube: { skipped: false, privacy_status: 'private', video_id: videoId, url: videoId ? 'https://www.youtube.com/watch?v=' + videoId : null, raw: upload } } }];"
+        "jsCode": "const base = $('Attach Downloaded MP4').first().json;\nconst upload = $input.first().json || {};\nconst videoId = upload.uploadId || upload.id || upload.videoId || upload.items?.[0]?.id || null;\nconst privacyStatus = base.config?.youtube_privacy_status || 'public';\nreturn [{ json: { ...base, youtube: { skipped: false, privacy_status: privacyStatus, video_id: videoId, url: videoId ? 'https://www.youtube.com/watch?v=' + videoId : null, raw: upload } } }];"
       },
       "id": "21835258-44cf-4283-b7bc-47131098e39f",
       "name": "Normalize YouTube Upload",
@@ -614,7 +614,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const data = $input.first().json;\nconst pack = data.pack || {};\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nlet status = dryRun ? 'dry_run_complete' : 'completed';\nif (data.result_stage === 'blocked_by_medical_review') status = 'blocked_by_medical_review';\nelse if (data.result_stage) status = data.result_stage;\nelse if (data.youtube && !data.youtube.skipped) status = 'uploaded_private';\nelse if (!dryRun && data.rendered_video_url) status = 'rendered_not_uploaded';\nelse if (data.youtube?.skipped) status = dryRun ? 'dry_run_no_upload' : 'youtube_upload_skipped';\nelse if (!data.rendered_video_url) status = dryRun ? 'dry_run_no_render' : 'missing_rendered_video';\n\nconst result = {\n  ok:\n    !String(status).includes('blocked') &&\n    !String(status).includes('failed') &&\n    !String(status).includes('missing') &&\n    !String(status).includes('disabled') &&\n    !String(status).includes('skipped') &&\n    !String(status).includes('no_render') &&\n    !String(status).includes('no_upload'),\n  status,\n  run_mode: data.config?.run_mode || (dryRun ? 'dry_run' : 'live_upload'),\n  test_mode: dryRun,\n  format: 'viral_rank_card',\n  title: pack.hook_title || null,\n  rank_count: Array.isArray(pack.rank_items) ? pack.rank_items.length : 0,\n  rank_items: pack.rank_items || [],\n  medical_review: data.medical_review || null,\n  bgm_audio_url: data.bgm_audio_url || null,\n  image_url: data.image_url || null,\n  rendered_video_url: data.rendered_video_url || null,\n  render_id: data.render_id || null,\n  output_path: data.output_path || null,\n  model_config: data.config?.model_config || null,\n  youtube: data.youtube || { skipped: true },\n  comment: data.comment || { skipped: true },\n};\n\nconst notification_text = [\n  '상태: ' + status,\n  '실행모드: ' + result.run_mode,\n  '포맷: 건강 랭킹 카드형 쇼츠',\n  '제목: ' + (pack.hook_title || '-'),\n  '검수: ' + (data.medical_review?.pass ? 'PASS' : 'FAIL'),\n  '영상: ' + (data.rendered_video_url || '-'),\n  'YouTube: ' + (data.youtube?.url || data.youtube?.reason || '-'),\n].join('\\\\n');\n\nreturn [{ json: { ...data, result, notification_text } }];"
+        "jsCode": "const data = $input.first().json;\nconst pack = data.pack || {};\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nlet status = dryRun ? 'dry_run_complete' : 'completed';\nif (data.result_stage === 'blocked_by_medical_review') status = 'blocked_by_medical_review';\nelse if (data.result_stage) status = data.result_stage;\nelse if (data.youtube && !data.youtube.skipped) status = 'uploaded_' + (data.youtube.privacy_status || data.config?.youtube_privacy_status || 'public');\nelse if (!dryRun && data.rendered_video_url) status = 'rendered_not_uploaded';\nelse if (data.youtube?.skipped) status = dryRun ? 'dry_run_no_upload' : 'youtube_upload_skipped';\nelse if (!data.rendered_video_url) status = dryRun ? 'dry_run_no_render' : 'missing_rendered_video';\n\nconst result = {\n  ok:\n    !String(status).includes('blocked') &&\n    !String(status).includes('failed') &&\n    !String(status).includes('missing') &&\n    !String(status).includes('disabled') &&\n    !String(status).includes('skipped') &&\n    !String(status).includes('no_render') &&\n    !String(status).includes('no_upload'),\n  status,\n  run_mode: data.config?.run_mode || (dryRun ? 'dry_run' : 'live_upload'),\n  test_mode: dryRun,\n  format: 'viral_rank_card',\n  title: pack.hook_title || null,\n  rank_count: Array.isArray(pack.rank_items) ? pack.rank_items.length : 0,\n  rank_items: pack.rank_items || [],\n  medical_review: data.medical_review || null,\n  bgm_audio_url: data.bgm_audio_url || null,\n  image_url: data.image_url || null,\n  rendered_video_url: data.rendered_video_url || null,\n  render_id: data.render_id || null,\n  output_path: data.output_path || null,\n  model_config: data.config?.model_config || null,\n  youtube: data.youtube || { skipped: true },\n  comment: data.comment || { skipped: true },\n};\n\nconst notification_text = [\n  '상태: ' + status,\n  '실행모드: ' + result.run_mode,\n  '포맷: 건강 랭킹 카드형 쇼츠',\n  '제목: ' + (pack.hook_title || '-'),\n  '검수: ' + (data.medical_review?.pass ? 'PASS' : 'FAIL'),\n  '영상: ' + (data.rendered_video_url || '-'),\n  'YouTube: ' + (data.youtube?.url || data.youtube?.reason || '-'),\n].join('\\\\n');\n\nreturn [{ json: { ...data, result, notification_text } }];"
       },
       "id": "2aed73d5-7672-4a90-b1bb-a4107cd5cabc",
       "name": "Final Result",
@@ -1227,7 +1227,7 @@
       "main": [
         [
           {
-            "node": "YouTube Upload Private",
+            "node": "YouTube Upload Public",
             "type": "main",
             "index": 0
           }
@@ -1235,17 +1235,6 @@
         [
           {
             "node": "Skip YouTube Upload",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "YouTube Upload Private": {
-      "main": [
-        [
-          {
-            "node": "Normalize YouTube Upload",
             "type": "main",
             "index": 0
           }
@@ -1543,6 +1532,17 @@
           }
         ]
       ]
+    },
+    "YouTube Upload Public": {
+      "main": [
+        [
+          {
+            "node": "Normalize YouTube Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1551,6 +1551,6 @@
   },
   "staticData": null,
   "pinData": {},
-  "versionId": "a7b20fe2-4f4c-4514-b2df-4676c9c6a290",
+  "versionId": "d4399dcb-090c-416a-89b9-42f798b237fb",
   "triggerCount": 0
 }
