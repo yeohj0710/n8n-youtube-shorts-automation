@@ -259,6 +259,18 @@ Fix:
   - false: `Wait BGM Retry 90s -> KIE Get BGM Task Retry -> Parse BGM Result Final`
 - If final retry still has no URL, throw a BGM-specific error before render.
 
+### KIE BGM `task id cannot be empty`
+
+Cause:
+
+Usually a secondary error. Check `KIE Create BGM Task` first. If it returns `422 The length of prompt cannot exceed 500 characters`, `Normalize BGM Task` gets no `taskId`, then the later GET node calls KIE with an empty taskId.
+
+Fix:
+
+- Keep `Prepare Image and BGM Payloads` BGM prompt under 500 characters. Current cap is 480.
+- Keep `Normalize BGM Task` guard: if BGM create response has HTTP/API error or no `taskId`, throw immediately instead of polling.
+- Do not diagnose this as a retry wait problem until create response has a real `taskId`.
+
 ### Medical Review Blocks Safe Sleep Content
 
 Cause:
