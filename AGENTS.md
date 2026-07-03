@@ -52,6 +52,10 @@ Latest known workflow:
 - Startup script: `C:\dev\n8n-local\scripts\start-n8n.ps1`
 - Hidden startup launcher: `C:\dev\n8n-local\scripts\start-n8n-hidden.vbs`
 - Renderer: `C:\dev\n8n-local\scripts\render-static-card.mjs`
+- 하루건강약사 topic drop folder: `C:\dev\n8n-local\하루건강약사 소재`
+- 건강장수비결 topic drop folder: `C:\dev\n8n-local\건강장수비결 소재`
+- Used topic archive: each drop folder's `사용완료`
+- Topic/upload logs: each drop folder's `기록`
 - Workflow export script: `C:\dev\n8n-local\scripts\export-workflow-from-db.mjs`
 - Workflow import script: `C:\dev\n8n-local\scripts\import-workflow.ps1`
 - Original user folder: `G:\내 드라이브\영상 편집\유튜브 닌자`
@@ -109,8 +113,8 @@ $env:N8N_PROTOCOL = "http"
 $env:WEBHOOK_URL = "http://localhost:5678/"
 $env:N8N_DEFAULT_BINARY_DATA_MODE = "filesystem"
 $env:N8N_BINARY_DATA_STORAGE_PATH = $BinaryFolder
-$env:N8N_RESTRICT_FILE_ACCESS_TO = "$DefaultFilesFolder;$RenderFolder"
-$env:NODE_FUNCTION_ALLOW_BUILTIN = "crypto,child_process"
+$env:N8N_RESTRICT_FILE_ACCESS_TO = "$DefaultFilesFolder;$RenderFolder;$Root"
+$env:NODE_FUNCTION_ALLOW_BUILTIN = "crypto,child_process,fs,path"
 $env:FFMPEG_PATH = $Ffmpeg
 $env:LOCAL_RENDER_DIR = $RenderFolder
 $env:LOCAL_RENDER_SCRIPT = (Join-Path $Root "scripts\render-static-card.mjs")
@@ -315,7 +319,7 @@ Fix:
 
 - Use Code node `Local FFmpeg Render`.
 - Inside it, call `child_process.spawnSync`.
-- Keep `NODE_FUNCTION_ALLOW_BUILTIN = "crypto,child_process"` in startup env.
+- Keep `NODE_FUNCTION_ALLOW_BUILTIN = "crypto,child_process,fs,path"` in startup env.
 
 ### `Access to the file is not allowed`
 
@@ -326,7 +330,7 @@ n8n read-file nodes can only access configured paths. Rendered MP4s are under `C
 Fix:
 
 ```powershell
-$env:N8N_RESTRICT_FILE_ACCESS_TO = "$DefaultFilesFolder;$RenderFolder"
+$env:N8N_RESTRICT_FILE_ACCESS_TO = "$DefaultFilesFolder;$RenderFolder;$Root"
 ```
 
 Then restart n8n.
@@ -426,6 +430,12 @@ Track:
 - `scripts\*.ps1`
 - `scripts\*.vbs`
 - `scripts\*.mjs`
+- `하루건강약사 소재\README.txt`
+- `하루건강약사 소재\사용완료\.gitkeep`
+- `하루건강약사 소재\기록\.gitkeep`
+- `건강장수비결 소재\README.txt`
+- `건강장수비결 소재\사용완료\.gitkeep`
+- `건강장수비결 소재\기록\.gitkeep`
 - `workflows\n8n_하루건강약사_수동실행.json`
 
 Never track:
@@ -437,6 +447,8 @@ Never track:
 - `binary-data\`
 - `logs\`
 - `*.sqlite*`
+- user-added topic files under `하루건강약사 소재\`
+- user-added topic files under `건강장수비결 소재\`
 - `*secret*`
 - `*credential*`
 - `*credentials*`

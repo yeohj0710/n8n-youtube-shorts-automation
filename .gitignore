@@ -4,6 +4,28 @@ binary-data/
 logs/
 node_modules/
 renders/
+topics/
+topics-health-longevity/
+topics-longevity/
+
+# User-facing topic drop folders. Keep docs/placeholders, ignore queued content and logs.
+하루건강약사 소재/*.txt
+!하루건강약사 소재/README.txt
+하루건강약사 소재/*.md
+하루건강약사 소재/*.json
+하루건강약사 소재/사용완료/*
+!하루건강약사 소재/사용완료/.gitkeep
+하루건강약사 소재/기록/*
+!하루건강약사 소재/기록/.gitkeep
+
+건강장수비결 소재/*.txt
+!건강장수비결 소재/README.txt
+건강장수비결 소재/*.md
+건강장수비결 소재/*.json
+건강장수비결 소재/사용완료/*
+!건강장수비결 소재/사용완료/.gitkeep
+건강장수비결 소재/기록/*
+!건강장수비결 소재/기록/.gitkeep
 
 .env
 .env.*

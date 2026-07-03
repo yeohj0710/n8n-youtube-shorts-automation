@@ -1,0 +1,1971 @@
+{
+  "id": "baekse100Life01",
+  "name": "건강장수비결 - 로컬 n8n 장수 건강 쇼츠",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "건강장수비결 장수 건강 쇼츠\n\n- 소재 폴더: C:/dev/n8n-local/건강장수비결 소재\n- txt/md/json 한 파일씩 넣기\n- 생성순서대로 1개 선택 후 사용완료로 이동\n- YouTube account 2로 업로드",
+        "height": 200,
+        "width": 470
+      },
+      "id": "99e7b0ee-a551-4bb3-a078-72543c61c480",
+      "name": "Format Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        560,
+        1328
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "290c3579-cd22-4a05-b5ab-617b6c431579",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1968,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs = require('fs');\nconst path = require('path');\n\nfunction activeTopicLine(value) {\n  const line = String(value || '').trim();\n  return line && !line.startsWith('#');\n}\n\nfunction cleanString(value) {\n  return String(value || '').replace(/\\s+/g, ' ').trim();\n}\n\nfunction bool(value, fallback = false) {\n  if (value === undefined || value === null || value === '') return fallback;\n  if (typeof value === 'boolean') return value;\n  if (typeof value === 'number') return value !== 0;\n  const normalized = String(value).trim().toLowerCase();\n  if (['true', '1', 'yes', 'y', 'on'].includes(normalized)) return true;\n  if (['false', '0', 'no', 'n', 'off'].includes(normalized)) return false;\n  return fallback;\n}\n\nfunction list(value) {\n  if (Array.isArray(value)) return value.map(cleanString).filter(Boolean);\n  const text = cleanString(value);\n  if (!text) return [];\n  return text.split(/\\r?\\n|[,|]/).map(cleanString).filter(Boolean);\n}\n\nfunction normalizeSunoModel(value) {\n  const raw = cleanString(value || 'V5_5');\n  const key = raw.toLowerCase().replace(/[\\s_.]+/g, '-');\n  const aliases = {\n    'v5-5': 'V5_5',\n    'v55': 'V5_5',\n    'suno-v5-5': 'V5_5',\n    'suno-v55': 'V5_5',\n    'v5': 'V5',\n    'suno-v5': 'V5',\n  };\n  return aliases[key] || 'V5_5';\n}\n\nfunction kstDate(value = new Date()) {\n  const parts = new Intl.DateTimeFormat('en-CA', {\n    timeZone: 'Asia/Seoul',\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n  }).formatToParts(value).reduce((acc, part) => {\n    acc[part.type] = part.value;\n    return acc;\n  }, {});\n  return parts.year + '-' + parts.month + '-' + parts.day;\n}\n\nfunction appendJsonLine(filePath, payload) {\n  fs.mkdirSync(path.dirname(filePath), { recursive: true });\n  fs.appendFileSync(filePath, JSON.stringify(payload) + '\\n', 'utf8');\n}\n\nfunction slug(value) {\n  return String(value || '').replace(/[^a-zA-Z0-9가-힣_-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').slice(0, 80) || Date.now().toString(36);\n}\n\nfunction parseRankLine(line) {\n  const cleaned = String(line || '')\n    .replace(/^\\s*(?:[-*•]|\\d+[.)]|\\d+위|TOP\\s*\\d+)\\s*/i, '')\n    .trim();\n  if (!cleaned) return null;\n  const parts = cleaned\n    .split(/\\s+-\\s+|\\s+–\\s+|\\s+—\\s+|\\s*\\|\\s*|\\s*:\\s*/)\n    .map(cleanString)\n    .filter(Boolean);\n  return {\n    name: parts[0] || cleaned,\n    reason: parts[1] || '',\n    caution: parts.slice(2).join(' '),\n  };\n}\n\nfunction titleFromFilePath(filePath) {\n  const base = path.basename(String(filePath || ''), path.extname(String(filePath || '')));\n  return cleanString(base\n    .replace(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}-\\d{2}-\\d{2}[^-]*-?/, '')\n    .replace(/^\\d{8,14}[-_]?/, '')\n    .replace(/[-_]+/g, ' '));\n}\n\nfunction isListLine(line) {\n  return /^\\s*(?:[-*•]|\\d+[.)]|\\d+위|TOP\\s*\\d+)\\s+/i.test(String(line || ''));\n}\n\nfunction inferTopicLane(value) {\n  const text = cleanString(typeof value === 'string'\n    ? value\n    : [\n        value?.title,\n        value?.subtitle,\n        value?.notes,\n        value?.rough_brief,\n        value?.raw_text,\n        ...(value?.rank_items || []).map((item) => [item.name, item.reason, item.caution].filter(Boolean).join(' ')),\n      ].join(' ')).toLowerCase();\n  const checks = [\n    ['blood_sugar_meals', /혈당|당뇨|믹스커피|단맛|주스|밥|탄수|식후|간식|야식/],\n    ['joint_mobility', /무릎|허리|관절|걷|계단|신발|발목|보폭|스트레칭/],\n    ['sleep_recovery', /수면|잠|불면|새벽|침실|카페인|조명|멜라토닌|코골/],\n    ['digestion_gut', /소화|장|속|더부룩|변비|설사|가스|유산균|국물/],\n    ['hydration_salt', /수분|물|나트륨|소금|붓기|부종|짜게|갈증/],\n    ['kitchen_storage', /냉장고|보관|식재료|반찬|전자레인지|해동|상온|유통기한/],\n    ['supplement_basics', /영양제|비타민|마그네슘|오메가|프로바이오틱스|복용|성분/],\n    ['body_signals', /피로|갈증|소변|손발|눈|몸의 신호|어지럼|컨디션/],\n    ['seasonal_home', /더위|추위|습도|환기|계절|실내|에어컨|난방/],\n    ['shopping_labels', /라벨|장보기|간편식|소스|성분표|칼로리|원재료|마트/],\n    ['morning_energy', /아침|기상|햇빛|모닝|활력|공복/],\n    ['evening_reset', /저녁|밤|소파|샤워|야간|리셋/],\n    ['senior_life_wisdom', /시니어|노후|은퇴|품위|인간관계|대접|혼자|말년/],\n    ['money_saving_home', /생활비|병원비|절약|전기요금|돈|비용|장바구니/],\n    ['household_common_sense', /상식|살림|집안|정리|청소|꿀팁|생활/],\n    ['food_cooking_magic', /집밥|요리|레시피|반찬|맛있|조리|음식|주부/],\n  ];\n  return checks.find(([, pattern]) => pattern.test(text))?.[0] || '';\n}\n\nfunction parseMarkdownTopic(text, filePath) {\n  const rawText = String(text || '').replace(/^\\uFEFF/, '').trim();\n  const lines = rawText.split(/\\r?\\n/);\n  const spec = {\n    title: '',\n    subtitle: '',\n    lane: '',\n    tags: [],\n    notes: '',\n    rough_brief: rawText,\n    raw_text: rawText,\n    rank_items: [],\n    source_file: filePath,\n    source_format: 'freeform_file',\n  };\n  let section = 'meta';\n  const noteLines = [];\n\n  for (const rawLine of lines) {\n    const line = rawLine.trim();\n    if (!line) continue;\n\n    const heading = line.match(/^#\\s+(.+)/);\n    if (heading && !spec.title) {\n      spec.title = cleanString(heading[1]);\n      continue;\n    }\n\n    if (/^(ranks?|rank_items?|순위|목록)\\s*:/i.test(line)) {\n      section = 'ranks';\n      const rest = line.replace(/^(ranks?|rank_items?|순위|목록)\\s*:/i, '').trim();\n      if (rest) {\n        const item = parseRankLine(rest);\n        if (item) spec.rank_items.push(item);\n      }\n      continue;\n    }\n\n    if (/^(notes?|memo|brief|rough|메모|내용|설명)\\s*:/i.test(line)) {\n      section = 'notes';\n      const rest = line\n        .replace(/^(notes?|memo|brief|rough)\\s*:/i, '')\n        .replace(/^(메모|내용|설명)\\s*:/i, '')\n        .trim();\n      if (rest) noteLines.push(rest);\n      continue;\n    }\n\n    const kv = line.match(/^(title|topic|idea|subtitle|lane|content_lane|tags?|count|rank_count|angle|format_angle|주제|아이디어|부제|분류|태그|개수|순위수|각도)\\s*[:：]\\s*(.+)$/i);\n    if (kv && section === 'meta') {\n      const key = kv[1].toLowerCase();\n      const value = cleanString(kv[2]);\n      if (['title', 'topic', 'idea', '주제', '아이디어'].includes(key)) spec.title = value;\n      else if (['subtitle', '부제'].includes(key)) spec.subtitle = value;\n      else if (['lane', 'content_lane', '분류'].includes(key)) spec.lane = value;\n      else if (['tag', 'tags', '태그'].includes(key)) spec.tags = value.split(/[,|]/).map(cleanString).filter(Boolean);\n      else if (['count', 'rank_count', '개수', '순위수'].includes(key)) spec.rank_count = Number(value) || null;\n      else if (['angle', 'format_angle', '각도'].includes(key)) spec.format_angle = value;\n      continue;\n    }\n\n    if (section === 'ranks' || (spec.title && isListLine(line))) {\n      const item = parseRankLine(line);\n      if (item) spec.rank_items.push(item);\n      continue;\n    }\n\n    if (!spec.title) {\n      spec.title = cleanString(line.replace(/^#\\s+/, ''));\n      continue;\n    }\n\n    noteLines.push(line);\n  }\n\n  if (!spec.title) spec.title = titleFromFilePath(filePath);\n  spec.notes = cleanString(noteLines.join(' '));\n  spec.lane = cleanString(spec.lane) || inferTopicLane(spec);\n  spec.rank_items = spec.rank_items\n    .map((item, index) => ({ rank: index + 1, ...item }))\n    .filter((item) => item.name);\n  if (!spec.rank_count && spec.rank_items.length) spec.rank_count = spec.rank_items.length;\n  return spec.title ? spec : null;\n}\n\nfunction normalizeSpec(value, sourceFile = '') {\n  if (!value || typeof value !== 'object') return null;\n  const title = cleanString(value.title || value.topic || value.name || value.hook_title || value.theme) || titleFromFilePath(sourceFile);\n  if (!title) return null;\n  const rankItems = Array.isArray(value.rank_items || value.ranks)\n    ? (value.rank_items || value.ranks).map((item, index) => {\n        if (typeof item === 'string') {\n          const parsed = parseRankLine(item);\n          return parsed ? { rank: index + 1, ...parsed } : null;\n        }\n        return {\n          rank: Number(item.rank || index + 1),\n          name: cleanString(item.name || item.item || item.title),\n          reason: cleanString(item.reason || item.why || item.description),\n          caution: cleanString(item.caution || item.note),\n        };\n      }).filter((item) => item && item.name)\n    : [];\n  const normalized = {\n    title,\n    topic: title,\n    subtitle: cleanString(value.subtitle),\n    lane: cleanString(value.lane || value.content_lane),\n    format_angle: cleanString(value.format_angle || value.angle),\n    tags: Array.isArray(value.tags) ? value.tags.map(cleanString).filter(Boolean) : cleanString(value.tags).split(/[,|]/).map(cleanString).filter(Boolean),\n    notes: cleanString(value.notes || value.memo || value.body || value.rough_brief || value.raw_text),\n    rough_brief: cleanString(value.rough_brief || value.raw_text || value.notes || value.memo || value.body),\n    raw_text: cleanString(value.raw_text),\n    rank_count: Number(value.rank_count || value.count) || null,\n    rank_items: rankItems,\n    source_file: sourceFile || value.source_file || '',\n    source_format: value.source_format || (sourceFile ? 'topic_file' : 'manual'),\n  };\n  normalized.lane = normalized.lane || inferTopicLane(normalized);\n  if (!normalized.rank_count && normalized.rank_items.length) normalized.rank_count = normalized.rank_items.length;\n  return normalized;\n}\n\nfunction parseTopicFile(filePath) {\n  const text = fs.readFileSync(filePath, 'utf8');\n  if (/\\.json$/i.test(filePath)) return normalizeSpec(JSON.parse(text), filePath);\n  return normalizeSpec(parseMarkdownTopic(text, filePath), filePath);\n}\n\nfunction listPendingFiles(pendingDir) {\n  if (!fs.existsSync(pendingDir)) return [];\n  const ignoredNames = new Set([\n    'README.txt',\n    'README.md',\n    '줄소재.txt',\n    'queue.txt',\n    'used.jsonl',\n    'upload-log.jsonl',\n    '사용기록.jsonl',\n    '업로드기록.jsonl',\n  ]);\n  return fs.readdirSync(pendingDir, { withFileTypes: true })\n    .filter((entry) =>\n      entry.isFile() &&\n      !entry.name.startsWith('.') &&\n      !ignoredNames.has(entry.name) &&\n      /\\.(md|txt|json)$/i.test(entry.name)\n    )\n    .map((entry) => {\n      const filePath = path.join(pendingDir, entry.name);\n      const stat = fs.statSync(filePath);\n      const addedMs = Number.isFinite(stat.birthtimeMs) && stat.birthtimeMs > 0\n        ? stat.birthtimeMs\n        : (stat.ctimeMs || stat.mtimeMs);\n      return { filePath, name: entry.name, addedMs, mtimeMs: stat.mtimeMs };\n    })\n    .sort((a, b) =>\n      a.addedMs - b.addedMs ||\n      a.mtimeMs - b.mtimeMs ||\n      a.name.localeCompare(b.name, 'ko')\n    );\n}\n\nfunction consumePendingFile(filePath, usedDir, spec) {\n  fs.mkdirSync(usedDir, { recursive: true });\n  const stamp = new Date().toISOString().replace(/[:.]/g, '-');\n  const destination = path.join(usedDir, stamp + '-' + slug(spec.title) + path.extname(filePath));\n  fs.renameSync(filePath, destination);\n  return destination;\n}\n\nfunction loadTopicQueue({ queuePath, pendingDir, usedDir, usedLogPath, consume }) {\n  const result = {\n    queue_path: queuePath,\n    pending_dir: pendingDir,\n    used_dir: usedDir,\n    used_log_path: usedLogPath,\n    selected: null,\n    consumed: false,\n    consumed_file: null,\n    remaining_before: 0,\n    remaining_after: 0,\n    error: null,\n  };\n\n  try {\n    fs.mkdirSync(path.dirname(queuePath), { recursive: true });\n    fs.mkdirSync(pendingDir, { recursive: true });\n    fs.mkdirSync(usedDir, { recursive: true });\n    if (!fs.existsSync(queuePath)) fs.writeFileSync(queuePath, '', 'utf8');\n\n    const files = listPendingFiles(pendingDir);\n    result.remaining_before = files.length;\n    if (files.length) {\n      const picked = files[0];\n      const spec = parseTopicFile(picked.filePath);\n      if (!spec) throw new Error('Could not parse topic file: ' + picked.filePath);\n      const id = 'file-topic-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);\n      result.selected = {\n        id,\n        source: 'topic_file',\n        score: 300,\n        picked_at: new Date().toISOString(),\n        ...spec,\n      };\n      if (consume) {\n        result.consumed_file = consumePendingFile(picked.filePath, usedDir, spec);\n        result.consumed = true;\n        appendJsonLine(usedLogPath, {\n          id,\n          title: spec.title,\n          source: 'topic_file',\n          source_file: picked.filePath,\n          consumed_file: result.consumed_file,\n          rank_count: spec.rank_items?.length || spec.rank_count || null,\n          status: 'picked',\n          date_kst: kstDate(),\n          picked_at: result.selected.picked_at,\n        });\n      }\n      result.remaining_after = Math.max(0, files.length - (result.consumed ? 1 : 0));\n      return result;\n    }\n\n    const raw = fs.readFileSync(queuePath, 'utf8').replace(/^\\uFEFF/, '');\n    const lines = raw.split(/\\r?\\n/);\n    const activeIndexes = lines\n      .map((line, index) => ({ line, index }))\n      .filter((entry) => activeTopicLine(entry.line));\n    result.remaining_before = activeIndexes.length;\n    if (!activeIndexes.length) return result;\n\n    const picked = activeIndexes[0];\n    const title = cleanString(picked.line);\n    const id = 'line-topic-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);\n    result.selected = {\n      id,\n      title,\n      topic: title,\n      source: 'topic_queue',\n      score: 250,\n      picked_at: new Date().toISOString(),\n    };\n\n    if (consume) {\n      lines.splice(picked.index, 1);\n      const nextText = lines.join('\\n').replace(/\\n*$/, '');\n      fs.writeFileSync(queuePath, nextText ? nextText + '\\n' : '', 'utf8');\n      result.consumed = true;\n      appendJsonLine(usedLogPath, {\n        id,\n        title,\n        source: 'topic_queue',\n        status: 'picked',\n        date_kst: kstDate(),\n        picked_at: result.selected.picked_at,\n      });\n    }\n\n    result.remaining_after = Math.max(0, result.remaining_before - (result.consumed ? 1 : 0));\n    return result;\n  } catch (error) {\n    result.error = error.message;\n    return result;\n  }\n}\n\nconst first = $input.first()?.json ?? {};\nconst isWebhook = first.body !== undefined && first.headers !== undefined;\nconst incoming = isWebhook ? (first.body || {}) : first;\nconst dryRun = bool(incoming.dry_run, bool(incoming.test_mode, false));\nconst privacyInput = incoming.youtube_privacy_status || incoming.YOUTUBE_PRIVACY_STATUS || 'public';\nconst requestedPrivacy = ['public', 'unlisted', 'private'].includes(String(privacyInput).toLowerCase())\n  ? String(privacyInput).toLowerCase()\n  : 'public';\nconst variationSeed =\n  cleanString(incoming.variation_seed || incoming.seed) ||\n  [new Date().toISOString(), Math.random().toString(16).slice(2, 10)].join('-');\n\nconst model_config = {\n  prompt_model: incoming.PROMPT_MODEL || incoming.prompt_model || 'claude-opus-4-7',\n  image_model: incoming.IMAGE_MODEL || incoming.image_model || 'gpt-image-2-text-to-image',\n  image_edit_model: incoming.IMAGE_EDIT_MODEL || incoming.image_edit_model || 'gpt-image-2-image-to-image',\n  music_model: incoming.MUSIC_MODEL || incoming.music_model || 'V5_5',\n};\n\nconst config = {\n  run_mode: dryRun ? 'dry_run' : 'live_public_upload',\n  test_mode: dryRun,\n  dry_run: dryRun,\n  use_live_kie_ai: !dryRun && bool(incoming.use_live_kie_ai, true),\n  use_live_image: !dryRun && bool(incoming.use_live_image, true),\n  use_live_bgm: !dryRun && bool(incoming.use_live_bgm, true),\n  use_live_render: !dryRun && bool(incoming.use_live_render, true),\n  allow_youtube_upload: !dryRun && bool(incoming.allow_youtube_upload, true),\n  youtube_privacy_status: requestedPrivacy,\n  rank_count: incoming.rank_count ? Number(incoming.rank_count) : null,\n  rank_count_mode: incoming.rank_count ? 'fixed' : 'auto',\n  rank_count_min: Number(incoming.rank_count_min || 3),\n  rank_count_max: Number(incoming.rank_count_max || 7),\n  duration_seconds: Number(incoming.duration_seconds || 5),\n  kie_ai_model: incoming.kie_ai_model || model_config.prompt_model,\n  kie_image_model: incoming.kie_image_model || model_config.image_model,\n  kie_image_edit_model: incoming.kie_image_edit_model || model_config.image_edit_model,\n  kie_bgm_model_requested: incoming.kie_bgm_model || model_config.music_model,\n  kie_bgm_model: normalizeSunoModel(incoming.kie_bgm_model || model_config.music_model),\n  render_provider: incoming.render_provider || 'local_ffmpeg_full_image_card',\n  local_render_dir: incoming.local_render_dir || 'C:/dev/n8n-local/renders',\n  local_render_script: incoming.local_render_script || 'C:/dev/n8n-local/scripts/render-static-card.mjs',\n  ffmpeg_path:\n    incoming.ffmpeg_path ||\n    'C:/Users/hjyeo/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe',\n  node_path: incoming.node_path || 'C:/Program Files/nodejs/node.exe',\n  poll_interval_seconds: Number(incoming.poll_interval_seconds || 30),\n  image_poll_interval_seconds: Number(incoming.image_poll_interval_seconds || 30),\n  image_retry_wait_seconds: Number(incoming.image_retry_wait_seconds || 30),\n  image_poll_max_attempts: Number(incoming.image_poll_max_attempts || 20),\n  youtube_category_id: String(incoming.youtube_category_id || '27'),\n  region_code: incoming.region_code || 'KR',\n  timezone: incoming.timezone || 'Asia/Seoul',\n  topic_queue_path: incoming.topic_queue_path || 'C:/dev/n8n-local/건강장수비결 소재/기록/줄소재.txt',\n  topic_pending_dir: incoming.topic_pending_dir || 'C:/dev/n8n-local/건강장수비결 소재',\n  topic_used_dir: incoming.topic_used_dir || 'C:/dev/n8n-local/건강장수비결 소재/사용완료',\n  topic_queue_used_log_path: incoming.topic_queue_used_log_path || 'C:/dev/n8n-local/건강장수비결 소재/기록/사용기록.jsonl',\n  upload_log_path: incoming.upload_log_path || 'C:/dev/n8n-local/건강장수비결 소재/기록/업로드기록.jsonl',\n  rss_url:\n    incoming.rss_url ||\n    'https://news.google.com/rss/search?q=%EC%9E%A5%EC%88%98%20%EB%85%B8%EB%85%84%20%EA%B1%B4%EA%B0%95%20%EA%B1%B7%EA%B8%B0%20%EA%B7%BC%EB%A0%A5%20%EC%88%98%EB%A9%B4%20%ED%98%88%EB%8B%B9&hl=ko&gl=KR&ceid=KR:ko',\n  topic_candidates: Array.isArray(incoming.topic_candidates) ? incoming.topic_candidates : [],\n  recent_titles: list(incoming.recent_titles || incoming.previous_titles || incoming.recent_topics),\n  diversity_mode: incoming.diversity_mode || 'rotating_profiles',\n  variation_seed: variationSeed,\n  content_lane_override: cleanString(incoming.content_lane || incoming.content_lane_override),\n  visual_profile_override: cleanString(incoming.visual_profile || incoming.visual_profile_override),\n  bgm_profile_override: cleanString(incoming.bgm_profile || incoming.bgm_profile_override),\n  notify_slack: !dryRun && bool(incoming.notify_slack, false),\n  slack_webhook_url: incoming.slack_webhook_url || '',\n  trigger_type: incoming.scheduled_daily_run ? 'schedule' : (isWebhook ? 'webhook' : 'manual_or_schedule'),\n  model_config,\n};\n\nconst topicQueue = loadTopicQueue({\n  queuePath: config.topic_queue_path,\n  pendingDir: config.topic_pending_dir,\n  usedDir: config.topic_used_dir,\n  usedLogPath: config.topic_queue_used_log_path,\n  consume: !dryRun && bool(incoming.consume_topic_queue, true),\n});\nif (topicQueue.selected?.lane && !config.content_lane_override) {\n  config.content_lane_override = topicQueue.selected.lane;\n}\nif (topicQueue.selected) {\n  config.topic_candidates = [topicQueue.selected, ...config.topic_candidates];\n}\nconfig.topic_queue = topicQueue;\n\nreturn [{ json: { config, incoming, topic_queue: topicQueue, trigger: { type: config.trigger_type, received_at: new Date().toISOString() } } }];"
+      },
+      "id": "21320b4c-a518-4b93-b4d7-acfb1a9fff63",
+      "name": "Load Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "content": "건강장수비결 장수 건강 쇼츠\n\n- 소재 폴더: C:/dev/n8n-local/건강장수비결 소재\n- txt/md/json 한 파일씩 넣기\n- 생성순서대로 1개 선택 후 사용완료로 이동\n- YouTube account 2로 업로드",
+        "height": 170,
+        "width": 430
+      },
+      "id": "93135dad-ff5e-4dfb-b2c4-ec67aca64588",
+      "name": "Credentials",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        1328
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$json.config.rss_url}}",
+        "options": {}
+      },
+      "id": "363c1b05-b782-455e-a76a-c819e66a8ae8",
+      "name": "Fetch Health RSS",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        2528,
+        2064
+      ],
+      "alwaysOutputData": true,
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Load Config').first().json;\nconst cfg = base.config;\nconst rankWord = String.fromCharCode(50948);\nconst rankLabel = (value) => String(value) + rankWord;\nconst fixedRankCount = Number.isFinite(Number(cfg.rank_count)) && Number(cfg.rank_count) > 0 ? Number(cfg.rank_count) : null;\nconst rankCountMin = Number(cfg.rank_count_min || 3);\nconst rankCountMax = Number(cfg.rank_count_max || 7);\nconst queuedSpec = cfg.topic_queue?.selected || null;\nconst queuedSpecInstruction = queuedSpec?.rank_items?.length\n  ? 'Priority queued file includes rank_items. Use these exact ranked items and rank order unless unsafe. You may shorten reasons for card readability but do not invent unrelated items.'\n  : '';\nconst rankCountInstruction = fixedRankCount\n  ? '- Ranking count must be exactly ' + fixedRankCount + '.'\n  : '- Choose the strongest ranking count between ' + rankCountMin + ' and ' + rankCountMax + '. Use only items that genuinely matter. Do not pad weak items just to reach 7.';\nconst lastRankInstruction = fixedRankCount\n  ? rankLabel(fixedRankCount) + ' last/bottom.'\n  : 'the last selected rank at the bottom.';\nconst hookExamples = [\n  '유통기한 지났다고 바로 버리면 손해 보는 것 7',\n  '냉장고에서 바로 버리면 손해 보는 식품 7',\n  '장볼 때 먼저 확인할 라벨 7',\n  '아침마다 몸이 보내는 생활 신호 5',\n  '오래 걷는 사람들이 지키는 작은 습관 7',\n  '잠자기 전 줄이면 편한 습관 5',\n  '나이 들수록 우리 집에서 먼저 바꿀 것 7',\n  '매일 식탁에서 놓치기 쉬운 순서 7',\n  '돈 새는 생활습관 먼저 줄이기 7',\n  '혼자 살아도 생활이 편한 사람들의 습관 7',\n].join(', ');\nconst cautiousPhrases = ['도움 될 수 있습니다', '부담될 수 있습니다', '편해질 수 있습니다', '먼저 확인해보세요'].join(', ');\nconst ctaComment = '오늘 항목 중 여러분께 해당되는 습관이 있다면 댓글로 남겨주세요. 건강장수비결이 쉽게 정리해드리겠습니다.';\nconst referenceHookTitles = [\n  '유통기한 지났다고 바로 버리면 손해 보는 것 7',\n  '냉장고에서 바로 버리면 손해 보는 식품 7',\n  '장볼 때 먼저 확인할 라벨 7',\n  '오래 걷는 사람들이 아침마다 확인하는 습관 7',\n  '잠자기 전 줄이면 편한 습관 5',\n  '우리 집 냉장고에서 확인할 것 7',\n  '매일 식탁에서 놓치기 쉬운 순서 7',\n  '나이 들수록 집에서 먼저 바꿀 것 7',\n  '혼자 살아도 생활이 편한 사람들의 습관 7',\n  '걷기 전 꼭 확인할 준비 5',\n  '아침마다 물컵 옆에 두면 좋은 것 5',\n  '장수보다 중요한 생활 체력 습관 7',\n];\nconst broadViralReferenceTitles = [\n  '모르면 평생 손해 보는 장보기 습관 7',\n  '집 정리할 때 먼저 비우면 좋은 것 10가지',\n  '전기요금 줄이는 생활 습관 7',\n  '돈 없어도 대접받는 어른의 말습관 7',\n  '주부 9단도 다시 확인하는 집밥 습관 7',\n  '하루가 편해지는 아침 루틴 7',\n  '저녁이 편해지는 정리 습관 7',\n  '나이 들수록 품위가 보이는 생활 습관 7',\n  '우리 집에서 바로 확인할 생활 체크 7',\n  '오래 살수록 먼저 줄이면 좋은 생활 실수 7',\n];\nconst benchmarkInspiredTitles = [\n  '유통기한 지나도 바로 버리면 손해 보는 식품 12',\n  '냉장고에 넣으면 오히려 손해 보는 식재료 7',\n  '아침마다 속이 편해지는 식탁 순서 7',\n  '나이 들수록 반드시 줄여야 할 음식 5',\n  '주부 9단도 다시 보는 집밥 보관 비법 10',\n  '오래 걸으려면 매일 챙길 하체 습관 7',\n  '혼자 살아도 행복하게 나이 드는 습관 7',\n  '돈 없어도 대접받는 시니어 말습관 7',\n  '은퇴 후 바로 시작하기 좋은 생활 루틴 TOP 8',\n  '내 가족을 힘들게 하는 주방 보관 실수 7',\n  '모르면 손해 보는 음식 보관법 8',\n  '저녁에 먹으면 다음 날 속이 편한 재료 7',\n  '매일 먹으면 부담되는 음식 조합 8',\n  '아침 첫 물 한잔 옆에 두면 좋은 것 5',\n  '평생 내 발로 걷고 싶다면 먼저 볼 습관 7',\n  '매일 쓰는데 대부분 놓치는 생활 필수품 7',\n  '장보기 전에 먼저 빼면 좋은 냉장고 식품 7',\n  '나이 들수록 집에서 먼저 바꾸면 편한 것 7',\n  '아침 식탁에서 순서만 바꿔도 편한 습관 7',\n  '잠자기 전 줄이면 아침이 편한 습관 7',\n];\nconst rssItems = $input.all().map((item) => item.json || {});\n\nfunction clean(value) {\n  return String(value || '')\n    .replace(/<[^>]*>/g, ' ')\n    .replace(/\\s+/g, ' ')\n    .trim();\n}\n\nfunction hashText(value) {\n  let hash = 2166136261;\n  const text = String(value || '');\n  for (let index = 0; index < text.length; index += 1) {\n    hash ^= text.charCodeAt(index);\n    hash = Math.imul(hash, 16777619);\n  }\n  return hash >>> 0;\n}\n\nfunction pick(items, salt) {\n  return items[hashText([cfg.variation_seed, salt].join('|')) % items.length];\n}\n\nfunction findById(items, value) {\n  const key = clean(value).toLowerCase();\n  if (!key) return null;\n  return items.find((item) => item.id.toLowerCase() === key || item.title.toLowerCase() === key) || null;\n}\n\nconst contentLanes = [\n  { id: 'sleep_recovery', title: '수면 회복', angle: '잠들기 전 환경, 빛, 체온, 카페인, 저녁 루틴처럼 바로 점검 가능한 생활 장면' },\n  { id: 'blood_sugar_meals', title: '식후 혈당과 식사 구성', angle: '밥 양만 말하지 말고 식사 순서, 간식, 음료, 야식, 외식 조합을 다룰 것' },\n  { id: 'joint_mobility', title: '무릎·허리·걷기 습관', angle: '운동 처방이 아니라 신발, 계단, 스트레칭 타이밍, 집안 동선처럼 안전한 생활 습관' },\n  { id: 'digestion_gut', title: '소화와 속 편한 식사', angle: '씹는 속도, 국물, 과식, 식후 자세, 늦은 저녁처럼 흔하지만 놓치는 행동' },\n  { id: 'hydration_salt', title: '수분·나트륨·붓기', angle: '물 마시는 타이밍, 짠 반찬, 국물, 음료 선택, 아침 붓기 같은 실생활 체크' },\n  { id: 'kitchen_storage', title: '냉장고·보관·조리 습관', angle: '식재료 보관, 데우기, 오래 둔 반찬, 장보기 실수처럼 시각적으로 다른 소재' },\n  { id: 'supplement_basics', title: '영양제보다 먼저 볼 것', angle: '복용량 안내 없이 중복 구매, 식사 불균형, 물 대신 커피처럼 안전한 점검 포인트' },\n  { id: 'body_signals', title: '매일 보는 몸의 신호', angle: '피로, 갈증, 발 붓기, 소변색, 수면 질처럼 진단이 아닌 관찰 포인트' },\n  { id: 'seasonal_home', title: '계절·집안 환경', angle: '더위, 추위, 습도, 환기, 조명, 실내복처럼 계절감 있는 소재' },\n  { id: 'shopping_labels', title: '장보기·라벨 읽기', angle: '숨은 당, 나트륨, 믹스커피, 소스, 간편식처럼 물건과 숫자가 보이는 소재' },\n  { id: 'morning_energy', title: '아침 활력 루틴', angle: '햇빛, 물, 식사, 움직임, 스마트폰처럼 아침 장면 중심' },\n  { id: 'evening_reset', title: '저녁 리셋 루틴', angle: '소파, 샤워, 간식, 조명, 방 온도처럼 밤 장면 중심' },\n  { id: 'senior_life_wisdom', title: '시니어 생활 지혜', angle: '은퇴, 인간관계, 돈 없어도 대접받는 태도, 혼자 살아도 품위 유지처럼 시니어가 궁금해할 삶의 기술' },\n  { id: 'money_saving_home', title: '생활비·병원비·장보기 절약', angle: '전기요금, 병원비, 장바구니, 영양제 비용처럼 바로 돈과 연결되는 실용 정보' },\n  { id: 'household_common_sense', title: '집안 상식·살림 꿀팁', angle: '유통기한, 냉장고, 전자레인지, 집 정리, 생활 상식처럼 조회수 잘 나오는 저장형 정보' },\n  { id: 'food_cooking_magic', title: '음식·집밥 비법', angle: '주부 9단, 달인, 집밥 맛, 식재료 활용처럼 시각적이고 따라 하기 쉬운 소재' },\n];\n\nconst selectedLane =\n  findById(contentLanes, cfg.content_lane_override) ||\n  pick(contentLanes, 'content_lane');\n\nconst manual = (cfg.topic_candidates || []).map((entry, index) => {\n  if (typeof entry === 'string') return { title: clean(entry), source: 'manual', score: 130 - index, lane: 'manual' };\n  return { title: clean(entry.title || entry.topic || entry.name), source: entry.source || 'manual', score: Number(entry.score || 130 - index), lane: entry.lane || 'manual' };\n});\n\nconst rss = rssItems\n  .filter((item) => item && !item.error)\n  .map((item, index) => ({ title: clean(item.title), source: 'rss', url: item.link || item.guid || '', score: 90 - index, lane: 'rss' }))\n  .filter((candidate) => candidate.title);\n\nconst referenceViral = [...benchmarkInspiredTitles, ...broadViralReferenceTitles]\n  .map((title, index) => ({ title, source: index < benchmarkInspiredTitles.length ? 'benchmark_inspired_pattern' : 'reference_high_view_pattern', score: 150 - index, lane: 'reference' }));\n\nconst evergreenPool = [\n  { lane: 'sleep_recovery', title: '새벽에 자주 깨는 사람이 무심코 하는 행동 7' },\n  { lane: 'sleep_recovery', title: '잠을 깊게 못 자는 날, 저녁에 확인할 신호 7' },\n  { lane: 'sleep_recovery', title: '자기 전 이것만 줄여도 밤이 편해지는 습관 7' },\n  { lane: 'sleep_recovery', title: '아침까지 피곤한 사람이 놓치는 침실 조건 7' },\n  { lane: 'blood_sugar_meals', title: '같은 밥상, 혈당 급행 vs 저속행 선택 7' },\n  { lane: 'blood_sugar_meals', title: '믹스커피 좋아하면 꼭 봐야 할 숨은 당 습관 7' },\n  { lane: 'blood_sugar_meals', title: '밥 먹고 졸린 사람이 놓치는 식사 순서 7' },\n  { lane: 'blood_sugar_meals', title: '달지 않은데 혈당을 흔들 수 있는 음식 7' },\n  { lane: 'joint_mobility', title: '건강하게 오래 살고 싶다면 피할 습관 7' },\n  { lane: 'joint_mobility', title: '무릎이 먼저 늙는 사람이 반복하는 행동 7' },\n  { lane: 'joint_mobility', title: '계단 오를 때 무릎 부담 키우는 실수 7' },\n  { lane: 'joint_mobility', title: '걷기 운동해도 다리가 무거운 이유 7' },\n  { lane: 'digestion_gut', title: '속이 더부룩한 사람이 의외로 계속 먹는 음식 7' },\n  { lane: 'digestion_gut', title: '저녁 먹고 배가 빵빵한 날 확인할 습관 7' },\n  { lane: 'digestion_gut', title: '장 건강 좋다며 오히려 과하게 먹는 음식 7' },\n  { lane: 'digestion_gut', title: '먹는 양은 적은데 속이 불편한 이유 7' },\n  { lane: 'hydration_salt', title: '아침마다 붓는 사람이 전날 먹은 것 7' },\n  { lane: 'hydration_salt', title: '물을 마셔도 계속 목마른 사람의 습관 7' },\n  { lane: 'hydration_salt', title: '짠맛 줄였는데도 나트륨이 늘어나는 식탁 7' },\n  { lane: 'hydration_salt', title: '혈압 걱정된다면 먼저 줄일 국물 습관 7' },\n  { lane: 'kitchen_storage', title: '내 가족 건강을 위협하는 주방 보관 실수 7' },\n  { lane: 'kitchen_storage', title: '냉장고에 넣으면 손해 보는 식재료 7' },\n  { lane: 'kitchen_storage', title: '전자레인지 돌리기 전 꼭 확인할 음식 7' },\n  { lane: 'kitchen_storage', title: '유통기한 지났다고 바로 버리면 손해 보는 기준 7' },\n  { lane: 'supplement_basics', title: '영양제 괜히 사기 전 먼저 먹을 음식 7' },\n  { lane: 'supplement_basics', title: '돈 아끼려면 먼저 끊어야 할 영양제 실수 7' },\n  { lane: 'supplement_basics', title: '몸에 좋다며 매일 먹다가 놓치는 조합 7' },\n  { lane: 'supplement_basics', title: '약국에서 자주 보는 영양제 오해 7' },\n  { lane: 'body_signals', title: '내 몸이 보내는 조용한 경고 신호 7' },\n  { lane: 'body_signals', title: '아침 몸 상태로 알 수 있는 생활 힌트 7' },\n  { lane: 'body_signals', title: '피곤함이 오래갈 때 먼저 볼 몸의 신호 7' },\n  { lane: 'body_signals', title: '손발이 자주 붓는 사람이 놓치는 신호 7' },\n  { lane: 'seasonal_home', title: '더운 날 컨디션 망치는 집안 습관 7' },\n  { lane: 'seasonal_home', title: '에어컨 켠 날 목과 잠을 불편하게 하는 것 7' },\n  { lane: 'seasonal_home', title: '장마철 집에서 의외로 건강을 흔드는 습관 7' },\n  { lane: 'seasonal_home', title: '여름에 기력 떨어지는 사람이 놓치는 것 7' },\n  { lane: 'shopping_labels', title: '장볼 때 건강해 보여도 다시 봐야 할 라벨 7' },\n  { lane: 'shopping_labels', title: '무가당이라 믿고 사면 놓치기 쉬운 것 7' },\n  { lane: 'shopping_labels', title: '병원비 줄이고 싶다면 장바구니에서 뺄 것 7' },\n  { lane: 'shopping_labels', title: '간편식 살 때 나만 손해 보는 선택 7' },\n  { lane: 'morning_energy', title: '아침마다 몸이 천근만근이면 꼭 볼 습관 7' },\n  { lane: 'morning_energy', title: '하루 기력을 떨어뜨리는 아침 첫 행동 7' },\n  { lane: 'morning_energy', title: '아침 공복에 무심코 하면 부담되는 습관 7' },\n  { lane: 'morning_energy', title: '뇌가 덜 깬 느낌이면 확인할 아침 루틴 7' },\n  { lane: 'evening_reset', title: '쉬었는데 더 피곤한 사람의 저녁 습관 7' },\n  { lane: 'evening_reset', title: '소파에 눕는 순간 몸이 무거워지는 이유 7' },\n  { lane: 'evening_reset', title: '밤에 먹으면 다음 날까지 남는 음식 습관 7' },\n  { lane: 'evening_reset', title: '자기 전 가족들이 자주 반복하는 최악의 습관 7' },\n  { lane: 'senior_life_wisdom', title: '돈 없어도 대접받는 사람의 생활 태도 7' },\n  { lane: 'senior_life_wisdom', title: '혼자 살아도 절대 늙어 보이지 않는 습관 7' },\n  { lane: 'senior_life_wisdom', title: '은퇴 후 제2의 인생, 자격증 없이 시작할 루틴 7' },\n  { lane: 'money_saving_home', title: '모르면 평생 손해 보는 병원비·약값 습관 7' },\n  { lane: 'money_saving_home', title: '전기요금 반값으로 줄이는 여름 집안 습관 7' },\n  { lane: 'money_saving_home', title: '영양제 괜히 사기 전 장바구니에서 뺄 것 7' },\n  { lane: 'household_common_sense', title: '냉장고에서 바로 버리면 손해 보는 식품 7' },\n  { lane: 'household_common_sense', title: '집 정리할 때 1순위로 비워야 할 것 7' },\n  { lane: 'household_common_sense', title: '유통기한 지났다고 바로 버리면 손해 보는 것 7' },\n  { lane: 'food_cooking_magic', title: '주부 9단도 깜짝 놀란 집밥 맛 살리는 비법 7' },\n  { lane: 'food_cooking_magic', title: '나이 들수록 반드시 줄여야 할 조리 습관 7' },\n  { lane: 'food_cooking_magic', title: '같은 재료로 더 건강하게 먹는 집밥 비법 7' },\n];\n\nconst laneCandidates = evergreenPool\n  .map((entry, index) => ({\n    title: entry.title,\n    source: entry.lane === selectedLane.id ? 'evergreen_selected_lane' : 'evergreen_cross_lane',\n    lane: entry.lane,\n    score: (entry.lane === selectedLane.id ? 85 : 55) - index / 100,\n  }))\n  .sort((a, b) => b.score - a.score)\n  .slice(0, 16);\n\nconst seen = new Set();\nconst topic_candidates = [...manual, ...referenceViral, ...rss, ...laneCandidates].filter((candidate) => {\n  const key = candidate.title.toLowerCase();\n  if (!candidate.title || seen.has(key)) return false;\n  seen.add(key);\n  return true;\n}).slice(0, 30);\n\nconst tiredExamples = [\n  '늦은 밤 과일 한 접시',\n  '국에 밥 말아 먹기',\n  '저녁 후 바로 눕기',\n  '흰쌀밥만 가득 한 공기',\n  '달콤한 믹스커피 한 잔',\n  '야식 라면과 김밥',\n  '자기 전 과자 한 봉지',\n  '잠들기 직전 따뜻한 샤워',\n  '불 끄고 보는 스마트폰',\n  '자기 전 물 벌컥 마시기',\n];\n\nconst schema = {\n  content_lane: selectedLane.id,\n  format_angle: '이번 영상의 차별화 각도',\n  theme: '랭킹 주제',\n  hook_title: '큰 화면 제목. 예: 장볼 때 놓치는 라벨 습관 5',\n  subtitle: '궁금증을 만드는 짧은 보조 문구',\n  visual_mood_hint: '이미지 생성에 참고할 시각 분위기. 예: 밝은 마트 진열대, 라벨 체크리스트, 산뜻한 민트 포인트',\n  rank_items: [\n    { rank: 1, name: '항목명', reason: '8-16자 안팎의 짧은 이유', caution: '주의 문구 또는 빈 문자열' },\n  ],\n  video_script: 'Short spoken/video copy for 4-5 seconds. No visible disclaimer or consult-professional wording.',\n  description: 'Temporary draft only. Final upload description is generated deterministically from rank_items plus the 건강장수비결 self-introduction tone.',\n  tags: ['장수건강', '시니어생활건강'],\n  pinned_comment: ctaComment,\n  bgm_prompt: 'one varied calm premium instrumental music direction, no vocals',\n  medical_claims: ['건강 주장 목록'],\n  safety_notes: ['피한 표현'],\n};\n\nconst prompt = [\n  'Create one Korean YouTube Shorts pack for 건강장수비결. Keep it as practical senior lifestyle information, not diagnosis, treatment, or expert advice.',\n  'Target viewer: Korean adults age 50-75 and older. Speak directly to them in respectful Korean as 여러분. Do not write as if the viewer is a child checking on parents.',\n  'Image-safety wording: card-visible text must use neutral everyday-life language. Prefer 생활습관, 장보기, 수면, 걷기, 식탁, 물, 신발, 냉장고, 집안 정리, 라벨, 아침 루틴, 저녁 루틴, 생활비, 우리 집.',\n  'Avoid card-visible wording about disease names, organ disease, medication, supplement dosage, prescription changes, doctors, professors, pharmacists, clinics, hospital costs, cure, treatment, guaranteed prevention, warning, worst, danger, miracle, blood, pain, death, dependency, or shocking fear hooks.',\n  'If the topic is health-adjacent, translate it into a neutral daily habit check. Example: use 식후 부담 instead of disease wording, 건강제품 instead of supplement wording, 생활비 instead of hospital-cost wording, 생활 신호 instead of warning wording.',\n  'This run must feel different from prior uploads. Use a fresh topic lane, fresh objects, fresh verbs, and fresh thumbnail mood.',\n  'Selected content lane: ' + selectedLane.id + ' / ' + selectedLane.title + '. Angle: ' + selectedLane.angle + '.',\n  cfg.topic_queue?.selected ? 'Priority queued topic/spec: ' + JSON.stringify(cfg.topic_queue.selected) + '. Use this unless it is unsafe or unusable. Do not substitute an unrelated topic.' : '',\n  queuedSpecInstruction,\n  'The visual format is one finished vertical infographic card. The list must show ' + rankLabel(1) + ' at the TOP, then ' + rankLabel(2) + ', ' + rankLabel(3) + ', down to the final selected rank.',\n  'Prefer practical longevity-adjacent tension without fear: walking longer, cooking easier, sleeping better, shopping smarter, keeping the home easier to live in, saving 생활비, and reducing daily mistakes older adults overlook.',\n  'Reference hook patterns from the benchmark channel, but keep the wording image-safe and lifestyle-neutral: ' + referenceHookTitles.concat(broadViralReferenceTitles).join(' / ') + '.',\n  'Do not start hook_title with vague phrases like 대부분이 잘못 알고 있는. The hook_title must name the exact mistaken action or payoff. Prefer concrete openers like 유통기한 지났다고 바로 버리면 손해 보는 것, 냉장고에서 바로 버리면 손해 보는 식품, 장볼 때 먼저 확인할 라벨, 아침마다 몸이 보내는 신호, 나이 들수록 집에서 먼저 바꿀 것, 오래 걷는 사람들이 지키는 습관.',\n  'Avoid repeating these recently overused examples unless absolutely necessary: ' + tiredExamples.join(', ') + '.',\n  cfg.recent_titles?.length ? 'Also avoid these recent titles/topics: ' + cfg.recent_titles.join(' / ') + '.' : '',\n  'Hook style: specific, curiosity-driven, useful, and calm. Examples: ' + hookExamples + '. No fake certainty or fearmongering.',\n  'Benchmark channel pattern to borrow, not copy verbatim: exact object + personal consequence + number. Strong examples of structure: 유통기한 지나도 바로 버리면 손해 보는 식품, 냉장고에 넣으면 손해 보는 재료, 아침마다 속이 편해지는 식탁 순서, 나이 들수록 줄여야 할 음식, 돈 없어도 대접받는 말습관.',\n  'Every hook_title must answer this question immediately: 무엇을 어떻게 하면 손해/도움/확인이 되는가? Avoid vague nouns like 상식 unless paired with a concrete object and action.',\n  'Keep rank_items natural and believable for Korean viewers age 50+. Use familiar objects and scenes: 냉장고, 밥상, 국물, 계란, 우유, 두부, 김치, 장보기, 아침 식탁, 걷기, 말습관, 은퇴 생활, 집안 정리.',\n  'Do not invent awkward filler. Each item must sound like something a 50-70대 viewer has actually seen, eaten, bought, or done this week.',\n  'Avoid off-channel knowledge-quiz topics such as 외래어 뜻, 뇌과학자 추천, memory trivia, and child/parent framing. This channel should feel like direct practical 생활건강 and 장수 생활 information for the viewer.',\n  'Reasons must be short enough for a dense infographic row: ideally 8-14 Korean characters. Keep all visible card text simple and image-safe.',\n  'BGM direction should vary by run while staying calm and premium: acoustic, light jazz, Korean fusion, ambient piano, warm woodwind, or soft bossa are all allowed. No vocals, no EDM, no heavy drums.',\n  'Return strict JSON only. No markdown.',\n  'Rules:',\n  '- No cure, guaranteed treatment, guaranteed disease prevention.',\n  '- No medication/supplement dosage or prescription change.',\n  '- No fake doctor, professor, pharmacist, clinic authority, miracle language, or fake professional identity. Keep this as practical senior-lifestyle information, not diagnosis or treatment.',\n  '- Use soft phrasing when needed: ' + cautiousPhrases + '.',\n  '- Do not add boilerplate safety/disclaimer copy in title, card text, description, script, or comment. No consult-professional or not-medical-advice wording.',\n  '- pinned_comment must use this exact friendly channel tone and speak directly to the viewer, never to their children: ' + ctaComment,\n  rankCountInstruction,\n  '- Use rank values ascending for display: ' + rankLabel(1) + ' first/top ... ' + lastRankInstruction,\n  'Schema:',\n  JSON.stringify(schema),\n  'Candidates:',\n  JSON.stringify(topic_candidates, null, 2),\n].filter(Boolean).join('\\n\\n');\n\nconst kie_claude_request = {\n  model: cfg.kie_ai_model,\n  stream: false,\n  max_tokens: 3200,\n  messages: [{ role: 'user', content: prompt }],\n};\n\nreturn [{ json: { ...base, selected_content_lane: selectedLane, topic_candidates, kie_claude_request } }];"
+      },
+      "id": "0dbe3b94-a495-4ada-b35c-3f43fbd88818",
+      "name": "Build Viral Rank Pack Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2800,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.use_live_kie_ai}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "334ff2e5-83eb-431d-91d5-6cc1e4d80b2c",
+      "name": "Use Live KIE Claude?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3088,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/claude/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.kie_claude_request) }}",
+        "options": {}
+      },
+      "id": "a669ecc1-6f06-4132-899e-fab322fbbd3a",
+      "name": "KIE Claude Generate Pack",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3360,
+        1808
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 10000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Build Viral Rank Pack Request').first().json;\nconst response = $input.first().json || {};\nconst cfg = base.config || {};\nfunction hashText(value) {\n  let hash = 2166136261;\n  const text = String(value || '');\n  for (let index = 0; index < text.length; index += 1) {\n    hash ^= text.charCodeAt(index);\n    hash = Math.imul(hash, 16777619);\n  }\n  return hash >>> 0;\n}\n\nfunction pick(items, seed, salt) {\n  return items[hashText([seed, salt].join('|')) % items.length];\n}\n\nfunction rows(values) {\n  return values.map((value, index) => {\n    const [name, reason, caution = ''] = value.split('|');\n    return { rank: index + 1, name, reason, caution };\n  });\n}\n\nfunction makePack(entry) {\n  return {\n    content_lane: entry.lane,\n    format_angle: entry.angle,\n    theme: entry.theme,\n    hook_title: entry.title,\n    subtitle: entry.subtitle,\n    visual_mood_hint: entry.visual,\n    rank_items: rows(entry.rows),\n    video_script: entry.script,\n    description: entry.description,\n    tags: ['건강정보', '시니어건강', ...entry.tags, 'shorts'],\n    pinned_comment: '오늘 순위 중 하나만 바꿔도 충분합니다. 평소 헷갈렸던 영양제, 음식, 생활습관 질문은 댓글로 남겨주세요. 건강장수비결가 쉽게 풀어드리겠습니다.',\n    bgm_prompt: entry.bgm,\n    medical_claims: entry.claims,\n    safety_notes: ['과장 표현 없음', '치료/완치 보장 표현 없음', '복용량 표현 없음'],\n  };\n}\n\nconst fallbackPacks = [];\n\nconst viralFallbackPacks = [\n  makePack({\n    lane: 'body_signals',\n    angle: '아침 몸 상태와 생활 습관을 연결해 점검',\n    theme: '몸의 조용한 신호',\n    title: '내 몸이 보내는 조용한 경고 신호 7',\n    subtitle: '큰 병 이야기보다 생활 점검입니다',\n    visual: '아침 세면대, 손발, 물컵, 체크 아이콘, 밝은 화이트와 스카이블루',\n    rows: ['입이 자주 마름|수분 습관 점검', '발이 무겁게 느낌|짠맛을 돌아봄', '눈이 뻑뻑함|화면 시간을 확인', '어깨가 굳어 있음|잠자리 자세 점검', '속이 더부룩함|늦은 식사 확인', '머리가 무거움|수면 리듬 점검', '피로가 오래 감|휴식 질을 확인'],\n    script: '몸이 보내는 작은 신호는 전날 생활을 돌아보는 힌트가 될 수 있습니다.',\n    description: '몸의 작은 신호와 생활 습관을 정리했습니다.\\n#건강정보 #시니어건강 #생활습관 #건강장수비결 #쇼츠',\n    tags: ['몸상태', '생활습관', '아침루틴'],\n    bgm: 'clean soft piano with gentle woodwind accents, morning wellness show mood, no vocals, no drums',\n    claims: ['몸 상태는 생활 습관을 돌아보는 힌트가 될 수 있다.'],\n  }),\n  makePack({\n    lane: 'supplement_basics',\n    angle: '영양제 구매 전에 음식과 생활 기반을 먼저 점검',\n    theme: '영양제 전 점검',\n    title: '영양제 괜히 사기 전 먼저 먹을 음식 7',\n    subtitle: '돈 쓰기 전에 식탁부터 봅니다',\n    visual: '약국 상담대, 식탁 재료, 물컵, 영수증, 민트와 차콜 포인트',\n    rows: ['달걀|단백질 기본 점검', '두부|속 편한 단백질', '등푸른 생선|기름 선택 확인', '견과류|소량으로 충분', '제철 채소|식탁 균형 잡기', '요거트|당 함량 먼저 확인', '물|기본 수분부터'],\n    script: '영양제를 더하기 전, 먼저 식탁에서 채울 수 있는 기본을 확인해 보세요.',\n    description: '영양제 전에 먼저 볼 음식과 습관을 정리했습니다.\\n#건강정보 #시니어건강 #영양제 #음식 #쇼츠',\n    tags: ['영양제', '음식', '건강식단'],\n    bgm: 'premium calm piano and warm strings with soft pad, trustworthy health show mood, no vocals',\n    claims: ['기본 식사와 수분은 컨디션 관리의 바탕이 될 수 있다.'],\n  }),\n  makePack({\n    lane: 'blood_sugar_meals',\n    angle: '같은 밥상에서 혈당 부담이 달라지는 선택을 비교',\n    theme: '혈당 식탁 선택',\n    title: '같은 밥상, 혈당 급행 vs 저속행 선택 7',\n    subtitle: '무엇을 먼저 먹느냐가 달라집니다',\n    visual: '밥상 비교 화면, 밥그릇, 채소, 단백질 접시, 코랄과 블루 포인트',\n    rows: ['밥 먼저 먹기|탄수화물 먼저 몰림', '채소 먼저 먹기|속도 조절 도움', '단 음료 곁들이기|숨은 당이 더해짐', '국물 끝까지 마시기|짠맛이 늘어남', '단백질 빼먹기|금방 허기짐', '과일 후식 추가|당 부담 겹침', '천천히 씹기|포만감 신호 확인'],\n    script: '같은 밥상도 순서와 조합에 따라 식후 느낌이 달라질 수 있습니다.',\n    description: '식사 순서와 혈당 부담을 랭킹으로 정리했습니다.\\n#건강정보 #시니어건강 #혈당관리 #식사습관 #쇼츠',\n    tags: ['혈당관리', '식사습관', '생활습관'],\n    bgm: 'soft marimba and piano with warm strings, calm lifestyle health mood, no vocals, no heavy drums',\n    claims: ['식사 순서와 조합은 식후 컨디션에 영향을 줄 수 있다.'],\n  }),\n  makePack({\n    lane: 'kitchen_storage',\n    angle: '가정 주방에서 반복되는 보관과 조리 실수를 점검',\n    theme: '주방 보관 실수',\n    title: '내 가족 건강을 위협하는 주방 보관 실수 7',\n    subtitle: '익숙해서 더 놓치기 쉽습니다',\n    visual: '밝은 주방, 냉장고 칸, 도마, 밀폐용기, 세이지와 옐로 포인트',\n    rows: ['뜨거운 국 바로 넣기|주변 온도 올라감', '젖은 채소 밀폐|쉽게 무를 수 있음', '문쪽에 우유 두기|온도 변화가 잦음', '도마 물기 방치|냄새가 남기 쉬움', '남은 밥 오래 두기|맛과 상태 저하', '라벨 날짜 안 쓰기|보관일을 놓침', '반찬 뚜껑 느슨함|냄새가 섞임'],\n    script: '가족이 매일 쓰는 주방일수록 보관 습관을 한 번 더 확인해 보세요.',\n    description: '주방 보관과 조리 전 확인할 습관을 정리했습니다.\\n#건강정보 #시니어건강 #주방습관 #냉장고정리 #쇼츠',\n    tags: ['주방습관', '냉장고정리', '생활습관'],\n    bgm: 'gentle acoustic bossa with nylon guitar, soft piano, light brushed percussion, warm kitchen morning mood, no vocals',\n    claims: ['보관 습관은 음식의 맛과 상태에 영향을 줄 수 있다.'],\n  }),\n  makePack({\n    lane: 'joint_mobility',\n    angle: '오래 걷기 위한 일상 습관을 관절 부담 관점에서 점검',\n    theme: '걷기 습관',\n    title: '건강하게 오래 살고 싶다면 피할 습관 7',\n    subtitle: '운동보다 먼저 보는 작은 준비',\n    visual: '공원 산책길, 운동화, 계단, 체크리스트, 하늘색과 라임 포인트',\n    rows: ['낡은 신발 그대로|발목이 흔들림', '처음부터 빠르게|몸이 덜 풀림', '보폭 크게 걷기|허리가 흔들림', '물 없이 오래 걷기|쉽게 지침', '계단만 고집하기|무릎 부담 증가', '아픈 날 참고 걷기|불편감이 커짐', '걷고 바로 앉기|다리가 뻣뻣함'],\n    script: '걷기 전 작은 준비가 무릎과 허리 부담을 줄이는 데 도움 될 수 있습니다.',\n    description: '걷기 전후에 피하면 좋은 습관을 정리했습니다.\\n#건강정보 #시니어건강 #걷기운동 #무릎건강 #쇼츠',\n    tags: ['걷기운동', '무릎건강', '생활습관'],\n    bgm: 'warm light jazz trio with soft piano, upright bass, very gentle brushes, relaxed walking pace, no vocals',\n    claims: ['걷기 전후 습관은 관절 부담과 피로감에 영향을 줄 수 있다.'],\n  }),\n].map((entry) => ({ ...entry, rank_items: entry.rank_items.slice(0, 7) }));\n\n\nfunction pickFallbackPack(context, seed, salt) {\n  const lane = String(context?.selected_content_lane?.id || context?.pack?.content_lane || '').trim();\n  const lanePacks = lane ? viralFallbackPacks.filter((entry) => entry.content_lane === lane) : [];\n  const pool = lanePacks.length ? lanePacks : viralFallbackPacks;\n  return pick(pool, seed, salt + '|' + lane);\n}\nconst fallbackPack = pickFallbackPack(base, cfg.variation_seed || new Date().toISOString(), 'parse_fallback');\n\nfunction responseText(value) {\n  if (value === undefined || value === null) return '';\n  if (typeof value === 'string') return value;\n  try { return JSON.stringify(value); } catch (error) { return String(value); }\n}\n\nfunction isAuthError(value) {\n  const text = responseText(value).toLowerCase();\n  return text.includes('unauthorized') || text.includes('authentication failed') || text.includes('invalid api key') || text.includes('401') || text.includes('403');\n}\n\nfunction isRecoverableClaudeError(value) {\n  const text = responseText(value).toLowerCase();\n  return Boolean(\n    value?.error ||\n    value?.message ||\n    value?.description ||\n    text.includes('internal error') ||\n    text.includes('service was not able') ||\n    text.includes('try again later') ||\n    text.includes('timeout') ||\n    text.includes('429') ||\n    text.includes('500') ||\n    text.includes('502') ||\n    text.includes('503') ||\n    text.includes('504')\n  );\n}\n\nfunction fallback(reason, errorPayload) {\n  return [{\n    json: {\n      ...base,\n      pack: fallbackPack,\n      ai_source: 'mock_after_kie_claude_error',\n      kie_claude_raw: errorPayload || response,\n      kie_claude_parse_error: reason,\n    },\n  }];\n}\n\nfunction tryParseJson(value) {\n  if (typeof value !== 'string') return value;\n  const trimmed = value.trim();\n  if (!trimmed) return value;\n  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return value;\n  try { return JSON.parse(trimmed); } catch (error) { return value; }\n}\n\nfunction looksLikeWrapper(value) {\n  return Boolean(\n    value &&\n    typeof value === 'object' &&\n    (\n      value.content !== undefined ||\n      value.message !== undefined ||\n      value.data !== undefined ||\n      value.response !== undefined ||\n      value.output_text !== undefined ||\n      value.text !== undefined\n    )\n  );\n}\n\nfunction collectText(value, depth = 0) {\n  if (!value || depth > 6) return '';\n\n  if (typeof value === 'string') {\n    const parsed = tryParseJson(value);\n    if (parsed !== value && looksLikeWrapper(parsed)) return collectText(parsed, depth + 1);\n    return value;\n  }\n\n  if (Array.isArray(value)) {\n    return value.map((entry) => collectText(entry, depth + 1)).filter(Boolean).join('\\n');\n  }\n\n  if (Array.isArray(value.content)) {\n    const text = value.content.map((part) => collectText(part, depth + 1)).filter(Boolean).join('\\n');\n    if (text) return text;\n  }\n\n  if (value.message && Array.isArray(value.message.content)) {\n    const text = value.message.content.map((part) => collectText(part, depth + 1)).filter(Boolean).join('\\n');\n    if (text) return text;\n  }\n\n  for (const key of ['output_text', 'text', 'data', 'result', 'response']) {\n    const text = collectText(value[key], depth + 1);\n    if (text) return text;\n  }\n\n  return '';\n}\n\nfunction parseJsonText(text) {\n  const fence = String.fromCharCode(96, 96, 96);\n  const trimmed = String(text || '')\n    .trim()\n    .replace(new RegExp('^' + fence + 'json\\\\s*', 'i'), '')\n    .replace(new RegExp('^' + fence + '\\\\s*', 'i'), '')\n    .replace(new RegExp(fence + '$', 'i'), '')\n    .trim();\n\n  try {\n    return JSON.parse(trimmed);\n  } catch (error) {\n    const start = trimmed.indexOf('{');\n    const end = trimmed.lastIndexOf('}');\n    if (start >= 0 && end > start) return JSON.parse(trimmed.slice(start, end + 1));\n    throw error;\n  }\n}\n\nfunction normalizePack(pack) {\n  if (!pack || !Array.isArray(pack.rank_items)) return pack;\n  const fixed = Number.isFinite(Number(cfg.rank_count)) && Number(cfg.rank_count) > 0 ? Number(cfg.rank_count) : null;\n  const max = fixed || Number(cfg.rank_count_max || 7);\n  pack.rank_items = pack.rank_items\n    .slice(0, max)\n    .map((item, index) => ({ ...item, rank: index + 1 }));\n  return pack;\n}\n\nfunction validatePack(pack) {\n  const issues = [];\n  if (!pack || typeof pack !== 'object') issues.push('pack is not an object');\n  if (!pack.hook_title) issues.push('missing hook_title');\n  if (!Array.isArray(pack.rank_items) || pack.rank_items.length < 1) issues.push('missing rank_items');\n  if (!pack.video_script) issues.push('missing video_script');\n  if (!pack.description) issues.push('missing description');\n  if (issues.length) throw new Error('invalid pack: ' + issues.join(', '));\n}\n\nif (isAuthError(response)) {\n  throw new Error('KIE Claude auth failed: ' + JSON.stringify(response));\n}\n\nif (isRecoverableClaudeError(response)) {\n  return fallback('KIE Claude recoverable error; rotating fallback pack used', response);\n}\n\nconst rawText = collectText(response);\nif (!rawText) {\n  return fallback('KIE Claude returned no parseable text; rotating fallback pack used', response);\n}\n\nlet pack;\ntry {\n  pack = parseJsonText(rawText);\n  normalizePack(pack);\n  validatePack(pack);\n} catch (error) {\n  return fallback('KIE Claude pack parse failed; rotating fallback pack used: ' + error.message, response);\n}\n\nreturn [{\n  json: {\n    ...base,\n    pack,\n    ai_source: 'kie_claude',\n    kie_claude_raw: response,\n    kie_claude_parse_error: null,\n  },\n}];"
+      },
+      "id": "29809b4a-9cb1-4de7-859c-cb8a85248ff1",
+      "name": "Parse KIE Claude Pack",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3648,
+        1808
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nif (!dryRun) {\n  throw new Error('Live run reached Mock Viral Rank Pack. Check Load Config: use_live_kie_ai must be true, and KIE auth/credits must work.');\n}\nconst cfg = data.config || {};\nfunction hashText(value) {\n  let hash = 2166136261;\n  const text = String(value || '');\n  for (let index = 0; index < text.length; index += 1) {\n    hash ^= text.charCodeAt(index);\n    hash = Math.imul(hash, 16777619);\n  }\n  return hash >>> 0;\n}\n\nfunction pick(items, seed, salt) {\n  return items[hashText([seed, salt].join('|')) % items.length];\n}\n\nfunction rows(values) {\n  return values.map((value, index) => {\n    const [name, reason, caution = ''] = value.split('|');\n    return { rank: index + 1, name, reason, caution };\n  });\n}\n\nfunction makePack(entry) {\n  return {\n    content_lane: entry.lane,\n    format_angle: entry.angle,\n    theme: entry.theme,\n    hook_title: entry.title,\n    subtitle: entry.subtitle,\n    visual_mood_hint: entry.visual,\n    rank_items: rows(entry.rows),\n    video_script: entry.script,\n    description: entry.description,\n    tags: ['건강정보', '시니어건강', ...entry.tags, 'shorts'],\n    pinned_comment: '오늘 순위 중 하나만 바꿔도 충분합니다. 평소 헷갈렸던 영양제, 음식, 생활습관 질문은 댓글로 남겨주세요. 건강장수비결가 쉽게 풀어드리겠습니다.',\n    bgm_prompt: entry.bgm,\n    medical_claims: entry.claims,\n    safety_notes: ['과장 표현 없음', '치료/완치 보장 표현 없음', '복용량 표현 없음'],\n  };\n}\n\nconst fallbackPacks = [];\n\nconst viralFallbackPacks = [\n  makePack({\n    lane: 'body_signals',\n    angle: '아침 몸 상태와 생활 습관을 연결해 점검',\n    theme: '몸의 조용한 신호',\n    title: '내 몸이 보내는 조용한 경고 신호 7',\n    subtitle: '큰 병 이야기보다 생활 점검입니다',\n    visual: '아침 세면대, 손발, 물컵, 체크 아이콘, 밝은 화이트와 스카이블루',\n    rows: ['입이 자주 마름|수분 습관 점검', '발이 무겁게 느낌|짠맛을 돌아봄', '눈이 뻑뻑함|화면 시간을 확인', '어깨가 굳어 있음|잠자리 자세 점검', '속이 더부룩함|늦은 식사 확인', '머리가 무거움|수면 리듬 점검', '피로가 오래 감|휴식 질을 확인'],\n    script: '몸이 보내는 작은 신호는 전날 생활을 돌아보는 힌트가 될 수 있습니다.',\n    description: '몸의 작은 신호와 생활 습관을 정리했습니다.\\n#건강정보 #시니어건강 #생활습관 #건강장수비결 #쇼츠',\n    tags: ['몸상태', '생활습관', '아침루틴'],\n    bgm: 'clean soft piano with gentle woodwind accents, morning wellness show mood, no vocals, no drums',\n    claims: ['몸 상태는 생활 습관을 돌아보는 힌트가 될 수 있다.'],\n  }),\n  makePack({\n    lane: 'supplement_basics',\n    angle: '영양제 구매 전에 음식과 생활 기반을 먼저 점검',\n    theme: '영양제 전 점검',\n    title: '영양제 괜히 사기 전 먼저 먹을 음식 7',\n    subtitle: '돈 쓰기 전에 식탁부터 봅니다',\n    visual: '약국 상담대, 식탁 재료, 물컵, 영수증, 민트와 차콜 포인트',\n    rows: ['달걀|단백질 기본 점검', '두부|속 편한 단백질', '등푸른 생선|기름 선택 확인', '견과류|소량으로 충분', '제철 채소|식탁 균형 잡기', '요거트|당 함량 먼저 확인', '물|기본 수분부터'],\n    script: '영양제를 더하기 전, 먼저 식탁에서 채울 수 있는 기본을 확인해 보세요.',\n    description: '영양제 전에 먼저 볼 음식과 습관을 정리했습니다.\\n#건강정보 #시니어건강 #영양제 #음식 #쇼츠',\n    tags: ['영양제', '음식', '건강식단'],\n    bgm: 'premium calm piano and warm strings with soft pad, trustworthy health show mood, no vocals',\n    claims: ['기본 식사와 수분은 컨디션 관리의 바탕이 될 수 있다.'],\n  }),\n  makePack({\n    lane: 'blood_sugar_meals',\n    angle: '같은 밥상에서 혈당 부담이 달라지는 선택을 비교',\n    theme: '혈당 식탁 선택',\n    title: '같은 밥상, 혈당 급행 vs 저속행 선택 7',\n    subtitle: '무엇을 먼저 먹느냐가 달라집니다',\n    visual: '밥상 비교 화면, 밥그릇, 채소, 단백질 접시, 코랄과 블루 포인트',\n    rows: ['밥 먼저 먹기|탄수화물 먼저 몰림', '채소 먼저 먹기|속도 조절 도움', '단 음료 곁들이기|숨은 당이 더해짐', '국물 끝까지 마시기|짠맛이 늘어남', '단백질 빼먹기|금방 허기짐', '과일 후식 추가|당 부담 겹침', '천천히 씹기|포만감 신호 확인'],\n    script: '같은 밥상도 순서와 조합에 따라 식후 느낌이 달라질 수 있습니다.',\n    description: '식사 순서와 혈당 부담을 랭킹으로 정리했습니다.\\n#건강정보 #시니어건강 #혈당관리 #식사습관 #쇼츠',\n    tags: ['혈당관리', '식사습관', '생활습관'],\n    bgm: 'soft marimba and piano with warm strings, calm lifestyle health mood, no vocals, no heavy drums',\n    claims: ['식사 순서와 조합은 식후 컨디션에 영향을 줄 수 있다.'],\n  }),\n  makePack({\n    lane: 'kitchen_storage',\n    angle: '가정 주방에서 반복되는 보관과 조리 실수를 점검',\n    theme: '주방 보관 실수',\n    title: '내 가족 건강을 위협하는 주방 보관 실수 7',\n    subtitle: '익숙해서 더 놓치기 쉽습니다',\n    visual: '밝은 주방, 냉장고 칸, 도마, 밀폐용기, 세이지와 옐로 포인트',\n    rows: ['뜨거운 국 바로 넣기|주변 온도 올라감', '젖은 채소 밀폐|쉽게 무를 수 있음', '문쪽에 우유 두기|온도 변화가 잦음', '도마 물기 방치|냄새가 남기 쉬움', '남은 밥 오래 두기|맛과 상태 저하', '라벨 날짜 안 쓰기|보관일을 놓침', '반찬 뚜껑 느슨함|냄새가 섞임'],\n    script: '가족이 매일 쓰는 주방일수록 보관 습관을 한 번 더 확인해 보세요.',\n    description: '주방 보관과 조리 전 확인할 습관을 정리했습니다.\\n#건강정보 #시니어건강 #주방습관 #냉장고정리 #쇼츠',\n    tags: ['주방습관', '냉장고정리', '생활습관'],\n    bgm: 'gentle acoustic bossa with nylon guitar, soft piano, light brushed percussion, warm kitchen morning mood, no vocals',\n    claims: ['보관 습관은 음식의 맛과 상태에 영향을 줄 수 있다.'],\n  }),\n  makePack({\n    lane: 'joint_mobility',\n    angle: '오래 걷기 위한 일상 습관을 관절 부담 관점에서 점검',\n    theme: '걷기 습관',\n    title: '건강하게 오래 살고 싶다면 피할 습관 7',\n    subtitle: '운동보다 먼저 보는 작은 준비',\n    visual: '공원 산책길, 운동화, 계단, 체크리스트, 하늘색과 라임 포인트',\n    rows: ['낡은 신발 그대로|발목이 흔들림', '처음부터 빠르게|몸이 덜 풀림', '보폭 크게 걷기|허리가 흔들림', '물 없이 오래 걷기|쉽게 지침', '계단만 고집하기|무릎 부담 증가', '아픈 날 참고 걷기|불편감이 커짐', '걷고 바로 앉기|다리가 뻣뻣함'],\n    script: '걷기 전 작은 준비가 무릎과 허리 부담을 줄이는 데 도움 될 수 있습니다.',\n    description: '걷기 전후에 피하면 좋은 습관을 정리했습니다.\\n#건강정보 #시니어건강 #걷기운동 #무릎건강 #쇼츠',\n    tags: ['걷기운동', '무릎건강', '생활습관'],\n    bgm: 'warm light jazz trio with soft piano, upright bass, very gentle brushes, relaxed walking pace, no vocals',\n    claims: ['걷기 전후 습관은 관절 부담과 피로감에 영향을 줄 수 있다.'],\n  }),\n].map((entry) => ({ ...entry, rank_items: entry.rank_items.slice(0, 7) }));\n\n\nfunction pickFallbackPack(context, seed, salt) {\n  const lane = String(context?.selected_content_lane?.id || context?.pack?.content_lane || '').trim();\n  const lanePacks = lane ? viralFallbackPacks.filter((entry) => entry.content_lane === lane) : [];\n  const pool = lanePacks.length ? lanePacks : viralFallbackPacks;\n  return pick(pool, seed, salt + '|' + lane);\n}\nconst pack = pickFallbackPack(data, cfg.variation_seed || new Date().toISOString(), 'dry_run_mock');\nreturn [{ json: { ...data, pack, ai_source: 'mock_rotating' } }];"
+      },
+      "id": "d0e6db2a-8bf6-42d5-9af3-782888bfcdbf",
+      "name": "Mock Viral Rank Pack",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3360,
+        2304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst pack = data.pack || {};\nconst allText = [\n  pack.theme,\n  pack.hook_title,\n  pack.subtitle,\n  pack.video_script,\n  pack.description,\n  pack.pinned_comment,\n  ...(pack.rank_items || []).flatMap((item) => [item.name, item.reason, item.caution]),\n  ...(pack.medical_claims || []),\n].filter(Boolean).join('\\n');\n\nconst lowered = allText.toLowerCase();\nconst issues = [];\nconst issue_matches = [];\n\nfunction addIssue(issue, match, contextText = lowered) {\n  if (!issues.includes(issue)) issues.push(issue);\n  const index = match?.index ?? -1;\n  issue_matches.push({\n    issue,\n    match: match?.[0] || '',\n    context: index >= 0 ? contextText.slice(Math.max(0, index - 40), index + 80) : '',\n  });\n}\n\nconst patterns = [\n  { pattern: /(\\uC644\\uCE58|\\uCE58\\uB8CC\\uB41C\\uB2E4|\\uCE58\\uB8CC\\uD574|\\uB0AB\\uB294\\uB2E4|\\uC608\\uBC29\\uB41C\\uB2E4|\\uB9C9\\uC544\\uC900\\uB2E4|\\uBCF4\\uC7A5|100%|\\uAE30\\uC801|\\uC989\\uC2DC\\s*\\uD6A8\\uACFC)/, issue: '\\uCE58\\uB8CC/\\uC644\\uCE58/\\uBCF4\\uC7A5 \\uD45C\\uD604' },\n  { pattern: /(\\uC57D\\uC744\\s*\\uB04A|\\uCC98\\uBC29\\uC744\\s*\\uC911\\uB2E8|\\uBCF5\\uC6A9\\uC744\\s*\\uC911\\uB2E8|\\uC758\\uC0AC\\s*\\uB300\\uC2E0|\\uBCD1\\uC6D0\\s*\\uAC00\\uC9C0)/, issue: '\\uCC98\\uBC29 \\uBCC0\\uACBD/\\uC9C4\\uB8CC \\uD68C\\uD53C' },\n  { pattern: /(\\uB3C5\\uC18C\\s*\\uC81C\\uAC70|\\uD574\\uB3C5|\\uB514\\uD1A1\\uC2A4|\\uD53C\\uAC00\\s*\\uB9D1\\uC544|\\uC5FC\\uC99D\\uC774\\s*\\uB300\\uBCC0|\\uC5FC\\uC99D\\uC744\\s*\\uC2F9|\\uB300\\uBCC0\\uC73C\\uB85C\\s*\\uBE60)/, issue: '\\uADFC\\uAC70 \\uC57D\\uD55C \\uC790\\uADF9 \\uD45C\\uD604' },\n];\n\nfor (const item of patterns) {\n  const match = lowered.match(item.pattern);\n  if (match) addIssue(item.issue, match);\n}\n\nconst dosagePatterns = [\n  /\\d+(?:\\.\\d+)?\\s?(?:mg|g|iu)(?=$|[\\s.,!?)]|\\/)/i,\n  /\\d+(?:\\.\\d+)?\\s?(?:\\uC54C|\\uC815|\\uCEA1\\uC290)(?=$|[\\s.,!?)]|\\uC529|\\uB9CC|\\uC744|\\uB97C|\\uC740|\\uB294|\\uAE4C\\uC9C0|\\uC815\\uB3C4|\\uC774\\uC0C1|\\uC774\\uD558)/,\n];\nfor (const pattern of dosagePatterns) {\n  const match = lowered.match(pattern);\n  if (match) {\n    addIssue('\\uBCF5\\uC6A9\\uB7C9/\\uC6A9\\uB7C9 \\uD45C\\uD604', match);\n    break;\n  }\n}\n\n\nif (!Array.isArray(pack.rank_items) || pack.rank_items.length < 3) addIssue('\\uB7AD\\uD0B9 \\uD56D\\uBAA9 \\uBD80\\uC871', null);\nif (!pack.video_script) addIssue('\\uC601\\uC0C1 \\uBB38\\uAD6C \\uC5C6\\uC74C', null);\nif (!pack.hook_title) addIssue('\\uD070 \\uC81C\\uBAA9 \\uC5C6\\uC74C', null);\n\nconst highRiskIssues = ['\\uCE58\\uB8CC/\\uC644\\uCE58/\\uBCF4\\uC7A5 \\uD45C\\uD604', '\\uCC98\\uBC29 \\uBCC0\\uACBD/\\uC9C4\\uB8CC \\uD68C\\uD53C', '\\uBCF5\\uC6A9\\uB7C9/\\uC6A9\\uB7C9 \\uD45C\\uD604', '\\uADFC\\uAC70 \\uC57D\\uD55C \\uC790\\uADF9 \\uD45C\\uD604'];\nconst highRisk = issues.some((issue) => highRiskIssues.includes(issue));\nconst pass = !highRisk && issues.length <= 1;\n\nreturn [{\n  json: {\n    ...data,\n    blocked: !pass,\n    medical_review: {\n      pass,\n      risk_level: highRisk ? 'high' : issues.length ? 'medium' : 'low',\n      issues,\n      issue_matches,\n      checked_at: new Date().toISOString(),\n    },\n  },\n}];"
+      },
+      "id": "e453fe9e-51af-477c-aaf8-47ebfe7c155a",
+      "name": "Medical Safety Review",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3920,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.medical_review.pass}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "9a6b58c2-773e-4514-a914-40c92439a11e",
+      "name": "Medical Review Passed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        4208,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nreturn [{ json: { ...data, result_stage: 'blocked_by_medical_review', youtube: { skipped: true, reason: 'medical_review_failed' }, comment: { skipped: true, reason: 'medical_review_failed' } } }];"
+      },
+      "id": "8bc52422-add8-4d33-bb61-764ee2d67ba1",
+      "name": "Prepare Blocked Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4480,
+        2512
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst pack = data.pack || {};\nconst cfg = data.config || {};\nconst LF = String.fromCharCode(10);\nconst rankSuffix = String.fromCharCode(50948);\nconst ctaComment = '건강장수비결';\nconst directViewerComment = '오늘 항목 중 여러분께 해당되는 습관이 있다면 댓글로 남겨주세요. 건강장수비결이 쉽게 정리해드리겠습니다.';\n\nfunction safePublicText(value) {\n  let text = String(value || '');\n  const replacements = [\n    [/종합영양제/g, '종합 건강제품'],\n    [/영양제/g, '건강제품'],\n    [/관절\\s*보조식품/g, '보조 제품'],\n    [/보조식품/g, '보조 제품'],\n    [/건강즙/g, '즙 음료'],\n    [/복용/g, '사용'],\n    [/처방/g, '상담 내용'],\n    [/치료/g, '관리'],\n    [/완치/g, '개선'],\n    [/예방/g, '미리 점검'],\n    [/병원비/g, '생활비'],\n    [/고혈압/g, '혈관 습관'],\n    [/당뇨/g, '식후 관리'],\n    [/혈당/g, '식후 부담'],\n    [/간\\s*이상/g, '컨디션 변화'],\n    [/질병/g, '생활 문제'],\n    [/경고/g, '신호'],\n    [/최악/g, '놓치기 쉬운'],\n    [/위협/g, '부담'],\n    [/무서운/g, '신경 쓰이는'],\n    [/죽음/g, '큰 부담'],\n    [/부모님/g, '시니어 여러분'],\n    [/자녀와/g, '가족과'],\n    [/자녀/g, '가족'],\n    [/뇌과학자/g, '생활 전문가'],\n    [/외래어/g, '생활 표현'],\n  ];\n  for (const [pattern, replacement] of replacements) text = text.replace(pattern, replacement);\n  return text.replace(/\\s+/g, ' ').trim();\n}\n\nfunction sanitizeImageInstruction(value) {\n  let text = String(value || '');\n  const replacements = [\n    [/\\bmedical\\b/gi, 'lifestyle'],\n    [/\\bdoctor\\b/gi, 'person'],\n    [/\\bcure\\b/gi, 'benefit'],\n    [/\\btreatment\\b/gi, 'care'],\n    [/\\bclinic-inspired\\b/gi, 'clean checklist'],\n    [/\\bclinic\\b/gi, 'clean service'],\n    [/\\bpharmacy\\b/gi, 'organized shop'],\n    [/\\bhealth\\b/gi, 'wellbeing'],\n    [/\\bbefore-after\\b/gi, 'comparison'],\n    [/\\bbody icons\\b/gi, 'simple habit icons'],\n    [/\\bproduct packaging\\b/gi, 'real branded packaging'],\n    [/\\bfake doctor identity\\b/gi, 'human impersonation'],\n  ];\n  for (const [pattern, replacement] of replacements) text = text.replace(pattern, replacement);\n  return safePublicText(text).replace(/\\s+/g, ' ').trim();\n}\n\nconst sortedItems = [...(pack.rank_items || [])]\n  .map((item) => ({\n    ...item,\n    name: safePublicText(item.name),\n    reason: safePublicText(item.reason),\n    caution: safePublicText(item.caution),\n  }))\n  .sort((a, b) => Number(a.rank) - Number(b.rank));\n\nconst rankLines = sortedItems\n  .map((item) => item.rank + rankSuffix + ' ' + item.name + ' - ' + item.reason)\n  .join(LF);\n\nconst shortRankLines = sortedItems\n  .map((item) => item.rank + rankSuffix + ' ' + item.name)\n  .join(LF);\n\nconst cardRows = sortedItems\n  .map((item) => {\n    const reason = String(item.reason || item.caution || '').replace(/\\s+/g, ' ').trim();\n    return item.rank + rankSuffix + ' ' + item.name + (reason ? ' - ' + reason : '');\n  })\n  .join(LF);\n\nfunction normalizeHookTitle(value) {\n  let text = safePublicText(value);\n  const count = sortedItems.length || Number(cfg.rank_count) || 5;\n  const vaguePattern = /^\\s*대부분이\\s*잘못\\s*알고\\s*있는/;\n  if (vaguePattern.test(text)) {\n    const fallback = [pack.subtitle, pack.theme]\n      .map((entry) => safePublicText(entry))\n      .find((entry) => entry && !vaguePattern.test(entry));\n    if (fallback) {\n      text = fallback;\n      if (!/\\d+\\s*$/.test(text)) text += ' ' + count;\n    } else {\n      text = text\n        .replace(/대부분이\\s*잘못\\s*알고\\s*있는/g, '')\n        .replace(/\\s*상식\\s*/g, '에서 바로 확인할 것 ')\n        .replace(/\\s+/g, ' ')\n        .trim();\n      if (!text) text = '오늘 바로 확인할 생활 체크 ' + count;\n    }\n  }\n  return text;\n}\n\nconst title = normalizeHookTitle(pack.hook_title || pack.theme || ('생활 랭킹 TOP ' + (sortedItems.length || cfg.rank_count || 5)));\nconst subtitle = safePublicText(pack.subtitle || '매일 하는데 놓치기 쉬운 것들');\n\nfunction buildPinnedComment() {\n  const checks = sortedItems.map((item) => {\n    const reason = String(item.reason || item.caution || '').replace(/\\s+/g, ' ').trim();\n    return item.rank + rankSuffix + ' ' + item.name + (reason ? ' - ' + reason : '');\n  });\n  return [\n    '오늘 영상 핵심 체크',\n    title,\n    '',\n    ...checks,\n    '',\n    directViewerComment,\n  ].filter((line) => line !== null && line !== undefined).join(LF);\n}\n\nfunction cleanDescriptionLine(value) {\n  return String(value || '').replace(/\\s+/g, ' ').trim();\n}\n\nfunction buildYoutubeDescription() {\n  const rankBody = sortedItems\n    .map((item) => {\n      const name = cleanDescriptionLine(item.name);\n      const reason = cleanDescriptionLine(item.reason);\n      return item.rank + rankSuffix + ' ' + name + (reason ? ' - ' + reason : '');\n    })\n    .join(LF + LF);\n\n  const descriptionLead = cleanDescriptionLine(pack.subtitle);\n  const rankSection = [descriptionLead, rankBody]\n    .filter((part) => String(part || '').trim())\n    .join(LF + LF);\n\n  const pharmacistIntro = [\n    '안녕하세요. 건강장수비결입니다.',\n    '',\n    '오래 사는 것만큼 중요한 것은 오래 걷고, 먹고, 자고, 스스로 생활하는 힘입니다.',\n    '건강장수비결은 중장년과 시니어 여러분이 바로 이해하고 실천할 수 있는 생활건강 정보를 쉽게 정리합니다.',\n    '',\n    '걷기, 수면, 식사, 장보기, 집안 습관, 생활비처럼 매일의 생활과 연결된 주제를 다룹니다.',\n    '특별한 비법보다 몸을 오래 지키는 기본 생활습관을 하나씩 점검해드립니다.',\n    '',\n    '오늘도 건강하게 오래 사는 작은 습관, 건강장수비결이 함께 정리해드립니다.',\n  ].join(LF);\n\n  const tagList = Array.from(new Set([...(pack.tags || []), '건강장수비결', '장수건강', '시니어생활건강', '쇼츠']))\n    .map((tag) => '#' + String(tag).replace(/^#/, '').replace(/\\s+/g, ''))\n    .slice(0, 10)\n    .join(' ');\n\n  return [title, rankSection, pharmacistIntro, tagList]\n    .filter((part) => String(part || '').trim())\n    .join(LF + LF);\n}\n\nconst youtubeDescription = buildYoutubeDescription();\nconst visibleText = [\n  'TITLE: ' + title,\n  'SUBTITLE: ' + subtitle,\n  'LIST ROWS, top to bottom, ' + ('1' + rankSuffix) + ' first:',\n  cardRows || shortRankLines,\n  'FOOTER: ' + ctaComment,\n].filter(Boolean).join(LF);\n\nfunction limitPrompt(value, maxLength = 480) {\n  const text = String(value || '').replace(/\\s+/g, ' ').trim();\n  if (text.length <= maxLength) return text;\n  return text.slice(0, maxLength).replace(/\\s+\\S*$/, '').trim();\n}\n\nfunction hashText(value) {\n  let hash = 2166136261;\n  const text = String(value || '');\n  for (let index = 0; index < text.length; index += 1) {\n    hash ^= text.charCodeAt(index);\n    hash = Math.imul(hash, 16777619);\n  }\n  return hash >>> 0;\n}\n\nfunction pick(items, salt) {\n  return items[hashText([cfg.variation_seed, title, salt].join('|')) % items.length];\n}\n\nfunction findById(items, value) {\n  const key = String(value || '').trim().toLowerCase();\n  if (!key) return null;\n  return items.find((item) => item.id.toLowerCase() === key || item.title.toLowerCase() === key) || null;\n}\n\nconst visualProfiles = [\n  {\n    id: 'broadcast_countdown',\n    title: '프리미엄 방송 카운트다운',\n    prompt: 'Korean TV health countdown style, diagonal rank ribbons, deep cobalt and white with restrained gold accents, glossy but clean, not the old navy/yellow template.',\n  },\n  {\n    id: 'clinic_checklist',\n    title: '클린 체크리스트',\n    prompt: 'Bright clean checklist style, mint, ivory, charcoal and coral palette, flat icon badges, airy spacing, rounded checklist ticks.',\n  },\n  {\n    id: 'kitchen_table',\n    title: '주방 매거진',\n    prompt: 'Warm kitchen editorial flatlay, ingredient tiles, cutting-board texture, sage green, tomato red, cream and ink palette, premium magazine layout.',\n  },\n  {\n    id: 'sleep_night',\n    title: '나이트 루틴',\n    prompt: 'Calm night routine card, indigo, lavender, warm lamp amber and soft white, timeline rows with moon/clock/light icons, cozy bedroom hints.',\n  },\n  {\n    id: 'morning_light',\n    title: '모닝 루틴',\n    prompt: 'Fresh morning sunlight, sky blue, clean white, citrus orange and leaf green, circular habit dials and checklist chips, bright optimistic mood.',\n  },\n  {\n    id: 'market_receipt',\n    title: '마트 라벨',\n    prompt: 'Premium grocery-label and receipt concept, product label snippets, magnifier callouts, sage, ink, ivory and soft yellow palette, organized like a smart shopping guide.',\n  },\n  {\n    id: 'wellness_dashboard',\n    title: '웰니스 대시보드',\n    prompt: 'Modern wellness dashboard, compact metric chips, small gauges, teal, white, navy and coral palette, crisp app-like hierarchy, high information density.',\n  },\n  {\n    id: 'magazine_cover',\n    title: '건강 매거진 커버',\n    prompt: 'Elegant Korean lifestyle magazine cover layout, burgundy, forest green, cream and black palette, large editorial title, numbered side rail, tasteful object photography icons.',\n  },\n  {\n    id: 'calendar_streak',\n    title: '생활 달력',\n    prompt: 'Weekly habit calendar concept, mini calendar cells and check marks, fresh green, warm yellow, clean white and dark ink palette, friendly practical tone.',\n  },\n  {\n    id: 'myth_fact',\n    title: '오해와 사실',\n    prompt: 'Fact-check inspired ranking card, split color tabs, soft red and blue contrast, simple check dots, clear rank order, energetic but calm.',\n  },\n];\n\nconst layoutFamilies = [\n  'asymmetric magazine cover with one oversized title block and staggered rank tiles',\n  'Korean TV countdown board with diagonal ribbons and a strong side number rail',\n  'app-like wellness dashboard with compact metric chips and card rows',\n  'newspaper editorial front page with bold headline, subheads, and clean ranking columns',\n  'grocery receipt and label inspection board with clipped paper layers',\n  'calendar habit tracker with day cells, check marks, and vertical rank cards',\n  'split fact-check board with two-tone tabs and simple check dots',\n  'warm kitchen table flatlay with layered note cards and ingredient callouts',\n  'clinic checklist sheet with clipboard structure and rounded status badges',\n  'premium lecture slide style with big central number and orbiting mini cards',\n  'photo-collage scrapbook with cutout objects and pinned rank notes',\n  'minimal poster with lots of white space, one hero object, and slim numbered rows',\n];\n\nconst paletteFamilies = [\n  'cobalt blue, crisp white, sunflower yellow, and ink black',\n  'forest green, ivory, tomato red, and warm beige',\n  'burgundy, cream, charcoal, and muted gold',\n  'sky blue, citrus orange, leaf green, and clean white',\n  'teal, coral, navy, and pale gray',\n  'lavender, midnight indigo, lamp amber, and soft white',\n  'black, white, signal red, and muted mint',\n  'sage green, clay orange, oat cream, and dark brown',\n  'steel gray, electric lime, white, and deep blue',\n  'rose pink, olive green, vanilla, and espresso',\n  'turquoise, lemon, graphite, and paper white',\n  'plum, peach, cream, and moss green',\n];\n\nconst badgeFamilies = [\n  'large circular rank seals',\n  'vertical pill-shaped number tags',\n  'ribbon tabs attached to each row',\n  'stamp-like badges with thick outlines',\n  'small dashboard number chips',\n  'hexagon rank markers',\n  'side rail numbers in stacked blocks',\n  'paper sticker badges with slight shadows',\n  'corner-fold rank labels',\n  'medal-style rank disks',\n];\n\nconst motifFamilies = [\n  'morning sunlight, water cup, mirror, and gentle plant details',\n  'organized shelf objects, labels, and clean item silhouettes without logos',\n  'kitchen ingredients, cutting board, bowl, and measuring spoon',\n  'bedside lamp, clock, curtains, and moonlight accents',\n  'walking shoes, stairs, towel, and simple daily habit icons',\n  'market basket, receipt strips, magnifier, and nutrition label fragments',\n  'calendar, pen, sticky notes, and daily checklist marks',\n  'warm table, tea cup, notebook, and soft shadows',\n  'clean clipboard, simple daily habit icons, and neutral geometric shapes',\n  'abstract geometric wellbeing dashboard shapes with no brand marks',\n];\n\nconst bgmProfiles = [\n  {\n    id: 'soft_piano_strings',\n    title: '소프트 피아노 스트링',\n    tempo: 74,\n    key: 'C',\n    prompt: 'Warm calm premium instrumental for Korean senior longevity Shorts viewers age 60-75. Soft piano, light warm strings, relaxed TV senior longevity program mood, slow 74 BPM. No vocals, no EDM, no trap, no heavy drums.',\n  },\n  {\n    id: 'nylon_bossa',\n    title: '나일론 기타 보사',\n    tempo: 78,\n    key: 'D',\n    prompt: 'Gentle acoustic bossa nova with nylon guitar, soft piano, light brushed percussion, premium morning lifestyle mood for Korean seniors age 60-75, 78 BPM. No vocals, no EDM, no heavy drums.',\n  },\n  {\n    id: 'light_jazz_trio',\n    title: '라이트 재즈 트리오',\n    tempo: 80,\n    key: 'F',\n    prompt: 'Light jazz trio background, soft piano, upright bass, very gentle brushes, warm trustworthy senior longevity program mood for Korean seniors age 60-75, 80 BPM. No vocals, no brass blasts, no heavy drums.',\n  },\n  {\n    id: 'korean_fusion',\n    title: '잔잔한 국악 퓨전',\n    tempo: 72,\n    key: 'G',\n    prompt: 'Calm Korean fusion instrumental with soft gayageum-like plucks, warm pad and light piano, premium public-broadcast health mood, 72 BPM. No vocals, no trot, no EDM, no heavy drums.',\n  },\n  {\n    id: 'ambient_woodwind',\n    title: '앰비언트 우드윈드',\n    tempo: 70,\n    key: 'E',\n    prompt: 'Airy ambient piano and gentle woodwind accents, warm pads, calm senior wellness mood, slow 70 BPM, premium and reassuring. No vocals, no EDM, no heavy drums.',\n  },\n  {\n    id: 'marimba_piano',\n    title: '마림바 피아노',\n    tempo: 76,\n    key: 'A',\n    prompt: 'Soft marimba and piano with warm strings, light optimistic health-magazine mood for Korean seniors age 60-75, 76 BPM. No vocals, no comedy sound, no EDM, no heavy drums.',\n  },\n  {\n    id: 'acoustic_waltz',\n    title: '어쿠스틱 왈츠',\n    tempo: 82,\n    key: 'G',\n    prompt: 'Gentle acoustic 3/4 waltz feel with nylon guitar, soft piano and subtle strings, cozy evening health-program mood, 82 BPM. No vocals, no EDM, no heavy drums.',\n  },\n  {\n    id: 'calm_lofi_piano',\n    title: '차분한 로파이 피아노',\n    tempo: 76,\n    key: 'B',\n    prompt: 'Clean calm lofi piano with soft vinyl warmth and very light brushed rhythm, premium not sleepy, Korean senior wellness mood, 76 BPM. No vocals, no hip-hop drop, no heavy drums.',\n  },\n];\n\nconst visualProfile =\n  findById(visualProfiles, cfg.visual_profile_override) ||\n  findById(visualProfiles, pack.visual_profile) ||\n  pick(visualProfiles, 'visual_profile');\n\nconst layoutFamily = pick(layoutFamilies, 'layout_family|' + visualProfile.id);\nconst paletteFamily = pick(paletteFamilies, 'palette_family|' + visualProfile.id + '|' + layoutFamily);\nconst badgeFamily = pick(badgeFamilies, 'badge_family|' + visualProfile.id + '|' + paletteFamily);\nconst motifFamily = pick(motifFamilies, 'motif_family|' + visualProfile.id + '|' + badgeFamily);\n\nconst bgmProfile =\n  findById(bgmProfiles, cfg.bgm_profile_override) ||\n  findById(bgmProfiles, pack.bgm_profile) ||\n  pick(bgmProfiles, 'bgm_profile|' + visualProfile.id);\n\nconst bgmStructureInstruction = 'Complete 12-18 sec instrumental BGM bed, not a two-note stinger. Gentle melody, soft rhythm, smooth loop, warm Korean senior lifestyle mood. No vocals.';\nconst packBgmHint = limitPrompt(pack.bgm_prompt, 80);\nconst bgmPrompt = limitPrompt([\n  bgmProfile.prompt,\n  bgmStructureInstruction,\n  packBgmHint ? 'Topic hint: ' + packBgmHint : '',\n].filter(Boolean).join(' '), 430);\n\nconst bgm_payload = {\n  prompt: bgmPrompt,\n  model: cfg.kie_bgm_model,\n  soundLoop: true,\n  soundTempo: bgmProfile.tempo,\n  soundKey: bgmProfile.key,\n  grabLyrics: false,\n};\n\nconst imagePrompt = [\n  'Create one finished vertical 9:16 Korean YouTube Shorts infographic card.',\n  'Render the whole card directly in the image: Korean title, subtitle, ranked rows, small icons, footer brand, and background.',\n  'Use this exact Korean text. Keep typography large, simple, crisp, and readable.',\n  visibleText,\n  'Rank order must be top to bottom: ' + ('1' + rankSuffix) + ', ' + ('2' + rankSuffix) + ', ' + ('3' + rankSuffix) + ', then the remaining ranks.',\n  'Style: ' + sanitizeImageInstruction(visualProfile.prompt),\n  'Layout: ' + sanitizeImageInstruction(layoutFamily) + '; palette: ' + sanitizeImageInstruction(paletteFamily) + '; rank badges: ' + sanitizeImageInstruction(badgeFamily) + '; motif: ' + sanitizeImageInstruction(motifFamily) + '.',\n  pack.visual_mood_hint ? 'Visual hint: ' + sanitizeImageInstruction(pack.visual_mood_hint) : '',\n  'Make it look like a polished Korean lifestyle information card for viewers age 50+. Use clean grid, strong hierarchy, sharp edges, and practical everyday objects.',\n  'Avoid real brand logos, realistic product labels, impersonation, before-after comparisons, frightening medical imagery, dark overlays, tiny text, blur, or cropped text.',\n  'If space is tight, keep fewer decorative details and prioritize title plus ranked row readability.',\n].filter(Boolean).join(LF);\n\nconst image_payload = {\n  model: cfg.kie_image_model,\n  input: {\n    prompt: imagePrompt,\n    aspect_ratio: '9:16',\n  },\n};\n\nreturn [{\n  json: {\n    ...data,\n    pack: { ...pack, hook_title: title, subtitle, description: youtubeDescription, pinned_comment: buildPinnedComment() },\n    rank_lines: rankLines,\n    short_rank_lines: shortRankLines,\n    visible_card_text: visibleText,\n    diversity: {\n      mode: cfg.diversity_mode,\n      variation_seed: cfg.variation_seed,\n      content_lane: pack.content_lane || data.selected_content_lane?.id || null,\n      visual_profile: visualProfile,\n      layout_family: layoutFamily,\n      palette_family: paletteFamily,\n      badge_family: badgeFamily,\n      motif_family: motifFamily,\n      bgm_profile: bgmProfile,\n    },\n    bgm_payload,\n    image_payload,\n  },\n}];"
+      },
+      "id": "0836e1f8-477e-4b2d-b7c4-7228e1458ac8",
+      "name": "Prepare Image and BGM Payloads",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4480,
+        1808
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.use_live_bgm}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "6c4054ff-97e1-42d7-ab95-5d2f1a6c9665",
+      "name": "Use Live BGM?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        6448,
+        1808
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/generate/sounds",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.bgm_payload) }}",
+        "options": {}
+      },
+      "id": "9fe7fc47-ce6f-43d7-96a6-e54d91b77bc5",
+      "name": "KIE Create BGM Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6720,
+        1552
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Use Live BGM?').first().json;\nconst response = $input.first().json || {};\nconst apiCode = response.code === undefined ? 200 : Number(response.code);\nconst apiMsg = response.msg || response.message || response.error || '';\nif (response.error || (Number.isFinite(apiCode) && apiCode >= 400)) {\n  throw new Error('KIE BGM create failed. code=' + apiCode + ', message=' + apiMsg + ', response=' + JSON.stringify(response));\n}\nconst taskId = response.data?.taskId || response.taskId || response.id || null;\nif (!taskId) {\n  throw new Error('KIE BGM create returned no taskId. response=' + JSON.stringify(response));\n}\nreturn [{ json: { ...base, bgm_create_response: response, bgm_task_id: taskId } }];"
+      },
+      "id": "18c5deaa-da7b-461a-a430-2c93385c0408",
+      "name": "Normalize BGM Task",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7008,
+        1552
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{$json.config.poll_interval_seconds}}"
+      },
+      "id": "c0aa0856-72aa-49e8-9f7a-7f5209ec1b0d",
+      "name": "Wait BGM 30s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        7280,
+        1552
+      ],
+      "webhookId": "5d1515ad-df49-46ec-9c40-00f187ff2f4f"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/generate/record-info",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{$json.bgm_task_id}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7eeadf45-783f-4445-9506-fe4bca6712b8",
+      "name": "KIE Get BGM Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        7568,
+        1552
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Normalize BGM Task').first().json;\nconst response = $input.first().json || {};\nconst data = response.data || response;\nconst status = String(data.status || data.state || '').toUpperCase();\nconst sunoData =\n  data.response?.sunoData ||\n  data.sunoData ||\n  data.response?.data ||\n  data.data ||\n  [];\n\nfunction asList(value) {\n  if (Array.isArray(value)) return value;\n  if (value && typeof value === 'object') return [value];\n  return [];\n}\n\nfunction audioUrlFor(item) {\n  return item?.audioUrl ||\n    item?.streamAudioUrl ||\n    item?.sourceAudioUrl ||\n    item?.sourceStreamAudioUrl ||\n    item?.audio_url ||\n    item?.stream_audio_url ||\n    item?.url ||\n    null;\n}\n\nfunction durationFor(item) {\n  const duration = Number(item?.duration || item?.audioDuration || item?.durationSeconds || item?.metadata?.duration || 0);\n  return Number.isFinite(duration) ? duration : 0;\n}\n\nconst candidates = asList(sunoData).filter((item) => audioUrlFor(item));\nconst best = [...candidates].sort((left, right) => durationFor(right) - durationFor(left))[0] || null;\nconst fallbackUrl =\n  data.response?.audioUrl ||\n  data.response?.streamAudioUrl ||\n  data.audioUrl ||\n  data.streamAudioUrl ||\n  null;\nconst bgmUrl = best ? audioUrlFor(best) : fallbackUrl;\nconst failed = ['CREATE_TASK_FAILED', 'GENERATE_AUDIO_FAILED', 'CALLBACK_EXCEPTION', 'SENSITIVE_WORD_ERROR', 'FAIL', 'FAILED', 'ERROR'].includes(status);\nif (failed) {\n  throw new Error('KIE BGM failed. state=' + status + ', taskId=' + (base.bgm_task_id || '-') + ', message=' + (data.failMsg || data.message || response.msg || response.error || ''));\n}\nreturn [{ json: { ...base, bgm_poll_response: response, bgm_state: status, bgm_failed: false, bgm_audio_url: bgmUrl, bgm_audio_duration: best ? durationFor(best) : null, bgm_audio_choice: best } }];"
+      },
+      "id": "06d97a03-16e1-4b2e-8b85-571e2484041b",
+      "name": "Parse BGM Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7840,
+        1552
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nif (!dryRun) {\n  throw new Error('Live run reached Mock BGM Result. Check Load Config: use_live_bgm must be true, and KIE BGM auth/credits must work.');\n}\nreturn [{ json: { ...data, bgm_audio_url: null, bgm_state: 'dry_run_disabled' } }];"
+      },
+      "id": "330229a2-c77b-4f0b-af96-cfb0e73bf741",
+      "name": "Mock BGM Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6720,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.use_live_render}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "f8413584-b72a-4917-b219-4d59760464a4",
+      "name": "Use Live Render?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        9248,
+        1808
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nif (!dryRun) {\n  throw new Error('Live run reached Mock Render Result. Check Load Config: use_live_render must be true.');\n}\nreturn [{\n  json: {\n    ...data,\n    result_stage: 'dry_run_no_render',\n    rendered_video_url: null,\n    youtube: {\n      skipped: true,\n      reason: 'dry_run: render skipped',\n      privacy_status_if_enabled: data.config.youtube_privacy_status\n    },\n    comment: { skipped: true, reason: 'No rendered MP4' }\n  }\n}];"
+      },
+      "id": "4520851b-1d48-48c6-81b4-0704d0d86f98",
+      "name": "Mock Render Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9520,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst cfg = data.config || {};\n\nif (!data.image_url) {\n  throw new Error('Local render requires final image_url from Parse Image Result.');\n}\nif (!data.bgm_audio_url) {\n  throw new Error('Local render requires bgm_audio_url from Parse BGM Result. BGM must be live.');\n}\n\nconst renderId = 'health_' + Date.now() + '_' + Math.random().toString(16).slice(2, 8);\nconst duration = Number(cfg.duration_seconds || 5);\n\nconst render_payload = {\n  render_id: renderId,\n  image_url: data.image_url,\n  bgm_audio_url: data.bgm_audio_url,\n  duration,\n  width: 1080,\n  height: 1920,\n  output_dir: cfg.local_render_dir,\n  ffmpeg_path: cfg.ffmpeg_path,\n  card_is_final: true\n};\n\nconst payloadBase64 = Buffer.from(JSON.stringify(render_payload), 'utf8').toString('base64');\nconst quote = (value) => '\"' + String(value).replace(/\"/g, '\\\"') + '\"';\nconst render_command = [\n  quote(cfg.node_path || 'node'),\n  quote(cfg.local_render_script),\n  quote(payloadBase64),\n].join(' ');\n\nreturn [{\n  json: {\n    ...data,\n    render_id: renderId,\n    render_provider: 'local_ffmpeg_full_image_card',\n    render_payload,\n    render_payload_base64: payloadBase64,\n    render_command,\n  },\n}];"
+      },
+      "id": "cc8f6534-54ae-474b-be21-bb80b23c662f",
+      "name": "Prepare Local FFmpeg Render",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9520,
+        1552
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst { spawnSync } = require(\"child_process\");\n\nconst nodePath = data.config?.node_path || \"C:/Program Files/nodejs/node.exe\";\nconst scriptPath = data.config?.local_render_script || \"C:/dev/n8n-local/scripts/render-static-card.mjs\";\nconst payload = data.render_payload_base64;\nif (!payload) {\n  throw new Error(\"Missing render_payload_base64 for local render.\");\n}\n\nconst result = spawnSync(nodePath, [scriptPath, payload], {\n  encoding: \"utf8\",\n  timeout: 10 * 60 * 1000,\n  windowsHide: true,\n  maxBuffer: 20 * 1024 * 1024,\n});\n\nreturn [{\n  json: {\n    ...data,\n    exitCode: result.status ?? 0,\n    stdout: result.stdout || \"\",\n    stderr: result.stderr || \"\",\n    error: result.error ? result.error.message : undefined,\n    signal: result.signal || null,\n  },\n}];"
+      },
+      "id": "0c62ec5d-348c-4a0c-9568-9f3ee40c4c6b",
+      "name": "Local FFmpeg Render",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9808,
+        1552
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Prepare Local FFmpeg Render').first().json;\nconst response = $input.first().json || {};\n\nif (response.error || Number(response.exitCode || 0) !== 0) {\n  throw new Error('Local ffmpeg render failed: ' + (response.stderr || response.stdout || response.error || JSON.stringify(response)));\n}\n\nconst stdout = String(response.stdout || '').trim();\nconst jsonLine = stdout.split(/\\r?\\n/).reverse().find((line) => line.trim().startsWith('{'));\nif (!jsonLine) {\n  throw new Error('Local renderer returned no JSON: ' + JSON.stringify(response));\n}\n\nconst parsed = JSON.parse(jsonLine);\nif (!parsed.ok || !parsed.output_path) {\n  throw new Error('Local renderer returned invalid output: ' + JSON.stringify(parsed));\n}\n\nreturn [{\n  json: {\n    ...base,\n    local_render_response: response,\n    render_status: 'succeeded',\n    output_path: parsed.output_path,\n    rendered_video_url: parsed.output_path,\n    card_path: parsed.card_path || null,\n    bgm_download_path: parsed.audio_path || null,\n    render_failed: false,\n  },\n}];"
+      },
+      "id": "2f029605-5b0c-4b7b-8653-d14c3d6e7308",
+      "name": "Parse Local Render Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        10080,
+        1552
+      ]
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{$json.output_path}}",
+        "options": {
+          "fileExtension": "mp4",
+          "fileName": "={{$json.render_id + \".mp4\"}}",
+          "mimeType": "video/mp4",
+          "dataPropertyName": "data"
+        }
+      },
+      "id": "a866c0b9-6ef3-4a16-9351-c904222f77bc",
+      "name": "Read Rendered MP4",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        10368,
+        1552
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Parse Local Render Result').first().json;\nconst input = $input.first();\nreturn [{ json: { ...base, mp4_binary_ready: !!input.binary?.data }, binary: input.binary }];"
+      },
+      "id": "86fb266c-236d-4345-b61c-c07990ff2bb5",
+      "name": "Attach Downloaded MP4",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        10640,
+        1552
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.allow_youtube_upload}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "8c266e05-b0ae-4ec0-8740-d2fc2bb995bb",
+      "name": "Allow YouTube Upload?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        10928,
+        1808
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{$json.pack.hook_title}}",
+        "regionCode": "={{$json.config.region_code}}",
+        "categoryId": "={{$json.config.youtube_category_id}}",
+        "options": {
+          "description": "={{$json.pack.description}}",
+          "embeddable": true,
+          "notifySubscribers": false,
+          "privacyStatus": "={{$json.config.youtube_privacy_status || \"public\"}}",
+          "selfDeclaredMadeForKids": false,
+          "tags": "={{$json.pack.tags.join(\",\")}}"
+        }
+      },
+      "id": "d80721d4-9575-4e8e-88d8-22ee42c2a171",
+      "name": "YouTube Upload Public",
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        11200,
+        1552
+      ],
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "kVQv10ElQmt2iazM",
+          "name": "YouTube account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Attach Downloaded MP4').first().json;\nconst upload = $input.first().json || {};\nconst videoId = upload.uploadId || upload.id || upload.videoId || upload.items?.[0]?.id || null;\nconst privacyStatus = base.config?.youtube_privacy_status || 'public';\nreturn [{ json: { ...base, youtube: { skipped: false, privacy_status: privacyStatus, video_id: videoId, url: videoId ? 'https://www.youtube.com/watch?v=' + videoId : null, raw: upload } } }];"
+      },
+      "id": "f8464a68-f18b-442d-bd7e-0ef30a770e27",
+      "name": "Normalize YouTube Upload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        11488,
+        1552
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.googleapis.com/youtube/v3/commentThreads",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "youTubeOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "part",
+              "value": "snippet"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ snippet: { videoId: $json.youtube.video_id, topLevelComment: { snippet: { textOriginal: $json.pack.pinned_comment } } } }) }}",
+        "options": {}
+      },
+      "id": "db75c8f1-b2a4-49be-8b04-99ffc2faf7cd",
+      "name": "Post Top-Level Comment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        11760,
+        1552
+      ],
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "kVQv10ElQmt2iazM",
+          "name": "YouTube account 2"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Normalize YouTube Upload').first().json;\nconst response = $input.first().json || {};\nreturn [{ json: { ...base, comment: { created: !response.error, id: response.id || response.items?.[0]?.id || null, raw: response, note: 'Top-level comment created. API pin unsupported.' } } }];"
+      },
+      "id": "85695f6c-80f9-4f15-8731-31e8f27e8169",
+      "name": "Attach Comment Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        12048,
+        1552
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nreturn [{\n  json: {\n    ...data,\n    result_stage: 'rendered_upload_disabled',\n    youtube: {\n      skipped: true,\n      reason: 'youtube upload disabled for this workflow',\n      privacy_status_if_enabled: data.config?.youtube_privacy_status || 'private'\n    },\n    comment: { skipped: true, reason: 'No YouTube upload' }\n  }\n}];"
+      },
+      "id": "f6b30e2e-d34c-4eb5-a2fb-004696731aaa",
+      "name": "Skip YouTube Upload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        11200,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs = require('fs');\nconst path = require('path');\nconst data = $input.first().json;\n\nfunction kstDate(value = new Date()) {\n  const parts = new Intl.DateTimeFormat('en-CA', {\n    timeZone: 'Asia/Seoul',\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n  }).formatToParts(value).reduce((acc, part) => {\n    acc[part.type] = part.value;\n    return acc;\n  }, {});\n  return parts.year + '-' + parts.month + '-' + parts.day;\n}\n\nfunction appendUploadLog(data, status) {\n  const youtube = data.youtube || {};\n  if (!youtube || youtube.skipped || !youtube.url) return;\n  const logPath = data.config?.upload_log_path || 'C:/dev/n8n-local/건강장수비결 소재/기록/업로드기록.jsonl';\n  fs.mkdirSync(path.dirname(logPath), { recursive: true });\n  fs.appendFileSync(logPath, JSON.stringify({\n    date_kst: kstDate(),\n    status,\n    title: data.pack?.hook_title || null,\n    url: youtube.url,\n    video_id: youtube.video_id || null,\n    topic_queue: data.topic_queue || data.config?.topic_queue || null,\n    uploaded_at: new Date().toISOString(),\n  }) + '\\n', 'utf8');\n}\nconst pack = data.pack || {};\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nlet status = dryRun ? 'dry_run_complete' : 'completed';\nif (data.result_stage === 'blocked_by_medical_review') status = 'blocked_by_medical_review';\nelse if (data.result_stage) status = data.result_stage;\nelse if (data.youtube && !data.youtube.skipped) status = 'uploaded_' + (data.youtube.privacy_status || data.config?.youtube_privacy_status || 'public');\nelse if (!dryRun && data.rendered_video_url) status = 'rendered_not_uploaded';\nelse if (data.youtube?.skipped) status = dryRun ? 'dry_run_no_upload' : 'youtube_upload_skipped';\nelse if (!data.rendered_video_url) status = dryRun ? 'dry_run_no_render' : 'missing_rendered_video';\n\nconst result = {\n  ok:\n    !String(status).includes('blocked') &&\n    !String(status).includes('failed') &&\n    !String(status).includes('missing') &&\n    !String(status).includes('disabled') &&\n    !String(status).includes('skipped') &&\n    !String(status).includes('no_render') &&\n    !String(status).includes('no_upload'),\n  status,\n  run_mode: data.config?.run_mode || (dryRun ? 'dry_run' : 'live_upload'),\n  test_mode: dryRun,\n  format: 'viral_rank_card',\n  title: pack.hook_title || null,\n  rank_count: Array.isArray(pack.rank_items) ? pack.rank_items.length : 0,\n  rank_items: pack.rank_items || [],\n  medical_review: data.medical_review || null,\n  bgm_audio_url: data.bgm_audio_url || null,\n  image_url: data.image_url || null,\n  rendered_video_url: data.rendered_video_url || null,\n  render_id: data.render_id || null,\n  output_path: data.output_path || null,\n  model_config: data.config?.model_config || null,\n  youtube: data.youtube || { skipped: true },\n  comment: data.comment || { skipped: true },\n  topic_queue: data.topic_queue || data.config?.topic_queue || null,\n};\n\nappendUploadLog(data, status);\n\nconst notification_text = [\n  '상태: ' + status,\n  '실행모드: ' + result.run_mode,\n  '포맷: 장수 생활건강 랭킹 쇼츠',\n  '제목: ' + (pack.hook_title || '-'),\n  '검수: ' + (data.medical_review?.pass ? 'PASS' : 'FAIL'),\n  '영상: ' + (data.rendered_video_url || '-'),\n  'YouTube: ' + (data.youtube?.url || data.youtube?.reason || '-'),\n].join('\\n');\n\nreturn [{ json: { ...data, result, notification_text } }];"
+      },
+      "id": "8b39ec10-07c1-4365-8d3a-2a434e8c2d79",
+      "name": "Final Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        12320,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.notify_slack && !!$json.config.slack_webhook_url}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "ee47c51e-263f-4a80-8fdf-0fc4983dd93b",
+      "name": "Notify Slack?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        12608,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$json.config.slack_webhook_url}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: $json.notification_text }) }}",
+        "options": {}
+      },
+      "id": "a765d073-08a9-46b6-b112-1ee709efb497",
+      "name": "Send Slack Webhook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        12880,
+        1808
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Notify Slack?').first().json; const response = $input.first().json || {}; return [{ json: { ...base, slack: { sent: !response.error, response } } }];"
+      },
+      "id": "68cd8a88-8a5b-4865-885d-320755db2316",
+      "name": "Attach Slack Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        13168,
+        1808
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.trigger_type === \"webhook\"}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "ce9b2686-ea19-4f08-b7bc-d48e6cd20ee7",
+      "name": "Is Webhook Run?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        13440,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json.result}}",
+        "options": {}
+      },
+      "id": "e38e7fe2-b498-432b-bb5d-9d10ccc7154b",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        13728,
+        1808
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nreturn [{ json: data }];"
+      },
+      "id": "fb821d95-a2f6-4023-9bc9-3f7b45f7cb56",
+      "name": "Done - Manual or Schedule",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        13728,
+        2304
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.use_live_image}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "c2f47479-73f3-4aaf-9771-d2893db5bb26",
+      "name": "Use Live Image?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        4768,
+        1808
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.image_payload) }}",
+        "options": {}
+      },
+      "id": "41193291-9332-430e-8760-5fb21f09748a",
+      "name": "KIE Create Image Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5040,
+        1552
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Prepare Image and BGM Payloads').first().json;\nconst response = $input.first().json || {};\nif (response.error || (response.code && Number(response.code) !== 200)) {\n  throw new Error('KIE image create failed: ' + JSON.stringify(response));\n}\nconst taskId = response.data?.taskId || response.taskId || response.id || null;\nif (!taskId) {\n  throw new Error('KIE image create returned no taskId: ' + JSON.stringify(response));\n}\nreturn [{ json: { ...base, image_create_response: response, image_task_id: taskId } }];"
+      },
+      "id": "44d64826-5cd7-40a7-9b3c-5d015a763b85",
+      "name": "Normalize Image Task",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5328,
+        1552
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{$json.config.image_poll_interval_seconds || 30}}"
+      },
+      "id": "96831d2a-5b02-471f-98ea-868d86a9ffcf",
+      "name": "Wait Image 30s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        5600,
+        1552
+      ],
+      "webhookId": "80f748aa-07f8-4ec3-bcb9-f769da2d8569"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/jobs/recordInfo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{$json.image_task_id}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "55bd4510-e61d-4677-bbcc-7e76fb03234d",
+      "name": "KIE Get Image Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5888,
+        1552
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Normalize Image Task').first().json;\nconst response = $input.first().json || {};\nconst data = response.data || response;\nconst state = String(data.state || data.status || '').toLowerCase();\nlet resultJson = data.resultJson || data.result_json || null;\nif (typeof resultJson === 'string' && resultJson.trim()) {\n  try { resultJson = JSON.parse(resultJson); } catch (error) { resultJson = { raw: data.resultJson, parse_error: error.message }; }\n}\nconst urls =\n  resultJson?.resultUrls ||\n  resultJson?.result_urls ||\n  resultJson?.imageUrls ||\n  resultJson?.images ||\n  resultJson?.urls ||\n  data.response?.resultUrls ||\n  data.resultUrls ||\n  data.imageUrls ||\n  [];\nconst first = Array.isArray(urls) ? urls[0] : urls;\nconst imageUrl = typeof first === 'string' ? first : first?.url || first?.imageUrl || first?.src || null;\nconst apiCode = Number(response.code ?? data.code ?? 200);\nconst failed =\n  ['fail', 'failed', 'error'].includes(state) ||\n  Boolean(data.failCode || data.failMsg || response.error) ||\n  (apiCode !== 200 && apiCode !== 0);\n\nif (failed) {\n  throw new Error('KIE image failed. state=' + state + ', taskId=' + (base.image_task_id || '-') + ', message=' + (data.failMsg || response.msg || response.error || ''));\n}\n\nreturn [{ json: { ...base, image_poll_response: response, image_state: state || (imageUrl ? 'succeeded' : 'pending'), image_failed: false, image_ready: Boolean(imageUrl), image_url: imageUrl } }];"
+      },
+      "id": "c5c884f2-912b-461a-95bb-9831c3d3eba9",
+      "name": "Parse Image Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6160,
+        1552
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nif (!dryRun) {\n  throw new Error('Live run reached Mock Image Result. Check Load Config: use_live_image must be true, and KIE image auth/credits must work.');\n}\nreturn [{ json: { ...data, image_url: null, image_state: 'mock_skipped' } }];"
+      },
+      "id": "a7be6ad6-2a2f-4114-ad51-a9ee6dd65edc",
+      "name": "Mock Image Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5040,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{!!$json.bgm_audio_url}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "6ba28fb3-6267-41a5-ad79-b4e55998fc4e",
+      "name": "BGM Ready?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        8128,
+        1552
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{$json.config.bgm_retry_wait_seconds || 90}}"
+      },
+      "id": "2dbede22-be61-4a25-9372-646dd6d890bb",
+      "name": "Wait BGM Retry 90s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        8400,
+        1312
+      ],
+      "webhookId": "5c321383-c259-47eb-ba7c-253640a7892e"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/generate/record-info",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{$json.bgm_task_id}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "de4dac72-b8e4-40dd-9a45-cd8547b64d9e",
+      "name": "KIE Get BGM Task Retry",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        8688,
+        1312
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const previous = $('Parse BGM Result').first().json;\nconst response = $input.first().json || {};\nconst data = response.data || response;\nconst status = String(data.status || data.state || '').toUpperCase();\nconst sunoData =\n  data.response?.sunoData ||\n  data.sunoData ||\n  data.response?.data ||\n  data.data ||\n  [];\n\nfunction asList(value) {\n  if (Array.isArray(value)) return value;\n  if (value && typeof value === 'object') return [value];\n  return [];\n}\n\nfunction audioUrlFor(item) {\n  return item?.audioUrl ||\n    item?.streamAudioUrl ||\n    item?.sourceAudioUrl ||\n    item?.sourceStreamAudioUrl ||\n    item?.audio_url ||\n    item?.stream_audio_url ||\n    item?.url ||\n    null;\n}\n\nfunction durationFor(item) {\n  const duration = Number(item?.duration || item?.audioDuration || item?.durationSeconds || item?.metadata?.duration || 0);\n  return Number.isFinite(duration) ? duration : 0;\n}\n\nconst candidates = asList(sunoData).filter((item) => audioUrlFor(item));\nconst best = [...candidates].sort((left, right) => durationFor(right) - durationFor(left))[0] || null;\nconst fallbackUrl =\n  data.response?.audioUrl ||\n  data.response?.streamAudioUrl ||\n  data.audioUrl ||\n  data.streamAudioUrl ||\n  null;\nconst bgmUrl = best ? audioUrlFor(best) : fallbackUrl;\nconst failed = ['CREATE_TASK_FAILED', 'GENERATE_AUDIO_FAILED', 'CALLBACK_EXCEPTION', 'SENSITIVE_WORD_ERROR', 'FAIL', 'FAILED', 'ERROR'].includes(status);\nif (failed) {\n  throw new Error('KIE BGM failed after retry. state=' + status + ', taskId=' + (previous.bgm_task_id || '-') + ', message=' + (data.failMsg || data.message || response.msg || response.error || ''));\n}\nif (!bgmUrl) {\n  throw new Error('KIE BGM still not ready after retry. state=' + (status || '-') + ', taskId=' + (previous.bgm_task_id || '-') + '. Run workflow again or increase bgm_retry_wait_seconds.');\n}\nreturn [{ json: { ...previous, bgm_poll_response: response, bgm_state: status, bgm_failed: false, bgm_audio_url: bgmUrl, bgm_audio_duration: best ? durationFor(best) : null, bgm_audio_choice: best, bgm_retry_attempted: true } }];"
+      },
+      "id": "9d02bd4c-5f27-4c43-ae47-49d16d64cf70",
+      "name": "Parse BGM Result Final",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8960,
+        1312
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 21
+            }
+          ]
+        }
+      },
+      "id": "14857ab4-6e64-42b9-b85f-ef02430b6009",
+      "name": "Daily 21:00 Schedule (Disabled)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        576,
+        1696
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json || {};\nreturn [{\n  json: {\n    ...data,\n    scheduled_daily_run: true,\n    upload_log_path: data.upload_log_path || 'C:/dev/n8n-local/건강장수비결 소재/기록/업로드기록.jsonl',\n    consume_topic_queue: true,\n  },\n}];"
+      },
+      "id": "f4561c23-b4b5-4b9b-acc3-737e177756e0",
+      "name": "Prepare Daily Upload Check",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        1696
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.daily_upload_due}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "45d29170-8277-444f-a2c1-bd2c6e648286",
+      "name": "Daily Upload Due?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2256,
+        1840
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nreturn [{\n  json: {\n    ...data,\n    result: {\n      ok: true,\n      status: data.skip_reason || 'skipped_daily_upload',\n      reason: data.skip_reason || 'daily upload not due',\n      date_kst: data.daily_upload_date_kst,\n      youtube_upload_check: data.youtube_upload_check,\n      last_upload: data.last_upload,\n    },\n  },\n}];"
+      },
+      "id": "c536fde0-73e9-4cc8-abaf-80867d5868cd",
+      "name": "Skip Daily Upload Already Done",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2528,
+        2608
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/youtube/v3/channels",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "youTubeOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "part",
+              "value": "contentDetails,snippet"
+            },
+            {
+              "name": "mine",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4cef5172-5bc2-4c8d-af04-bc3e5770c9ef",
+      "name": "YouTube Get My Channel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1136,
+        1696
+      ],
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "kVQv10ElQmt2iazM",
+          "name": "YouTube account 2"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Prepare Daily Upload Check').first().json || {};\nconst response = $input.first().json || {};\nconst error = response.error?.message || response.message || response.description || null;\nconst channel = Array.isArray(response.items) ? response.items[0] : null;\nconst uploadsPlaylistId = channel?.contentDetails?.relatedPlaylists?.uploads || null;\n\nreturn [{\n  json: {\n    ...base,\n    youtube_upload_check: {\n      ok: Boolean(uploadsPlaylistId) && !error,\n      stage: 'channel_uploads_playlist',\n      error,\n      channel_title: channel?.snippet?.title || null,\n      uploads_playlist_id: uploadsPlaylistId,\n    },\n    uploads_playlist_id: uploadsPlaylistId,\n  },\n}];"
+      },
+      "id": "fb07d927-7569-4250-a3d0-5a44068a6c33",
+      "name": "Extract Uploads Playlist",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1424,
+        1696
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/youtube/v3/playlistItems",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "youTubeOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "part",
+              "value": "snippet,contentDetails"
+            },
+            {
+              "name": "maxResults",
+              "value": "10"
+            },
+            {
+              "name": "playlistId",
+              "value": "={{$json.uploads_playlist_id}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "94d2843e-2c41-4a9e-9131-420952ddec57",
+      "name": "YouTube Get Recent Uploads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1696,
+        1696
+      ],
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "kVQv10ElQmt2iazM",
+          "name": "YouTube account 2"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs = require('fs');\n\nfunction kstDate(value = new Date()) {\n  const parts = new Intl.DateTimeFormat('en-CA', {\n    timeZone: 'Asia/Seoul',\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n  }).formatToParts(value).reduce((acc, part) => {\n    acc[part.type] = part.value;\n    return acc;\n  }, {});\n  return parts.year + '-' + parts.month + '-' + parts.day;\n}\n\nconst base = $('Extract Uploads Playlist').first().json || {};\nconst response = $input.first().json || {};\nconst today = kstDate();\nconst apiError = base.youtube_upload_check?.error || response.error?.message || response.message || response.description || null;\nconst items = Array.isArray(response.items) ? response.items : [];\nconst uploadsToday = items\n  .map((item) => ({\n    title: item.snippet?.title || null,\n    video_id: item.contentDetails?.videoId || item.snippet?.resourceId?.videoId || null,\n    published_at: item.contentDetails?.videoPublishedAt || item.snippet?.publishedAt || null,\n  }))\n  .filter((item) => item.published_at && kstDate(new Date(item.published_at)) === today);\n\nlet logUploadToday = null;\nif (fs.existsSync(base.upload_log_path)) {\n  for (const line of fs.readFileSync(base.upload_log_path, 'utf8').split(/\\r?\\n/).filter(Boolean)) {\n    try {\n      const row = JSON.parse(line);\n      if (row.date_kst === today && row.url) logUploadToday = row;\n    } catch (error) {}\n  }\n}\n\nconst uploadedToday = uploadsToday.length > 0 || Boolean(logUploadToday);\nconst checkFailed = Boolean(apiError) || base.youtube_upload_check?.ok === false || !base.uploads_playlist_id;\nconst due = !uploadedToday && !checkFailed;\n\nreturn [{\n  json: {\n    ...base,\n    daily_upload_due: due,\n    daily_upload_date_kst: today,\n    youtube_upload_check: {\n      ...base.youtube_upload_check,\n      ok: !checkFailed,\n      stage: checkFailed ? 'failed' : 'recent_uploads_checked',\n      error: apiError,\n      uploaded_today: uploadedToday,\n      uploads_today: uploadsToday,\n      log_upload_today: logUploadToday,\n      recent_checked_count: items.length,\n    },\n    last_upload: uploadsToday[0] || logUploadToday || null,\n    skip_reason: uploadedToday\n      ? 'youtube_channel_already_has_upload_today'\n      : (checkFailed ? 'youtube_upload_check_failed' : null),\n  },\n}];"
+      },
+      "id": "8bcb7965-b48d-4305-8c25-640b419a491e",
+      "name": "Check Daily Upload Due",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1984,
+        1696
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{!!$json.image_url}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "6d1b1d66-99c5-41b6-a116-be97f2d42220",
+      "name": "Image Ready?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        6448,
+        1552
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{$json.config.image_retry_wait_seconds || 30}}"
+      },
+      "id": "b74ab34e-1bde-4af1-a9b8-05b344698fc5",
+      "name": "Wait Image Retry 30s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        6720,
+        1328
+      ],
+      "webhookId": "6acdec72-282d-4c45-9579-0cecb0eeff7e"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/jobs/recordInfo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{$json.image_task_id}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0b877b79-1adc-4cd9-91fc-d22d8e72c65b",
+      "name": "KIE Get Image Task Retry",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        7200,
+        1328
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let base;\ntry {\n  base = $('Prepare Image Retry Poll').last().json;\n} catch (error) {\n  base = $('Parse Image Result').first().json;\n}\nconst response = $input.first().json || {};\nconst data = response.data || response;\nconst state = String(data.state || data.status || '').toLowerCase();\nlet resultJson = data.resultJson || data.result_json || null;\nif (typeof resultJson === 'string' && resultJson.trim()) {\n  try { resultJson = JSON.parse(resultJson); } catch (error) { resultJson = { raw: data.resultJson, parse_error: error.message }; }\n}\nconst urls =\n  resultJson?.resultUrls ||\n  resultJson?.result_urls ||\n  resultJson?.imageUrls ||\n  resultJson?.images ||\n  resultJson?.urls ||\n  data.response?.resultUrls ||\n  data.resultUrls ||\n  data.imageUrls ||\n  [];\nconst first = Array.isArray(urls) ? urls[0] : urls;\nconst imageUrl = typeof first === 'string' ? first : first?.url || first?.imageUrl || first?.src || null;\nconst apiCode = Number(response.code ?? data.code ?? 200);\nconst failed =\n  ['fail', 'failed', 'error'].includes(state) ||\n  Boolean(data.failCode || data.failMsg || response.error) ||\n  (apiCode !== 200 && apiCode !== 0);\n\nif (failed) {\n  throw new Error('KIE image failed. state=' + state + ', taskId=' + (base.image_task_id || '-') + ', message=' + (data.failMsg || response.msg || response.error || ''));\n}\n\nconst attempt = Number(base.image_poll_attempt || 2);\nconst maxAttempts = Number(base.image_poll_max_attempts || base.config?.image_poll_max_attempts || 20);\n\nif (!imageUrl && attempt >= maxAttempts) {\n  throw new Error('KIE image still not ready after ' + attempt + ' polls. state=' + (state || 'unknown') + ', taskId=' + (base.image_task_id || '-') + '. Wait a few more minutes and poll the same taskId again, or rerun the workflow.');\n}\n\nreturn [{\n  json: {\n    ...base,\n    image_poll_response: response,\n    image_state: state || (imageUrl ? 'succeeded' : 'pending'),\n    image_failed: false,\n    image_ready: Boolean(imageUrl),\n    image_url: imageUrl,\n    image_retry_attempted: true,\n    image_poll_attempt: attempt,\n    image_poll_max_attempts: maxAttempts,\n  },\n}];"
+      },
+      "id": "70f77441-1ec5-40ce-a157-d1a938e4ad8c",
+      "name": "Parse Image Result Final",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7440,
+        1328
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst attempt = Number(data.image_poll_attempt || 1) + 1;\nconst maxAttempts = Number(data.image_poll_max_attempts || data.config?.image_poll_max_attempts || 20);\nreturn [{\n  json: {\n    ...data,\n    image_poll_attempt: attempt,\n    image_poll_max_attempts: maxAttempts,\n  },\n}];"
+      },
+      "id": "76c7f0de-6ab9-4bd8-8b8a-0f2a6b2a26e2",
+      "name": "Prepare Image Retry Poll",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6944,
+        1328
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Load Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Config": {
+      "main": [
+        [
+          {
+            "node": "Fetch Health RSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Health RSS": {
+      "main": [
+        [
+          {
+            "node": "Build Viral Rank Pack Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Viral Rank Pack Request": {
+      "main": [
+        [
+          {
+            "node": "Use Live KIE Claude?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use Live KIE Claude?": {
+      "main": [
+        [
+          {
+            "node": "KIE Claude Generate Pack",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mock Viral Rank Pack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Claude Generate Pack": {
+      "main": [
+        [
+          {
+            "node": "Parse KIE Claude Pack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse KIE Claude Pack": {
+      "main": [
+        [
+          {
+            "node": "Medical Safety Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock Viral Rank Pack": {
+      "main": [
+        [
+          {
+            "node": "Medical Safety Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Medical Safety Review": {
+      "main": [
+        [
+          {
+            "node": "Medical Review Passed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Medical Review Passed?": {
+      "main": [
+        [
+          {
+            "node": "Prepare Image and BGM Payloads",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Blocked Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Blocked Result": {
+      "main": [
+        [
+          {
+            "node": "Final Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Image and BGM Payloads": {
+      "main": [
+        [
+          {
+            "node": "Use Live Image?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use Live BGM?": {
+      "main": [
+        [
+          {
+            "node": "KIE Create BGM Task",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mock BGM Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Create BGM Task": {
+      "main": [
+        [
+          {
+            "node": "Normalize BGM Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize BGM Task": {
+      "main": [
+        [
+          {
+            "node": "Wait BGM 30s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait BGM 30s": {
+      "main": [
+        [
+          {
+            "node": "KIE Get BGM Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Get BGM Task": {
+      "main": [
+        [
+          {
+            "node": "Parse BGM Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse BGM Result": {
+      "main": [
+        [
+          {
+            "node": "BGM Ready?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock BGM Result": {
+      "main": [
+        [
+          {
+            "node": "Use Live Render?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use Live Render?": {
+      "main": [
+        [
+          {
+            "node": "Prepare Local FFmpeg Render",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mock Render Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock Render Result": {
+      "main": [
+        [
+          {
+            "node": "Final Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Downloaded MP4": {
+      "main": [
+        [
+          {
+            "node": "Allow YouTube Upload?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Allow YouTube Upload?": {
+      "main": [
+        [
+          {
+            "node": "YouTube Upload Public",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip YouTube Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize YouTube Upload": {
+      "main": [
+        [
+          {
+            "node": "Post Top-Level Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Top-Level Comment": {
+      "main": [
+        [
+          {
+            "node": "Attach Comment Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Comment Result": {
+      "main": [
+        [
+          {
+            "node": "Final Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip YouTube Upload": {
+      "main": [
+        [
+          {
+            "node": "Final Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Final Result": {
+      "main": [
+        [
+          {
+            "node": "Notify Slack?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Slack?": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is Webhook Run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Slack Webhook": {
+      "main": [
+        [
+          {
+            "node": "Attach Slack Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Slack Result": {
+      "main": [
+        [
+          {
+            "node": "Is Webhook Run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Webhook Run?": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Done - Manual or Schedule",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use Live Image?": {
+      "main": [
+        [
+          {
+            "node": "KIE Create Image Task",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mock Image Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Create Image Task": {
+      "main": [
+        [
+          {
+            "node": "Normalize Image Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Image Task": {
+      "main": [
+        [
+          {
+            "node": "Wait Image 30s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Image 30s": {
+      "main": [
+        [
+          {
+            "node": "KIE Get Image Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Get Image Task": {
+      "main": [
+        [
+          {
+            "node": "Parse Image Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Image Result": {
+      "main": [
+        [
+          {
+            "node": "Image Ready?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock Image Result": {
+      "main": [
+        [
+          {
+            "node": "Use Live BGM?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Local FFmpeg Render": {
+      "main": [
+        [
+          {
+            "node": "Local FFmpeg Render",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Local FFmpeg Render": {
+      "main": [
+        [
+          {
+            "node": "Parse Local Render Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Local Render Result": {
+      "main": [
+        [
+          {
+            "node": "Read Rendered MP4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Rendered MP4": {
+      "main": [
+        [
+          {
+            "node": "Attach Downloaded MP4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BGM Ready?": {
+      "main": [
+        [
+          {
+            "node": "Use Live Render?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait BGM Retry 90s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait BGM Retry 90s": {
+      "main": [
+        [
+          {
+            "node": "KIE Get BGM Task Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Get BGM Task Retry": {
+      "main": [
+        [
+          {
+            "node": "Parse BGM Result Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse BGM Result Final": {
+      "main": [
+        [
+          {
+            "node": "Use Live Render?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube Upload Public": {
+      "main": [
+        [
+          {
+            "node": "Normalize YouTube Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily 21:00 Schedule (Disabled)": {
+      "main": [
+        [
+          {
+            "node": "Prepare Daily Upload Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily Upload Due?": {
+      "main": [
+        [
+          {
+            "node": "Load Config",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip Daily Upload Already Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip Daily Upload Already Done": {
+      "main": [
+        [
+          {
+            "node": "Done - Manual or Schedule",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Daily Upload Check": {
+      "main": [
+        [
+          {
+            "node": "YouTube Get My Channel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube Get My Channel": {
+      "main": [
+        [
+          {
+            "node": "Extract Uploads Playlist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Uploads Playlist": {
+      "main": [
+        [
+          {
+            "node": "YouTube Get Recent Uploads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube Get Recent Uploads": {
+      "main": [
+        [
+          {
+            "node": "Check Daily Upload Due",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Daily Upload Due": {
+      "main": [
+        [
+          {
+            "node": "Daily Upload Due?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Ready?": {
+      "main": [
+        [
+          {
+            "node": "Use Live BGM?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait Image Retry 30s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Image Retry 30s": {
+      "main": [
+        [
+          {
+            "node": "Prepare Image Retry Poll",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Get Image Task Retry": {
+      "main": [
+        [
+          {
+            "node": "Parse Image Result Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Image Result Final": {
+      "main": [
+        [
+          {
+            "node": "Image Ready?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Image Retry Poll": {
+      "main": [
+        [
+          {
+            "node": "KIE Get Image Task Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {},
+  "versionId": "f6b170b7-7cd3-4a4e-ad8a-7018c3204aa8",
+  "triggerCount": 0
+}
