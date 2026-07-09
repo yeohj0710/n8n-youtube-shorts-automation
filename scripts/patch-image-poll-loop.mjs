@@ -14,16 +14,22 @@ const workflows = [
 
 const prepareRetryPollCode = `const items = $input.all();
 const data = items[items.length - 1]?.json || $input.first().json;
-const currentAttempt = Number(data.image_poll_attempt || 1);
+function positiveNumber(value, fallback) {
+  const number = Number(value);
+  return Number.isFinite(number) && number > 0 ? number : fallback;
+}
+const currentAttempt = positiveNumber(data.image_poll_attempt, 1);
 const attempt = currentAttempt + 1;
-const maxAttempts = Number(data.image_poll_max_attempts || data.config?.image_poll_max_attempts || 30);
-const waitSeconds = Number(data.config?.image_retry_wait_seconds || data.config?.image_poll_interval_seconds || 30);
-const timeoutSeconds = Number(data.image_poll_timeout_seconds || data.config?.image_poll_timeout_seconds || Math.max(maxAttempts * waitSeconds + 60, 900));
+const waitSeconds = positiveNumber(data.config?.image_retry_wait_seconds || data.config?.image_poll_interval_seconds, 30);
+const requestedMaxAttempts = positiveNumber(data.image_poll_max_attempts || data.config?.image_poll_max_attempts, 60);
+const timeoutSeconds = positiveNumber(data.image_poll_timeout_seconds || data.config?.image_poll_timeout_seconds, 1800);
+const timeoutBasedMaxAttempts = Math.ceil(timeoutSeconds / waitSeconds) + 2;
+const maxAttempts = Math.max(requestedMaxAttempts, timeoutBasedMaxAttempts);
 const startedAt = data.image_poll_started_at || new Date().toISOString();
 const startedMs = Date.parse(startedAt);
 const elapsedSeconds = Number.isFinite(startedMs) ? Math.floor((Date.now() - startedMs) / 1000) : 0;
-if (currentAttempt >= maxAttempts || elapsedSeconds >= timeoutSeconds) {
-  throw new Error('KIE image retry limit reached before next poll. attempts=' + currentAttempt + '/' + maxAttempts + ', elapsed=' + elapsedSeconds + 's/' + timeoutSeconds + 's, taskId=' + (data.image_task_id || '-'));
+if (elapsedSeconds >= timeoutSeconds) {
+  throw new Error('KIE image timeout reached before next poll. attempts=' + currentAttempt + '/' + maxAttempts + ', elapsed=' + elapsedSeconds + 's/' + timeoutSeconds + 's, taskId=' + (data.image_task_id || '-'));
 }
 return [{
   json: {
@@ -72,15 +78,21 @@ if (failed) {
   throw new Error('KIE image failed. state=' + state + ', taskId=' + (base.image_task_id || '-') + ', message=' + (data.failMsg || response.msg || response.error || ''));
 }
 
-const attempt = Number(base.image_poll_attempt || 2);
-const maxAttempts = Number(base.image_poll_max_attempts || base.config?.image_poll_max_attempts || 30);
-const waitSeconds = Number(base.config?.image_retry_wait_seconds || base.config?.image_poll_interval_seconds || 30);
-const timeoutSeconds = Number(base.image_poll_timeout_seconds || base.config?.image_poll_timeout_seconds || Math.max(maxAttempts * waitSeconds + 60, 900));
+function positiveNumber(value, fallback) {
+  const number = Number(value);
+  return Number.isFinite(number) && number > 0 ? number : fallback;
+}
+const attempt = positiveNumber(base.image_poll_attempt, 2);
+const waitSeconds = positiveNumber(base.config?.image_retry_wait_seconds || base.config?.image_poll_interval_seconds, 30);
+const requestedMaxAttempts = positiveNumber(base.image_poll_max_attempts || base.config?.image_poll_max_attempts, 60);
+const timeoutSeconds = positiveNumber(base.image_poll_timeout_seconds || base.config?.image_poll_timeout_seconds, 1800);
+const timeoutBasedMaxAttempts = Math.ceil(timeoutSeconds / waitSeconds) + 2;
+const maxAttempts = Math.max(requestedMaxAttempts, timeoutBasedMaxAttempts);
 const startedMs = Date.parse(base.image_poll_started_at || '');
 const elapsedSeconds = Number.isFinite(startedMs) ? Math.floor((Date.now() - startedMs) / 1000) : 0;
 
-if (!imageUrl && (attempt >= maxAttempts || elapsedSeconds >= timeoutSeconds)) {
-  throw new Error('KIE image still not ready after ' + attempt + '/' + maxAttempts + ' polls and ' + elapsedSeconds + 's/' + timeoutSeconds + 's. state=' + (state || 'unknown') + ', taskId=' + (base.image_task_id || '-') + '. Wait a few more minutes and poll the same taskId again, or rerun the workflow.');
+if (!imageUrl && elapsedSeconds >= timeoutSeconds) {
+  throw new Error('KIE image timed out after ' + attempt + '/' + maxAttempts + ' polls and ' + elapsedSeconds + 's/' + timeoutSeconds + 's. state=' + (state || 'unknown') + ', taskId=' + (base.image_task_id || '-') + '. The workflow waited until the configured timeout; increase image_poll_timeout_seconds or rerun later.');
 }
 
 return [{
@@ -143,12 +155,24 @@ function patchLoadConfig(node) {
   if (/image_poll_max_attempts:\s*Number\(incoming\.image_poll_max_attempts/.test(code)) {
     code = code.replace(
       /image_poll_max_attempts:\s*Number\(incoming\.image_poll_max_attempts\s*\|\|\s*\d+\),/,
-      'image_poll_max_attempts: Number(incoming.image_poll_max_attempts || 30),',
+      'image_poll_max_attempts: Number(incoming.image_poll_max_attempts || 60),',
     );
   } else {
     code = code.replace(
       /image_retry_wait_seconds:\s*Number\(incoming\.image_retry_wait_seconds\s*\|\|\s*30\),\n/,
-      'image_retry_wait_seconds: Number(incoming.image_retry_wait_seconds || 30),\n  image_poll_max_attempts: Number(incoming.image_poll_max_attempts || 30),\n',
+      'image_retry_wait_seconds: Number(incoming.image_retry_wait_seconds || 30),\n  image_poll_max_attempts: Number(incoming.image_poll_max_attempts || 60),\n',
+    );
+  }
+
+  if (/image_poll_timeout_seconds:\s*Number\(incoming\.image_poll_timeout_seconds/.test(code)) {
+    code = code.replace(
+      /image_poll_timeout_seconds:\s*Number\(incoming\.image_poll_timeout_seconds\s*\|\|\s*\d+\),/,
+      'image_poll_timeout_seconds: Number(incoming.image_poll_timeout_seconds || 1800),',
+    );
+  } else {
+    code = code.replace(
+      /image_poll_max_attempts:\s*Number\(incoming\.image_poll_max_attempts\s*\|\|\s*60\),\n/,
+      'image_poll_max_attempts: Number(incoming.image_poll_max_attempts || 60),\n  image_poll_timeout_seconds: Number(incoming.image_poll_timeout_seconds || 1800),\n',
     );
   }
 
