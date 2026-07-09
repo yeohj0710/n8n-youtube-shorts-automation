@@ -8,30 +8,38 @@ const dbPath = path.join(root, '.n8n', 'database.sqlite');
 const backupDir = path.join(root, '.n8n', 'backup-before-image-poll-loop-' + timestamp());
 
 const workflows = [
-  {
-    id: 'mxrYb3maJS31gEYC',
-    file: path.join(root, 'workflows', 'n8n_하루건강약사_수동실행.json'),
-  },
-  {
-    id: 'baekse100Life01',
-    file: path.join(root, 'workflows', 'n8n_geongangjangsubigyeol_manual.json'),
-  },
+  { id: 'mxrYb3maJS31gEYC' },
+  { id: 'baekse100Life01' },
 ];
 
-const prepareRetryPollCode = `const data = $input.first().json;
-const attempt = Number(data.image_poll_attempt || 1) + 1;
+const prepareRetryPollCode = `const items = $input.all();
+const data = items[items.length - 1]?.json || $input.first().json;
+const currentAttempt = Number(data.image_poll_attempt || 1);
+const attempt = currentAttempt + 1;
 const maxAttempts = Number(data.image_poll_max_attempts || data.config?.image_poll_max_attempts || 30);
+const waitSeconds = Number(data.config?.image_retry_wait_seconds || data.config?.image_poll_interval_seconds || 30);
+const timeoutSeconds = Number(data.image_poll_timeout_seconds || data.config?.image_poll_timeout_seconds || Math.max(maxAttempts * waitSeconds + 60, 900));
+const startedAt = data.image_poll_started_at || new Date().toISOString();
+const startedMs = Date.parse(startedAt);
+const elapsedSeconds = Number.isFinite(startedMs) ? Math.floor((Date.now() - startedMs) / 1000) : 0;
+if (currentAttempt >= maxAttempts || elapsedSeconds >= timeoutSeconds) {
+  throw new Error('KIE image retry limit reached before next poll. attempts=' + currentAttempt + '/' + maxAttempts + ', elapsed=' + elapsedSeconds + 's/' + timeoutSeconds + 's, taskId=' + (data.image_task_id || '-'));
+}
 return [{
   json: {
     ...data,
     image_poll_attempt: attempt,
     image_poll_max_attempts: maxAttempts,
+    image_poll_started_at: startedAt,
+    image_poll_elapsed_seconds: elapsedSeconds,
+    image_poll_timeout_seconds: timeoutSeconds,
   },
 }];`;
 
 const parseImageFinalCode = `let base;
 try {
-  base = $('Prepare Image Retry Poll').last().json;
+  const prepareItems = $('Prepare Image Retry Poll').all();
+  base = prepareItems[prepareItems.length - 1]?.json || $('Prepare Image Retry Poll').last().json;
 } catch (error) {
   base = $('Parse Image Result').first().json;
 }
@@ -66,9 +74,13 @@ if (failed) {
 
 const attempt = Number(base.image_poll_attempt || 2);
 const maxAttempts = Number(base.image_poll_max_attempts || base.config?.image_poll_max_attempts || 30);
+const waitSeconds = Number(base.config?.image_retry_wait_seconds || base.config?.image_poll_interval_seconds || 30);
+const timeoutSeconds = Number(base.image_poll_timeout_seconds || base.config?.image_poll_timeout_seconds || Math.max(maxAttempts * waitSeconds + 60, 900));
+const startedMs = Date.parse(base.image_poll_started_at || '');
+const elapsedSeconds = Number.isFinite(startedMs) ? Math.floor((Date.now() - startedMs) / 1000) : 0;
 
-if (!imageUrl && attempt >= maxAttempts) {
-  throw new Error('KIE image still not ready after ' + attempt + ' polls. state=' + (state || 'unknown') + ', taskId=' + (base.image_task_id || '-') + '. Wait a few more minutes and poll the same taskId again, or rerun the workflow.');
+if (!imageUrl && (attempt >= maxAttempts || elapsedSeconds >= timeoutSeconds)) {
+  throw new Error('KIE image still not ready after ' + attempt + '/' + maxAttempts + ' polls and ' + elapsedSeconds + 's/' + timeoutSeconds + 's. state=' + (state || 'unknown') + ', taskId=' + (base.image_task_id || '-') + '. Wait a few more minutes and poll the same taskId again, or rerun the workflow.');
 }
 
 return [{
@@ -82,6 +94,8 @@ return [{
     image_retry_attempted: true,
     image_poll_attempt: attempt,
     image_poll_max_attempts: maxAttempts,
+    image_poll_elapsed_seconds: elapsedSeconds,
+    image_poll_timeout_seconds: timeoutSeconds,
   },
 }];`;
 
@@ -245,16 +259,32 @@ function updateDbWorkflow(db, workflow) {
   });
 }
 
-function patchWorkflowFile(file) {
+function findWorkflowFile(id) {
+  const workflowDir = path.join(root, 'workflows');
+  for (const name of fs.readdirSync(workflowDir)) {
+    if (!name.endsWith('.json') || name.includes('.backup')) continue;
+    const file = path.join(workflowDir, name);
+    try {
+      const workflow = JSON.parse(fs.readFileSync(file, 'utf8'));
+      if (workflow.id === id) return file;
+    } catch {
+      // Ignore non-workflow JSON.
+    }
+  }
+  throw new Error('Workflow file not found for id: ' + id);
+}
+
+function patchWorkflowFile(id) {
+  const file = findWorkflowFile(id);
   const workflow = JSON.parse(fs.readFileSync(file, 'utf8'));
   patchWorkflowShape(workflow);
   fs.writeFileSync(file, JSON.stringify(workflow, null, 2) + '\n', 'utf8');
-  return { id: workflow.id, name: workflow.name, nodes: workflow.nodes.length };
+  return { id: workflow.id, name: workflow.name, nodes: workflow.nodes.length, file };
 }
 
 backupDatabase();
 
-const fileResults = workflows.map((workflow) => patchWorkflowFile(workflow.file));
+const fileResults = workflows.map((workflow) => patchWorkflowFile(workflow.id));
 
 const db = new sqlite3.Database(dbPath);
 const dbResults = [];
@@ -265,6 +295,17 @@ try {
     const changes = await updateDbWorkflow(db, workflow);
     dbResults.push({ id, name: workflow.name, nodes: workflow.nodes.length, changes });
   }
+
+  await new Promise((resolve, reject) => {
+    db.run(
+      "update execution_entity set status='canceled', stoppedAt=strftime('%Y-%m-%d %H:%M:%f','now'), finished=0 where workflowId in (?, ?) and status='running'",
+      ['mxrYb3maJS31gEYC', 'baekse100Life01'],
+      function onCancel(error) {
+        if (error) reject(error);
+        else resolve(this.changes);
+      },
+    );
+  });
 } finally {
   await new Promise((resolve) => db.close(resolve));
 }
