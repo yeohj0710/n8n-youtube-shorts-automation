@@ -1,8 +1,8 @@
 {
-  "name": "n8n-local-video-runner",
+  "name": "n8n-youtube-shorts-automation",
   "private": true,
   "version": "1.0.0",
-  "description": "Local n8n runner with ffmpeg static-card rendering",
+  "description": "n8n-based YouTube Shorts automation with local ffmpeg rendering",
   "scripts": {
     "start": "powershell -ExecutionPolicy Bypass -File ./scripts/start-n8n.ps1",
     "import": "powershell -ExecutionPolicy Bypass -File ./scripts/import-workflow.ps1",

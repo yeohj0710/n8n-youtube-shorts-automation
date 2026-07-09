@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import sqlite3 from 'sqlite3';
 
-const root = 'C:/dev/n8n-local';
+const root = 'C:/dev/n8n-youtube-shorts-automation';
 const dbPath = path.join(root, '.n8n', 'database.sqlite');
 const workflowId = 'baekse100Life01';
 const workflowPath = path.join(root, 'workflows', 'n8n_geongangjangsubigyeol_manual.json');

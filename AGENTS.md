@@ -1,10 +1,10 @@
-# n8n Local Runner Agent Notes
+# n8n YouTube Shorts Automation Agent Notes
 
-This repo is the source of truth for the user's local n8n YouTube Shorts workflow.
+This repo is the source of truth for the user's n8n-based YouTube Shorts automation.
 
 Primary path:
 
-`C:\dev\n8n-local`
+`C:\dev\n8n-youtube-shorts-automation`
 
 Local n8n URL:
 
@@ -12,13 +12,13 @@ Local n8n URL:
 
 GitHub repo:
 
-`https://github.com/yeohj0710/n8n-local.git`
+`https://github.com/yeohj0710/n8n-youtube-shorts-automation.git`
 
 Latest known workflow:
 
 - ID: `mxrYb3maJS31gEYC`
-- Name: `하루건강약사 - 로컬 n8n 이미지+BGM 업로드`
-- Export: `C:\dev\n8n-local\workflows\n8n_하루건강약사_수동실행.json`
+- Name: `하루건강약사 - n8n 유튜브 쇼츠 자동화`
+- Export: `C:\dev\n8n-youtube-shorts-automation\workflows\n8n_하루건강약사_수동실행.json`
 - Current shape: full-card GPT image + BGM + local ffmpeg render + YouTube public upload
 
 ## Non-Negotiables
@@ -44,26 +44,26 @@ Latest known workflow:
 
 ## Important Paths
 
-- Runner root: `C:\dev\n8n-local`
-- n8n user folder: `C:\dev\n8n-local\.n8n`
-- n8n DB: `C:\dev\n8n-local\.n8n\database.sqlite`
-- Render outputs: `C:\dev\n8n-local\renders`
-- Binary storage: `C:\dev\n8n-local\binary-data`
-- Startup script: `C:\dev\n8n-local\scripts\start-n8n.ps1`
-- Hidden startup launcher: `C:\dev\n8n-local\scripts\start-n8n-hidden.vbs`
-- Renderer: `C:\dev\n8n-local\scripts\render-static-card.mjs`
-- 하루건강약사 topic drop folder: `C:\dev\n8n-local\하루건강약사 소재`
-- 건강장수비결 topic drop folder: `C:\dev\n8n-local\건강장수비결 소재`
+- Runner root: `C:\dev\n8n-youtube-shorts-automation`
+- n8n user folder: `C:\dev\n8n-youtube-shorts-automation\.n8n`
+- n8n DB: `C:\dev\n8n-youtube-shorts-automation\.n8n\database.sqlite`
+- Render outputs: `C:\dev\n8n-youtube-shorts-automation\renders`
+- Binary storage: `C:\dev\n8n-youtube-shorts-automation\binary-data`
+- Startup script: `C:\dev\n8n-youtube-shorts-automation\scripts\start-n8n.ps1`
+- Hidden startup launcher: `C:\dev\n8n-youtube-shorts-automation\scripts\start-n8n-hidden.vbs`
+- Renderer: `C:\dev\n8n-youtube-shorts-automation\scripts\render-static-card.mjs`
+- 하루건강약사 topic drop folder: `C:\dev\n8n-youtube-shorts-automation\하루건강약사 소재`
+- 건강장수비결 topic drop folder: `C:\dev\n8n-youtube-shorts-automation\건강장수비결 소재`
 - Used topic archive: each drop folder's `사용완료`
 - Topic/upload logs: each drop folder's `기록`
-- Workflow export script: `C:\dev\n8n-local\scripts\export-workflow-from-db.mjs`
-- Workflow import script: `C:\dev\n8n-local\scripts\import-workflow.ps1`
+- Workflow export script: `C:\dev\n8n-youtube-shorts-automation\scripts\export-workflow-from-db.mjs`
+- Workflow import script: `C:\dev\n8n-youtube-shorts-automation\scripts\import-workflow.ps1`
 - Original user folder: `G:\내 드라이브\영상 편집\유튜브 닌자`
 - Saved YouTube OAuth client secret note: `G:\내 드라이브\영상 편집\유튜브 닌자\etc\youtube_oauth_client_secret.txt`
 
 ## Commands
 
-Run from `C:\dev\n8n-local`.
+Run from `C:\dev\n8n-youtube-shorts-automation`.
 
 ```powershell
 npm install
@@ -84,11 +84,11 @@ Restart local n8n without touching workflow layout:
 ```powershell
 $procs = Get-CimInstance Win32_Process -Filter "name='node.exe'" |
   Where-Object {
-    $_.CommandLine -like '*C:\dev\n8n-local\node_modules*\n8n*start*' -or
-    $_.CommandLine -like '*C:\dev\n8n-local\node_modules\@n8n\task-runner*'
+    $_.CommandLine -like '*C:\dev\n8n-youtube-shorts-automation\node_modules*\n8n*start*' -or
+    $_.CommandLine -like '*C:\dev\n8n-youtube-shorts-automation\node_modules\@n8n\task-runner*'
   }
 $procs | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
-Start-Process -FilePath 'wscript.exe' -ArgumentList '"C:\dev\n8n-local\scripts\start-n8n-hidden.vbs"' -WindowStyle Hidden
+Start-Process -FilePath 'wscript.exe' -ArgumentList '"C:\dev\n8n-youtube-shorts-automation\scripts\start-n8n-hidden.vbs"' -WindowStyle Hidden
 ```
 
 If port-kill is needed, do not use `$PID` as a loop variable in PowerShell. It is reserved.
@@ -325,7 +325,7 @@ Fix:
 
 Cause:
 
-n8n read-file nodes can only access configured paths. Rendered MP4s are under `C:\dev\n8n-local\renders`.
+n8n read-file nodes can only access configured paths. Rendered MP4s are under `C:\dev\n8n-youtube-shorts-automation\renders`.
 
 Fix:
 
@@ -370,7 +370,7 @@ Use this pattern:
 $script = @'
 const { parse } = require('flatted');
 const sqlite3 = require('sqlite3');
-const db = new sqlite3.Database('C:/dev/n8n-local/.n8n/database.sqlite', sqlite3.OPEN_READONLY);
+const db = new sqlite3.Database('C:/dev/n8n-youtube-shorts-automation/.n8n/database.sqlite', sqlite3.OPEN_READONLY);
 db.get('select data from execution_data where executionId=?', [5], (e, row) => {
   if (e) throw e;
   const d = parse(row.data);
