@@ -14,7 +14,7 @@
       "typeVersion": 1,
       "position": [
         0,
-        -520
+        -780
       ]
     },
     {
@@ -24,8 +24,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        1400,
-        720
+        0,
+        0
       ]
     },
     {
@@ -37,8 +37,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1960,
-        720
+        170,
+        0
       ]
     },
     {
@@ -52,8 +52,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        560,
-        -520
+        340,
+        -780
       ]
     },
     {
@@ -66,8 +66,8 @@
       "type": "n8n-nodes-base.rssFeedRead",
       "typeVersion": 1.2,
       "position": [
-        2240,
-        720
+        340,
+        0
       ],
       "alwaysOutputData": true,
       "continueOnFail": true
@@ -81,8 +81,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2520,
-        720
+        510,
+        0
       ]
     },
     {
@@ -101,8 +101,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2800,
-        720
+        680,
+        0
       ]
     },
     {
@@ -134,8 +134,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3080,
-        420
+        850,
+        -260
       ],
       "retryOnFail": true,
       "maxTries": 3,
@@ -157,8 +157,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3360,
-        420
+        1020,
+        -260
       ]
     },
     {
@@ -170,8 +170,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3080,
-        1020
+        850,
+        260
       ]
     },
     {
@@ -183,8 +183,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3640,
-        720
+        1190,
+        0
       ]
     },
     {
@@ -203,8 +203,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3920,
-        720
+        1360,
+        0
       ]
     },
     {
@@ -216,8 +216,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4760,
-        1320
+        1530,
+        520
       ]
     },
     {
@@ -229,8 +229,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4200,
-        720
+        1530,
+        0
       ]
     },
     {
@@ -249,8 +249,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        7840,
-        720
+        3740,
+        0
       ]
     },
     {
@@ -278,8 +278,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8120,
-        420
+        3910,
+        -260
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -297,8 +297,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8400,
-        420
+        4080,
+        -260
       ]
     },
     {
@@ -310,8 +310,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        8680,
-        420
+        4250,
+        -260
       ],
       "webhookId": "5d1515ad-df49-46ec-9c40-00f187ff2f4f"
     },
@@ -336,8 +336,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8960,
-        420
+        4420,
+        -260
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -355,8 +355,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9240,
-        420
+        4590,
+        -260
       ]
     },
     {
@@ -368,8 +368,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8120,
-        1020
+        3910,
+        260
       ]
     },
     {
@@ -388,8 +388,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        10640,
-        720
+        5440,
+        0
       ]
     },
     {
@@ -401,8 +401,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        10920,
-        1020
+        5610,
+        260
       ]
     },
     {
@@ -414,8 +414,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        10920,
-        420
+        5610,
+        -260
       ]
     },
     {
@@ -427,8 +427,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11200,
-        420
+        5780,
+        -260
       ]
     },
     {
@@ -440,8 +440,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11480,
-        420
+        5950,
+        -260
       ]
     },
     {
@@ -459,8 +459,8 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        11760,
-        420
+        6120,
+        -260
       ]
     },
     {
@@ -472,8 +472,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        12040,
-        420
+        6290,
+        -260
       ]
     },
     {
@@ -492,8 +492,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        12320,
-        720
+        6460,
+        0
       ]
     },
     {
@@ -517,8 +517,8 @@
       "type": "n8n-nodes-base.youTube",
       "typeVersion": 1,
       "position": [
-        12600,
-        420
+        6630,
+        -260
       ],
       "credentials": {
         "youTubeOAuth2Api": {
@@ -536,8 +536,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        12880,
-        420
+        6800,
+        -260
       ]
     },
     {
@@ -574,8 +574,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        13160,
-        420
+        6970,
+        -260
       ],
       "credentials": {
         "youTubeOAuth2Api": {
@@ -594,8 +594,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        13440,
-        420
+        7140,
+        -260
       ]
     },
     {
@@ -607,8 +607,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        12600,
-        1020
+        6630,
+        260
       ]
     },
     {
@@ -620,8 +620,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        13720,
-        720
+        7310,
+        0
       ]
     },
     {
@@ -640,8 +640,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        14000,
-        720
+        7480,
+        0
       ]
     },
     {
@@ -667,8 +667,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        14280,
-        420
+        7650,
+        -260
       ],
       "continueOnFail": true
     },
@@ -681,8 +681,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        14560,
-        420
+        7820,
+        -260
       ]
     },
     {
@@ -701,8 +701,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        14840,
-        720
+        7990,
+        0
       ]
     },
     {
@@ -716,8 +716,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        15120,
-        420
+        8160,
+        -260
       ]
     },
     {
@@ -729,8 +729,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        15120,
-        1020
+        8160,
+        260
       ]
     },
     {
@@ -749,8 +749,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        4480,
-        720
+        1700,
+        0
       ]
     },
     {
@@ -778,8 +778,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4760,
-        420
+        1870,
+        -260
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -797,8 +797,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5040,
-        420
+        2040,
+        -260
       ]
     },
     {
@@ -810,8 +810,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        5320,
-        420
+        2210,
+        -260
       ],
       "webhookId": "80f748aa-07f8-4ec3-bcb9-f769da2d8569"
     },
@@ -836,8 +836,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5600,
-        420
+        2380,
+        -260
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -855,8 +855,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5880,
-        420
+        2550,
+        -260
       ]
     },
     {
@@ -868,8 +868,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4760,
-        1020
+        1870,
+        260
       ]
     },
     {
@@ -888,8 +888,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        9520,
-        420
+        4760,
+        -260
       ]
     },
     {
@@ -901,8 +901,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        9800,
-        120
+        4930,
+        -520
       ],
       "webhookId": "5c321383-c259-47eb-ba7c-253640a7892e"
     },
@@ -927,8 +927,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        10080,
-        120
+        5100,
+        -520
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -946,8 +946,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        10360,
-        120
+        5270,
+        -520
       ]
     },
     {
@@ -966,7 +966,7 @@
       "typeVersion": 1.3,
       "position": [
         0,
-        -160
+        -520
       ],
       "disabled": true
     },
@@ -979,8 +979,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        280,
-        -160
+        170,
+        -520
       ]
     },
     {
@@ -999,8 +999,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        1680,
-        -160
+        1020,
+        -520
       ]
     },
     {
@@ -1012,8 +1012,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1960,
-        1320
+        1190,
+        520
       ]
     },
     {
@@ -1041,8 +1041,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        560,
-        -160
+        340,
+        -520
       ],
       "credentials": {
         "youTubeOAuth2Api": {
@@ -1061,8 +1061,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        840,
-        -160
+        510,
+        -520
       ]
     },
     {
@@ -1094,8 +1094,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1120,
-        -160
+        680,
+        -520
       ],
       "credentials": {
         "youTubeOAuth2Api": {
@@ -1114,8 +1114,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1400,
-        -160
+        850,
+        -520
       ]
     },
     {
@@ -1134,8 +1134,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6160,
-        420
+        2720,
+        -260
       ]
     },
     {
@@ -1147,8 +1147,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        6720,
-        120
+        3060,
+        -520
       ],
       "webhookId": "6acdec72-282d-4c45-9579-0cecb0eeff7e"
     },
@@ -1173,8 +1173,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        7280,
-        120
+        3400,
+        -520
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -1192,8 +1192,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7560,
-        120
+        3570,
+        -520
       ]
     },
     {
@@ -1205,8 +1205,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7000,
-        120
+        3230,
+        -520
       ]
     },
     {
@@ -1218,8 +1218,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4200,
-        1020
+        1360,
+        260
       ]
     },
     {
@@ -1238,8 +1238,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        4480,
-        1020
+        1190,
+        260
       ]
     },
     {
@@ -1258,8 +1258,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6440,
-        420
+        2890,
+        -260
       ]
     },
     {
@@ -1271,8 +1271,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1,
       "position": [
-        6720,
-        720
+        3060,
+        0
       ],
       "webhookId": "08f4f477-ee42-45e7-b2f8-bbf8940b9841"
     },
@@ -1285,8 +1285,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7000,
-        720
+        3230,
+        0
       ]
     }
   ],

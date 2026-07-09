@@ -14,7 +14,7 @@
       "typeVersion": 1,
       "position": [
         0,
-        -520
+        -780
       ]
     },
     {
@@ -24,8 +24,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        1400,
-        720
+        0,
+        0
       ]
     },
     {
@@ -37,8 +37,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1960,
-        720
+        170,
+        0
       ]
     },
     {
@@ -52,8 +52,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        560,
-        -520
+        340,
+        -780
       ]
     },
     {
@@ -66,8 +66,8 @@
       "type": "n8n-nodes-base.rssFeedRead",
       "typeVersion": 1.2,
       "position": [
-        2240,
-        720
+        340,
+        0
       ],
       "alwaysOutputData": true,
       "continueOnFail": true
@@ -81,8 +81,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2520,
-        720
+        510,
+        0
       ]
     },
     {
@@ -101,8 +101,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2800,
-        720
+        680,
+        0
       ]
     },
     {
@@ -134,8 +134,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3080,
-        420
+        850,
+        -260
       ],
       "retryOnFail": true,
       "maxTries": 3,
@@ -157,8 +157,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3360,
-        420
+        1020,
+        -260
       ]
     },
     {
@@ -170,8 +170,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3080,
-        1020
+        850,
+        260
       ]
     },
     {
@@ -183,8 +183,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3640,
-        720
+        1190,
+        0
       ]
     },
     {
@@ -203,8 +203,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3920,
-        720
+        1360,
+        0
       ]
     },
     {
@@ -216,8 +216,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4760,
-        1320
+        1530,
+        520
       ]
     },
     {
@@ -229,8 +229,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4200,
-        720
+        1530,
+        0
       ]
     },
     {
@@ -249,8 +249,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        7840,
-        720
+        3740,
+        0
       ]
     },
     {
@@ -278,8 +278,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8120,
-        420
+        3910,
+        -260
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -297,8 +297,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8400,
-        420
+        4080,
+        -260
       ]
     },
     {
@@ -310,8 +310,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        8680,
-        420
+        4250,
+        -260
       ],
       "webhookId": "96d9eeaf-058a-422f-a004-371197b23ee2"
     },
@@ -336,8 +336,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8960,
-        420
+        4420,
+        -260
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -355,8 +355,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9240,
-        420
+        4590,
+        -260
       ]
     },
     {
@@ -368,8 +368,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8120,
-        1020
+        3910,
+        260
       ]
     },
     {
@@ -388,8 +388,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        10640,
-        720
+        5440,
+        0
       ]
     },
     {
@@ -401,8 +401,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        10920,
-        1020
+        5610,
+        260
       ]
     },
     {
@@ -414,8 +414,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        10920,
-        420
+        5610,
+        -260
       ]
     },
     {
@@ -427,8 +427,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11200,
-        420
+        5780,
+        -260
       ]
     },
     {
@@ -440,8 +440,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11480,
-        420
+        5950,
+        -260
       ]
     },
     {
@@ -459,8 +459,8 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        11760,
-        420
+        6120,
+        -260
       ]
     },
     {
@@ -472,8 +472,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        12040,
-        420
+        6290,
+        -260
       ]
     },
     {
@@ -492,8 +492,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        12320,
-        720
+        6460,
+        0
       ]
     },
     {
@@ -517,8 +517,8 @@
       "type": "n8n-nodes-base.youTube",
       "typeVersion": 1,
       "position": [
-        12600,
-        420
+        6630,
+        -260
       ],
       "credentials": {
         "youTubeOAuth2Api": {
@@ -536,8 +536,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        12880,
-        420
+        6800,
+        -260
       ]
     },
     {
@@ -574,8 +574,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        13160,
-        420
+        6970,
+        -260
       ],
       "credentials": {
         "youTubeOAuth2Api": {
@@ -594,8 +594,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        13440,
-        420
+        7140,
+        -260
       ]
     },
     {
@@ -607,8 +607,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        12600,
-        1020
+        6630,
+        260
       ]
     },
     {
@@ -620,8 +620,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        13720,
-        720
+        7310,
+        0
       ]
     },
     {
@@ -640,8 +640,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        14000,
-        720
+        7480,
+        0
       ]
     },
     {
@@ -667,8 +667,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        14280,
-        420
+        7650,
+        -260
       ],
       "continueOnFail": true
     },
@@ -681,8 +681,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        14560,
-        420
+        7820,
+        -260
       ]
     },
     {
@@ -701,8 +701,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        14840,
-        720
+        7990,
+        0
       ]
     },
     {
@@ -716,8 +716,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        15120,
-        420
+        8160,
+        -260
       ]
     },
     {
@@ -729,8 +729,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        15120,
-        1020
+        8160,
+        260
       ]
     },
     {
@@ -749,8 +749,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        4480,
-        720
+        1700,
+        0
       ]
     },
     {
@@ -778,8 +778,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4760,
-        420
+        1870,
+        -260
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -797,8 +797,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5040,
-        420
+        2040,
+        -260
       ]
     },
     {
@@ -810,8 +810,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        5320,
-        420
+        2210,
+        -260
       ],
       "webhookId": "d5480533-2e8a-4514-a763-b0e88010d2f4"
     },
@@ -836,8 +836,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5600,
-        420
+        2380,
+        -260
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -855,8 +855,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5880,
-        420
+        2550,
+        -260
       ]
     },
     {
@@ -868,8 +868,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4760,
-        1020
+        1870,
+        260
       ]
     },
     {
@@ -888,8 +888,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        9520,
-        420
+        4760,
+        -260
       ]
     },
     {
@@ -901,8 +901,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        9800,
-        120
+        4930,
+        -520
       ],
       "webhookId": "35800c3e-14bb-4731-8ba6-d1c7fbe3be3c"
     },
@@ -927,8 +927,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        10080,
-        120
+        5100,
+        -520
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -946,8 +946,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        10360,
-        120
+        5270,
+        -520
       ]
     },
     {
@@ -966,7 +966,7 @@
       "typeVersion": 1.3,
       "position": [
         0,
-        -160
+        -520
       ],
       "disabled": true
     },
@@ -979,8 +979,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        280,
-        -160
+        170,
+        -520
       ]
     },
     {
@@ -999,8 +999,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        1680,
-        -160
+        1020,
+        -520
       ]
     },
     {
@@ -1012,8 +1012,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1960,
-        1320
+        1190,
+        520
       ]
     },
     {
@@ -1041,8 +1041,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        560,
-        -160
+        340,
+        -520
       ],
       "credentials": {
         "youTubeOAuth2Api": {
@@ -1061,8 +1061,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        840,
-        -160
+        510,
+        -520
       ]
     },
     {
@@ -1094,8 +1094,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1120,
-        -160
+        680,
+        -520
       ],
       "credentials": {
         "youTubeOAuth2Api": {
@@ -1114,8 +1114,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1400,
-        -160
+        850,
+        -520
       ]
     },
     {
@@ -1124,8 +1124,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6160,
-        420
+        2720,
+        -260
       ],
       "parameters": {
         "conditions": {
@@ -1144,8 +1144,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        6720,
-        120
+        3060,
+        -520
       ],
       "parameters": {
         "amount": "={{$json.config.image_retry_wait_seconds || 30}}"
@@ -1172,8 +1172,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        7280,
-        120
+        3400,
+        -520
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -1188,8 +1188,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7560,
-        120
+        3570,
+        -520
       ],
       "parameters": {
         "jsCode": "let base;\ntry {\n  const prepareItems = $('Prepare Image Retry Poll').all();\n  base = prepareItems[prepareItems.length - 1]?.json || $('Prepare Image Retry Poll').last().json;\n} catch (error) {\n  const parsedItems = $('Parse Image Result').all();\n  base = parsedItems[parsedItems.length - 1]?.json || $('Parse Image Result').first().json;\n}\n\nconst response = $input.first().json || {};\nconst data = response.data || response;\nconst state = String(data.state || data.status || '').toLowerCase();\nlet resultJson = data.resultJson || data.result_json || null;\nif (typeof resultJson === 'string' && resultJson.trim()) {\n  try { resultJson = JSON.parse(resultJson); } catch (error) { resultJson = { raw: data.resultJson, parse_error: error.message }; }\n}\n\nconst urls =\n  resultJson?.resultUrls ||\n  resultJson?.result_urls ||\n  resultJson?.imageUrls ||\n  resultJson?.images ||\n  resultJson?.urls ||\n  data.response?.resultUrls ||\n  data.resultUrls ||\n  data.imageUrls ||\n  [];\nconst first = Array.isArray(urls) ? urls[0] : urls;\nconst imageUrl = typeof first === 'string' ? first : first?.url || first?.imageUrl || first?.src || null;\nconst apiCode = Number(response.code ?? data.code ?? 200);\nconst failCode = Number(data.failCode ?? data.fail_code ?? data.errorCode ?? data.error_code ?? apiCode);\nconst failMsg = String(data.failMsg || data.fail_msg || data.message || response.msg || response.error || '').trim();\nconst failed =\n  ['fail', 'failed', 'error'].includes(state) ||\n  Boolean(data.failCode || data.failMsg || response.error) ||\n  (apiCode !== 200 && apiCode !== 0);\n\nfunction positiveNumber(value, fallback) {\n  const number = Number(value);\n  return Number.isFinite(number) && number > 0 ? number : fallback;\n}\n\nfunction positiveInteger(value, fallback) {\n  const number = Number(value);\n  return Number.isFinite(number) && number >= 0 ? Math.floor(number) : fallback;\n}\n\nfunction isRecoverableImageFailure() {\n  const text = [state, failMsg, response.msg, response.error].filter(Boolean).join(' ').toLowerCase();\n  return Boolean(\n    failed && (\n      apiCode === 408 ||\n      apiCode === 409 ||\n      apiCode === 425 ||\n      apiCode === 429 ||\n      apiCode >= 500 ||\n      failCode === 408 ||\n      failCode === 409 ||\n      failCode === 425 ||\n      failCode === 429 ||\n      failCode >= 500 ||\n      text.includes('timeout') ||\n      text.includes('timed out') ||\n      text.includes('try again') ||\n      text.includes('no results') ||\n      text.includes('temporar') ||\n      text.includes('upstream') ||\n      text.includes('internal') ||\n      text.includes('overload') ||\n      text.includes('rate limit') ||\n      text.includes('server')\n    )\n  );\n}\n\nconst attempt = positiveNumber(base.image_poll_attempt, 2);\nconst waitSeconds = positiveNumber(base.config?.image_retry_wait_seconds || base.config?.image_poll_interval_seconds, 30);\nconst requestedMaxAttempts = positiveNumber(base.image_poll_max_attempts || base.config?.image_poll_max_attempts, 60);\nconst timeoutSeconds = positiveNumber(base.image_poll_timeout_seconds || base.config?.image_poll_timeout_seconds, 1800);\nconst timeoutBasedMaxAttempts = Math.ceil(timeoutSeconds / waitSeconds) + 2;\nconst maxAttempts = Math.max(requestedMaxAttempts, timeoutBasedMaxAttempts);\nconst startedMs = Date.parse(base.image_poll_started_at || '');\nconst elapsedSeconds = Number.isFinite(startedMs) ? Math.floor((Date.now() - startedMs) / 1000) : 0;\nconst usedTaskRetries = positiveInteger(base.image_task_retry_attempt ?? base.image_task_retry?.attempt, 0);\nconst maxTaskRetries = positiveInteger(base.config?.image_task_max_retries, 2);\nconst recoverable = isRecoverableImageFailure();\nconst retryAvailable = Boolean(failed && recoverable && usedTaskRetries < maxTaskRetries);\n\nif (failed) {\n  const failure = {\n    task_id: base.image_task_id || null,\n    state: state || 'failed',\n    api_code: apiCode,\n    fail_code: Number.isFinite(failCode) ? failCode : null,\n    message: failMsg || null,\n    response,\n    failed_at: new Date().toISOString(),\n  };\n\n  if (retryAvailable) {\n    return [{\n      json: {\n        ...base,\n        image_poll_response: response,\n        image_state: state || 'failed',\n        image_failed: true,\n        image_task_failed: true,\n        image_task_recoverable: true,\n        image_task_retry_available: true,\n        image_task_retry_attempt: usedTaskRetries,\n        image_task_max_retries: maxTaskRetries,\n        image_task_failure: failure,\n        image_ready: false,\n        image_url: null,\n        image_retry_attempted: true,\n        image_poll_attempt: attempt,\n        image_poll_max_attempts: maxAttempts,\n        image_poll_elapsed_seconds: elapsedSeconds,\n        image_poll_timeout_seconds: timeoutSeconds,\n      },\n    }];\n  }\n\n  throw new Error(\n    'KIE image failed' +\n    (recoverable ? ' after task retries exhausted' : '') +\n    '. state=' + (state || 'unknown') +\n    ', taskId=' + (base.image_task_id || '-') +\n    ', retries=' + usedTaskRetries + '/' + maxTaskRetries +\n    ', message=' + (failMsg || '-')\n  );\n}\n\nif (!imageUrl && elapsedSeconds >= timeoutSeconds) {\n  throw new Error('KIE image timed out after ' + attempt + '/' + maxAttempts + ' polls and ' + elapsedSeconds + 's/' + timeoutSeconds + 's. state=' + (state || 'unknown') + ', taskId=' + (base.image_task_id || '-') + '. The workflow waited until the configured timeout; increase image_poll_timeout_seconds or rerun later.');\n}\n\nreturn [{\n  json: {\n    ...base,\n    image_poll_response: response,\n    image_state: state || (imageUrl ? 'succeeded' : 'pending'),\n    image_failed: false,\n    image_task_failed: false,\n    image_task_recoverable: false,\n    image_task_retry_available: false,\n    image_ready: Boolean(imageUrl),\n    image_url: imageUrl,\n    image_retry_attempted: true,\n    image_poll_attempt: attempt,\n    image_poll_max_attempts: maxAttempts,\n    image_poll_elapsed_seconds: elapsedSeconds,\n    image_poll_timeout_seconds: timeoutSeconds,\n  },\n}];"
@@ -1204,8 +1204,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7000,
-        120
+        3230,
+        -520
       ]
     },
     {
@@ -1217,8 +1217,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4200,
-        1020
+        1360,
+        260
       ]
     },
     {
@@ -1237,8 +1237,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        4480,
-        1020
+        1190,
+        260
       ]
     },
     {
@@ -1257,8 +1257,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6440,
-        420
+        2890,
+        -260
       ]
     },
     {
@@ -1270,8 +1270,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1,
       "position": [
-        6720,
-        720
+        3060,
+        0
       ],
       "webhookId": "b5138cdb-5ab6-4d7f-9603-c89a5af7a380"
     },
@@ -1284,8 +1284,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7000,
-        720
+        3230,
+        0
       ]
     }
   ],
