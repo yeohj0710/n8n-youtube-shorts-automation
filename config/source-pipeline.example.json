@@ -1,0 +1,15 @@
+{
+  "root_dir": "G:/owned-media/shorts",
+  "queue_file": "G:/owned-media/shorts/00_링크큐/links.txt",
+  "items_dir": "G:/owned-media/shorts/10_작업",
+  "failed_dir": "G:/owned-media/shorts/90_실패",
+  "state_db": "C:/dev/n8n-youtube-shorts-automation/data/source-media-pipeline.sqlite",
+  "extractor_project": "C:/path/to/youtube-instagram-media-extractor",
+  "python_path": "C:/path/to/python.exe",
+  "ffmpeg_path": "C:/path/to/ffmpeg.exe",
+  "whisper_model": "large-v3",
+  "whisper_language": "ko",
+  "max_keyframes": 8,
+  "video_quality": "1080",
+  "cookie_browser": "chrome"
+}

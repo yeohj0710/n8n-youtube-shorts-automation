@@ -61,6 +61,36 @@ Preferred: put one `.txt`, `.md`, or `.json` spec file directly in the matching 
 
 Daily 21:00 scheduling is wired but disabled until explicitly activated. The schedule guard checks recent YouTube uploads through the YouTube API, so manual YouTube Studio uploads count as "uploaded today".
 
+## Owned Reel Source Pipeline
+
+실제 로컬 경로는 Git에 포함하지 않는 `config/source-pipeline.json`에 저장합니다. 먼저 공개용 예시를 복사하고 각 경로를 현재 PC에 맞게 바꿉니다.
+
+```powershell
+Copy-Item config/source-pipeline.example.json config/source-pipeline.json
+```
+
+아래 설명에서는 원본 영상 작업 공간을 `G:\owned-media\shorts`로 가정합니다.
+
+작업 방식:
+
+1. `00_링크큐\links.txt`에 소유·사용 허락된 YouTube/Instagram 링크를 한 줄에 하나씩 추가합니다.
+2. `npm run source:run`을 실행합니다.
+3. `10_작업\<플랫폼_영상ID>` 폴더에 영상, 게시물 캡션, 메타데이터, 음성, 타임코드 전사, 근거 ID, 키프레임, 콘택트시트가 생성됩니다.
+4. G 드라이브의 `00_시작 프롬프트 - 링크 데이터 준비.md`를 새 Codex 작업에 보내 `content-brief.json`을 완성합니다.
+5. `01A` 또는 `01B` 프롬프트를 새 Codex 작업에 보내 원하는 채널 소재 폴더에 MD를 생성합니다.
+
+주요 명령:
+
+```powershell
+npm run source:setup
+npm run source:run
+npm run source:status
+node scripts/validate-source-bundle.mjs finalize --bundle="G:\owned-media\shorts\10_작업\instagram_ABC123"
+node scripts/source-bundle-to-topic.mjs --bundle="G:\owned-media\shorts\10_작업\instagram_ABC123" --channel=haru_pharmacist
+```
+
+생성된 MD에는 `LOCKED_SOURCE_PACK=1`이 기록됩니다. 두 채널 n8n 워크플로는 이 표시가 있는 소재를 발견하면 RSS/주제 생성 AI를 건너뛰고 MD의 제목·순위·이유를 그대로 사용합니다. 일반 소재는 기존 생성 흐름을 유지합니다.
+
 ## Secrets
 
 Do not commit credentials, n8n databases, rendered outputs, or OAuth secrets.

@@ -6,7 +6,11 @@
   "scripts": {
     "start": "powershell -ExecutionPolicy Bypass -File ./scripts/start-n8n.ps1",
     "import": "powershell -ExecutionPolicy Bypass -File ./scripts/import-workflow.ps1",
-    "export:workflow": "node ./scripts/export-workflow-from-db.mjs"
+    "export:workflow": "node ./scripts/export-workflow-from-db.mjs",
+    "source:setup": "node ./scripts/source-media-pipeline.mjs setup",
+    "source:run": "node ./scripts/source-media-pipeline.mjs run",
+    "source:status": "node ./scripts/source-media-pipeline.mjs status",
+    "test": "node ./scripts/run-project-qa.mjs"
   },
   "dependencies": {
     "n8n": "2.26.8",

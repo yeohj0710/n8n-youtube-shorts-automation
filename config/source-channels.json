@@ -1,0 +1,16 @@
+{
+  "haru_pharmacist": {
+    "display_name": "하루건강약사",
+    "aliases": ["하루건강약사", "@하루건강약사"],
+    "topic_dir": "C:/dev/n8n-youtube-shorts-automation/하루건강약사 소재",
+    "kicker": "약사가 알려주는 생활 정보",
+    "default_tags": ["건강정보", "약사", "생활건강", "shorts"]
+  },
+  "health_longevity": {
+    "display_name": "건강장수비결",
+    "aliases": ["건강장수비결", "@건강장수비결"],
+    "topic_dir": "C:/dev/n8n-youtube-shorts-automation/건강장수비결 소재",
+    "kicker": "건강하게 오래 사는 생활 정보",
+    "default_tags": ["건강정보", "시니어건강", "장수습관", "shorts"]
+  }
+}

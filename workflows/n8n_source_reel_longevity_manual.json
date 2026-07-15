@@ -1,0 +1,1313 @@
+{
+  "id": "a8031b4a365c4603",
+  "name": "건강장수비결 - 원본 릴스 기반 쇼츠",
+  "nodes": [
+    {
+      "id": "60cd2e93-689a-41f3-bcc1-eaf8cae87cc9",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "c766b4c3-9a0d-4332-8933-1527039d4997",
+      "name": "Load Source Reel Bundle",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const fs=require('fs'); const path=require('path');\nconst incoming=$input.first()?.json||{}; const topicDir=\"C:/dev/n8n-youtube-shorts-automation/건강장수비결 소재\"; const channelId=\"health_longevity\";\nconst bundleRoot='C:/dev/n8n-youtube-shorts-automation/data/source-reel-bundles';\nconst staleClaimMs=12*60*60*1000;\nif(fs.existsSync(bundleRoot)){for(const entry of fs.readdirSync(bundleRoot,{withFileTypes:true})){if(!entry.isDirectory())continue; const bundle=path.join(bundleRoot,entry.name); const mf=path.join(bundle,'manifest.json'); const lock=path.join(bundle,'.render-claim.lock'); if(!fs.existsSync(mf))continue; try{const m=JSON.parse(fs.readFileSync(mf,'utf8')); const claimedAt=Date.parse(m.render_claimed_at||''); const lockAge=fs.existsSync(lock)?Date.now()-fs.statSync(lock).mtimeMs:0; const stale=m.status==='render_claimed'&&Number.isFinite(claimedAt)&&(Date.now()-claimedAt)>=staleClaimMs; const orphanLock=fs.existsSync(lock)&&m.status!=='render_claimed'&&lockAge>=staleClaimMs; if(orphanLock)fs.unlinkSync(lock); if(stale&&m.exported_channel===channelId){m.status=m.upload_stage==='ready_to_upload'?'upload_uncertain':'recovery_required';m.recovery_required_at=new Date().toISOString();m.recovery_reason=m.upload_stage==='ready_to_upload'?'Upload may have reached YouTube; reconcile in Studio before requeue.':'Execution lease expired; inspect before requeue.';fs.writeFileSync(mf,JSON.stringify(m,null,2)+'\\n','utf8');try{fs.unlinkSync(lock);}catch(error){if(error?.code!=='ENOENT')throw error;}}}catch(error){throw new Error('Claim recovery failed for '+mf+': '+error.message);}}}\nconst files=fs.readdirSync(topicDir).filter(n=>/\\.md$/i.test(n)).map(n=>path.join(topicDir,n)).sort((a,b)=>fs.statSync(a).birthtimeMs-fs.statSync(b).birthtimeMs);\nlet selected=null;\nfor(const file of files){ const text=fs.readFileSync(file,'utf8'); const field=k=>text.match(new RegExp('^'+k+'=(.+)$','m'))?.[1]?.trim(); const bundle=field('SOURCE_BUNDLE'); if(!bundle)continue; const mf=path.join(bundle,'manifest.json'); if(!fs.existsSync(mf))continue; const manifest=JSON.parse(fs.readFileSync(mf,'utf8')); if(manifest.status==='md_ready'&&manifest.exported_channel===channelId&&!fs.existsSync(path.join(bundle,'.render-claim.lock'))){selected={file,text,bundle,mf,manifest};break;} }\nif(!selected) throw new Error('No md_ready source bundle for '+channelId);\nconst brief=JSON.parse(fs.readFileSync(path.join(selected.bundle,'content-brief.json'),'utf8')); const source=JSON.parse(fs.readFileSync(path.join(selected.bundle,'source.json'),'utf8')); const evidence=JSON.parse(fs.readFileSync(path.join(selected.bundle,'evidence.json'),'utf8')); const transcript=JSON.parse(fs.readFileSync(path.join(selected.bundle,'transcript.json'),'utf8')); const rawCaption=fs.readFileSync(path.join(selected.bundle,'caption.txt'),'utf8').trim();\nfunction sanitizeSourceText(value){return String(value||'').split(/\\r?\\n/).map(v=>v.trim()).filter(v=>v&&!/@[A-Za-z0-9_.]+|^#|팔로우|구독|좋아요|댓글|저장해|저장하세요|더 많은|프로필|링크/.test(v)).join('\\n');}\nconst caption=sanitizeSourceText(rawCaption);\nconst frame=path.join(selected.bundle,brief.visual_direction?.representative_frame||'keyframes/frame_001.jpg'); if(!fs.existsSync(frame))throw new Error('Representative frame missing: '+frame);\nconst evidenceMap=new Map([...(evidence.caption_sentences||[]).map(x=>[x.id,x.text]),...(transcript.segments||[]).map(x=>[x.id,x.text])]);\nconst ranks=(brief.rank_items||[]).slice(0,4).map((x,i)=>{const exact=(x.evidence_ids||[]).map(id=>evidenceMap.get(id)).filter(Boolean).map(v=>String(v).replace(/\\s+/g,' ').trim());if(!exact.length)throw new Error('Missing source evidence for rank '+(i+1));return {rank:i+1,name:x.name,reason:x.reason,caution:x.caution||'',evidence_ids:x.evidence_ids||[],source_details:exact};});\nconst captionLines=caption.split(/\\r?\\n/).map(v=>v.replace(/\\s+/g,' ').trim()).filter(Boolean); const originalTitle=String(selected.manifest.youtube_hook_title||captionLines[0]||brief.title), subtitle=brief.subtitle||captionLines.find(line=>line!==originalTitle)||'';\nconst rows=ranks.map(x=>x.name+' - '+x.reason).join('\\n');\nfunction hookTitle(value,lane){const base=String(value||'').trim();if(/모르면|절대|꼭|손해|망치|대부분|돈 낭비|주의|경고|놓치/.test(base))return base.slice(0,58);const text=(base+' '+String(lane||'')).toLowerCase();let prefix='대부분 놓치고 있는 ';if(/피부|여드름|모공|스킨|선크림|레티|괄사|화장/.test(text))prefix='피부 망치기 전에 꼭 보세요: ';else if(/복용|타이레놀|인공눈물|의약품|약 /.test(text))prefix='약 먹고 쓰기 전에 꼭 확인하세요: ';else if(/영양제|비타민|오메가|성분|제품|고르는|비교/.test(text))prefix='돈 쓰기 전에 꼭 보세요: ';else if(/습관|루틴|신호|피로|스트레스|염증|코막힘/.test(text))prefix='몸이 보내는 신호, 그냥 넘기지 마세요: ';return (prefix+base).slice(0,58).replace(/[ :,-]+$/,'');}\nconst title=String(selected.manifest.youtube_hook_title||hookTitle(originalTitle,brief.lane)).slice(0,70);\nconst sourceDetails=ranks.map(x=>x.rank+'번 '+x.name+' 원문 근거: '+x.source_details.join(' / ')+(x.caution?' / 주의: '+x.caution:'')).join('\\n');\nconst imagePrompt=['Create one original 1080x1920 Korean Shorts visual for 건강장수비결.','EDITORIAL PRIORITY: Read the FULL transcript and caption. Find the single most surprising, useful, concrete takeaway that makes the viewer understand why this video matters. The strongest numeric example, contrast, consequence, or counterintuitive conclusion usually outranks generic background explanation.','SPARSE MOBILE COPY: This is a fast-scrolling Short, not an article. Use one strong hook and only the minimum supporting copy needed to understand it. Target about 35-60 Korean characters of prominent visible copy total; never create dense paragraphs, tiny explanatory text, or a card packed with every source point. Omit secondary facts from the image when they weaken the main takeaway.','AUTONOMOUS CREATIVE DIRECTION: Choose the most natural visual structure yourself. Do not force a ranking, checklist, steps, comparison, or predefined template unless the source itself clearly requires it.','Source hook/title: '+originalTitle,'Existing brief core (advisory only; override it when the full transcript reveals a stronger takeaway): '+brief.core_message,'Existing content points (evidence pool, not mandatory visible sections):\\n'+rows,'Detailed evidence pool:\\n'+sourceDetails,'FULL SANITIZED CAPTION:\\n'+caption,'FULL TRANSCRIPT:\\n'+sanitizeSourceText(transcript.full_text||''),'Use exact concrete numbers and conditions from the source when they are the hook. Never invent or change a number. Preserve the source conclusion, but do not attempt to display every useful fact.','The finished image must be understandable at a glance within 1-2 seconds. Large Korean type, strong hierarchy, ample empty space.','BRAND SAFETY: Never show source creator names, pharmacist names, social handles, @usernames, profile photos, watermarks, follow/subscribe/save/comment calls to action, hashtags, logos, or source account branding. The only permitted channel branding is 건강장수비결.'].join('\\n');\nconst description=[title,subtitle,'',...ranks.map(x=>x.rank+'위 '+x.name+' - '+x.reason),'',source.canonical_url||source.source_url||''].join('\\n');\nconst pinnedComment=['오늘 영상 핵심: '+title,'',...ranks.map(x=>x.rank+'번 '+x.name),'','이 중 가장 먼저 확인해보고 싶은 항목은 몇 번인가요? 댓글로 번호를 남겨주세요.','개인 상태에 따라 적용이 달라질 수 있으니 제품 설명서와 전문가 안내를 우선해 주세요.'].join('\\n');\nconst claimLock=path.join(selected.bundle,'.render-claim.lock');let claimHandle;try{claimHandle=fs.openSync(claimLock,'wx');fs.writeFileSync(claimHandle,JSON.stringify({channel_id:channelId,source_id:source.source_id,claimed_at:new Date().toISOString()}));fs.closeSync(claimHandle);}catch(error){if(claimHandle!==undefined)try{fs.closeSync(claimHandle);}catch{}throw new Error(error?.code==='EEXIST'?'Source bundle is already claimed: '+source.source_id:'Unable to claim source bundle: '+error.message);} selected.manifest.status='render_claimed'; selected.manifest.render_claimed_at=new Date().toISOString(); try{fs.writeFileSync(selected.mf,JSON.stringify(selected.manifest,null,2)+'\\n','utf8');}catch(error){try{fs.unlinkSync(claimLock);}catch{}throw error;}\nconst config={use_live_image:true,use_live_bgm:true,use_live_render:true,allow_youtube_upload:incoming.allow_youtube_upload===undefined?true:Boolean(incoming.allow_youtube_upload),youtube_privacy_status:incoming.youtube_privacy_status||'public',kie_image_model:incoming.kie_image_model||'gpt-image-2-text-to-image',kie_bgm_model:'V5_5',duration_seconds:Number(incoming.duration_seconds||5),local_render_dir:'C:/dev/n8n-youtube-shorts-automation/renders/source-reels',local_render_script:'C:/dev/n8n-youtube-shorts-automation/scripts/render-static-card.mjs',ffmpeg_path:'C:/Users/hjyeo/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe',node_path:'C:/Program Files/nodejs/node.exe',poll_interval_seconds:30,bgm_retry_wait_seconds:90,image_poll_interval_seconds:30,image_retry_wait_seconds:30,image_task_retry_wait_seconds:30,image_poll_timeout_seconds:1800,image_poll_max_attempts:60,image_task_max_retries:2,youtube_category_id:'27',region_code:'KR'};\nreturn [{json:{config,source_bundle:{channel_id:channelId,topic_md:selected.file,bundle_dir:selected.bundle,manifest_path:selected.mf,claim_lock:claimLock,source_id:source.source_id,representative_frame:frame},pack:{hook_title:title,subtitle,rank_items:ranks,tags:[...new Set([...(brief.tags||[]),'건강장수비결','건강정보','쇼츠'])],description,pinned_comment:pinnedComment},image_payload:{model:config.kie_image_model,input:{prompt:imagePrompt,aspect_ratio:'9:16'}},bgm_payload:{prompt:'Calm trustworthy Korean wellness instrumental, soft piano and light acoustic texture, no vocals, no heavy drums.',model:config.kie_bgm_model,soundLoop:true,soundTempo:76,soundKey:'C',grabLyrics:false}}}];"
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.use_live_bgm}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "4ff1d1a5-cfb3-4602-8e9d-330b0663f913",
+      "name": "Use Live BGM?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3740,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/generate/sounds",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.bgm_payload) }}",
+        "options": {}
+      },
+      "id": "6c178fdc-8dc9-4416-b463-cb337651db22",
+      "name": "KIE Create BGM Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3910,
+        -260
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Use Live BGM?').first().json;\nconst response = $input.first().json || {};\nconst apiCode = response.code === undefined ? 200 : Number(response.code);\nconst apiMsg = response.msg || response.message || response.error || '';\nif (response.error || (Number.isFinite(apiCode) && apiCode >= 400)) {\n  throw new Error('KIE BGM create failed. code=' + apiCode + ', message=' + apiMsg + ', response=' + JSON.stringify(response));\n}\nconst taskId = response.data?.taskId || response.taskId || response.id || null;\nif (!taskId) {\n  throw new Error('KIE BGM create returned no taskId. response=' + JSON.stringify(response));\n}\nreturn [{ json: { ...base, bgm_create_response: response, bgm_task_id: taskId } }];"
+      },
+      "id": "32a46966-14d5-4bde-833e-0df4811c4b47",
+      "name": "Normalize BGM Task",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4080,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{Number($json.config.poll_interval_seconds || 30)}}"
+      },
+      "id": "612a92d9-b415-45a5-8088-8893e15aa08b",
+      "name": "Wait BGM 30s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        4250,
+        -260
+      ],
+      "webhookId": "96d9eeaf-058a-422f-a004-371197b23ee2"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/generate/record-info",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{$json.bgm_task_id}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "23e8e1db-e684-44fa-afa9-3572334a8953",
+      "name": "KIE Get BGM Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4420,
+        -260
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Normalize BGM Task').first().json;\nconst response = $input.first().json || {};\nconst data = response.data || response;\nconst status = String(data.status || data.state || '').toUpperCase();\nconst sunoData =\n  data.response?.sunoData ||\n  data.sunoData ||\n  data.response?.data ||\n  data.data ||\n  [];\n\nfunction asList(value) {\n  if (Array.isArray(value)) return value;\n  if (value && typeof value === 'object') return [value];\n  return [];\n}\n\nfunction audioUrlFor(item) {\n  return item?.audioUrl ||\n    item?.streamAudioUrl ||\n    item?.sourceAudioUrl ||\n    item?.sourceStreamAudioUrl ||\n    item?.audio_url ||\n    item?.stream_audio_url ||\n    item?.url ||\n    null;\n}\n\nfunction durationFor(item) {\n  const duration = Number(item?.duration || item?.audioDuration || item?.durationSeconds || item?.metadata?.duration || 0);\n  return Number.isFinite(duration) ? duration : 0;\n}\n\nfunction fallbackBgm(message) {\n  const fallbackUrl =\n    base.config?.fallback_bgm_audio_url ||\n    base.fallback_bgm_audio_url ||\n    'C:/dev/n8n-youtube-shorts-automation/assets/fallback-bgm.mp3';\n  return [{\n    json: {\n      ...base,\n      bgm_poll_response: response,\n      bgm_state: status || 'FALLBACK',\n      bgm_failed: true,\n      bgm_fallback_used: true,\n      bgm_failure_message: message,\n      bgm_audio_url: fallbackUrl,\n      bgm_audio_duration: null,\n      bgm_audio_choice: null,\n      bgm_retry_attempted: false,\n    },\n  }];\n}\n\nconst candidates = asList(sunoData).filter((item) => audioUrlFor(item));\nconst best = [...candidates].sort((left, right) => durationFor(right) - durationFor(left))[0] || null;\nconst fallbackUrl =\n  data.response?.audioUrl ||\n  data.response?.streamAudioUrl ||\n  data.audioUrl ||\n  data.streamAudioUrl ||\n  null;\nconst bgmUrl = best ? audioUrlFor(best) : fallbackUrl;\nconst failed = ['CREATE_TASK_FAILED', 'GENERATE_AUDIO_FAILED', 'CALLBACK_EXCEPTION', 'SENSITIVE_WORD_ERROR', 'FAIL', 'FAILED', 'ERROR'].includes(status);\nif (failed) {\n  return fallbackBgm('KIE BGM failed. state=' + status + ', taskId=' + (base.bgm_task_id || '-') + ', message=' + (data.failMsg || data.message || response.msg || response.error || ''));\n}\n\nreturn [{ json: { ...base, bgm_poll_response: response, bgm_state: status, bgm_failed: false, bgm_audio_url: bgmUrl, bgm_audio_duration: best ? durationFor(best) : null, bgm_audio_choice: best } }];"
+      },
+      "id": "0e68a2f1-1917-4be8-ba91-434c2012b672",
+      "name": "Parse BGM Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4590,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nif (!dryRun) {\n  throw new Error('Live run reached Mock BGM Result. Check Load Config: use_live_bgm must be true, and KIE BGM auth/credits must work.');\n}\nreturn [{ json: { ...data, bgm_audio_url: null, bgm_state: 'dry_run_disabled' } }];"
+      },
+      "id": "23a6b583-bcc3-4298-9962-8562457e2eee",
+      "name": "Mock BGM Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3910,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.use_live_render}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "f0d1083e-2af6-41b6-ba6e-1d9fd92b83ee",
+      "name": "Use Live Render?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nif (!dryRun) {\n  throw new Error('Live run reached Mock Render Result. Check Load Config: use_live_render must be true.');\n}\nreturn [{\n  json: {\n    ...data,\n    result_stage: 'dry_run_no_render',\n    rendered_video_url: null,\n    youtube: {\n      skipped: true,\n      reason: 'dry_run: render skipped',\n      privacy_status_if_enabled: data.config.youtube_privacy_status\n    },\n    comment: { skipped: true, reason: 'No rendered MP4' }\n  }\n}];"
+      },
+      "id": "1916a396-4c91-4336-ab2f-1397ef4d4b99",
+      "name": "Mock Render Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5610,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst cfg = data.config || {};\n\nif (!data.image_url) {\n  throw new Error('Local render requires final image_url from Parse Image Result.');\n}\nif (!data.bgm_audio_url) {\n  throw new Error('Local render requires bgm_audio_url from Parse BGM Result. BGM must be live.');\n}\n\nconst renderId = 'health_' + Date.now() + '_' + Math.random().toString(16).slice(2, 8);\nconst duration = Number(cfg.duration_seconds || 5);\n\nconst render_payload = {\n  render_id: renderId,\n  image_url: data.image_url,\n  bgm_audio_url: data.bgm_audio_url,\n  duration,\n  width: 1080,\n  height: 1920,\n  output_dir: cfg.local_render_dir,\n  ffmpeg_path: cfg.ffmpeg_path,\n  card_is_final: true\n};\n\nconst payloadBase64 = Buffer.from(JSON.stringify(render_payload), 'utf8').toString('base64');\nconst quote = (value) => '\"' + String(value).replace(/\"/g, '\\\"') + '\"';\nconst render_command = [\n  quote(cfg.node_path || 'node'),\n  quote(cfg.local_render_script),\n  quote(payloadBase64),\n].join(' ');\n\nreturn [{\n  json: {\n    ...data,\n    render_id: renderId,\n    render_provider: 'local_ffmpeg_full_image_card',\n    render_payload,\n    render_payload_base64: payloadBase64,\n    render_command,\n  },\n}];"
+      },
+      "id": "80d6705e-295f-4149-b846-156d13d790ff",
+      "name": "Prepare Local FFmpeg Render",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5610,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst { spawnSync } = require(\"child_process\");\n\nconst nodePath = data.config?.node_path || \"C:/Program Files/nodejs/node.exe\";\nconst scriptPath = data.config?.local_render_script || \"C:/dev/n8n-youtube-shorts-automation/scripts/render-static-card.mjs\";\nconst payload = data.render_payload_base64;\nif (!payload) {\n  throw new Error(\"Missing render_payload_base64 for local render.\");\n}\n\nconst result = spawnSync(nodePath, [scriptPath, payload], {\n  encoding: \"utf8\",\n  timeout: 10 * 60 * 1000,\n  windowsHide: true,\n  maxBuffer: 20 * 1024 * 1024,\n});\n\nreturn [{\n  json: {\n    ...data,\n    exitCode: result.status ?? 0,\n    stdout: result.stdout || \"\",\n    stderr: result.stderr || \"\",\n    error: result.error ? result.error.message : undefined,\n    signal: result.signal || null,\n  },\n}];"
+      },
+      "id": "acbaccb4-966b-465b-a8ba-6073746e0d6f",
+      "name": "Local FFmpeg Render",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5780,
+        -260
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Prepare Local FFmpeg Render').first().json;\nconst response = $input.first().json || {};\n\nif (response.error || Number(response.exitCode || 0) !== 0) {\n  throw new Error('Local ffmpeg render failed: ' + (response.stderr || response.stdout || response.error || JSON.stringify(response)));\n}\n\nconst stdout = String(response.stdout || '').trim();\nconst jsonLine = stdout.split(/\\r?\\n/).reverse().find((line) => line.trim().startsWith('{'));\nif (!jsonLine) {\n  throw new Error('Local renderer returned no JSON: ' + JSON.stringify(response));\n}\n\nconst parsed = JSON.parse(jsonLine);\nif (!parsed.ok || !parsed.output_path) {\n  throw new Error('Local renderer returned invalid output: ' + JSON.stringify(parsed));\n}\n\nreturn [{\n  json: {\n    ...base,\n    local_render_response: response,\n    render_status: 'succeeded',\n    output_path: parsed.output_path,\n    rendered_video_url: parsed.output_path,\n    card_path: parsed.card_path || null,\n    bgm_download_path: parsed.audio_path || null,\n    render_failed: false,\n  },\n}];"
+      },
+      "id": "55a9895b-1891-4f9e-9f2e-64fe90ce539c",
+      "name": "Parse Local Render Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5950,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{$json.output_path}}",
+        "options": {
+          "fileExtension": "mp4",
+          "fileName": "={{$json.render_id + \".mp4\"}}",
+          "mimeType": "video/mp4",
+          "dataPropertyName": "data"
+        }
+      },
+      "id": "da82fe76-cc1f-4df3-a3af-2ddba4735bb9",
+      "name": "Read Rendered MP4",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        6120,
+        -260
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs=require('fs');const base=$('Parse Local Render Result').first().json;const input=$input.first();const mf=base.source_bundle?.manifest_path;if(mf&&fs.existsSync(mf)){const m=JSON.parse(fs.readFileSync(mf,'utf8'));m.upload_stage='ready_to_upload';m.upload_ready_at=new Date().toISOString();fs.writeFileSync(mf,JSON.stringify(m,null,2)+'\\n','utf8');}return [{json:{...base,mp4_binary_ready:!!input.binary?.data},binary:input.binary}];"
+      },
+      "id": "39728e0b-d9b4-4b35-a591-1325cdefa7c1",
+      "name": "Attach Downloaded MP4",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6290,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.allow_youtube_upload}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "1cb2df3f-6f06-4575-859d-69b9280296fb",
+      "name": "Allow YouTube Upload?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        6460,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{$json.pack.hook_title}}",
+        "regionCode": "={{$json.config.region_code}}",
+        "categoryId": "={{$json.config.youtube_category_id}}",
+        "options": {
+          "description": "={{$json.pack.description}}",
+          "embeddable": true,
+          "notifySubscribers": false,
+          "privacyStatus": "={{$json.config.youtube_privacy_status || \"public\"}}",
+          "selfDeclaredMadeForKids": false,
+          "tags": "={{$json.pack.tags.join(\",\")}}"
+        }
+      },
+      "id": "74e782b9-18bb-467b-a95d-e6805a450920",
+      "name": "YouTube Upload Public",
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        6630,
+        -260
+      ],
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "kVQv10ElQmt2iazM",
+          "name": "YouTube account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs=require('fs'); const base=$('Attach Downloaded MP4').first().json; const upload=$input.first().json||{}; const videoId=upload.uploadId||upload.id||upload.videoId||upload.items?.[0]?.id||null; if(!videoId)throw new Error('YouTube upload returned no video ID; reconcile in Studio before retrying.'); const privacyStatus=base.config?.youtube_privacy_status||'public'; const youtube={skipped:false,privacy_status:privacyStatus,video_id:videoId,url:'https://www.youtube.com/watch?v='+videoId,raw:upload}; const mf=base.source_bundle?.manifest_path; if(mf&&fs.existsSync(mf)){const m=JSON.parse(fs.readFileSync(mf,'utf8'));m.status='uploaded';m.youtube_video_id=videoId;m.youtube_url=youtube.url;m.upload_committed_at=new Date().toISOString();fs.writeFileSync(mf,JSON.stringify(m,null,2)+'\\n','utf8');} return [{json:{...base,youtube}}];"
+      },
+      "id": "21835258-44cf-4283-b7bc-47131098e39f",
+      "name": "Normalize YouTube Upload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6800,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.googleapis.com/youtube/v3/commentThreads",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "youTubeOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "part",
+              "value": "snippet"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ snippet: { videoId: $json.youtube.video_id, topLevelComment: { snippet: { textOriginal: $json.pack.pinned_comment } } } }) }}",
+        "options": {}
+      },
+      "id": "3ffc4b8f-3e3d-468e-8b5f-5f57f59c6daa",
+      "name": "Post Top-Level Comment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6970,
+        -260
+      ],
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "kVQv10ElQmt2iazM",
+          "name": "YouTube account 2"
+        }
+      },
+      "continueOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Normalize YouTube Upload').first().json;\nconst response = $input.first().json || {};\nreturn [{ json: { ...base, comment: { created: !response.error, id: response.id || response.items?.[0]?.id || null, raw: response, note: 'Top-level comment created. API pin unsupported.' } } }];"
+      },
+      "id": "4a6b7f60-99b9-4000-813b-05b5c831e39c",
+      "name": "Attach Comment Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7140,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nif (!dryRun) {\n  throw new Error('Live run reached Skip YouTube Upload. Check Load Config: allow_youtube_upload must be true and rendered_video_url must exist.');\n}\nreturn [{\n  json: {\n    ...data,\n    result_stage: 'dry_run_no_upload',\n    youtube: {\n      skipped: true,\n      reason: 'dry_run: youtube upload skipped',\n      privacy_status_if_enabled: data.config.youtube_privacy_status\n    },\n    comment: { skipped: true, reason: 'No YouTube upload' }\n  }\n}];"
+      },
+      "id": "402d647f-db55-487f-b595-602a67bc6c0e",
+      "name": "Skip YouTube Upload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6630,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.config.use_live_image}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "8d423f51-a089-42b1-bca1-5ce92da1d7c9",
+      "name": "Use Live Image?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.image_payload) }}",
+        "options": {}
+      },
+      "id": "fb7bbf69-d53f-485d-b014-f60d99e8bc43",
+      "name": "KIE Create Image Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1870,
+        -260
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "jsCode": "let base;\ntry {\n  const retryItems = $('Prepare Image Task Retry').all();\n  base = retryItems[retryItems.length - 1]?.json || null;\n} catch (error) {\n  base = null;\n}\nif (!base) {\n  base = $('Load Source Reel Bundle').first().json;\n}\n\nconst response = $input.first().json || {};\nif (response.error || (response.code && Number(response.code) !== 200)) {\n  throw new Error('KIE image create failed: ' + JSON.stringify(response));\n}\n\nconst taskId = response.data?.taskId || response.taskId || response.id || null;\nif (!taskId) {\n  throw new Error('KIE image create returned no taskId: ' + JSON.stringify(response));\n}\n\nconst taskHistory = Array.isArray(base.image_task_history) ? base.image_task_history : [];\n\nreturn [{\n  json: {\n    ...base,\n    image_create_response: response,\n    image_task_id: taskId,\n    image_task_history: [\n      ...taskHistory,\n      {\n        task_id: taskId,\n        retry_attempt: Number(base.image_task_retry_attempt || 0),\n        created_at: new Date().toISOString(),\n      },\n    ],\n    image_task_failed: false,\n    image_task_recoverable: false,\n    image_task_retry_available: false,\n    image_poll_attempt: 1,\n    image_poll_started_at: new Date().toISOString(),\n    image_poll_elapsed_seconds: 0,\n    image_url: null,\n    image_ready: false,\n  },\n}];"
+      },
+      "id": "2cb71070-c7d8-4f1f-820c-7273a964e0ee",
+      "name": "Normalize Image Task",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2040,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{$json.config.image_poll_interval_seconds || 30}}"
+      },
+      "id": "09ea7925-61df-4dfc-bdaa-2764c29de5db",
+      "name": "Wait Image 30s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2210,
+        -260
+      ],
+      "webhookId": "d5480533-2e8a-4514-a763-b0e88010d2f4"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/jobs/recordInfo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{$json.image_task_id}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a6ea6074-f453-441a-991a-e6425f3bdfd4",
+      "name": "KIE Get Image Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2380,
+        -260
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "jsCode": "let base;\ntry {\n  const normalizedItems = $('Normalize Image Task').all();\n  base = normalizedItems[normalizedItems.length - 1]?.json || $('Normalize Image Task').first().json;\n} catch (error) {\n  base = {};\n}\n\nconst response = $input.first().json || {};\nconst data = response.data || response;\nconst state = String(data.state || data.status || '').toLowerCase();\nlet resultJson = data.resultJson || data.result_json || null;\nif (typeof resultJson === 'string' && resultJson.trim()) {\n  try { resultJson = JSON.parse(resultJson); } catch (error) { resultJson = { raw: data.resultJson, parse_error: error.message }; }\n}\n\nconst urls =\n  resultJson?.resultUrls ||\n  resultJson?.result_urls ||\n  resultJson?.imageUrls ||\n  resultJson?.images ||\n  resultJson?.urls ||\n  data.response?.resultUrls ||\n  data.resultUrls ||\n  data.imageUrls ||\n  [];\nconst first = Array.isArray(urls) ? urls[0] : urls;\nconst imageUrl = typeof first === 'string' ? first : first?.url || first?.imageUrl || first?.src || null;\nconst apiCode = Number(response.code ?? data.code ?? 200);\nconst failCode = Number(data.failCode ?? data.fail_code ?? data.errorCode ?? data.error_code ?? apiCode);\nconst failMsg = String(data.failMsg || data.fail_msg || data.message || response.msg || response.error || '').trim();\nconst failed =\n  ['fail', 'failed', 'error'].includes(state) ||\n  Boolean(data.failCode || data.failMsg || response.error) ||\n  (apiCode !== 200 && apiCode !== 0);\n\nfunction positiveInteger(value, fallback) {\n  const number = Number(value);\n  return Number.isFinite(number) && number >= 0 ? Math.floor(number) : fallback;\n}\n\nfunction isRecoverableImageFailure() {\n  const text = [state, failMsg, response.msg, response.error].filter(Boolean).join(' ').toLowerCase();\n  return Boolean(\n    failed && (\n      apiCode === 408 ||\n      apiCode === 409 ||\n      apiCode === 425 ||\n      apiCode === 429 ||\n      apiCode >= 500 ||\n      failCode === 408 ||\n      failCode === 409 ||\n      failCode === 425 ||\n      failCode === 429 ||\n      failCode >= 500 ||\n      text.includes('timeout') ||\n      text.includes('timed out') ||\n      text.includes('try again') ||\n      text.includes('no results') ||\n      text.includes('temporar') ||\n      text.includes('upstream') ||\n      text.includes('internal') ||\n      text.includes('overload') ||\n      text.includes('rate limit') ||\n      text.includes('server')\n    )\n  );\n}\n\nconst usedTaskRetries = positiveInteger(base.image_task_retry_attempt ?? base.image_task_retry?.attempt, 0);\nconst maxTaskRetries = positiveInteger(base.config?.image_task_max_retries, 2);\nconst recoverable = isRecoverableImageFailure();\nconst retryAvailable = Boolean(failed && recoverable && usedTaskRetries < maxTaskRetries);\n\nif (failed) {\n  const failure = {\n    task_id: base.image_task_id || null,\n    state: state || 'failed',\n    api_code: apiCode,\n    fail_code: Number.isFinite(failCode) ? failCode : null,\n    message: failMsg || null,\n    response,\n    failed_at: new Date().toISOString(),\n  };\n\n  if (retryAvailable) {\n    return [{\n      json: {\n        ...base,\n        image_poll_response: response,\n        image_state: state || 'failed',\n        image_failed: true,\n        image_task_failed: true,\n        image_task_recoverable: true,\n        image_task_retry_available: true,\n        image_task_retry_attempt: usedTaskRetries,\n        image_task_max_retries: maxTaskRetries,\n        image_task_failure: failure,\n        image_ready: false,\n        image_url: null,\n      },\n    }];\n  }\n\n  throw new Error(\n    'KIE image failed' +\n    (recoverable ? ' after task retries exhausted' : '') +\n    '. state=' + (state || 'unknown') +\n    ', taskId=' + (base.image_task_id || '-') +\n    ', retries=' + usedTaskRetries + '/' + maxTaskRetries +\n    ', message=' + (failMsg || '-')\n  );\n}\n\nreturn [{\n  json: {\n    ...base,\n    image_poll_response: response,\n    image_state: state || (imageUrl ? 'succeeded' : 'pending'),\n    image_failed: false,\n    image_task_failed: false,\n    image_task_recoverable: false,\n    image_task_retry_available: false,\n    image_ready: Boolean(imageUrl),\n    image_url: imageUrl,\n  },\n}];"
+      },
+      "id": "2f4ad5ea-ece3-410e-be20-4c5c7887270b",
+      "name": "Parse Image Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2550,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst dryRun = Boolean(data.config?.test_mode || data.config?.dry_run);\nif (!dryRun) {\n  throw new Error('Live run reached Mock Image Result. Check Load Config: use_live_image must be true, and KIE image auth/credits must work.');\n}\nreturn [{ json: { ...data, image_url: null, image_state: 'mock_skipped' } }];"
+      },
+      "id": "8ba5cf14-d473-47d2-8371-07e292a54753",
+      "name": "Mock Image Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1870,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{!!$json.bgm_audio_url}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "024feec3-2110-4a70-9eb6-4056e13742c6",
+      "name": "BGM Ready?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        4760,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{$json.config.bgm_retry_wait_seconds || 90}}"
+      },
+      "id": "b07b5b80-ebc0-4c98-b921-08bc4ed7e9eb",
+      "name": "Wait BGM Retry 90s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        4930,
+        -520
+      ],
+      "webhookId": "35800c3e-14bb-4731-8ba6-d1c7fbe3be3c"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/generate/record-info",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{$json.bgm_task_id}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b67d3061-1577-45a9-b260-92175bcb2b61",
+      "name": "KIE Get BGM Task Retry",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5100,
+        -520
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "jsCode": "const previous = $('Parse BGM Result').first().json;\nconst response = $input.first().json || {};\nconst data = response.data || response;\nconst status = String(data.status || data.state || '').toUpperCase();\nconst sunoData =\n  data.response?.sunoData ||\n  data.sunoData ||\n  data.response?.data ||\n  data.data ||\n  [];\n\nfunction asList(value) {\n  if (Array.isArray(value)) return value;\n  if (value && typeof value === 'object') return [value];\n  return [];\n}\n\nfunction audioUrlFor(item) {\n  return item?.audioUrl ||\n    item?.streamAudioUrl ||\n    item?.sourceAudioUrl ||\n    item?.sourceStreamAudioUrl ||\n    item?.audio_url ||\n    item?.stream_audio_url ||\n    item?.url ||\n    null;\n}\n\nfunction durationFor(item) {\n  const duration = Number(item?.duration || item?.audioDuration || item?.durationSeconds || item?.metadata?.duration || 0);\n  return Number.isFinite(duration) ? duration : 0;\n}\n\nfunction fallbackBgm(message) {\n  const fallbackUrl =\n    previous.config?.fallback_bgm_audio_url ||\n    previous.fallback_bgm_audio_url ||\n    'C:/dev/n8n-youtube-shorts-automation/assets/fallback-bgm.mp3';\n  return [{\n    json: {\n      ...previous,\n      bgm_poll_response: response,\n      bgm_state: status || 'FALLBACK',\n      bgm_failed: true,\n      bgm_fallback_used: true,\n      bgm_failure_message: message,\n      bgm_audio_url: fallbackUrl,\n      bgm_audio_duration: null,\n      bgm_audio_choice: null,\n      bgm_retry_attempted: true,\n    },\n  }];\n}\n\nconst candidates = asList(sunoData).filter((item) => audioUrlFor(item));\nconst best = [...candidates].sort((left, right) => durationFor(right) - durationFor(left))[0] || null;\nconst fallbackUrl =\n  data.response?.audioUrl ||\n  data.response?.streamAudioUrl ||\n  data.audioUrl ||\n  data.streamAudioUrl ||\n  null;\nconst bgmUrl = best ? audioUrlFor(best) : fallbackUrl;\nconst failed = ['CREATE_TASK_FAILED', 'GENERATE_AUDIO_FAILED', 'CALLBACK_EXCEPTION', 'SENSITIVE_WORD_ERROR', 'FAIL', 'FAILED', 'ERROR'].includes(status);\nif (failed) {\n  return fallbackBgm('KIE BGM failed. state=' + status + ', taskId=' + (previous.bgm_task_id || '-') + ', message=' + (data.failMsg || data.message || response.msg || response.error || ''));\n}\nif (!bgmUrl) {\n  return fallbackBgm('KIE BGM still not ready after retry. state=' + (status || '-') + ', taskId=' + (previous.bgm_task_id || '-'));\n}\nreturn [{ json: { ...previous, bgm_poll_response: response, bgm_state: status, bgm_failed: false, bgm_audio_url: bgmUrl, bgm_audio_duration: best ? durationFor(best) : null, bgm_audio_choice: best, bgm_retry_attempted: true } }];"
+      },
+      "id": "e13d8ff4-a180-4a3e-8210-2cae1daba58f",
+      "name": "Parse BGM Result Final",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5270,
+        -520
+      ]
+    },
+    {
+      "id": "9a6b1a45-c8da-4682-847e-7ec911dc2952",
+      "name": "Image Ready?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2720,
+        -260
+      ],
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{!!$json.image_url}}",
+              "value2": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "84ab7322-21f8-4175-9347-56c0c771fea4",
+      "name": "Wait Image Retry 30s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3060,
+        -520
+      ],
+      "parameters": {
+        "amount": "={{$json.config.image_retry_wait_seconds || 30}}"
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/jobs/recordInfo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{$json.image_task_id}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "172fc4ec-efb5-4cf4-a7bb-168119b016d9",
+      "name": "KIE Get Image Task Retry",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3400,
+        -520
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MV5JVbdiJSoVx9O8",
+          "name": "Header Auth account"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "id": "c6df8b81-119e-4876-a9d6-ab06acc12ef2",
+      "name": "Parse Image Result Final",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3570,
+        -520
+      ],
+      "parameters": {
+        "jsCode": "let base;\ntry {\n  const prepareItems = $('Prepare Image Retry Poll').all();\n  base = prepareItems[prepareItems.length - 1]?.json || $('Prepare Image Retry Poll').last().json;\n} catch (error) {\n  const parsedItems = $('Parse Image Result').all();\n  base = parsedItems[parsedItems.length - 1]?.json || $('Parse Image Result').first().json;\n}\n\nconst response = $input.first().json || {};\nconst data = response.data || response;\nconst state = String(data.state || data.status || '').toLowerCase();\nlet resultJson = data.resultJson || data.result_json || null;\nif (typeof resultJson === 'string' && resultJson.trim()) {\n  try { resultJson = JSON.parse(resultJson); } catch (error) { resultJson = { raw: data.resultJson, parse_error: error.message }; }\n}\n\nconst urls =\n  resultJson?.resultUrls ||\n  resultJson?.result_urls ||\n  resultJson?.imageUrls ||\n  resultJson?.images ||\n  resultJson?.urls ||\n  data.response?.resultUrls ||\n  data.resultUrls ||\n  data.imageUrls ||\n  [];\nconst first = Array.isArray(urls) ? urls[0] : urls;\nconst imageUrl = typeof first === 'string' ? first : first?.url || first?.imageUrl || first?.src || null;\nconst apiCode = Number(response.code ?? data.code ?? 200);\nconst failCode = Number(data.failCode ?? data.fail_code ?? data.errorCode ?? data.error_code ?? apiCode);\nconst failMsg = String(data.failMsg || data.fail_msg || data.message || response.msg || response.error || '').trim();\nconst failed =\n  ['fail', 'failed', 'error'].includes(state) ||\n  Boolean(data.failCode || data.failMsg || response.error) ||\n  (apiCode !== 200 && apiCode !== 0);\n\nfunction positiveNumber(value, fallback) {\n  const number = Number(value);\n  return Number.isFinite(number) && number > 0 ? number : fallback;\n}\n\nfunction positiveInteger(value, fallback) {\n  const number = Number(value);\n  return Number.isFinite(number) && number >= 0 ? Math.floor(number) : fallback;\n}\n\nfunction isRecoverableImageFailure() {\n  const text = [state, failMsg, response.msg, response.error].filter(Boolean).join(' ').toLowerCase();\n  return Boolean(\n    failed && (\n      apiCode === 408 ||\n      apiCode === 409 ||\n      apiCode === 425 ||\n      apiCode === 429 ||\n      apiCode >= 500 ||\n      failCode === 408 ||\n      failCode === 409 ||\n      failCode === 425 ||\n      failCode === 429 ||\n      failCode >= 500 ||\n      text.includes('timeout') ||\n      text.includes('timed out') ||\n      text.includes('try again') ||\n      text.includes('no results') ||\n      text.includes('temporar') ||\n      text.includes('upstream') ||\n      text.includes('internal') ||\n      text.includes('overload') ||\n      text.includes('rate limit') ||\n      text.includes('server')\n    )\n  );\n}\n\nconst attempt = positiveNumber(base.image_poll_attempt, 2);\nconst waitSeconds = positiveNumber(base.config?.image_retry_wait_seconds || base.config?.image_poll_interval_seconds, 30);\nconst requestedMaxAttempts = positiveNumber(base.image_poll_max_attempts || base.config?.image_poll_max_attempts, 60);\nconst timeoutSeconds = positiveNumber(base.image_poll_timeout_seconds || base.config?.image_poll_timeout_seconds, 1800);\nconst timeoutBasedMaxAttempts = Math.ceil(timeoutSeconds / waitSeconds) + 2;\nconst maxAttempts = Math.max(requestedMaxAttempts, timeoutBasedMaxAttempts);\nconst startedMs = Date.parse(base.image_poll_started_at || '');\nconst elapsedSeconds = Number.isFinite(startedMs) ? Math.floor((Date.now() - startedMs) / 1000) : 0;\nconst usedTaskRetries = positiveInteger(base.image_task_retry_attempt ?? base.image_task_retry?.attempt, 0);\nconst maxTaskRetries = positiveInteger(base.config?.image_task_max_retries, 2);\nconst recoverable = isRecoverableImageFailure();\nconst retryAvailable = Boolean(failed && recoverable && usedTaskRetries < maxTaskRetries);\n\nif (failed) {\n  const failure = {\n    task_id: base.image_task_id || null,\n    state: state || 'failed',\n    api_code: apiCode,\n    fail_code: Number.isFinite(failCode) ? failCode : null,\n    message: failMsg || null,\n    response,\n    failed_at: new Date().toISOString(),\n  };\n\n  if (retryAvailable) {\n    return [{\n      json: {\n        ...base,\n        image_poll_response: response,\n        image_state: state || 'failed',\n        image_failed: true,\n        image_task_failed: true,\n        image_task_recoverable: true,\n        image_task_retry_available: true,\n        image_task_retry_attempt: usedTaskRetries,\n        image_task_max_retries: maxTaskRetries,\n        image_task_failure: failure,\n        image_ready: false,\n        image_url: null,\n        image_retry_attempted: true,\n        image_poll_attempt: attempt,\n        image_poll_max_attempts: maxAttempts,\n        image_poll_elapsed_seconds: elapsedSeconds,\n        image_poll_timeout_seconds: timeoutSeconds,\n      },\n    }];\n  }\n\n  throw new Error(\n    'KIE image failed' +\n    (recoverable ? ' after task retries exhausted' : '') +\n    '. state=' + (state || 'unknown') +\n    ', taskId=' + (base.image_task_id || '-') +\n    ', retries=' + usedTaskRetries + '/' + maxTaskRetries +\n    ', message=' + (failMsg || '-')\n  );\n}\n\nif (!imageUrl && elapsedSeconds >= timeoutSeconds) {\n  throw new Error('KIE image timed out after ' + attempt + '/' + maxAttempts + ' polls and ' + elapsedSeconds + 's/' + timeoutSeconds + 's. state=' + (state || 'unknown') + ', taskId=' + (base.image_task_id || '-') + '. The workflow waited until the configured timeout; increase image_poll_timeout_seconds or rerun later.');\n}\n\nreturn [{\n  json: {\n    ...base,\n    image_poll_response: response,\n    image_state: state || (imageUrl ? 'succeeded' : 'pending'),\n    image_failed: false,\n    image_task_failed: false,\n    image_task_recoverable: false,\n    image_task_retry_available: false,\n    image_ready: Boolean(imageUrl),\n    image_url: imageUrl,\n    image_retry_attempted: true,\n    image_poll_attempt: attempt,\n    image_poll_max_attempts: maxAttempts,\n    image_poll_elapsed_seconds: elapsedSeconds,\n    image_poll_timeout_seconds: timeoutSeconds,\n  },\n}];"
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst data = items[items.length - 1]?.json || $input.first().json;\nfunction positiveNumber(value, fallback) {\n  const number = Number(value);\n  return Number.isFinite(number) && number > 0 ? number : fallback;\n}\nconst currentAttempt = positiveNumber(data.image_poll_attempt, 1);\nconst attempt = currentAttempt + 1;\nconst waitSeconds = positiveNumber(data.config?.image_retry_wait_seconds || data.config?.image_poll_interval_seconds, 30);\nconst requestedMaxAttempts = positiveNumber(data.image_poll_max_attempts || data.config?.image_poll_max_attempts, 60);\nconst timeoutSeconds = positiveNumber(data.image_poll_timeout_seconds || data.config?.image_poll_timeout_seconds, 1800);\nconst timeoutBasedMaxAttempts = Math.ceil(timeoutSeconds / waitSeconds) + 2;\nconst maxAttempts = Math.max(requestedMaxAttempts, timeoutBasedMaxAttempts);\nconst startedAt = data.image_poll_started_at || new Date().toISOString();\nconst startedMs = Date.parse(startedAt);\nconst elapsedSeconds = Number.isFinite(startedMs) ? Math.floor((Date.now() - startedMs) / 1000) : 0;\nif (elapsedSeconds >= timeoutSeconds) {\n  throw new Error('KIE image timeout reached before next poll. attempts=' + currentAttempt + '/' + maxAttempts + ', elapsed=' + elapsedSeconds + 's/' + timeoutSeconds + 's, taskId=' + (data.image_task_id || '-'));\n}\nreturn [{\n  json: {\n    ...data,\n    image_poll_attempt: attempt,\n    image_poll_max_attempts: maxAttempts,\n    image_poll_started_at: startedAt,\n    image_poll_elapsed_seconds: elapsedSeconds,\n    image_poll_timeout_seconds: timeoutSeconds,\n  },\n}];"
+      },
+      "id": "97e520e6-7270-4e05-904a-7efe29629c5f",
+      "name": "Prepare Image Retry Poll",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3230,
+        -520
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.image_task_retry_available}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "d223fbb5-70d0-457d-ac4e-9229273ba5b8",
+      "name": "Image Task Retryable?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2890,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{$json.config.image_task_retry_wait_seconds || $json.config.image_retry_wait_seconds || 30}}",
+        "unit": "seconds"
+      },
+      "id": "c6437406-fb89-466a-8594-55c4ac4882a4",
+      "name": "Wait Image Task Retry 30s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        3060,
+        0
+      ],
+      "webhookId": "b5138cdb-5ab6-4d7f-9603-c89a5af7a380"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\n\nfunction positiveInteger(value, fallback) {\n  const number = Number(value);\n  return Number.isFinite(number) && number >= 0 ? Math.floor(number) : fallback;\n}\n\nfunction clean(value) {\n  return String(value || '').replace(/\\s+/g, ' ').trim();\n}\n\nconst previousAttempt = positiveInteger(data.image_task_retry_attempt ?? data.image_task_retry?.attempt, 0);\nconst attempt = previousAttempt + 1;\nconst maxRetries = positiveInteger(data.config?.image_task_max_retries, 2);\nif (attempt > maxRetries) {\n  throw new Error('KIE image task retry limit exceeded before creating a new task. attempts=' + previousAttempt + '/' + maxRetries + ', taskId=' + (data.image_task_id || '-'));\n}\n\nconst failure = data.image_task_failure || {};\nconst retryHistory = Array.isArray(data.image_task_retry_history) ? data.image_task_retry_history : [];\nconst imagePayload = { ...(data.image_payload || {}) };\nconst payloadInput = { ...(imagePayload.input || {}) };\nconst existingPrompt = clean(payloadInput.prompt || imagePayload.prompt);\nconst retryInstruction = [\n  'IMAGE_TASK_RETRY attempt ' + attempt + ' of ' + maxRetries + '.',\n  'The previous KIE image job failed due to a provider/upstream issue before any image URL was returned.',\n  'Generate the same final 9:16 Korean Shorts frame again, but keep the layout simpler, faster, and less crowded.',\n  'Choose a simple sparse editorial composition that fits the source naturally. Do not force numbered rows, rankings, checklists, or a fixed template. No real faces, source logos, or medical treatment imagery.',\n  failure.message ? 'Previous provider message: ' + clean(failure.message) + '.' : '',\n].filter(Boolean).join('\\n');\n\nif (payloadInput.prompt !== undefined || imagePayload.input) {\n  payloadInput.prompt = [existingPrompt, retryInstruction].filter(Boolean).join('\\n\\n');\n  imagePayload.input = payloadInput;\n} else {\n  imagePayload.prompt = [existingPrompt, retryInstruction].filter(Boolean).join('\\n\\n');\n}\n\nreturn [{\n  json: {\n    ...data,\n    image_payload: imagePayload,\n    image_task_retry_attempt: attempt,\n    image_task_retry_available: false,\n    image_task_retry: {\n      attempt,\n      max_retries: maxRetries,\n      previous_task_id: data.image_task_id || null,\n      previous_failure: failure,\n      instruction: retryInstruction,\n      prepared_at: new Date().toISOString(),\n    },\n    image_task_retry_history: [\n      ...retryHistory,\n      {\n        attempt,\n        previous_task_id: data.image_task_id || null,\n        previous_failure: failure,\n        prepared_at: new Date().toISOString(),\n      },\n    ],\n    image_task_id: null,\n    image_create_response: null,\n    image_poll_response: null,\n    image_state: 'retrying_task',\n    image_failed: false,\n    image_task_failed: false,\n    image_task_recoverable: false,\n    image_ready: false,\n    image_url: null,\n    image_poll_attempt: 0,\n    image_poll_started_at: null,\n    image_poll_elapsed_seconds: 0,\n  },\n}];"
+      },
+      "id": "f155ecb6-f8f0-4402-8c85-607e675baeec",
+      "name": "Prepare Image Task Retry",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3230,
+        0
+      ]
+    },
+    {
+      "id": "9c17a02b-d493-4565-9f53-13a417e680d8",
+      "name": "Complete Source Reel Bundle",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7600,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const fs=require('fs'); const path=require('path'); const data=$input.first().json; const sb=data.source_bundle||{}; let finalStatus=data.youtube?.url?'uploaded':'rendered'; try{if(sb.manifest_path&&fs.existsSync(sb.manifest_path)){const m=JSON.parse(fs.readFileSync(sb.manifest_path,'utf8')); m.status=finalStatus; m.upload_stage=data.youtube?.url?'complete':null; m.rendered_output=data.output_path||data.rendered_video_url||null; m.youtube_url=data.youtube?.url||m.youtube_url||null; m.youtube_video_id=data.youtube?.video_id||m.youtube_video_id||null; m.updated_at=new Date().toISOString(); fs.writeFileSync(sb.manifest_path,JSON.stringify(m,null,2)+'\\n','utf8'); if(sb.topic_md&&fs.existsSync(sb.topic_md)){const used=path.join(path.dirname(sb.topic_md),'사용완료');fs.mkdirSync(used,{recursive:true});const target=path.join(used,path.basename(sb.topic_md));if(!fs.existsSync(target))fs.renameSync(sb.topic_md,target);}}}finally{if(sb.claim_lock){try{fs.unlinkSync(sb.claim_lock);}catch(error){if(error?.code!=='ENOENT')throw error;}}} return [{json:{ok:true,status:finalStatus,channel_id:sb.channel_id,source_id:sb.source_id,output_path:data.output_path||null,youtube:data.youtube||{skipped:true},comment:data.comment||{created:false}}}];"
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Load Source Reel Bundle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use Live BGM?": {
+      "main": [
+        [
+          {
+            "node": "KIE Create BGM Task",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mock BGM Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Create BGM Task": {
+      "main": [
+        [
+          {
+            "node": "Normalize BGM Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize BGM Task": {
+      "main": [
+        [
+          {
+            "node": "Wait BGM 30s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait BGM 30s": {
+      "main": [
+        [
+          {
+            "node": "KIE Get BGM Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Get BGM Task": {
+      "main": [
+        [
+          {
+            "node": "Parse BGM Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse BGM Result": {
+      "main": [
+        [
+          {
+            "node": "BGM Ready?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock BGM Result": {
+      "main": [
+        [
+          {
+            "node": "Use Live Render?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use Live Render?": {
+      "main": [
+        [
+          {
+            "node": "Prepare Local FFmpeg Render",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mock Render Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock Render Result": {
+      "main": [
+        [
+          {
+            "node": "Complete Source Reel Bundle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Downloaded MP4": {
+      "main": [
+        [
+          {
+            "node": "Allow YouTube Upload?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Allow YouTube Upload?": {
+      "main": [
+        [
+          {
+            "node": "YouTube Upload Public",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip YouTube Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize YouTube Upload": {
+      "main": [
+        [
+          {
+            "node": "Post Top-Level Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Top-Level Comment": {
+      "main": [
+        [
+          {
+            "node": "Attach Comment Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Comment Result": {
+      "main": [
+        [
+          {
+            "node": "Complete Source Reel Bundle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip YouTube Upload": {
+      "main": [
+        [
+          {
+            "node": "Complete Source Reel Bundle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use Live Image?": {
+      "main": [
+        [
+          {
+            "node": "KIE Create Image Task",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mock Image Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Create Image Task": {
+      "main": [
+        [
+          {
+            "node": "Normalize Image Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Image Task": {
+      "main": [
+        [
+          {
+            "node": "Wait Image 30s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Image 30s": {
+      "main": [
+        [
+          {
+            "node": "KIE Get Image Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Get Image Task": {
+      "main": [
+        [
+          {
+            "node": "Parse Image Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Image Result": {
+      "main": [
+        [
+          {
+            "node": "Image Ready?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock Image Result": {
+      "main": [
+        [
+          {
+            "node": "Use Live BGM?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Local FFmpeg Render": {
+      "main": [
+        [
+          {
+            "node": "Local FFmpeg Render",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Local FFmpeg Render": {
+      "main": [
+        [
+          {
+            "node": "Parse Local Render Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Local Render Result": {
+      "main": [
+        [
+          {
+            "node": "Read Rendered MP4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Rendered MP4": {
+      "main": [
+        [
+          {
+            "node": "Attach Downloaded MP4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BGM Ready?": {
+      "main": [
+        [
+          {
+            "node": "Use Live Render?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait BGM Retry 90s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait BGM Retry 90s": {
+      "main": [
+        [
+          {
+            "node": "KIE Get BGM Task Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Get BGM Task Retry": {
+      "main": [
+        [
+          {
+            "node": "Parse BGM Result Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse BGM Result Final": {
+      "main": [
+        [
+          {
+            "node": "Use Live Render?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube Upload Public": {
+      "main": [
+        [
+          {
+            "node": "Normalize YouTube Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Ready?": {
+      "main": [
+        [
+          {
+            "node": "Use Live BGM?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Image Task Retryable?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE Get Image Task Retry": {
+      "main": [
+        [
+          {
+            "node": "Parse Image Result Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Image Result Final": {
+      "main": [
+        [
+          {
+            "node": "Image Ready?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Image Retry 30s": {
+      "main": [
+        [
+          {
+            "node": "Prepare Image Retry Poll",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Image Retry Poll": {
+      "main": [
+        [
+          {
+            "node": "KIE Get Image Task Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Task Retryable?": {
+      "main": [
+        [
+          {
+            "node": "Wait Image Task Retry 30s",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait Image Retry 30s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Image Task Retry 30s": {
+      "main": [
+        [
+          {
+            "node": "Prepare Image Task Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Image Task Retry": {
+      "main": [
+        [
+          {
+            "node": "KIE Create Image Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Source Reel Bundle": {
+      "main": [
+        [
+          {
+            "node": "Use Live Image?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "versionId": "1bdded4d-bd7c-4163-9d00-1e3d7b522b1a",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

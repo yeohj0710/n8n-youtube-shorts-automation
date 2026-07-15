@@ -513,7 +513,11 @@ function ensureCodeNode(nodes, name, position, jsCode) {
 
 function ensureWaitNode(nodes, name, position) {
   let node = nodeByName(nodes, name);
-  const parameters = { amount: '={{$json.config.image_task_retry_wait_seconds || $json.config.image_retry_wait_seconds || 30}}' };
+  const parameters = {
+    resume: 'timeInterval',
+    amount: '={{$json.config.image_task_retry_wait_seconds || $json.config.image_retry_wait_seconds || 30}}',
+    unit: 'seconds',
+  };
   if (!node) {
     node = {
       parameters,

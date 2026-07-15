@@ -23,4 +23,19 @@ $env:LOCAL_RENDER_DIR = $RenderFolder
 $env:LOCAL_RENDER_SCRIPT = (Join-Path $Root "scripts\render-static-card.mjs")
 
 Set-Location $Root
+
+$CanonicalWorkflows = @(
+  (Join-Path $Root "workflows\n8n_source_reel_longevity_manual.json"),
+  (Join-Path $Root "workflows\n8n_source_reel_haru_manual.json")
+)
+foreach ($Workflow in $CanonicalWorkflows) {
+  if (-not (Test-Path -LiteralPath $Workflow)) {
+    throw "Canonical workflow file not found: $Workflow"
+  }
+  & "$Root\node_modules\.bin\n8n.cmd" import:workflow --input $Workflow
+  if ($LASTEXITCODE -ne 0) {
+    throw "Canonical workflow import failed: $Workflow"
+  }
+}
+
 & "$Root\node_modules\.bin\n8n.cmd" start

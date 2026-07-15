@@ -3,11 +3,22 @@
 binary-data/
 logs/
 node_modules/
+node_modules.broken-*/
+.npm-cache-repair*/
+.empty-node-modules/
+package-lock.pre-rebuild-*.json
+__pycache__/
 renders/
 workflows/*.backup-*
 topics/
 topics-health-longevity/
 topics-longevity/
+
+# Local runtime data, backups, and machine-specific source-pipeline settings.
+data/
+etc/
+임시 저장 소재/
+config/source-pipeline.json
 
 # User-facing topic drop folders. Keep docs/placeholders, ignore queued content and logs.
 하루건강약사 소재/*.txt
