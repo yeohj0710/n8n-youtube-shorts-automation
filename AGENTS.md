@@ -133,15 +133,24 @@ Expected path:
 3. Fetch Health RSS
 4. Build Viral Rank Pack Request
 5. KIE Claude text pack or mock pack
-6. Medical Safety Review
+6. Shared Content Quality Gate + Medical Safety Review
 7. Prepare Image and BGM Payloads
 8. KIE image generation
-9. KIE BGM generation
-10. Local ffmpeg full-card image render
-11. Read rendered MP4 from disk
-12. YouTube public upload
-13. Optional top-level comment
-14. Final result
+9. Image QC gate (KIE Claude vision proofread of the rendered card)
+10. KIE BGM generation
+11. Local ffmpeg full-card image render
+12. Read rendered MP4 from disk
+13. YouTube public upload
+14. Optional top-level comment
+15. Final result
+
+Image QC gate (both main workflows):
+
+- `Image Ready?` true -> `Build Image QC Request` -> `Use AI Image QC?` -> `KIE Claude Image QC` -> `Parse Image QC Result` -> `Image QC Passed?`.
+- Compares the generated card against the pack's exact title/card_name/card_reason strings.
+- Blocking defects (garbled Hangul, missing/truncated required text, wrong rank order, invented numbers, duplicated blocks) recreate the image task through the existing `Image Task Retryable?` path, bounded by `image_task_max_retries`.
+- Advisory issues and QC API failures fail open and continue; the result is stored in `image_qc`.
+- Disable per run with input `enable_image_qc=false`. Model comes from `kie_image_qc_model` (defaults to `kie_ai_model`).
 
 Do not reintroduce:
 
@@ -287,6 +296,39 @@ Fix:
 - Do not match the Korean pill unit when it is the first syllable of another normal word.
 - `Medical Safety Review` now returns `issue_matches`, so inspect the exact matched substring before changing policy again.
 
+### Upload Silently Skipped With `overlapping_upload_in_progress`
+
+Cause:
+
+The `.upload.lock` file next to `업로드기록.jsonl` was left behind by a previous run whose upload failed, so the next run within the 10-minute TTL skipped upload.
+
+Fix:
+
+- `YouTube Upload Public` now retries once and continues into `Normalize YouTube Upload` on error, and `Normalize YouTube Upload` always releases the lock before throwing a detailed upload error, so the lock no longer leaks.
+- If a pre-fix run left a stale lock, delete `<소재폴더>/기록/업로드기록.jsonl.upload.lock` or wait 10 minutes.
+
+### Image Poll Loops For ~30 Minutes Then Fails
+
+Cause:
+
+The image poll loop was bounded only by a 1800s wall clock; a stuck KIE task looked like an infinite loop and ended in a hard error with no upload.
+
+Fix:
+
+- Defaults are now `image_poll_timeout_seconds=900` and `image_poll_max_attempts=30`, with a hard attempt cap in `Prepare Image Retry Poll` as a backstop.
+- On poll timeout, `Parse Image Result Final` now recreates the image task through `Image Task Retryable?` (bounded by `image_task_max_retries`) instead of failing immediately.
+
+### Garbled Korean Text On Uploaded Card
+
+Cause:
+
+The generated card image had no inspection step, so broken Hangul or missing rank rows could reach YouTube.
+
+Fix:
+
+- The Image QC gate (see Workflow Flow) proofreads the rendered card with KIE Claude vision against the exact pack copy before BGM/render/upload.
+- Blocking defects regenerate the image; QC API failures fail open so the pipeline never stalls on the reviewer itself.
+
 ### `Local render requires bgm_audio_url`
 
 Cause:
@@ -397,6 +439,7 @@ Run before claiming healthy:
 ```powershell
 node --check .\scripts\render-static-card.mjs
 node --check .\scripts\export-workflow-from-db.mjs
+node .\scripts\verify-reliability-and-image-qc.mjs
 ```
 
 Code-node syntax and bad-pattern check:
