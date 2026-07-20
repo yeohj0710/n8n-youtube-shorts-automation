@@ -55,6 +55,8 @@ npm run import
 npm run export:workflow
 ```
 
+`npm run start` launches n8n without importing any workflow JSON. On a fresh n8n DB only, seed the canonical workflows once with `npm run import` (or `.\scripts\start-n8n.ps1 -Import`); re-importing over an existing DB deactivates workflow gates and rewrites node positions.
+
 ## Topic Queue
 
 Preferred: put one `.txt`, `.md`, or `.json` spec file directly in the matching Korean topic folder. Specs can include just a title or a title plus ranked items. Live runs randomly choose one pending file and move it to `사용완료`. If no files exist, the workflow falls back to its hidden line queue, then to auto-topic rotation.

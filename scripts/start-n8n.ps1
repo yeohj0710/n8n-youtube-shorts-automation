@@ -1,10 +1,25 @@
+param(
+  [switch]$Import
+)
+
 $ErrorActionPreference = "Stop"
 
 $Root = Split-Path -Parent $PSScriptRoot
 $BinaryFolder = Join-Path $Root "binary-data"
 $RenderFolder = Join-Path $Root "renders"
 $DefaultFilesFolder = Join-Path $env:USERPROFILE ".n8n-files"
-$Ffmpeg = "C:\Users\hjyeo\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1-full_build\bin\ffmpeg.exe"
+
+$FallbackFfmpeg = "C:\Users\hjyeo\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1-full_build\bin\ffmpeg.exe"
+$FfmpegCommand = Get-Command ffmpeg -ErrorAction SilentlyContinue
+if ($FfmpegCommand) {
+  $Ffmpeg = $FfmpegCommand.Source
+} elseif ($env:FFMPEG_PATH) {
+  $Ffmpeg = $env:FFMPEG_PATH
+} elseif (Test-Path -LiteralPath $FallbackFfmpeg) {
+  $Ffmpeg = $FallbackFfmpeg
+} else {
+  throw "ffmpeg not found. Add ffmpeg to PATH or set FFMPEG_PATH."
+}
 
 New-Item -ItemType Directory -Force -Path (Join-Path $Root ".n8n"), $BinaryFolder, $RenderFolder, $DefaultFilesFolder | Out-Null
 
@@ -24,17 +39,21 @@ $env:LOCAL_RENDER_SCRIPT = (Join-Path $Root "scripts\render-static-card.mjs")
 
 Set-Location $Root
 
-$CanonicalWorkflows = @(
-  (Join-Path $Root "workflows\n8n_source_reel_longevity_manual.json"),
-  (Join-Path $Root "workflows\n8n_source_reel_haru_manual.json")
-)
-foreach ($Workflow in $CanonicalWorkflows) {
-  if (-not (Test-Path -LiteralPath $Workflow)) {
-    throw "Canonical workflow file not found: $Workflow"
-  }
-  & "$Root\node_modules\.bin\n8n.cmd" import:workflow --input $Workflow
-  if ($LASTEXITCODE -ne 0) {
-    throw "Canonical workflow import failed: $Workflow"
+# One-time seeding only (fresh n8n DB): run with -Import, or use `npm run import`.
+# Importing on every launch deactivates workflow gates and rewrites node positions.
+if ($Import) {
+  $CanonicalWorkflows = @(
+    (Join-Path $Root "workflows\n8n_source_reel_longevity_manual.json"),
+    (Join-Path $Root "workflows\n8n_source_reel_haru_manual.json")
+  )
+  foreach ($Workflow in $CanonicalWorkflows) {
+    if (-not (Test-Path -LiteralPath $Workflow)) {
+      throw "Canonical workflow file not found: $Workflow"
+    }
+    & "$Root\node_modules\.bin\n8n.cmd" import:workflow --input $Workflow
+    if ($LASTEXITCODE -ne 0) {
+      throw "Canonical workflow import failed: $Workflow"
+    }
   }
 }
 
