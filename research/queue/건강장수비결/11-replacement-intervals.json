@@ -1,0 +1,62 @@
+{
+  "title": "고장 안 나도 바꿀 때가 정해진 것 5",
+  "lane": "household_saving_tricks",
+  "notes": "집안 물건은 고장 나서 바꾸는 게 아니라 바꿀 때를 몰라서 계속 쓴다.",
+  "topic_key": "household_replacement_intervals",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "household_replacement_intervals",
+    "hook_title": "고장 안 나도 바꿀 때가 정해진 것 5",
+    "subtitle": "고장 안 나도 바꿔야 하는 것들이에요",
+    "visual_profile": "calendar_streak",
+    "visual_mood_hint": "욕실 선반과 주방 개수대에 놓인 칫솔과 수세미, 개어 둔 수건이 함께 보이는 정갈한 장면, 크림색과 맑은 민트 팔레트, 면과 플라스틱 질감",
+    "rank_label_mode": "none",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "칫솔은 석 달",
+        "card_name": "칫솔 - 석 달",
+        "reason": "석 달을 넘기지 않되 솔이 옆으로 눕기 시작하면 그 전에 바꿔요",
+        "card_reason": "솔이 옆으로 눕기 시작하면 그 전에 바꿔요"
+      },
+      {
+        "rank": 2,
+        "name": "수세미는 한 달",
+        "card_name": "수세미 - 한 달",
+        "reason": "기름때가 밴 수세미는 아무리 헹궈도 냄새가 남아요",
+        "card_reason": "기름때가 배면 헹궈도 냄새가 남거든요"
+      },
+      {
+        "rank": 3,
+        "name": "행주는 하루",
+        "card_name": "행주 - 하루",
+        "reason": "하루만 지나도 젖은 채로 둔 행주에서는 쉰내가 올라와요",
+        "card_reason": "젖은 채 하루만 지나도 쉰내가 올라와요"
+      },
+      {
+        "rank": 4,
+        "name": "베개는 두어 해",
+        "card_name": "베개 - 두어 해",
+        "reason": "속이 눌려 납작해진 베개는 목이 꺾인 자세로 자게 만들어요",
+        "card_reason": "납작해진 베개는 목이 꺾인 채로 자게 해요"
+      },
+      {
+        "rank": 5,
+        "name": "욕실 슬리퍼는 한 해",
+        "card_name": "욕실 슬리퍼 - 한 해",
+        "reason": "바닥 무늬가 닳아 매끈해진 슬리퍼는 젖은 바닥에서 미끄러져요",
+        "card_reason": "바닥 무늬가 닳으면 젖은 데서 미끄러져요"
+      }
+    ],
+    "video_script": "바꿀 때를 정해 드릴게요.",
+    "description": "집안 물건을 얼마나 자주 바꿔야 하는지 정리했어요.",
+    "pinned_comment": "집안 물건은 고장 나서 바꾸는 게 아니라 바꿀 때를 몰라서 계속 쓰게 돼요. 오늘 하나만 정해 두셔도 다음부터 훨씬 편해져요. 구독하시고 건강한 노년을 지키는 습관을 함께 이어가요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "살림정보"
+    ],
+    "bgm_prompt": "light clean piano with soft bells, tidy and refreshing mood"
+  }
+}

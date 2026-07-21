@@ -800,6 +800,35 @@ export const PACKS = [
     },
   },
 
+  // A by-interval card is not a ranking, so labelMode turns off the N위 numbering.
+  {
+    channel: 'longevity',
+    slug: '11-replacement-intervals',
+    pillar: 'daily_function',
+    lane: 'household_saving_tricks',
+    angle: '집안 물건은 고장 나서 바꾸는 게 아니라 바꿀 때를 몰라서 계속 쓴다.',
+    topicKey: 'household_replacement_intervals',
+    card: {
+      hook: '고장 안 나도 바꿀 때가 정해진 것 5',
+      sub: '고장 안 나도 바꿔야 하는 것들이에요',
+      visualProfile: 'calendar_streak',
+      mood: '욕실 선반과 주방 개수대에 놓인 칫솔과 수세미, 개어 둔 수건이 함께 보이는 정갈한 장면, 크림색과 맑은 민트 팔레트, 면과 플라스틱 질감',
+      bgm: 'light clean piano with soft bells, tidy and refreshing mood',
+      labelMode: 'none',
+      script: '바꿀 때를 정해 드릴게요.',
+      desc: '집안 물건을 얼마나 자주 바꿔야 하는지 정리했어요.',
+      comment: '집안 물건은 고장 나서 바꾸는 게 아니라 바꿀 때를 몰라서 계속 쓰게 돼요. 오늘 하나만 정해 두셔도 다음부터 훨씬 편해져요. 구독하시고 건강한 노년을 지키는 습관을 함께 이어가요.',
+      tags: ['건강정보', '시니어건강', '살림정보'],
+      items: [
+        ['칫솔은 석 달', '칫솔 - 석 달', '석 달을 넘기지 않되 솔이 옆으로 눕기 시작하면 그 전에 바꿔요', '솔이 옆으로 눕기 시작하면 그 전에 바꿔요'],
+        ['수세미는 한 달', '수세미 - 한 달', '기름때가 밴 수세미는 아무리 헹궈도 냄새가 남아요', '기름때가 배면 헹궈도 냄새가 남거든요'],
+        ['행주는 하루', '행주 - 하루', '하루만 지나도 젖은 채로 둔 행주에서는 쉰내가 올라와요', '젖은 채 하루만 지나도 쉰내가 올라와요'],
+        ['베개는 두어 해', '베개 - 두어 해', '속이 눌려 납작해진 베개는 목이 꺾인 자세로 자게 만들어요', '납작해진 베개는 목이 꺾인 채로 자게 해요'],
+        ['욕실 슬리퍼는 한 해', '욕실 슬리퍼 - 한 해', '바닥 무늬가 닳아 매끈해진 슬리퍼는 젖은 바닥에서 미끄러져요', '바닥 무늬가 닳으면 젖은 데서 미끄러져요'],
+      ],
+    },
+  },
+
 ];
 
 function expand(pack) {
@@ -862,6 +891,11 @@ function expand(pack) {
       subtitle: pack.card.sub,
       visual_profile: pack.card.visualProfile,
       visual_mood_hint: pack.card.mood,
+      // 'rank' numbers the rows 1위/2위/…; 'none' drops the numbering for cards
+      // that are a list rather than a ranking (this-instead-of-that, by-part,
+      // by-shelf). Numbering a non-ranking makes the card claim an order it
+      // does not have.
+      ...(pack.card.labelMode ? { rank_label_mode: pack.card.labelMode } : {}),
       rank_items: items.map((item, index) => ({
         rank: index + 1,
         ...(grounded ? { fact_id: item.factId, source_ids: item.sourceIds } : {}),

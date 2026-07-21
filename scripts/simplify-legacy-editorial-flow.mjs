@@ -1048,13 +1048,30 @@ function patchPrepare(code) {
     .replaceAll('name: safePublicText(item.name),', 'name: cleanQueuedValue(item.name),')
     .replaceAll('reason: safePublicText(item.reason),', 'reason: cleanQueuedValue(item.reason),')
     .replaceAll('caution: safePublicText(item.caution),', 'caution: cleanQueuedValue(item.caution),');
+  // Strip any previously injected helper before re-injecting: the replace below
+  // matches the cardRows it produces, so without this it stacks a fresh copy of
+  // the helper on every run and the node dies on a duplicate declaration.
+  code = code.replace(/\/\/ RANK_LABEL_MODE_V1:[\s\S]*?return item\.rank \+ rankSuffix;\n\};\n/g, '');
   code = code.replace(
     /const cardRows = sortedItems[\s\S]*?\.join\(LF \+ LF\);/,
-    `const cardRows = sortedItems
+    `// RANK_LABEL_MODE_V1: the row label was hardcoded to N위, which forced every
+// card to read as a ranking. A tier chart, a this-instead-of-that list, or a
+// by-part guide is not a ranking, and numbering those rows makes the card lie
+// about what it is. A pack may set rank_label_mode; 'rank' stays the default.
+const rankLabelMode = String(pack.rank_label_mode || 'rank').trim().toLowerCase();
+const rankRowLabel = (item) => {
+  if (rankLabelMode === 'none') return '';
+  if (rankLabelMode === 'step') return item.rank + String.fromCharCode(45800, 44228);
+  if (rankLabelMode === 'bullet') return String.fromCharCode(9679);
+  return item.rank + rankSuffix;
+};
+const cardRows = sortedItems
   .map((item) => {
     const cardReason = String(item.card_reason || '').replace(/\\s+/g, ' ').trim();
+    const label = rankRowLabel(item);
+    const name = String(item.card_name || item.name || '').replace(/\\s+/g, ' ').trim();
     return [
-      item.rank + rankSuffix + ' ' + String(item.card_name || item.name || '').replace(/\\s+/g, ' ').trim(),
+      label ? label + ' ' + name : name,
       cardReason,
     ].filter(Boolean).join(LF);
   })
@@ -1260,13 +1277,39 @@ const posterReadabilityInstruction = [
     /'For every rank, render the exact item name[^']+',/,
     "'For every rank, render the supplied short card_name exactly as the strong first line and the supplied card_reason exactly once below it. Copy every Korean character verbatim: do not alter, substitute, respell, abbreviate, or invent any word. If space is tight, remove decoration or use two lines; never alter the Korean copy. Never add labels such as 왜:, 이유:, 핵심:, or TIP:. Do not render the longer name, reason, or caution fields. Keep card_reason visually to one line when possible and at most two short lines.',",
   );
+  // Matches whether this runs on pristine node code or on code a previous run
+  // already rewrote, so the mode branch lands either way.
   code = code.replace(
-    "  'Rank order must read clearly from ' + ('1' + rankSuffix) + ' to the final rank. The order can follow a route, board, deck, receipt, calendar, app screen, or panel sequence, depending on the selected format.',",
-    "  'Rank order must follow one continuous reading path from ' + ('1' + rankSuffix) + ' to the final rank, using consistent alignment and spacing.',",
+    /  'Rank order must (?:read clearly|follow one continuous reading path) from ' \+ \('1' \+ rankSuffix\) \+ ' to the final rank[^']*',/,
+    "  (rankLabelMode === 'rank'\n    ? 'Rank order must follow one continuous reading path from ' + ('1' + rankSuffix) + ' to the final rank, using consistent alignment and spacing.'\n    : 'Rows must follow one continuous reading path from the first row to the last, using consistent alignment and spacing. Do not add rank numbers, medals, or place markers of any kind: these rows are a list, not a ranking.'),",
   );
   code = code.replace(
     /Composition rule:[^']+/,
     'Composition rule: use one dominant title zone, one primary visual region, and one aligned ranked-copy region.',
+  );
+  // The rank label leaked into six more places than the card rows: the visible-text
+  // header, the badge direction, the text whitelist, and the description/comment
+  // builders. A non-ranking card that still gets rank seals drawn on it is worse
+  // than one labelled 1위 throughout, so every site follows the same mode.
+  code = code.replace(
+    "  'RANKED EXPLANATION BLOCKS, keep ' + ('1' + rankSuffix) + ' first:',",
+    "  (rankLabelMode === 'rank' ? 'RANKED EXPLANATION BLOCKS, keep ' + ('1' + rankSuffix) + ' first:' : 'EXPLANATION BLOCKS in the supplied order, with no rank numbers:'),",
+  );
+  code = code.replace(
+    "'; number marks: ' + sanitizeImageInstruction(badgeFamily) + '; motif: '",
+    "'; ' + (rankLabelMode === 'rank' ? 'number marks: ' + sanitizeImageInstruction(badgeFamily) : 'row markers: plain aligned rows with no numbers, medals, seals, or place badges of any kind') + '; motif: '",
+  );
+  code = code.replace(
+    'and their rank numerals.',
+    "and, when the rows are ranked, their rank numerals.",
+  );
+  code = code.replace(
+    /    return item\.rank \+ rankSuffix \+ ' ' \+ item\.name \+ \(reason \? ' - ' \+ reason : ''\);/,
+    "    return (rankRowLabel(item) ? rankRowLabel(item) + ' ' : '') + item.name + (reason ? ' - ' + reason : '');",
+  );
+  code = code.replace(
+    /      return item\.rank \+ rankSuffix \+ ' ' \+ name \+ \(reason \? ' - ' \+ reason : ''\);/,
+    "      return (rankRowLabel(item) ? rankRowLabel(item) + ' ' : '') + name + (reason ? ' - ' + reason : '');",
   );
   code = code.replace(
     /Text placement rule:[^']+/,
