@@ -232,9 +232,13 @@ for (const relativePath of workflowFiles) {
   assert.doesNotMatch(prepare, /const bgmProfile = pickBgmProfile\(\);/, `${relativePath}: deterministic BGM profile still active`);
   assert.doesNotMatch(prepare, /soundTempo: bgmProfile\.tempo|soundKey: bgmProfile\.key/, `${relativePath}: forced tempo or key remains`);
   assert.match(final, /bgm_profile_id/, `${relativePath}: completed upload does not persist its BGM profile`);
-  assert.match(prepare, /x 0-990 px and y 100-1820 px/, `${relativePath}: expanded main-card footprint missing`);
+  assert.match(prepare, /x 0-990 px and y 160-1820 px/, `${relativePath}: expanded main-card footprint missing`);
   assert.match(prepare, /no reserved left background band/i, `${relativePath}: left dead zone was not removed`);
-  assert.match(prepare, /90 px right.*100 px top.*100 px bottom/s, `${relativePath}: equal slim Shorts UI exclusion bands missing`);
+  // Published frames put the title against the Shorts search bar, so the top
+  // reserve is deeper than the bottom on purpose.
+  assert.match(prepare, /90 px right.*160 px top.*100 px bottom/s, `${relativePath}: Shorts UI exclusion bands missing or wrong depth`);
+  assert.match(prepare, /VERTICAL_FILL_V1/, `${relativePath}: bottom-fill contract missing, cards will compress upward again`);
+  assert.match(prepare, /GLYPH_INTEGRITY_V1/, `${relativePath}: minimum glyph size contract missing, small Korean text renders broken`);
   assert.match(prepare, /POSTER_READABILITY_V2/, `${relativePath}: generalized poster readability marker missing`);
   assert.match(prepare, /one primary visual region/i, `${relativePath}: image prompt has no frame-level visual budget`);
   assert.match(prepare, /text-first ranked rows/i, `${relativePath}: ranked rows are not constrained to a readable information hierarchy`);
@@ -244,7 +248,7 @@ for (const relativePath of workflowFiles) {
   assert.match(prepare, /single consistent text system/i, `${relativePath}: title and ranked rows can still fragment into unrelated containers`);
   assert.match(prepare, /one continuous reading path/i, `${relativePath}: rank order can still fragment across independent layouts`);
   assert.doesNotMatch(prepare, /mini-comic|5-7 small panels|every numbered Korean item into objects/i, `${relativePath}: legacy multi-panel format instructions conflict with the poster contract`);
-  assert.match(prepare, /top 100 px.*background-only|background-only.*top 100 px/i, `${relativePath}: image prompt does not reserve the top UI band`);
+  assert.match(prepare, /top 160 px.*background-only|background-only.*top 160 px/i, `${relativePath}: image prompt does not reserve the top UI band`);
   assert.match(prepare, /auxiliary.*may be cropped or covered/i, `${relativePath}: auxiliary-copy crop tolerance missing`);
   assert.match(prepare, /readable in a small channel-grid thumbnail/i, `${relativePath}: thumbnail readability contract missing`);
   assert.match(prepare, /Never solve fitting by shrinking all text/i, `${relativePath}: tiny-text prevention missing`);
@@ -394,8 +398,10 @@ for (const relativePath of workflowFiles) {
   assert.equal(prepared.bgm_payload.grabLyrics, undefined, `${relativePath}: obsolete grabLyrics flag remains`);
   assert.equal(prepared.bgm_payload.soundTempo, undefined, `${relativePath}: runtime forced tempo`);
   assert.equal(prepared.bgm_payload.soundKey, undefined, `${relativePath}: runtime forced key`);
-  assert.match(prepared.image_payload.input.prompt, /x 0-990 px and y 100-1820 px/, `${relativePath}: runtime image prompt lost expanded main-card footprint`);
-  assert.match(prepared.image_payload.input.prompt, /90 px right.*Top and bottom are equal at 100 px each/is, `${relativePath}: runtime image prompt lost equal slim UI reserve`);
+  assert.match(prepared.image_payload.input.prompt, /x 0-990 px and y 160-1820 px/, `${relativePath}: runtime image prompt lost expanded main-card footprint`);
+  assert.match(prepared.image_payload.input.prompt, /90 px right, 160 px top, and 100 px bottom/i, `${relativePath}: runtime image prompt lost the UI reserve bands`);
+  assert.match(prepared.image_payload.input.prompt, /VERTICAL_FILL_V1/, `${relativePath}: runtime image prompt lost the bottom-fill contract`);
+  assert.match(prepared.image_payload.input.prompt, /GLYPH_INTEGRITY_V1/, `${relativePath}: runtime image prompt lost the glyph-size floor`);
   assert.match(prepared.image_payload.input.prompt, /largest practical Korean type/i, `${relativePath}: runtime image prompt lost large-type priority`);
   assert.match(prepared.image_payload.input.prompt, new RegExp(expected.channel), `${relativePath}: runtime image prompt lost the channel identity`);
   assert.doesNotMatch(prepared.visible_card_text, /(?:^|\n)왜\s*[:：]/, `${relativePath}: visible card still emits 왜 label`);
