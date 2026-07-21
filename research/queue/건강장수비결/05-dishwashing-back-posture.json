@@ -1,0 +1,199 @@
+{
+  "title": "설거지하는 자세가 허리에 남기는 것 5",
+  "lane": "home_kitchen_living",
+  "notes": "설거지에서 허리에 남는 것은 시간이 아니라 싱크대 높이, 발밑, 드는 방법, 팔 뻗는 거리에서 갈린다.",
+  "research_source_pack": {
+    "channel_profile": "longevity_daily_function",
+    "researched_at": "2026-07-21",
+    "search_queries": [
+      "KOSHA 근골격계질환 예방 작업환경개선 지침 작업대 높이 팔꿈치",
+      "한국산업안전보건공단 서서 일하는 근로자 발 받침대 피로예방매트",
+      "KOSHA 무거운 물건 들기 무릎 굽히고 등을 반듯이",
+      "질병관리청 요통 바른 자세"
+    ],
+    "sources": [
+      {
+        "source_id": "S1",
+        "title": "KOSHA GUIDE H-66-2012 근골격계질환 예방을 위한 작업환경개선 지침",
+        "publisher": "한국산업안전보건공단",
+        "url": "https://oshri.kosha.or.kr/kosha/business/musculoskeletalPreventionData.do?mode=download&articleNo=296732&attachNo=167397",
+        "published_at": "2012-08-27",
+        "source_type": "occupational_safety_agency"
+      },
+      {
+        "source_id": "S2",
+        "title": "서서 일하는 근로자의 건강을 보호합시다",
+        "publisher": "한국산업안전보건공단 근골격계질환예방팀",
+        "url": "https://oshri.kosha.or.kr/kosha/data/musculoskeletalPreventionData.do?mode=download&articleNo=296625&attachNo=167206",
+        "published_at": "",
+        "source_type": "occupational_safety_agency"
+      },
+      {
+        "source_id": "S3",
+        "title": "요통",
+        "publisher": "질병관리청 국가건강정보포털",
+        "url": "https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=3796",
+        "published_at": "2026-05-11",
+        "source_type": "government_health_agency"
+      }
+    ],
+    "candidate_facts": [
+      {
+        "fact_id": "F1",
+        "claim": "작업대가 낮으면 계속 허리를 숙이게 되어 부담이 쌓인다.",
+        "source_ids": [
+          "S1",
+          "S3"
+        ],
+        "evidence_summary": "산업안전보건공단 지침은 작업대 높이를 팔꿈치 높이에 맞춰 허리를 굽히고 일하지 않도록 하라고 하고, 질병관리청 요통 자료도 곧은 자세를 강조한다.",
+        "why_interesting": "허리가 아픈 이유가 설거지 시간이 아니라 싱크대 높이였다는 점이 뜻밖이다.",
+        "viewer_relevance": "집집마다 싱크대 높이는 정해져 있다.",
+        "viewer_decision": "숙여진다면 그릇을 받쳐 높이를 올린다.",
+        "necessary_condition": "숙인 자세로 오래 있을 때에 해당한다.",
+        "limitation_or_boundary": "가정 싱크대를 직접 다룬 지침은 아니다.",
+        "confidence": "high"
+      },
+      {
+        "fact_id": "F2",
+        "claim": "한자리에 오래 설 때 한쪽 발을 받침대에 올리면 허리가 덜 힘들다.",
+        "source_ids": [
+          "S1",
+          "S2"
+        ],
+        "evidence_summary": "산업안전보건공단 자료는 오래 서서 일할 때 발 받침대를 두고 다리를 번갈아 올려놓으면 척추를 곧게 유지하고 통증을 줄여 준다고 설명한다.",
+        "why_interesting": "오래 서 있는 문제를 자세가 아니라 발밑 물건 하나로 푼다.",
+        "viewer_relevance": "설거지는 늘 선 채로 한다.",
+        "viewer_decision": "낮은 상자 하나를 발밑에 두고 번갈아 올린다.",
+        "necessary_condition": "오래 서 있을 때에 해당한다.",
+        "limitation_or_boundary": "작업 현장 기준의 권고다.",
+        "confidence": "high"
+      },
+      {
+        "fact_id": "F3",
+        "claim": "무거운 것은 허리만 숙여 들지 말고 무릎을 굽혀 들어야 한다.",
+        "source_ids": [
+          "S1"
+        ],
+        "evidence_summary": "산업안전보건공단 지침은 무거운 물건을 들 때 무릎을 굽히고 등을 반듯이 유지한 채 무릎 힘으로 일어나며, 몸을 물건에 가깝게 붙이라고 명시한다.",
+        "why_interesting": "가장 위험한 순간은 씻을 때가 아니라 솥을 드는 그 한 번이다.",
+        "viewer_relevance": "국솥과 찜통은 매번 들어 옮긴다.",
+        "viewer_decision": "솥은 무릎을 굽혀 몸에 붙여 든다.",
+        "necessary_condition": "무거운 것을 들 때에 해당한다.",
+        "limitation_or_boundary": "무게 기준은 작업 현장 기준이다.",
+        "confidence": "high"
+      },
+      {
+        "fact_id": "F4",
+        "claim": "팔만 뻗어 꺼내면 허리가 비틀리므로 몸을 가까이 붙여야 한다.",
+        "source_ids": [
+          "S1"
+        ],
+        "evidence_summary": "같은 지침은 몸의 중심을 물체에 가깝게 하라고 하고, 허리를 갑자기 비트는 동작이 생기지 않도록 따로 규정한다.",
+        "why_interesting": "숙인 자세와 비트는 동작은 서로 다른 위험이라는 점이 잘 구분되지 않는다.",
+        "viewer_relevance": "싱크대 안쪽 그릇은 매번 팔을 뻗어 꺼낸다.",
+        "viewer_decision": "한 발 다가서서 몸을 붙이고 꺼낸다.",
+        "necessary_condition": "멀리 있는 것을 꺼낼 때에 해당한다.",
+        "limitation_or_boundary": "숙인 자세와는 다른 문제다.",
+        "confidence": "high"
+      },
+      {
+        "fact_id": "F5",
+        "claim": "딱딱한 바닥에 오래 서 있으면 발과 다리에 피로가 쌓인다.",
+        "source_ids": [
+          "S2"
+        ],
+        "evidence_summary": "산업안전보건공단 자료는 바닥에 양탄자나 피로예방매트를 깔아 딱딱한 바닥에 서 있지 않도록 하라고 안내하며, 딱딱한 바닥에 오래 서 있으면 통증과 불편이 생긴다고 설명한다.",
+        "why_interesting": "자세를 아무리 고쳐도 발밑이 그대로면 남는 피로가 있다.",
+        "viewer_relevance": "주방 바닥은 대개 타일이다.",
+        "viewer_decision": "개수대 앞에 매트를 한 장 깐다.",
+        "necessary_condition": "오래 서 있을 때에 해당한다.",
+        "limitation_or_boundary": "허리보다 발과 다리에 더 직접 해당한다.",
+        "confidence": "moderate_high"
+      }
+    ],
+    "selected_angle": "설거지에서 허리에 남는 것은 시간이 아니라 싱크대 높이, 발밑, 드는 방법, 팔 뻗는 거리에서 갈린다.",
+    "rejected_angles": [
+      "작업대 높이 수치와 중량 기준 - 산업안전 수치라 눈높이를 벗어남",
+      "요통 검사와 치료 단계 - 진단 영역이라 채널 범위를 벗어남",
+      "허리 근력 운동 나열 - 설거지 상황을 벗어난 별개 주제"
+    ]
+  },
+  "topic_key": "dishwashing_posture_back_load",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "dishwashing_posture_back_load",
+    "hook_title": "설거지하는 자세가 허리에 남기는 것 5",
+    "subtitle": "시간이 아니라 서 있는 방법이 문제예요",
+    "visual_profile": "calendar_streak",
+    "visual_mood_hint": "주방 개수대 앞에 선 사람의 허리와 발, 발밑에 놓인 낮은 발판, 창으로 들어오는 저녁 빛, 크림색과 차분한 청록 팔레트, 타일과 스테인리스 질감",
+    "rank_items": [
+      {
+        "rank": 1,
+        "fact_id": "F1",
+        "source_ids": [
+          "S1",
+          "S3"
+        ],
+        "name": "낮은 싱크대에 계속 숙이기",
+        "card_name": "낮은 싱크대에 계속 숙이기",
+        "reason": "작업대가 낮으면 허리를 굽힌 채로 오래 있게 돼서 부담이 쌓여요",
+        "card_reason": "싱크대가 몸에 비해 낮으면 허리를 계속 굽히게 돼요"
+      },
+      {
+        "rank": 2,
+        "fact_id": "F2",
+        "source_ids": [
+          "S1",
+          "S2"
+        ],
+        "name": "두 발을 바닥에만 두기",
+        "card_name": "두 발을 바닥에만 두기",
+        "reason": "한쪽 발을 낮은 받침에 번갈아 올리면 척추를 곧게 유지하는 데 도움이 돼요",
+        "card_reason": "낮은 받침에 한 발씩 번갈아 올려 보세요. 허리가 한결 편해요"
+      },
+      {
+        "rank": 3,
+        "fact_id": "F3",
+        "source_ids": [
+          "S1"
+        ],
+        "name": "솥을 허리만 숙여 들기",
+        "card_name": "솥을 허리만 숙여 들기",
+        "reason": "무거운 건 무릎을 굽히고 몸에 붙여서 무릎 힘으로 들어 올려야 해요",
+        "card_reason": "무거운 솥은 무릎을 굽혀 몸에 붙여서 들어야 해요"
+      },
+      {
+        "rank": 4,
+        "fact_id": "F4",
+        "source_ids": [
+          "S1"
+        ],
+        "name": "팔만 뻗어 안쪽 꺼내기",
+        "card_name": "팔만 뻗어 안쪽 꺼내기",
+        "reason": "멀리 있는 그릇을 팔만 뻗어 꺼내면 허리가 비틀리게 돼요",
+        "card_reason": "안쪽 그릇을 팔만 뻗어 꺼내다 허리가 비틀려요"
+      },
+      {
+        "rank": 5,
+        "fact_id": "F5",
+        "source_ids": [
+          "S2"
+        ],
+        "name": "딱딱한 바닥에 오래 서기",
+        "card_name": "딱딱한 바닥에 오래 서기",
+        "reason": "타일 바닥에 오래 서 있으면 발과 다리에 피로가 쌓여요",
+        "card_reason": "맨 타일 바닥은 발과 다리에 피로가 그대로 쌓여요"
+      }
+    ],
+    "video_script": "설거지는 서 있는 방법부터 봐요.",
+    "description": "설거지하는 자세가 허리에 남기는 것을 정리했어요.",
+    "pinned_comment": "설거지로 허리가 아픈 건 오래 해서가 아니라 서 있는 방법 때문이에요. 발밑에 낮은 받침 하나만 놓아도 저녁 설거지가 한결 편해져요. 구독하시고 건강한 노년을 지키는 습관을 함께 이어가요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "허리건강"
+    ],
+    "bgm_prompt": "warm calm nylon guitar with soft piano, steady evening kitchen mood"
+  }
+}

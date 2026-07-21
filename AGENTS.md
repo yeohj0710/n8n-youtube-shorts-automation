@@ -42,6 +42,25 @@ Latest known workflow:
 - Keep internal medical safety checks for cure/guarantee/dosage/prescription-avoidance claims. Remove only the user-visible disclaimer padding.
 - Pinned/top-level YouTube comment should be exactly: `좋아요와 구독 한 번씩 부탁드립니다.`
 
+## Card Copy Rules
+
+These are entertaining shorts for Korean adults over 50. Fun and useful is the whole bar. Do not turn them into clinical education.
+
+- **Do not go looking for research.** Studies, papers, and public-health pages are not where topics come from. Write from ordinary life. Evidence is optional in the stockpile: `scripts\build-research-stockpile.mjs` accepts a pack with no `sources`/`facts`, and `verify-research-stockpile.mjs` only checks citations when a pack actually carries them.
+- **Do not narrow the subject range.** The channel is the whole life of an adult over 50, not "be careful at home." Rotate across appliances and manuals, groceries and cooking, money and bank errands, hospital and pharmacy visits, family and relationships, clothing, phones, cars, season and home. If two queued topics sit in the same corner, the range has collapsed — that is the failure mode to watch for.
+- **Clarity outranks brevity.** `card_name` may run to 30 characters and `card_reason` to 60, and those are ceilings, not targets. Never trim a line until the subject, the object, or the consequence disappears. A `card_reason` must make sense read alone, without its `card_name` and without the title.
+- **No demonstratives standing in for the thing.** `그것`, `이때`, `이렇게`, `그때 그 도장`, `그 물건` — name the actual thing instead. A bare comparative with nothing to compare to (`오를 때보다 내려올 때가 커요`) is the same defect: say what is bigger.
+- **No metaphor or roundabout phrasing.** Say the object, the action, and the result plainly. `키운 소리가 귀를 또 깎아요` reads as poetry and loses the point; `크게 오래 들으면 귀가 더 나빠져서 또 키우게 돼요` says it.
+- **Write spoken Korean, not translated Korean.** Four habits make copy read as English wearing Korean words, and all four have shown up in this repo:
+  - *Subjects Korean drops.* English needs a subject in every clause and the habit survives translation. `두 식구가 큰 통을 다 쓰기 전에 냄새가 변해요` → `큰 통은 다 쓰기도 전에 냄새부터 변해 버려요`.
+  - *Inanimate things driving transitive verbs.* `소음이 말소리를 덮어요` is English word order. Korean says `환풍기랑 물소리 때문에 말이 안 들려요`. Same for `먼지가 렌즈를 긁어요` → `먼지에 긁혀서`.
+  - *One sentence shape all the way down.* The if-then 조건절 is the usual culprit. Mix in 대조 (`~는데`, `~지만`), plain statements, cause (`~어서`), and endings like `~거든요` / `~잖아요`. The shared gate enforces this: `monotonous_sentence_shape` fires when one marked construction covers 80% or more of the ranks. Plain statements are exempt — they are the neutral default and repeat harmlessly.
+  - *Stacked passives.* Prefer an active verb where Korean has one.
+  To check a queue quickly, count how many `card_reason` lines contain `면 `. Above roughly a third of the list and it will read translated.
+- Items default to 5, with 4 to 7 allowed. If only three hold up, change the topic rather than padding. Never split one fact across two ranks, and never add a meta item about attitude (`어렵다는 생각`).
+- Visible copy uses 해요체. `합니다`/`습니다` endings trip `channel_tone_mismatch` in the shared gate.
+- Contract markers live in the canonical scripts: `PLAIN_MEANING_V1` and `NO_FIGURATIVE_COPY_V1` in both `install-shared-content-quality-gate.mjs` (reviewer rules L2/L3) and `simplify-legacy-editorial-flow.mjs` (writer prompt). Edit them there, then run install before simplify.
+
 ## Important Paths
 
 - Runner root: `C:\dev\n8n-youtube-shorts-automation`

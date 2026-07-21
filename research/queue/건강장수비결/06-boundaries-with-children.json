@@ -1,0 +1,61 @@
+{
+  "title": "자식한테 서운해지기 전에 미리 정해둘 선 5",
+  "lane": "senior_life_relationship",
+  "notes": "자식과 틀어지는 건 큰일 때문이 아니라, 정해두지 않은 작은 선들이 쌓여서다.",
+  "topic_key": "boundaries_with_grown_children",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "boundaries_with_grown_children",
+    "hook_title": "자식한테 서운해지기 전에 미리 정해둘 선 5",
+    "subtitle": "큰일이 아니라 작은 것들이 쌓여요",
+    "visual_profile": "magazine_cover",
+    "visual_mood_hint": "거실 창가 탁자에 놓인 찻잔 두 개와 반쯤 접힌 신문, 늦은 오후의 낮은 햇살, 따뜻한 베이지와 짙은 갈색 팔레트, 원목과 리넨 질감",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "전화 횟수를 세지 않기",
+        "card_name": "전화 횟수를 세지 않기",
+        "reason": "먼저 안 했다고 세기 시작하면 통화 자체가 숙제처럼 변해요",
+        "card_reason": "전화 횟수를 세기 시작하면 통화가 부담스러워져요"
+      },
+      {
+        "rank": 2,
+        "name": "말을 며느리나 사위 편에 전하지 않기",
+        "card_name": "며느리나 사위 편에 말 전하기",
+        "reason": "건너 전한 말은 뜻이 달라져서 결국 두 사람 사이가 어색해져요",
+        "card_reason": "며느리나 사위를 거쳐 전한 말은 뜻이 달라져요"
+      },
+      {
+        "rank": 3,
+        "name": "돈은 빌려주지 말고 줄 만큼만 주기",
+        "card_name": "빌려주는 것으로 하기",
+        "reason": "돌려받을 생각으로 주면 액수보다 기다리는 마음이 사람을 상하게 해요",
+        "card_reason": "돌려받기를 기다리는 동안 사이가 더 상해요"
+      },
+      {
+        "rank": 4,
+        "name": "손주는 맡는 게 아니라 돕는 것으로",
+        "card_name": "손주를 통째로 맡아 주기",
+        "reason": "한 번 맡으면 당연해져서 나중에 거절할 자리가 없어져요",
+        "card_reason": "한 번 맡으면 당연해져서 나중에 거절하기 어려워요"
+      },
+      {
+        "rank": 5,
+        "name": "오는 날짜를 내가 못 박지 않기",
+        "card_name": "오는 날짜를 못 박기",
+        "reason": "날짜를 정해 두면 오는 게 반가움이 아니라 확인이 되어 버려요",
+        "card_reason": "오는 날짜를 정해 두면 반가움이 아니라 확인이 돼요"
+      }
+    ],
+    "video_script": "서운해지기 전에 정해 둬요.",
+    "description": "자식한테 서운해지기 전에 미리 정해둘 선을 정리했어요.",
+    "pinned_comment": "자식과 틀어지는 건 큰일 때문이 아니라 정해두지 않은 작은 것들이 쌓여서예요. 미리 정해두면 서운할 일 자체가 줄어들어요. 구독하시고 건강한 노년을 지키는 습관을 함께 이어가요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "노후생활"
+    ],
+    "bgm_prompt": "warm calm piano with soft cello, gentle and dignified mood"
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "title": "같은 밥상인데 식후가 갈리는 식탁 선택 5",
+  "lane": "food_nutrition_table",
+  "notes": "무엇을 먹느냐가 아니라 무엇부터 먹느냐로 식후가 달라진다는 점을 다룹니다.",
+  "research_source_pack": {
+    "channel_profile": "longevity_daily_function",
+    "researched_at": "2026-07-21",
+    "search_queries": [
+      "food order vegetables protein before carbohydrate postprandial glucose prediabetes",
+      "carbohydrate last food order behavioral intervention randomized",
+      "채소 단백질 먼저 먹고 밥 나중 식후 혈당 근거"
+    ],
+    "sources": [
+      {
+        "source_id": "S1",
+        "title": "The impact of food order on postprandial glycaemic excursions in prediabetes (Diabetes Obes Metab. 2019;21(2):377-381, PMID 30101510)",
+        "publisher": "Diabetes, Obesity & Metabolism / PubMed",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/30101510/",
+        "published_at": "2018-09-10",
+        "source_type": "peer_reviewed_clinical_trial"
+      },
+      {
+        "source_id": "S2",
+        "title": "A Randomized Controlled Pilot Study of the Food Order Behavioral Intervention in Prediabetes (Nutrients. 2023;15(20):4452, PMID 37892527)",
+        "publisher": "Nutrients / PubMed",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/37892527/",
+        "published_at": "2023-10-20",
+        "source_type": "randomized_controlled_trial"
+      }
+    ],
+    "candidate_facts": [
+      {
+        "fact_id": "F1",
+        "claim": "밥이나 면 같은 탄수화물을 먼저 먹으면 같은 밥상에서도 식후 혈당이 가장 가파르게 오른다.",
+        "source_ids": ["S1"],
+        "evidence_summary": "같은 식사를 순서만 바꿔 먹인 교차 시험에서 탄수화물을 먼저 먹은 날은 식후 혈당이 크게 출렁였고, 채소나 단백질을 먼저 먹은 날보다 최고치가 훨씬 높게 올랐다.",
+        "why_interesting": "무엇을 줄일지만 고민하던 사람에게 같은 밥상 그대로 순서만 바꾸면 된다는 선택지를 준다.",
+        "viewer_relevance": "국에 밥부터 말아 뜨는 습관은 중장년 밥상에서 가장 흔한 순서다.",
+        "viewer_decision": "숟가락을 밥이 아니라 반찬이나 국건더기부터 뜬다.",
+        "necessary_condition": "같은 식사 구성에서 순서만 바꾼 비교다.",
+        "limitation_or_boundary": "당뇨 전단계 참가자를 대상으로 한 소규모 시험이라 사람마다 폭은 다르다.",
+        "confidence": "moderate_high"
+      },
+      {
+        "fact_id": "F2",
+        "claim": "채소를 먼저 먹고 밥을 나중에 먹으면 식후 혈당이 훨씬 완만하게 오른다.",
+        "source_ids": ["S1"],
+        "evidence_summary": "채소를 먼저 먹은 날은 탄수화물을 먼저 먹은 날보다 식후 혈당 최고치가 크게 낮아졌고, 혈당이 출렁이지 않고 안정적으로 유지됐다.",
+        "why_interesting": "반찬을 먼저 집는 사소한 습관이 실제 측정에서 차이를 만들었다.",
+        "viewer_relevance": "나물, 김치, 쌈처럼 이미 밥상에 있는 반찬으로 바로 할 수 있다.",
+        "viewer_decision": "첫 두세 숟가락은 채소 반찬으로 채운다.",
+        "necessary_condition": "채소를 밥보다 먼저 먹어야 한다.",
+        "limitation_or_boundary": "채소를 더 먹으라는 뜻이 아니라 순서를 바꾸라는 뜻이다.",
+        "confidence": "moderate_high"
+      },
+      {
+        "fact_id": "F3",
+        "claim": "고기나 생선 같은 단백질 반찬을 채소와 함께 먼저 먹고 밥을 마지막에 두면 식후 혈당이 크게 덜 오른다.",
+        "source_ids": ["S1"],
+        "evidence_summary": "단백질과 채소를 먼저 먹고 탄수화물을 나중에 먹은 조건에서 식후 혈당 최고치가 탄수화물 우선 조건보다 크게 낮아졌다.",
+        "why_interesting": "밥을 줄이지 않고 마지막으로 미루기만 해도 결과가 달라진다.",
+        "viewer_relevance": "생선구이나 두부, 계란처럼 늘 올라오는 반찬으로 바로 적용된다.",
+        "viewer_decision": "고기와 생선 반찬을 밥보다 먼저 먹고 밥을 마지막에 둔다.",
+        "necessary_condition": "단백질 반찬을 탄수화물보다 앞에 두어야 한다.",
+        "limitation_or_boundary": "밥 양 자체를 늘려도 된다는 뜻은 아니다.",
+        "confidence": "moderate_high"
+      },
+      {
+        "fact_id": "F4",
+        "claim": "반찬을 먼저 먹고 잠깐 뒤에 밥을 먹는 방식으로 시험이 진행됐다.",
+        "source_ids": ["S1"],
+        "evidence_summary": "시험에서는 먼저 먹는 음식을 다 먹고 약 10분 뒤에 나머지를 먹도록 설계했다. 순서뿐 아니라 사이에 간격을 둔 조건에서 결과가 측정됐다.",
+        "why_interesting": "순서만 바꾸는 게 아니라 잠깐 텀을 두는 것까지가 방법이라는 점은 잘 알려져 있지 않다.",
+        "viewer_relevance": "국이나 반찬을 먼저 먹고 밥을 늦게 뜨는 것으로 그대로 흉내 낼 수 있다.",
+        "viewer_decision": "반찬을 먼저 먹고 조금 있다가 밥을 뜬다.",
+        "necessary_condition": "먼저 먹는 음식과 밥 사이에 약간의 간격을 둔다.",
+        "limitation_or_boundary": "간격을 정확히 재야 한다는 뜻은 아니다.",
+        "confidence": "high"
+      },
+      {
+        "fact_id": "F5",
+        "claim": "순서를 바꾸는 방법은 실제로 해 보면 대부분 어렵지 않다고 답했다.",
+        "source_ids": ["S2"],
+        "evidence_summary": "밥을 마지막에 먹는 방법을 넉 달간 실제 생활에서 시험한 무작위 연구에서 참가자 대다수가 잘 지켰다고 답했고, 상당수가 반찬을 먼저 먹는 것이 어렵지 않았다고 응답했다. 이 그룹은 채소와 단백질 섭취가 오히려 늘었다.",
+        "why_interesting": "식단을 바꾸는 방법 대부분이 오래 못 가는데 이 방법은 지속 가능성이 확인됐다.",
+        "viewer_relevance": "새로 사거나 끊을 것이 없어 오늘 저녁부터 그대로 할 수 있다.",
+        "viewer_decision": "당장 오늘 한 끼부터 순서만 바꿔 본다.",
+        "necessary_condition": "평소 먹던 식사 그대로에서 순서만 바꾼다.",
+        "limitation_or_boundary": "참가자 수가 적은 예비 연구이고 체중과 혈당 지표 변화는 두 그룹이 비슷했다.",
+        "confidence": "moderate"
+      }
+    ],
+    "selected_angle": "무엇을 먹느냐가 아니라 무엇부터 먹느냐로 같은 밥상의 식후가 갈린다.",
+    "rejected_angles": [
+      "혈당 수치와 검사 기준 설명 - 임상 수치는 시청자 눈높이에 맞지 않음",
+      "당뇨 합병증 나열 - 겁주기이고 오늘 할 행동이 없음",
+      "저탄수 식단 권유 - 밥을 끊으라는 말은 실행률이 낮고 이 근거의 요지도 아님"
+    ]
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "title": "병원 갈 때 챙겨가면 진료가 빨라지는 것 5",
+  "lane": "daily_health_lifestyle",
+  "notes": "진료 시간이 짧은 게 아니라, 준비 없이 들어가서 짧게 끝난다.",
+  "topic_key": "clinic_visit_preparation",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "medicine_literacy",
+    "topic_key": "clinic_visit_preparation",
+    "hook_title": "병원 갈 때 챙겨가면 진료가 빨라지는 것 5",
+    "subtitle": "준비가 없으면 3분이 그냥 지나가요",
+    "visual_profile": "clinic_checklist",
+    "visual_mood_hint": "현관 앞 탁자에 놓인 손가방과 약봉지, 수첩과 안경, 나가기 직전의 밝은 아침 빛, 크림색과 부드러운 청록 팔레트, 종이와 천 질감",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "먹는 약을 봉지째",
+        "card_name": "먹는 약을 봉지째",
+        "reason": "이름을 외워 가려다 결국 못 대니까 봉지째 들고 가는 게 빨라요",
+        "card_reason": "약 이름을 외워 가려다 못 대니 봉지째 들고 가요"
+      },
+      {
+        "rank": 2,
+        "name": "언제부터인지 적은 메모",
+        "card_name": "언제부터인지 적은 메모",
+        "reason": "언제부터냐는 질문에 헤매느라 정작 할 말을 못 하고 나와요",
+        "card_reason": "언제부터 아팠는지 헤매다 할 말을 못 하고 나와요"
+      },
+      {
+        "rank": 3,
+        "name": "증상이 있을 때 찍은 사진",
+        "card_name": "증상이 있을 때 찍은 사진",
+        "reason": "붓기나 발진은 병원 갈 때쯤 가라앉아서 말로만 남게 돼요",
+        "card_reason": "붓기나 발진은 병원 갈 때쯤이면 가라앉아 있어요"
+      },
+      {
+        "rank": 4,
+        "name": "다른 병원에서 받은 검사지",
+        "card_name": "다른 병원에서 받은 검사지",
+        "reason": "가지고 가면 같은 검사를 처음부터 다시 하지 않아도 돼요",
+        "card_reason": "검사지를 가져가면 같은 검사를 또 받지 않아도 돼요"
+      },
+      {
+        "rank": 5,
+        "name": "물어볼 것 세 가지",
+        "card_name": "물어볼 것 세 가지",
+        "reason": "진료실에 들어가면 이상하게 궁금하던 게 하나도 생각이 안 나요",
+        "card_reason": "진료실에 들어가면 궁금하던 게 하나도 생각이 안 나요"
+      }
+    ],
+    "video_script": "들어가기 전에 챙길 것부터요.",
+    "description": "병원 갈 때 챙겨가면 진료가 빨라지는 것을 정리했어요.",
+    "pinned_comment": "진료 시간이 짧은 게 아니라 준비 없이 들어가서 짧게 끝나요. 약봉지와 메모 한 장만 챙겨도 물어볼 걸 다 물어보고 나올 수 있어요. 구독하시고 성분과 몸의 원리를 쉽게 이해하는 건강 정보를 받아보세요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "병원이용"
+    ],
+    "bgm_prompt": "calm clear piano with light strings, prepared and steady morning mood"
+  }
+}

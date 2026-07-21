@@ -1,0 +1,61 @@
+{
+  "title": "냉동실에 넣으면 오히려 맛이 사는 것 5",
+  "lane": "food_nutrition_table",
+  "notes": "냉동실은 오래 두려고 넣는 곳인 줄 알지만, 넣었다 꺼내야 제맛이 나는 것도 있다.",
+  "topic_key": "freezer_improves_food",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "nutrition_food_choices",
+    "topic_key": "freezer_improves_food",
+    "hook_title": "냉동실에 넣으면 오히려 맛이 사는 것 5",
+    "subtitle": "오래 두려고 넣는 게 아니에요",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "열린 냉동실 서랍 안에 가지런히 담긴 유리통과 종이봉투, 하얀 냉기와 따뜻한 주방 조명이 만나는 장면, 크림색과 맑은 하늘색 팔레트, 성에 질감",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "두부",
+        "card_name": "두부",
+        "reason": "얼렸다 녹이면 물이 빠지면서 씹는 맛이 고기처럼 쫄깃해져요",
+        "card_reason": "얼렸다 녹인 두부는 물이 빠져서 고기처럼 쫄깃해요"
+      },
+      {
+        "rank": 2,
+        "name": "익은 바나나",
+        "card_name": "익은 바나나",
+        "reason": "무르기 전에 얼려 두면 갈아서 그대로 아이스크림처럼 먹어요",
+        "card_reason": "까매지기 직전 바나나를 얼려 뒀다 갈아 드세요"
+      },
+      {
+        "rank": 3,
+        "name": "식빵",
+        "card_name": "식빵",
+        "reason": "상온에 두면 금방 마르지만 얼려 두면 구울 때마다 갓 산 맛이에요",
+        "card_reason": "상온에 둔 식빵은 금방 마르고, 얼린 건 구울 때마다 갓 산 맛이에요"
+      },
+      {
+        "rank": 4,
+        "name": "다져 둔 대파와 마늘",
+        "card_name": "다져 둔 대파와 마늘",
+        "reason": "한 번에 다져 얼려 두면 필요할 때 숟가락으로 떠서 바로 써요",
+        "card_reason": "한 번에 다져 얼려 두고 쓸 때마다 숟가락으로 떠서 써요"
+      },
+      {
+        "rank": 5,
+        "name": "국물용 멸치와 다시마",
+        "card_name": "국물용 멸치와 다시마",
+        "reason": "상온에 두면 눅눅해지고 비린내가 나는데 얼려 두면 맛이 그대로예요",
+        "card_reason": "상온에 둔 멸치는 눅눅해지고 비린내까지 나거든요"
+      }
+    ],
+    "video_script": "냉동실은 맛을 살리는 칸이에요.",
+    "description": "냉동실에 넣으면 오히려 맛이 사는 것을 정리했어요.",
+    "pinned_comment": "냉동실은 오래 두려고만 넣는 칸이 아니에요. 얼렸다 꺼내야 제맛이 나는 것들이 있어서 알고 나면 자리부터 달라져요. 구독하시고 성분과 몸의 원리를 쉽게 이해하는 건강 정보를 받아보세요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "주방살림"
+    ],
+    "bgm_prompt": "bright gentle piano with soft bells, light and pleasant kitchen mood"
+  }
+}

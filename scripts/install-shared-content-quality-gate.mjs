@@ -42,6 +42,79 @@ function inspectChannelIdentity(value, config) {
   return issues;
 }`;
 
+const sourceGroundingHelpers = `function researchSourcePackOf(data) {
+  const value = data?.research_source_pack || data?.config?.research_source_pack || null;
+  if (!value || typeof value !== 'object') return null;
+  const sources = Array.isArray(value.sources) ? value.sources : [];
+  const facts = Array.isArray(value.candidate_facts) ? value.candidate_facts : [];
+  if (!sources.length || !facts.length) return null;
+  return { sources, candidate_facts: facts };
+}
+
+function inspectEverydayLanguage(pack) {
+  const issues = [];
+  const clinicalUnit = /\\d+(?:[.,]\\d+)?\\s*(?:cm|mm|kg|g\\b|mg|mcg|ug|㎍|ml|mmhg|kcal|%|초당|점 중)/i;
+  const clinicalTerm = /(선별\\s*기준|분획|흡수율|유의하게|양성률|민감도|특이도|산화마그네슘|아스파르트산|구연산마그네슘|sarc-?f|awgs|hba1c|iauc|질병코드|진단 기준|컷오프)/i;
+  const fields = [
+    ['hook_title', pack?.hook_title],
+    ['subtitle', pack?.subtitle],
+  ];
+  for (const [index, item] of (Array.isArray(pack?.rank_items) ? pack.rank_items : []).entries()) {
+    const rank = Number(item?.rank || index + 1);
+    for (const [field, value] of [['card_name', item?.card_name], ['card_reason', item?.card_reason]]) {
+      const text = clean(value);
+      if (clinicalUnit.test(text)) issues.push({ rank, code: 'clinical_unit_in_visible_copy', field, value: text });
+      else if (clinicalTerm.test(text)) issues.push({ rank, code: 'too_technical_for_audience', field, value: text });
+    }
+  }
+  for (const [field, value] of fields) {
+    const text = clean(value);
+    if (clinicalUnit.test(text)) issues.push({ code: 'clinical_unit_in_visible_copy', field, value: text });
+    else if (clinicalTerm.test(text)) issues.push({ code: 'too_technical_for_audience', field, value: text });
+  }
+  return issues;
+}
+
+function sourceBackedNumbers(item, researchPack) {
+  if (!researchPack) return null;
+  const fact = researchPack.candidate_facts.find((entry) => clean(entry?.fact_id) === clean(item?.fact_id));
+  if (!fact) return new Set();
+  return new Set(String([fact.claim, fact.evidence_summary, fact.necessary_condition, fact.limitation_or_boundary].filter(Boolean).join(' ')).match(/\\d+(?:[.,]\\d+)?/g) || []);
+}
+
+function inspectSourceGrounding(pack, researchPack) {
+  if (!researchPack) return [];
+  const issues = [];
+  const factIds = new Map(researchPack.candidate_facts.map((fact) => [clean(fact?.fact_id), fact]));
+  const sourceIds = new Set(researchPack.sources.map((source) => clean(source?.source_id)));
+  const items = Array.isArray(pack?.rank_items) ? pack.rank_items : [];
+  for (const [index, item] of items.entries()) {
+    const rank = Number(item?.rank || index + 1);
+    const factId = clean(item?.fact_id);
+    const itemSourceIds = (Array.isArray(item?.source_ids) ? item.source_ids : []).map(clean).filter(Boolean);
+    // A research pack is supporting evidence, not a required source for every
+    // item, so an uncited item is allowed. A citation that points at something
+    // absent from the pack is still a hard error.
+    if (factId && !factIds.has(factId)) {
+      issues.push({ rank, code: 'unknown_fact_id', message: 'Ranked item cites a fact_id that is not in the research source pack.', fact_id: factId });
+    }
+    for (const sourceId of itemSourceIds) {
+      if (!sourceIds.has(sourceId)) {
+        issues.push({ rank, code: 'unknown_source_id', message: 'Ranked item cites a source_id that is not in the research source pack.', source_id: sourceId });
+      }
+    }
+    const packFactNumbers = sourceBackedNumbers(item, researchPack) || new Set();
+    const cardNumbers = String([item?.card_reason, item?.card_name, item?.reason].filter(Boolean).join(' ')).match(/\\d+(?:[.,]\\d+)?/g) || [];
+    for (const number of cardNumbers) {
+      if (!packFactNumbers.has(number)) {
+        issues.push({ rank, code: 'fabricated_beyond_source', message: 'Visible copy uses a number that the cited research fact does not contain.', value: number });
+        break;
+      }
+    }
+  }
+  return issues;
+}`;
+
 const buildReviewCode = `const data = $input.first().json;
 const pack = data.pack || {};
 const cfg = data.config || {};
@@ -52,11 +125,13 @@ function clean(value) {
 
 ${channelPolicyHelpers}
 
-function inspectPack(value) {
+${sourceGroundingHelpers}
+
+function inspectPack(value, researchPack) {
   const issues = [];
   const items = Array.isArray(value?.rank_items) ? value.rank_items : [];
-  if (items.length < 3 || items.length > 5) {
-    issues.push({ code: 'rank_count', message: 'Rank item count must be 3-5.', count: items.length });
+  if (items.length < 4 || items.length > 7) {
+    issues.push({ code: 'rank_count', message: 'Rank item count must be 4-7, and 5 is the default target.', count: items.length });
   }
   const vagueEnding = /(점검|확인|도움|부담|충분|기본|균형|관리|변화|문제|위험)$/;
   for (const [index, item] of items.entries()) {
@@ -67,12 +142,15 @@ function inspectPack(value) {
     const cardReason = clean(item?.card_reason);
     if (!name) issues.push({ rank, code: 'missing_name', message: 'Item name is missing.' });
     if (!cardName) issues.push({ rank, code: 'missing_card_name', message: 'Short image item name is missing.' });
-    if ([...cardName].length > 22) issues.push({ rank, code: 'card_name_too_long', message: 'Short image item name exceeds 22 characters.', length: [...cardName].length });
+    if ([...cardName].length > 30) issues.push({ rank, code: 'card_name_too_long', message: 'Short image item name exceeds 30 characters.', length: [...cardName].length });
     if (!reason) issues.push({ rank, code: 'missing_reason', message: 'Item reason is missing.', value: reason });
     if (!cardReason) issues.push({ rank, code: 'missing_card_reason', message: 'Mobile card sentence is missing.' });
-    if ([...cardReason].length > 40) issues.push({ rank, code: 'card_copy_too_long', message: 'Mobile card sentence exceeds 40 characters.', length: [...cardReason].length });
+    if ([...cardReason].length > 60) issues.push({ rank, code: 'card_copy_too_long', message: 'Mobile card sentence exceeds 60 characters.', length: [...cardReason].length });
     if (/^(?:왜|이유|핵심|tip)\\s*[:：]/i.test(cardReason)) issues.push({ rank, code: 'card_label_prefix', message: 'Mobile card sentence must not start with a repeated label.' });
-    if (/\\d{1,3}%/.test(reason)) issues.push({ rank, code: 'unsupported_percentage', message: 'Reason contains an unsupported percentage.', value: reason });
+    const backedNumbers = sourceBackedNumbers(item, researchPack);
+    const percentages = reason.match(/(\\d{1,3})%/g) || [];
+    const unbackedPercentage = percentages.some((match) => !backedNumbers || !backedNumbers.has(match.replace('%', '')));
+    if (unbackedPercentage) issues.push({ rank, code: 'unsupported_percentage', message: 'Reason contains a percentage that no cited research fact supports.', value: reason });
   }
   const viewerCopy = [
     value?.hook_title,
@@ -85,14 +163,60 @@ function inspectPack(value) {
   if (/[가-힣]니다(?:[.!?]|\\s|$)/.test(viewerCopy)) {
     issues.push({ code: 'channel_tone_mismatch', message: 'Viewer-facing copy must use Korean 해요체 instead of 합니다체.' });
   }
+  // A card whose every line is bent into the same sentence shape reads like
+  // machine translation even when each line is fine on its own. The usual
+  // offender is the if-then clause: five consecutive 조건절 is English grammar
+  // wearing Korean words. Spoken Korean varies its shape line to line.
+  const sentenceShape = (text) => {
+    if (!text) return '';
+    // Order matters: a line carrying an if-clause is built on that clause even
+    // when it also contains a 는데 contrast, so 조건절 is checked first.
+    if (text.includes('면 ') || text.endsWith('면')) return 'conditional';
+    if (text.includes('는데') || text.includes('지만')) return 'contrast';
+    if (text.includes('어서') || text.includes('아서') || text.includes('라서') || text.includes('때문')) return 'cause';
+    return 'plain';
+  };
+  // A bare demonstrative on the card means the line cannot be read on its own:
+  // 이때가 발톱을 보는 순간이에요 never says what changed about the 발톱.
+  for (const [index, item] of items.entries()) {
+    const cardReason = clean(item?.card_reason);
+    const demonstrative = cardReason.match(/(그것|그거|이것|이거|이때|그때|이렇게|그렇게)/);
+    if (demonstrative) {
+      issues.push({
+        rank: Number(item?.rank || index + 1),
+        code: 'vague_demonstrative',
+        message: 'Card copy leans on a demonstrative instead of naming the thing, so the line cannot be read on its own.',
+        value: demonstrative[1],
+      });
+    }
+  }
+  const shapes = items.map((item) => sentenceShape(clean(item?.card_reason))).filter(Boolean);
+  if (shapes.length >= 4) {
+    const shapeCounts = {};
+    // Plain statements are the neutral default and repeat harmlessly; it is a
+    // marked construction repeated down the list that reads as translated.
+    for (const shape of shapes) if (shape !== 'plain') shapeCounts[shape] = (shapeCounts[shape] || 0) + 1;
+    const [dominant, dominantCount] = Object.entries(shapeCounts).sort((left, right) => right[1] - left[1])[0] || ['', 0];
+    if (dominantCount / shapes.length >= 0.8) {
+      issues.push({
+        code: 'monotonous_sentence_shape',
+        message: 'Almost every card_reason uses the same sentence shape, which reads as translated rather than spoken Korean. Vary the shape across ranks.',
+        shape: dominant,
+        count: dominantCount,
+        of: shapes.length,
+      });
+    }
+  }
   return issues;
 }
 
 const qualityPreflight = {
   contract_version: '1.0',
   issues: [
-    ...inspectPack(pack),
+    ...inspectPack(pack, researchSourcePackOf(data)),
     ...inspectChannelIdentity(pack, cfg),
+    ...inspectSourceGrounding(pack, researchSourcePackOf(data)),
+    ...inspectEverydayLanguage(pack),
     ...(/(?:^|[.!?]\\s*)(?:저는|제가|저희 집|저희 어머니|우리 어머니|직접 해보니|써보니|먹어보니)/.test(clean(pack.pinned_comment)) ? [{
       code: 'fabricated_personal_anecdote',
       message: 'Pinned comment presents an unverifiable first-person or family anecdote as the channel owner experience.',
@@ -139,6 +263,13 @@ const schema = {
     basis_type: 'physical_mechanism | storage_guidance | nutrition_basics | behavioral_mechanism | established_safety_guidance | uncertain',
     explanation: '왜 이 근거를 신뢰할 수 있는지 짧게 설명',
     useful_detail: '이 항목을 실제 선택에 유용하게 만드는 조건·기전·행동·경계 중 하나',
+    detail_type: 'condition | mechanism | comparison | label_field | timing_or_situation | interaction | observable_pattern | practical_action | boundary | established_number | none',
+    decision_change: 'specific | generic | none',
+    claim_delivery: 'direct | calibrated | generic_padding',
+    everyday_language: 'plain | technical',
+    everyday_object: 'the ordinary food, drink, object, place, time, action, or body feeling this item is built around',
+    source_fact_id: 'the research_source_pack candidate_fact id this ranked item cites, or empty when no research pack was supplied',
+    source_support: 'supported | partially_supported | unsupported | no_research_pack',
     precision_check: 'supported | no_exact_number | unsupported',
     health_depth: 'high | adequate | low',
     medical_relevance: 'direct | incidental | none',
@@ -173,11 +304,17 @@ const prompt = [
   'E. The pinned_comment must summarize the exact title and item set in 2-4 short natural Korean sentences. It should select 2-3 of the most useful actions or principles and preserve their practical meaning without copying the full description or listing every item. Reject a generic, inaccurate, or context-mismatched summary with issue code comment_topic_mismatch.',
   'G. The pinned_comment must use calm, respectful, polished Korean appropriate for a mature health-information channel. Do not ask a question, ask viewers to reply or comment, or ask for likes. Reject any such engagement prompt with issue code comment_question_cta. Also reject slang, cute or overly casual chatter, decorative emoji, sales language, or other engagement bait with issue code comment_tone_mismatch. One restrained subscription invitation is allowed only in the final sentence.',
   'F. Never allow an invented channel-owner or family anecdote such as 저는, 제가, 저희 집, 저희 어머니, 우리 어머니, 직접 해보니, 써보니, or 먹어보니. Use issue code fabricated_personal_anecdote.',
-  'H. The primary promise must directly fit a health-information channel: health, nutrition, medicine or supplement literacy, body signals, sleep and recovery, movement and mobility, skin and vitality, or health-relevant food and daily habits. Reject general housekeeping, appliance tricks, home-object replacement, cars, money, etiquette, or relationship advice when health is only incidental. Use issue code channel_concept_mismatch.',
-  'I. Each item must contain at least one decision-useful detail: who or when it matters, an observable condition, a credible mechanism, a practical action, or a meaningful boundary or caution. Reject generic, obvious, or slogan-like advice that adds no usable information with issue code low_information_value. Do not reject merely because the writing is brief.',
+  'H. The channel is 50대 이후 건강 이야기 in the broad sense: the life of an adult over 50, not a narrow medical beat. Health, nutrition, supplement and medicine literacy, body signals, sleep, movement, and skin all belong, and so do household appliances, home and season, groceries and cooking, money and errands, hospital and pharmacy visits, cars, clothing, phones, family and relationships, and how to carry oneself while ageing. Judge only whether an adult over 50 would find the topic genuinely useful or interesting. Do not narrow the channel to what a clinic would hand out, and do not reject a topic for being about an object, an errand, or a relationship rather than the body. Use issue code channel_concept_mismatch only for a promise that no ordinary viewer over 50 would care about, or that belongs to an unrelated audience entirely such as day trading, gaming, or professional practice.',
+  'I. DECISION_DETAIL_V1: Each item must contain at least one decision-useful detail not inferable from its title or name: who or when it matters, an observable condition, a credible mechanism, a comparison, a label field, an interaction, a practical action, or a meaningful boundary. Record useful_detail, detail_type, and decision_change for every rank. decision_change is specific only when the item tells the viewer what to notice or do differently and why. Reject a restatement, slogan, obvious advice, or generic phrases such as 건강에 좋아요, 도움이 될 수 있어요, 주의가 필요해요, 확인해요, 관리가 중요해요, or 사람마다 달라요 with issue code low_information_value. Do not reject merely because the writing is brief.',
+  'I2. Distinguish justified uncertainty from generic safety padding. Established facts should be stated directly. A qualifier is calibrated only when it names the exact condition, uncertain relation, exception, or plausible alternative. Repeated may, could, might, 수 있어요, or blanket caution that removes the mechanism, condition, or decision is generic_padding and must be rejected with issue code generic_safe_summary. Record claim_delivery for every rank.',
+  'I4. EVERYDAY_LANGUAGE_V1: This is a senior lifestyle channel, not a clinical education channel. Judge every visible field as a 60-year-old with no health background reading a phone for two seconds. Each ranked item must be built around an ordinary food, drink, object, place, time of day, action, or body feeling the viewer can picture and act on tonight without measuring, testing, or buying anything. Record everyday_language and everyday_object for every rank. Reject with issue code too_technical_for_audience any visible clinical measurement, screening threshold, lab value, percentage, chemical or salt name, medical scale name, diagnosis code, or study term, and any card that reads like a handout rather than kitchen-table Korean. Clinical evidence in the research pack is fine as a source; it must reach the card as the everyday behaviour and everyday result it implies. Do not reject ordinary daily numbers such as 두 시간, 세 알, or 10분 when they are not being used as a cutoff to measure against.',
+  'I3. RESEARCH_GROUNDING_V2: A research_source_pack, when supplied, is supporting evidence rather than the only permitted evidence base, and items may be written without citing it. For a ranked item that does cite a fact_id, find that candidate_fact and judge whether the visible card_name, card_reason, and reason stay inside its claim, evidence_summary, necessary_condition, and limitation_or_boundary; record source_fact_id and source_support for that rank. Reject a cited item whose claim is absent from the fact it cites with issue code claim_not_in_source_pack, and reject a condition, number, threshold, mechanism, comparison, interaction, or causal relation the cited fact does not contain with issue code fabricated_beyond_source. Never reject an item merely for having no citation, and never require the pack to cover every rank. For an uncited item, or when no pack is supplied, set source_support to no_research_pack and judge the claim on ordinary factual plausibility instead.',
   'J. Check every exact minute, repetition count, percentage, threshold, measurement, or other precise number. If it is unnecessary, unsupported, or appears added only to sound scientific, reject with issue code fabricated_precision. Ordinary non-quantified advice does not need a number.',
-  'K. Apply a clinical usefulness floor. Every item must teach an established physiological, clinical, nutritional, medication-literacy, symptom-interpretation, or injury-prevention principle and connect it to a real health decision. Reject housekeeping, organizing, convenience, motivation, comfort, or generic self-care that lacks direct medical relevance with issue code insufficient_health_depth. Record health_depth, medical_relevance, and decision_value for every item.',
-  'L. The visible card_name and card_reason must use short, common everyday Korean that an ordinary viewer immediately understands. Reject obscure furniture words, unexplained jargon, awkward literal translation, or needlessly technical visible wording with issue code unfamiliar_visible_word.',
+  'K. Apply a usefulness floor rather than a medical floor. Every item must give the viewer something they did not already know and can act on or notice today — a body mechanism, a signal, a household or money consequence, a step that saves a wasted trip, or a boundary worth setting. Household, appliance, shopping, errand, and relationship items clear this floor whenever they carry a real consequence; they are not shallow merely for being non-medical. Reject with issue code insufficient_health_depth only an item that teaches nothing the viewer can use: a slogan, a restatement of common knowledge, or vague encouragement. Record health_depth, medical_relevance, and decision_value for every item, and set medical_relevance to none for a legitimately non-medical everyday item instead of rejecting it.',
+  'L. The visible card_name and card_reason must use common everyday Korean that an ordinary viewer immediately understands. Reject obscure furniture words, unexplained jargon, awkward literal translation, or needlessly technical visible wording with issue code unfamiliar_visible_word.',
+  'L2. PLAIN_MEANING_V1: Clarity outranks brevity, and the character limits are ceilings rather than targets. Read each card_reason alone, without its card_name and without the title, and ask what it is actually about. Reject with issue code low_information_value any line that has been trimmed until the subject, the object, or the actual consequence is gone: a bare comparative with nothing to compare to, a demonstrative such as 그것, 이때, 이렇게, or 그렇게 standing in for the thing itself, or a sentence that only makes sense once the reader has already read the name. Spending more characters to keep the meaning intact is always the correct trade. Never reward a line merely for being short.',
+  'L4. KOREAN_VOICE_V1: The copy must read as Korean somebody spoke, not as English carried across into Korean words. Four habits give it away, and all four are grounds to reject with issue code translationese_copy. (a) Subjects English requires but Korean drops: a Korean speaker omits the subject the situation already makes obvious, so 두 식구가 큰 통을 다 쓰기 전에 냄새가 변해요 should be 큰 통은 다 쓰기도 전에 냄새부터 변해요. (b) Inanimate things driving transitive verbs: 소음이 말소리를 덮어요 is English word order; Korean says 소음 때문에 말이 안 들려요. (c) One sentence shape repeated down the whole list, especially the if-then 조건절 — vary it with 대조 (~는데, ~지만), plain statement, cause (~어서), and 거든요 or 잖아요 so the ranks do not scan identically. (d) Passive and causative piled up where Korean prefers an active verb. Read every line aloud in your head and ask whether a Korean speaker would say it that way to a neighbour.',
+  'L3. NO_FIGURATIVE_COPY_V1: Visible copy must say the thing directly. Reject with issue code unfamiliar_visible_word any metaphor, simile, analogy, poetic image, or roundabout phrasing that makes the viewer infer what is meant instead of reading it. Name the actual object, the actual action, and the actual consequence in plain words.',
   'M. All viewer-facing explanatory copy must use natural Korean 해요체. Reject 합니다체 or endings such as 입니다, 합니다, 됩니다, or 습니다 with issue code channel_tone_mismatch.',
   'N. Audit the configured channel identity separately from general health relevance. 하루건강약사 must teach health literacy and informed choices about nutrition, ingredients, supplements, food, body signals, skin, vitality, or recovery. 건강장수비결 must help adults over 50 protect healthy aging, chronic-risk control, mobility, joints, sleep, meals, daily function, or independence. Reject a pack that mainly belongs to the other channel or only mentions the configured purpose incidentally with issue code channel_identity_mismatch.',
   'O. The configured channel pillar is a broad rotation category, not permission to repeat the same narrow promise. Confirm that the exact topic directly fits the supplied pillar and that its medical question, mechanism, decision, and practical situation are coherent. Use issue code channel_pillar_mismatch when the topic does not fit.',
@@ -192,13 +329,14 @@ const prompt = [
   '7. Preserve the channel tone and topic, but factual clarity outranks virality or visual density.',
   '8. Never return corrected_pack. The writer pack is immutable.',
   'Preflight issues found by deterministic checks: ' + JSON.stringify(qualityPreflight.issues),
+  researchSourcePackOf(data) ? 'research_source_pack (the only permitted evidence base): ' + JSON.stringify(researchSourcePackOf(data)) : 'No research_source_pack was supplied; set source_support to no_research_pack for every rank.',
   'Configured channel identity: ' + configuredChannelIdentity,
   'Configured channel profile and selected pillar: ' + JSON.stringify({ profile: cfg.channel_editorial_profile || '', pillar: pack.channel_content_pillar || '' }),
   'Required schema: ' + JSON.stringify(schema),
   'Input pack: ' + JSON.stringify(pack),
 ].join('\\n\\n');
 
-const useAiReview = !data.locked_source_pack && !cfg.dry_run && !cfg.test_mode && cfg.content_quality_ai_review !== false;
+const useAiReview = !data.locked_source_pack && !data.prepared_card_pack && !cfg.dry_run && !cfg.test_mode && cfg.content_quality_ai_review !== false;
 const kieQualityReviewRequest = {
   model: cfg.kie_ai_model || 'claude-opus-4-7',
   stream: false,
@@ -225,10 +363,12 @@ function clean(value) {
 
 ${channelPolicyHelpers}
 
-function inspectPack(value) {
+${sourceGroundingHelpers}
+
+function inspectPack(value, researchPack) {
   const issues = [];
   const items = Array.isArray(value?.rank_items) ? value.rank_items : [];
-  if (items.length < 3 || items.length > 5) issues.push({ code: 'rank_count', count: items.length });
+  if (items.length < 4 || items.length > 7) issues.push({ code: 'rank_count', count: items.length });
   const vagueEnding = /(점검|확인|도움|부담|충분|기본|균형|관리|변화|문제|위험)$/;
   for (const [index, item] of items.entries()) {
     const rank = Number(item?.rank || index + 1);
@@ -237,12 +377,14 @@ function inspectPack(value) {
     const cardReason = clean(item?.card_reason);
     if (!clean(item?.name)) issues.push({ rank, code: 'missing_name' });
     if (!cardName) issues.push({ rank, code: 'missing_card_name' });
-    if ([...cardName].length > 22) issues.push({ rank, code: 'card_name_too_long', length: [...cardName].length });
+    if ([...cardName].length > 30) issues.push({ rank, code: 'card_name_too_long', length: [...cardName].length });
     if (!reason) issues.push({ rank, code: 'missing_reason', value: reason });
     if (!cardReason) issues.push({ rank, code: 'missing_card_reason' });
-    if ([...cardReason].length > 40) issues.push({ rank, code: 'card_copy_too_long', length: [...cardReason].length });
+    if ([...cardReason].length > 60) issues.push({ rank, code: 'card_copy_too_long', length: [...cardReason].length });
     if (/^(?:왜|이유|핵심|tip)\\s*[:：]/i.test(cardReason)) issues.push({ rank, code: 'card_label_prefix' });
-    if (/\\d{1,3}%/.test(reason)) issues.push({ rank, code: 'unsupported_percentage', value: reason });
+    const backedNumbers = sourceBackedNumbers(item, researchPack);
+    const percentages = reason.match(/(\\d{1,3})%/g) || [];
+    if (percentages.some((match) => !backedNumbers || !backedNumbers.has(match.replace('%', '')))) issues.push({ rank, code: 'unsupported_percentage', value: reason });
   }
   const viewerCopy = [
     value?.hook_title,
@@ -253,10 +395,48 @@ function inspectPack(value) {
     ...items.flatMap((item) => [item?.name, item?.card_name, item?.reason, item?.card_reason, item?.caution]),
   ].map(clean).filter(Boolean).join(' ');
   if (/[가-힣]니다(?:[.!?]|\\s|$)/.test(viewerCopy)) issues.push({ code: 'channel_tone_mismatch' });
+  // A card whose every line is bent into the same sentence shape reads like
+  // machine translation even when each line is fine on its own. The usual
+  // offender is the if-then clause: five consecutive 조건절 is English grammar
+  // wearing Korean words. Spoken Korean varies its shape line to line.
+  const sentenceShape = (text) => {
+    if (!text) return '';
+    // Order matters: a line carrying an if-clause is built on that clause even
+    // when it also contains a 는데 contrast, so 조건절 is checked first.
+    if (text.includes('면 ') || text.endsWith('면')) return 'conditional';
+    if (text.includes('는데') || text.includes('지만')) return 'contrast';
+    if (text.includes('어서') || text.includes('아서') || text.includes('라서') || text.includes('때문')) return 'cause';
+    return 'plain';
+  };
+  // A bare demonstrative on the card means the line cannot be read on its own:
+  // 이때가 발톱을 보는 순간이에요 never says what changed about the 발톱.
+  for (const [index, item] of items.entries()) {
+    const cardReason = clean(item?.card_reason);
+    const demonstrative = cardReason.match(/(그것|그거|이것|이거|이때|그때|이렇게|그렇게)/);
+    if (demonstrative) {
+      issues.push({
+        rank: Number(item?.rank || index + 1),
+        code: 'vague_demonstrative',
+        message: 'Card copy leans on a demonstrative instead of naming the thing, so the line cannot be read on its own.',
+        value: demonstrative[1],
+      });
+    }
+  }
+  const shapes = items.map((item) => sentenceShape(clean(item?.card_reason))).filter(Boolean);
+  if (shapes.length >= 4) {
+    const shapeCounts = {};
+    // Plain statements are the neutral default and repeat harmlessly; it is a
+    // marked construction repeated down the list that reads as translated.
+    for (const shape of shapes) if (shape !== 'plain') shapeCounts[shape] = (shapeCounts[shape] || 0) + 1;
+    const [dominant, dominantCount] = Object.entries(shapeCounts).sort((left, right) => right[1] - left[1])[0] || ['', 0];
+    if (dominantCount / shapes.length >= 0.8) {
+      issues.push({ code: 'monotonous_sentence_shape', shape: dominant, count: dominantCount, of: shapes.length });
+    }
+  }
   return issues;
 }
 
-const issues = [...inspectPack(pack), ...inspectChannelIdentity(pack, cfg)];
+const issues = [...inspectPack(pack, researchSourcePackOf(data)), ...inspectChannelIdentity(pack, cfg), ...inspectSourceGrounding(pack, researchSourcePackOf(data)), ...inspectEverydayLanguage(pack)];
 const pass = issues.length === 0;
 return [{
   json: {
@@ -286,6 +466,8 @@ function clean(value) {
 }
 
 ${channelPolicyHelpers}
+
+${sourceGroundingHelpers}
 
 function responseText(value) {
   if (value === undefined || value === null) return '';
@@ -364,10 +546,10 @@ function parseJsonText(text) {
   }
 }
 
-function inspectPack(value) {
+function inspectPack(value, researchPack) {
   const issues = [];
   const items = Array.isArray(value?.rank_items) ? value.rank_items : [];
-  if (items.length < 3 || items.length > 5) issues.push({ code: 'rank_count', count: items.length });
+  if (items.length < 4 || items.length > 7) issues.push({ code: 'rank_count', count: items.length });
   const vagueEnding = /(점검|확인|도움|부담|충분|기본|균형|관리|변화|문제|위험)$/;
   for (const [index, item] of items.entries()) {
     const rank = Number(item?.rank || index + 1);
@@ -376,12 +558,14 @@ function inspectPack(value) {
     const cardReason = clean(item?.card_reason);
     if (!clean(item?.name)) issues.push({ rank, code: 'missing_name' });
     if (!cardName) issues.push({ rank, code: 'missing_card_name' });
-    if ([...cardName].length > 22) issues.push({ rank, code: 'card_name_too_long', length: [...cardName].length });
+    if ([...cardName].length > 30) issues.push({ rank, code: 'card_name_too_long', length: [...cardName].length });
     if (!reason) issues.push({ rank, code: 'missing_reason', value: reason });
     if (!cardReason) issues.push({ rank, code: 'missing_card_reason' });
-    if ([...cardReason].length > 40) issues.push({ rank, code: 'card_copy_too_long', length: [...cardReason].length });
+    if ([...cardReason].length > 60) issues.push({ rank, code: 'card_copy_too_long', length: [...cardReason].length });
     if (/^(?:왜|이유|핵심|tip)\\s*[:：]/i.test(cardReason)) issues.push({ rank, code: 'card_label_prefix' });
-    if (/\\d{1,3}%/.test(reason)) issues.push({ rank, code: 'unsupported_percentage', value: reason });
+    const backedNumbers = sourceBackedNumbers(item, researchPack);
+    const percentages = reason.match(/(\\d{1,3})%/g) || [];
+    if (percentages.some((match) => !backedNumbers || !backedNumbers.has(match.replace('%', '')))) issues.push({ rank, code: 'unsupported_percentage', value: reason });
   }
   const viewerCopy = [
     value?.hook_title,
@@ -392,6 +576,44 @@ function inspectPack(value) {
     ...items.flatMap((item) => [item?.name, item?.card_name, item?.reason, item?.card_reason, item?.caution]),
   ].map(clean).filter(Boolean).join(' ');
   if (/[가-힣]니다(?:[.!?]|\\s|$)/.test(viewerCopy)) issues.push({ code: 'channel_tone_mismatch' });
+  // A card whose every line is bent into the same sentence shape reads like
+  // machine translation even when each line is fine on its own. The usual
+  // offender is the if-then clause: five consecutive 조건절 is English grammar
+  // wearing Korean words. Spoken Korean varies its shape line to line.
+  const sentenceShape = (text) => {
+    if (!text) return '';
+    // Order matters: a line carrying an if-clause is built on that clause even
+    // when it also contains a 는데 contrast, so 조건절 is checked first.
+    if (text.includes('면 ') || text.endsWith('면')) return 'conditional';
+    if (text.includes('는데') || text.includes('지만')) return 'contrast';
+    if (text.includes('어서') || text.includes('아서') || text.includes('라서') || text.includes('때문')) return 'cause';
+    return 'plain';
+  };
+  // A bare demonstrative on the card means the line cannot be read on its own:
+  // 이때가 발톱을 보는 순간이에요 never says what changed about the 발톱.
+  for (const [index, item] of items.entries()) {
+    const cardReason = clean(item?.card_reason);
+    const demonstrative = cardReason.match(/(그것|그거|이것|이거|이때|그때|이렇게|그렇게)/);
+    if (demonstrative) {
+      issues.push({
+        rank: Number(item?.rank || index + 1),
+        code: 'vague_demonstrative',
+        message: 'Card copy leans on a demonstrative instead of naming the thing, so the line cannot be read on its own.',
+        value: demonstrative[1],
+      });
+    }
+  }
+  const shapes = items.map((item) => sentenceShape(clean(item?.card_reason))).filter(Boolean);
+  if (shapes.length >= 4) {
+    const shapeCounts = {};
+    // Plain statements are the neutral default and repeat harmlessly; it is a
+    // marked construction repeated down the list that reads as translated.
+    for (const shape of shapes) if (shape !== 'plain') shapeCounts[shape] = (shapeCounts[shape] || 0) + 1;
+    const [dominant, dominantCount] = Object.entries(shapeCounts).sort((left, right) => right[1] - left[1])[0] || ['', 0];
+    if (dominantCount / shapes.length >= 0.8) {
+      issues.push({ code: 'monotonous_sentence_shape', shape: dominant, count: dominantCount, of: shapes.length });
+    }
+  }
   return issues;
 }
 
@@ -540,6 +762,10 @@ for (const [index, item] of (base.pack?.rank_items || []).entries()) {
   const healthDepth = clean(auditItem?.health_depth).toLowerCase();
   const medicalRelevance = clean(auditItem?.medical_relevance).toLowerCase();
   const decisionValue = clean(auditItem?.decision_value).toLowerCase();
+  const usefulDetail = clean(auditItem?.useful_detail);
+  const detailType = clean(auditItem?.detail_type).toLowerCase();
+  const decisionChange = clean(auditItem?.decision_change).toLowerCase();
+  const claimDelivery = clean(auditItem?.claim_delivery).toLowerCase();
   const cardNameClarity = clean(auditItem?.card_name_clarity).toLowerCase();
   const cardReasonCompleteness = clean(auditItem?.card_reason_completeness).toLowerCase();
   const cardMeaning = clean(auditItem?.card_meaning).toLowerCase();
@@ -565,6 +791,47 @@ for (const [index, item] of (base.pack?.rank_items || []).entries()) {
     localIssues.push({ rank, code: 'insufficient_health_depth', health_depth: healthDepth || null, medical_relevance: medicalRelevance || null });
   }
   if (decisionValue === 'none') localIssues.push({ rank, code: 'low_information_value', decision_value: decisionValue });
+  const validDetailTypes = new Set(['condition', 'mechanism', 'comparison', 'label_field', 'timing_or_situation', 'interaction', 'observable_pattern', 'practical_action', 'boundary', 'established_number', 'none']);
+  const detailAuditComplete = Boolean(usefulDetail)
+    && validDetailTypes.has(detailType)
+    && ['specific', 'generic', 'none'].includes(decisionChange)
+    && ['direct', 'calibrated', 'generic_padding'].includes(claimDelivery);
+  if (!detailAuditComplete) {
+    localIssues.push({
+      rank,
+      code: 'incomplete_detail_audit',
+      useful_detail: usefulDetail || null,
+      detail_type: detailType || null,
+      decision_change: decisionChange || null,
+      claim_delivery: claimDelivery || null,
+    });
+  } else {
+    if ((detailType === 'none' || decisionChange === 'generic' || decisionChange === 'none') && !reviewerHasIssueForRank('low_information_value', rank)) {
+      localIssues.push({ rank, code: 'low_information_value', useful_detail: usefulDetail, detail_type: detailType, decision_change: decisionChange });
+    }
+    if (claimDelivery === 'generic_padding' && !reviewerHasIssueForRank('generic_safe_summary', rank)) {
+      localIssues.push({ rank, code: 'generic_safe_summary', message: 'The item uses blanket uncertainty instead of stating the supported mechanism, condition, or decision.' });
+    }
+  }
+  const everydayLanguage = clean(auditItem?.everyday_language).toLowerCase();
+  const everydayObject = clean(auditItem?.everyday_object);
+  if (!['plain', 'technical'].includes(everydayLanguage) || !everydayObject) {
+    localIssues.push({ rank, code: 'incomplete_everyday_audit', everyday_language: everydayLanguage || null, everyday_object: everydayObject || null });
+  } else if (everydayLanguage === 'technical' && !reviewerHasIssueForRank('too_technical_for_audience', rank)) {
+    localIssues.push({ rank, code: 'too_technical_for_audience', message: 'The visible copy reads as clinical rather than everyday Korean.', everyday_object: everydayObject });
+  }
+  const researchPack = researchSourcePackOf(base);
+  const sourceSupport = clean(auditItem?.source_support).toLowerCase();
+  const sourceFactId = clean(auditItem?.source_fact_id);
+  const itemCitesPack = Boolean(clean(item?.fact_id));
+  if (researchPack && itemCitesPack) {
+    const sourceAuditComplete = ['supported', 'partially_supported', 'unsupported'].includes(sourceSupport) && Boolean(sourceFactId);
+    if (!sourceAuditComplete) {
+      localIssues.push({ rank, code: 'incomplete_source_audit', source_support: sourceSupport || null, source_fact_id: sourceFactId || null });
+    } else if (sourceSupport !== 'supported' && !reviewerHasIssueForRank('claim_not_in_source_pack', rank)) {
+      localIssues.push({ rank, code: 'claim_not_in_source_pack', message: 'The ranked item is not fully supported by the research fact it cites.', source_support: sourceSupport, source_fact_id: sourceFactId });
+    }
+  }
   const visibleCopyAuditComplete = ['clear', 'unclear'].includes(cardNameClarity)
     && ['complete', 'missing_role'].includes(cardReasonCompleteness)
     && ['direct', 'vague'].includes(cardMeaning)
@@ -818,6 +1085,7 @@ const commentRetryInstruction = [
 const clearKoreanCopyRetryInstruction = 'CLEAR_KOREAN_COPY_V2: Draft the complete reason first, then derive card_name and card_reason from it. Read only the title + card_name + card_reason without the long reason. The card pair must state what happens, under which condition, and the specific health meaning or action. Do not omit a needed actor, object, particle, or situation. Do not end with 확인해요 or 살펴봐요 unless the sentence names exactly what to check. Do not reverse an observed loss of capacity into its cause. Use natural 해요체 and ordinary verb-led Korean; one necessary medical term or naturally short noun phrase is fine. Perform one final native-Korean read-aloud pass.';
 const titleScopeRetryInstruction = 'TITLE_SCOPE_V3: Define one semantic class for a single ranked entry. The title count-bearing phrase must name that class and every entry must be an instance of it. Rewrite a title that counts an abstraction or mixes classes.';
 const claimStrengthRetryInstruction = 'CLAIM_STRENGTH_V2: Distinguish observation, association, cause, and diagnosis. Do not upgrade the relation or certainty beyond the evidence. State necessary conditions and add a decision-relevant boundary or next check when uncertainty remains.';
+const researchGroundingRetryInstruction = data.research_source_pack ? 'RESEARCH_GROUNDING_V1: A research_source_pack is supplied below. Write every factual claim only from its candidate_facts and sources. Do not add a condition, number, threshold, mechanism, comparison, interaction, exception, or causal relation that is absent from the cited fact evidence_summary. Every ranked item must set fact_id to exactly one candidate_fact id from the pack and source_ids to the source ids that fact cites. If the pack has no fact for an item you want, drop that item or change the angle instead of supplying the claim from memory. Keep exactly as many items as the supplied facts genuinely support, prefer three strong items over five padded ones, and never invent an item to reach a target count. Carry each fact necessary_condition and limitation_or_boundary into the visible copy whenever they change what the viewer should do. Restate every fact as your own short Korean card copy; never copy source sentences verbatim and never cite institution names, study names, or numbers that the pack does not contain. Regenerate strictly inside this same research_source_pack: ' + JSON.stringify(data.research_source_pack) : '';
 
 const qualityInstruction = [
   'QUALITY_REVIEW_RETRY attempt ' + attempt + ' of ' + maxRetries + '.',
@@ -831,10 +1099,13 @@ const qualityInstruction = [
   'Choose a title promise that every item directly fulfills. Remove topic drift, unrelated items, reversed causality, missing causal steps, and claims with uncertain support.',
   'Every replacement item must provide direct medical relevance through an established physiological, clinical, nutritional, medication-literacy, symptom-interpretation, or injury-prevention principle. Housekeeping, organizing, convenience, motivation, comfort, and generic self-care alone are insufficient.',
   'Each replacement item must contain a credible body mechanism or clinically relevant signal plus a decision-useful condition, practical action, or meaningful boundary. Each reason must make the relevant cause and practical result understandable on first read. Do not merely lengthen sentences or add filler; replace an item when its mechanism does not fit.',
-  'Write all viewer-facing explanatory copy in natural Korean 해요체, never 합니다체. Provide card_name as a short common everyday Korean image label of at most 22 characters, and card_reason as a medically useful 해요체 sentence of at most 40 characters. Avoid obscure object words and unexplained jargon.',
+  'Write all viewer-facing explanatory copy in natural Korean 해요체, never 합니다체. Provide card_name as a common everyday Korean image label of at most 30 characters, and card_reason as a useful 해요체 sentence of at most 60 characters. Avoid obscure object words and unexplained jargon.',
+  'PLAIN_MEANING_V1: Clarity outranks brevity. Never compress a line to the point where a first-time reader cannot tell what it refers to. If the shorter wording loses the subject, the object, or what actually happens, use the longer wording and spend the characters. A card_reason must be understandable on its own without reading card_name first: name the thing it is about instead of relying on "그것", "이때", "이렇게", or a bare comparative with nothing to compare to. Reject copy that is short but vague; short is only a virtue when the meaning survives intact.',
+  'NO_FIGURATIVE_COPY_V1: State things directly. No metaphor, no simile, no analogy, no poetic or roundabout phrasing, no rhetorical framing that makes the reader infer the point. Say the actual object, the actual action, and the actual consequence in plain words. Reject copy that gestures at the idea rather than saying it.',
   clearKoreanCopyRetryInstruction,
   titleScopeRetryInstruction,
   claimStrengthRetryInstruction,
+  researchGroundingRetryInstruction,
   'Do not invent exact minutes, repetitions, percentages, thresholds, or measurements to make advice sound scientific. Keep exact detail only when established and necessary.',
   'Keep natural phone-readable Korean without hard character limits. Preserve necessary conditions, numbers, and technical terms.',
   'Keep the upload description easy to scan: 1-2 short opening sentences, a blank line, one concise numbered line per ranked item, a blank line, one calm closing sentence, and 3-5 relevant hashtags. Never return one dense paragraph. In the upload description only, do not add generic subscribe/like requests or a visible medical disclaimer; the pinned comment follows COMMENT_SUMMARY_V1.',
@@ -852,10 +1123,13 @@ const medicalInstruction = [
   'Use neutral lifestyle-safe wording. Do not mention cure, treatment, guaranteed prevention, detox, miracle, doctor authority, hospital avoidance, prescription changes, or dosage.',
   'Each replacement item must still contain a decision-useful condition, observable sign, credible mechanism, practical action, or meaningful boundary. Do not invent exact minutes, repetitions, percentages, thresholds, or measurements.',
   'Keep direct medical relevance: explain an established body mechanism, clinically relevant signal, nutrition or medication-literacy principle, or injury-prevention principle rather than generic organizing or comfort advice.',
-  'Write all viewer-facing explanatory copy in natural Korean 해요체, never 합니다체. Provide card_name as a short common everyday Korean image label of at most 22 characters, and card_reason as a medically useful 해요체 sentence of at most 40 characters.',
+  'Write all viewer-facing explanatory copy in natural Korean 해요체, never 합니다체. Provide card_name as a common everyday Korean image label of at most 30 characters, and card_reason as a useful 해요체 sentence of at most 60 characters.',
+  'PLAIN_MEANING_V1: Clarity outranks brevity. Never compress a line until a first-time reader cannot tell what it refers to. A card_reason must stand on its own without card_name: name the thing instead of leaning on "그것", "이때", "이렇게", or a comparative with nothing to compare to. Short but vague is a defect, not a virtue.',
+  'NO_FIGURATIVE_COPY_V1: State things directly. No metaphor, simile, analogy, or roundabout phrasing that makes the reader infer the point. Say the actual object, the actual action, and the actual consequence in plain words.',
   clearKoreanCopyRetryInstruction,
   titleScopeRetryInstruction,
   claimStrengthRetryInstruction,
+  researchGroundingRetryInstruction,
   'Keep natural phone-readable Korean without hard character limits. Preserve valid practical meaning.',
   'Keep the upload description easy to scan: 1-2 short opening sentences, a blank line, one concise numbered line per ranked item, a blank line, one calm closing sentence, and 3-5 relevant hashtags. Never return one dense paragraph. In the upload description only, do not add generic subscribe/like requests or a visible medical disclaimer; the pinned comment follows COMMENT_SUMMARY_V1.',
 ];

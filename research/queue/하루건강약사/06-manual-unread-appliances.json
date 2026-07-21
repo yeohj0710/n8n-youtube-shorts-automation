@@ -1,0 +1,61 @@
+{
+  "title": "설명서를 안 봐서 평생 반만 쓰고 버리는 물건 5",
+  "lane": "practical_life_common_sense",
+  "notes": "집에 있는 기계는 고장 나서 바꾸는 게 아니라, 있는 기능을 모른 채로 반만 쓰다 바뀐다.",
+  "topic_key": "unused_appliance_functions",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_choices",
+    "topic_key": "unused_appliance_functions",
+    "hook_title": "설명서를 안 봐서 평생 반만 쓰고 버리는 물건 5",
+    "subtitle": "고장 나서가 아니라 몰라서 바꾸는 거예요",
+    "visual_profile": "broadcast_countdown",
+    "visual_mood_hint": "주방 선반에 나란히 놓인 전기밥솥과 전자레인지, 그 옆에 접힌 설명서와 리모컨, 따뜻한 오후 빛, 크림색과 짙은 남색 팔레트, 매트한 가전 질감",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "전기밥솥의 백미 말고 다른 버튼",
+        "card_name": "밥솥의 백미 말고 다른 버튼",
+        "reason": "잡곡과 찜 버튼이 따로 있는데 평생 백미 하나만 누르고 지내요",
+        "card_reason": "잡곡과 찜 버튼이 따로 있는데 평생 백미만 눌러요"
+      },
+      {
+        "rank": 2,
+        "name": "세탁기의 통세척 코스",
+        "card_name": "세탁기의 통세척 코스",
+        "reason": "빨래에서 냄새가 나는 건 옷이 아니라 안 돌린 통세척 때문이에요",
+        "card_reason": "빨래 냄새는 옷이 아니라 안 씻은 세탁조 때문이에요"
+      },
+      {
+        "rank": 3,
+        "name": "전자레인지의 해동 버튼",
+        "card_name": "전자레인지의 해동 버튼",
+        "reason": "해동 버튼 대신 시간만 돌리니까 겉은 익고 속은 얼어 있어요",
+        "card_reason": "해동 버튼 대신 시간만 돌리면 겉은 익고 속은 얼어요"
+      },
+      {
+        "rank": 4,
+        "name": "냉장고의 냉기 조절 다이얼",
+        "card_name": "냉장고의 냉기 조절 다이얼",
+        "reason": "여름과 겨울에 같은 세기로 두면 얼거나 무르는 칸이 생겨요",
+        "card_reason": "여름과 겨울을 같은 세기로 두면 얼거나 무르는 칸이 생겨요"
+      },
+      {
+        "rank": 5,
+        "name": "리모컨의 안 눌러본 버튼",
+        "card_name": "리모컨의 안 눌러본 버튼",
+        "reason": "글씨를 키우거나 소리를 또렷하게 하는 버튼이 대개 들어 있어요",
+        "card_reason": "자막 글씨를 키우는 버튼이 리모컨에 대개 들어 있어요"
+      }
+    ],
+    "video_script": "있는 기능부터 꺼내 써요.",
+    "description": "설명서를 안 봐서 반만 쓰는 물건을 정리했어요.",
+    "pinned_comment": "집에 있는 기계는 고장 나서가 아니라 있는 기능을 모른 채로 바뀌는 경우가 많아요. 오늘 저녁에 버튼 하나만 눌러 봐도 새로 산 기분이 들어요. 구독하시고 성분과 몸의 원리를 쉽게 이해하는 건강 정보를 받아보세요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "생활상식"
+    ],
+    "bgm_prompt": "light warm piano with soft marimba, curious and friendly mood"
+  }
+}

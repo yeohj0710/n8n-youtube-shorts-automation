@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import sqlite3 from 'sqlite3';
 import { createRequire } from 'node:module';
@@ -124,10 +124,30 @@ for (const relativePath of workflowFiles) {
   assert.match(build, /every item must actually fulfill the title claim/i, `${relativePath}: semantic title-to-item contract missing`);
   assert.match(build, /TITLE_SCOPE_V3/, `${relativePath}: semantic list-type contract marker missing`);
   assert.match(build, /count-bearing.*semantic class|semantic class.*count-bearing/is, `${relativePath}: title and ranked entries do not share an explicit semantic class`);
+  assert.match(build, /ATTENTION_PROMISE_V\d+/, `${relativePath}: truthful attention contract marker missing`);
+  assert.match(build, /this may apply to me/i, `${relativePath}: viewer self-relevance test missing`);
+  assert.match(build, /concrete condition, situation, action, choice, or observable signal/i, `${relativePath}: concrete hook subject contract missing`);
+  assert.match(build, /subtitle must add the missing condition, contrast, or payoff/i, `${relativePath}: subtitle only repeats the hook title`);
+  assert.match(build, /fake urgency.*inflated stakes.*invented authority/is, `${relativePath}: unsafe attention tactics are not prohibited`);
+  assert.match(build, /RESEARCH_SOURCE_PACK_V1/, `${relativePath}: research source pack resolver missing`);
+  assert.match(build, /RESEARCH_GROUNDING_V\d+/, `${relativePath}: research grounding contract marker missing`);
+  assert.equal((build.match(/RESEARCH_GROUNDING_V\d+/g) || []).length, 1, `${relativePath}: research grounding contract is duplicated`);
+  assert.match(build, /SOURCE_SELECTION_V\d+/, `${relativePath}: interest and decision-value selection contract missing`);
+  assert.equal((build.match(/SOURCE_SELECTION_V\d+/g) || []).length, 1, `${relativePath}: selection contract is duplicated`);
+  assert.match(build, /RESEARCH_SOURCE_REQUIRED/, `${relativePath}: ungrounded live generation is not stopped`);
+  assert.match(build, /most change what the viewer already believes or already does/i, `${relativePath}: selection contract does not demand judgment-changing material`);
+  assert.match(build, /surprise value/i, `${relativePath}: selection contract does not score surprise`);
+  assert.match(build, /Earn attention with the true finding itself/i, `${relativePath}: selection contract does not separate real interest from bait`);
+  assert.match(build, /absent from the cited fact evidence_summary/i, `${relativePath}: writer may add facts outside the source pack`);
   assert.match(build, /CLAIM_STRENGTH_V2/, `${relativePath}: evidence-calibrated claim contract marker missing`);
   assert.match(build, /observation.*association.*cause.*diagnosis/is, `${relativePath}: claim contract does not distinguish evidence relations`);
   assert.match(build, /established high-confidence facts/i, `${relativePath}: evidence-aware topic writing contract missing`);
   assert.match(build, /medically useful point|practical decision/i, `${relativePath}: useful-detail contract missing`);
+  assert.match(build, /DECISION_DETAIL_V1/, `${relativePath}: decision-detail contract marker missing`);
+  assert.match(build, /not inferable from the title or item name/i, `${relativePath}: writer may restate the title instead of adding information`);
+  assert.match(build, /what the viewer should notice or do differently.*why/is, `${relativePath}: writer lacks a concrete decision-change requirement`);
+  assert.match(build, /state established facts directly/i, `${relativePath}: writer lacks an anti-overhedging rule`);
+  assert.match(build, /do not stack.*may.*could.*might|do not stack.*수 있어요/is, `${relativePath}: writer allows repeated safety-padding hedges`);
   assert.match(build, /clinical_depth_v1/i, `${relativePath}: clinical-depth policy marker missing`);
   assert.match(build, /CLEAR_KOREAN_COPY_V2/, `${relativePath}: consolidated Korean copy contract missing`);
   assert.equal((build.match(/CLEAR_KOREAN_COPY_V2/g) || []).length, 1, `${relativePath}: consolidated Korean copy contract is duplicated`);
@@ -187,6 +207,13 @@ for (const relativePath of workflowFiles) {
   assert.doesNotMatch(retry, /NATURAL_KOREAN_COPY_V1|FIRST_READ_KOREAN_V1|HUMAN_KOREAN_VOICE_V1/, `${relativePath}: retry retains superseded overlapping copy contracts`);
   assert.match(retry, /title.*card_name.*card_reason.*without the long reason/is, `${relativePath}: retry lost standalone card-pair reading test`);
   assert.match(retry, /TITLE_SCOPE_V3/, `${relativePath}: retry lost semantic list-type contract`);
+  assert.match(retry, /ATTENTION_PROMISE_V\d+/, `${relativePath}: retry lost truthful attention contract`);
+  assert.equal((retry.match(/ATTENTION_PROMISE_V\d+/g) || []).length, 1, `${relativePath}: retry duplicates the attention contract`);
+  assert.match(retry, /DECISION_DETAIL_V1/, `${relativePath}: retry lost decision-detail contract`);
+  assert.equal((retry.match(/DECISION_DETAIL_V1/g) || []).length, 1, `${relativePath}: retry duplicates the decision-detail contract`);
+  assert.match(retry, /state established facts directly/i, `${relativePath}: retry lost anti-overhedging guidance`);
+  assert.match(retry, /RESEARCH_GROUNDING_V\d+/, `${relativePath}: retry lost the research grounding contract`);
+  assert.match(retry, /research_source_pack/, `${relativePath}: retry does not re-supply the research pack to the writer`);
   assert.match(retry, /CLAIM_STRENGTH_V2/, `${relativePath}: retry lost evidence-calibrated claim contract`);
   assert.match(retry, /COMMENT_SUMMARY_V1/, `${relativePath}: retry lost summary-style comment contract`);
   assert.match(retry, /Do not ask a question|no questions/i, `${relativePath}: retry lost question CTA prohibition`);
@@ -257,6 +284,7 @@ for (const relativePath of workflowFiles) {
         variation_seed: `channel-diversity-${workflow.id}`,
         topic_candidates: [],
         kie_ai_model: 'verification-model',
+        require_research_source_pack: false,
       } } }) };
     },
     { all: () => [] },
@@ -282,6 +310,7 @@ for (const relativePath of workflowFiles) {
       variation_seed: `repeated-history-${workflow.id}`,
       topic_candidates: [],
       kie_ai_model: 'verification-model',
+      require_research_source_pack: false,
     } } }) }),
     { all: () => [] },
   )[0].json;
@@ -300,6 +329,7 @@ for (const relativePath of workflowFiles) {
       variation_seed: `supplied-topic-${workflow.id}`,
       topic_candidates: [expected.suppliedTitle],
       kie_ai_model: 'verification-model',
+      require_research_source_pack: false,
     } } }) }),
     { all: () => [] },
   )[0].json;

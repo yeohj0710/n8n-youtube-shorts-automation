@@ -1,0 +1,209 @@
+{
+  "title": "안경 닦는 습관이 눈을 피곤하게 만드는 이유 5",
+  "lane": "body_signal_selfcheck",
+  "notes": "안경이 흐린 것은 렌즈 탓만이 아니라 닦는 순서, 놓인 위치, 미룬 검사까지 다섯 갈래에서 온다.",
+  "research_source_pack": {
+    "channel_profile": "haru_health_literacy",
+    "researched_at": "2026-07-21",
+    "search_queries": [
+      "American Academy of Ophthalmology cleaning eyeglasses dry rub scratch",
+      "안경 렌즈 관리 물로 헹군 뒤 닦기 흠집",
+      "안경 광학중심 이탈 눈 피로 두통",
+      "질병관리청 굴절이상 정기 눈 검사 40세 이상"
+    ],
+    "sources": [
+      {
+        "source_id": "S1",
+        "title": "Cleaning Eyeglasses - Tips & Prevention",
+        "publisher": "American Academy of Ophthalmology",
+        "url": "https://www.aao.org/eye-health/tips-prevention/cleaning-eyeglasses",
+        "published_at": "",
+        "source_type": "professional_society"
+      },
+      {
+        "source_id": "S2",
+        "title": "안경 렌즈를 어떻게 관리해야 할까요?",
+        "publisher": "ZEISS Vision Care Korea",
+        "url": "https://www.zeiss.co.kr/vision-care/eye-health-care/health-prevention/how-should-i-take-care-of-my-prescription-spectacle-lenses.html",
+        "published_at": "",
+        "source_type": "professional_society"
+      },
+      {
+        "source_id": "S3",
+        "title": "Prescribing and fitting spectacles: the role of pupillary distance and the optical centre",
+        "publisher": "Community Eye Health Journal",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11141121/",
+        "published_at": "2024",
+        "source_type": "clinical_guideline"
+      },
+      {
+        "source_id": "S4",
+        "title": "굴절이상(근시, 원시, 난시)",
+        "publisher": "질병관리청 국가건강정보포털",
+        "url": "https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=5217",
+        "published_at": "",
+        "source_type": "government_health_agency"
+      }
+    ],
+    "candidate_facts": [
+      {
+        "fact_id": "F1",
+        "claim": "옷자락으로 닦으면 옷에 붙은 먼지가 렌즈를 긁어 잔흠집이 남는다.",
+        "source_ids": [
+          "S1",
+          "S2"
+        ],
+        "evidence_summary": "안과학회와 렌즈 제조사 자료는 옷이나 티슈로 닦으면 눈에 안 보이는 먼지와 섬유가 사포처럼 작용해 흠집을 낸다고 설명한다.",
+        "why_interesting": "깨끗이 하려던 행동이 렌즈를 깎고 있었다는 점이 뜻밖이다.",
+        "viewer_relevance": "안경 쓰는 사람 대부분이 옷자락으로 닦는다.",
+        "viewer_decision": "옷자락 대신 전용 천을 쓴다.",
+        "necessary_condition": "먼지가 묻은 상태에서 문지를 때에 해당한다.",
+        "limitation_or_boundary": "옅은 흠집은 바로 느껴지지 않는다.",
+        "confidence": "high"
+      },
+      {
+        "fact_id": "F2",
+        "claim": "먼지가 묻은 채로 마른 천에 문지르는 것보다 물로 먼저 헹구는 편이 안전하다.",
+        "source_ids": [
+          "S1",
+          "S2"
+        ],
+        "evidence_summary": "안과학회 자료는 마른 상태로 문지르지 말고 미지근한 물로 씻은 뒤 닦으라고 권한다.",
+        "why_interesting": "닦는 방법보다 닦기 전 순서가 더 중요하다는 점은 잘 알려져 있지 않다.",
+        "viewer_relevance": "주머니에서 꺼내 바로 문지르는 습관이 흔하다.",
+        "viewer_decision": "문지르기 전에 물로 먼저 헹군다.",
+        "necessary_condition": "먼지가 묻어 있을 때에 해당한다.",
+        "limitation_or_boundary": "뜨거운 물은 코팅과 테를 상하게 한다.",
+        "confidence": "high"
+      },
+      {
+        "fact_id": "F3",
+        "claim": "기름때와 김서림 자국을 그대로 두면 사물이 덜 또렷하게 보인다.",
+        "source_ids": [
+          "S1",
+          "S2"
+        ],
+        "evidence_summary": "안과학회와 제조사 자료는 렌즈에 오염물이 남아 있으면 렌즈 본래의 선명도가 떨어진다고 안내한다.",
+        "why_interesting": "눈이 침침한 줄 알았는데 렌즈가 흐린 것이었던 경우가 많다.",
+        "viewer_relevance": "국물 김과 손자국은 매일 묻는다.",
+        "viewer_decision": "흐릿하면 눈보다 렌즈를 먼저 본다.",
+        "necessary_condition": "오염이 남아 있을 때에 해당한다.",
+        "limitation_or_boundary": "얼마나 떨어지는지 수치로 정해진 것은 아니다.",
+        "confidence": "moderate_high"
+      },
+      {
+        "fact_id": "F4",
+        "claim": "안경이 흘러내려 눈과 어긋나면 눈이 더 애써서 피로해질 수 있다.",
+        "source_ids": [
+          "S3"
+        ],
+        "evidence_summary": "국제 안과 교육지는 안경테가 맞지 않거나 조정되지 않으면 렌즈 중심이 눈과 어긋나 시야 흐림과 눈의 피로, 두통이 생길 수 있다고 설명한다.",
+        "why_interesting": "렌즈가 아니라 안경이 놓인 위치가 눈을 피곤하게 만든다는 점이 뜻밖이다.",
+        "viewer_relevance": "코받침이 벌어진 안경을 그냥 쓰는 경우가 많다.",
+        "viewer_decision": "흘러내리면 닦지 말고 안경원에서 맞춘다.",
+        "necessary_condition": "눈과 어긋난 정도가 클 때에 해당한다.",
+        "limitation_or_boundary": "어긋난 정도와 도수에 따라 영향이 다르다.",
+        "confidence": "moderate_high"
+      },
+      {
+        "fact_id": "F5",
+        "claim": "안 보이는 것을 닦기로만 해결하려 하면 도수나 다른 원인을 놓친다.",
+        "source_ids": [
+          "S4"
+        ],
+        "evidence_summary": "질병관리청 자료는 난시와 원시로 생기는 눈의 피로가 시력 저하와 두통으로 이어질 수 있다며 정기적인 눈 검사를 권한다.",
+        "why_interesting": "문제를 닦는 습관으로 덮고 지나가는 기간이 길어진다.",
+        "viewer_relevance": "안경만 닦고 검사는 미루는 경우가 흔하다.",
+        "viewer_decision": "닦아도 그대로면 검사를 받는다.",
+        "necessary_condition": "닦아도 나아지지 않을 때에 해당한다.",
+        "limitation_or_boundary": "검사 주기는 사람마다 다르다.",
+        "confidence": "high"
+      }
+    ],
+    "selected_angle": "안경이 흐린 것은 렌즈 탓만이 아니라 닦는 순서, 놓인 위치, 미룬 검사까지 다섯 갈래에서 온다.",
+    "rejected_angles": [
+      "렌즈 코팅 종류 비교 - 구매 상담 영역이라 채널 범위를 벗어남",
+      "광학중심 이탈 수치 - 전문 용어와 수치라 눈높이를 벗어남",
+      "안질환 목록 나열 - 겁주기이고 오늘 할 행동이 없음"
+    ]
+  },
+  "topic_key": "glasses_cleaning_eye_strain",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "skin_vitality",
+    "topic_key": "glasses_cleaning_eye_strain",
+    "hook_title": "안경 닦는 습관이 눈을 피곤하게 만드는 이유 5",
+    "subtitle": "눈이 침침한 게 아니라 렌즈였을 수 있어요",
+    "visual_profile": "myth_fact",
+    "visual_mood_hint": "책상 위에 놓인 안경과 극세사 천, 창가에서 들어오는 맑은 오후 빛, 크림색과 부드러운 회청색 팔레트, 나무 책상 질감",
+    "rank_items": [
+      {
+        "rank": 1,
+        "fact_id": "F1",
+        "source_ids": [
+          "S1",
+          "S2"
+        ],
+        "name": "옷자락으로 닦기",
+        "card_name": "옷자락으로 닦기",
+        "reason": "옷에 붙은 먼지가 사포처럼 렌즈를 긁어서 잔흠집이 남아요",
+        "card_reason": "옷에 붙은 먼지에 긁혀서 렌즈에 잔흠집이 남아요"
+      },
+      {
+        "rank": 2,
+        "fact_id": "F2",
+        "source_ids": [
+          "S1",
+          "S2"
+        ],
+        "name": "먼지째 마른 천으로 문지르기",
+        "card_name": "먼지째 마른 천으로 문지르기",
+        "reason": "문지르기 전에 물로 먼저 헹궈서 먼지를 없애는 편이 안전해요",
+        "card_reason": "마른 천으로 문지르기 전에 물로 먼저 헹궈 주세요"
+      },
+      {
+        "rank": 3,
+        "fact_id": "F3",
+        "source_ids": [
+          "S1",
+          "S2"
+        ],
+        "name": "기름때와 김을 그대로 두기",
+        "card_name": "기름때를 그대로 두기",
+        "reason": "국물 김이나 손자국이 남아 있으면 사물이 덜 또렷하게 보여요",
+        "card_reason": "눈이 침침한 게 아니라 렌즈에 기름때가 남은 거예요"
+      },
+      {
+        "rank": 4,
+        "fact_id": "F4",
+        "source_ids": [
+          "S3"
+        ],
+        "name": "흘러내리는 안경 그냥 쓰기",
+        "card_name": "흘러내려도 그냥 쓰기",
+        "reason": "안경이 눈과 어긋난 자리에 있으면 눈이 더 애써서 피곤해져요",
+        "card_reason": "안경이 흘러내린 자리에서 보면 눈이 더 애써서 피곤해져요"
+      },
+      {
+        "rank": 5,
+        "fact_id": "F5",
+        "source_ids": [
+          "S4"
+        ],
+        "name": "닦기로만 해결하려 하기",
+        "card_name": "닦기로만 버티기",
+        "reason": "닦아도 그대로면 도수나 다른 원인일 수 있어서 검사를 받아야 해요",
+        "card_reason": "닦아도 흐리면 도수가 안 맞는 거라 검사를 받아야 해요"
+      }
+    ],
+    "video_script": "안경부터 다시 보고 눈을 탓해요.",
+    "description": "안경 닦는 습관이 눈을 피곤하게 만드는 이유를 정리했어요.",
+    "pinned_comment": "눈이 침침해졌다고 느낄 때 안경이 원인인 경우가 많아요. 닦는 순서와 안경이 놓인 위치만 바꿔도 하루가 덜 피곤해져요. 구독하시고 성분과 몸의 원리를 쉽게 이해하는 건강 정보를 받아보세요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "눈건강"
+    ],
+    "bgm_prompt": "calm clear piano with light acoustic guitar, quiet focused afternoon mood"
+  }
+}

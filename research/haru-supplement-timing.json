@@ -1,0 +1,117 @@
+{
+  "title": "영양제, 무심코 같이 먹으면 손해 보는 조합 5",
+  "lane": "food_nutrition_table",
+  "notes": "성분 이름이 아니라 같이 먹는 음식과 시간대로 손해가 갈린다는 점을 다룹니다.",
+  "research_source_pack": {
+    "channel_profile": "haru_health_literacy",
+    "researched_at": "2026-07-21",
+    "search_queries": [
+      "NIH office of dietary supplements iron coffee tea calcium reduce absorption",
+      "vitamin D fat soluble absorbed better with meal containing fat",
+      "magnesium supplement antibiotic bisphosphonate separate hours",
+      "철분제 커피 우유 함께 복용 흡수 방해"
+    ],
+    "sources": [
+      {
+        "source_id": "S1",
+        "title": "Iron - Fact Sheet for Health Professionals",
+        "publisher": "NIH Office of Dietary Supplements",
+        "url": "https://ods.od.nih.gov/factsheets/Iron-HealthProfessional/",
+        "published_at": "2023-08-17",
+        "source_type": "government_health_agency"
+      },
+      {
+        "source_id": "S2",
+        "title": "Calcium - Fact Sheet for Health Professionals",
+        "publisher": "NIH Office of Dietary Supplements",
+        "url": "https://ods.od.nih.gov/factsheets/Calcium-HealthProfessional/",
+        "published_at": "2024-07-16",
+        "source_type": "government_health_agency"
+      },
+      {
+        "source_id": "S3",
+        "title": "Vitamin D - Fact Sheet for Health Professionals",
+        "publisher": "NIH Office of Dietary Supplements",
+        "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/",
+        "published_at": "2024-07-26",
+        "source_type": "government_health_agency"
+      },
+      {
+        "source_id": "S4",
+        "title": "Magnesium - Fact Sheet for Health Professionals",
+        "publisher": "NIH Office of Dietary Supplements",
+        "url": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/",
+        "published_at": "2022-06-02",
+        "source_type": "government_health_agency"
+      }
+    ],
+    "candidate_facts": [
+      {
+        "fact_id": "F1",
+        "claim": "식사와 함께 마시는 커피나 차는 철분 흡수를 떨어뜨린다.",
+        "source_ids": ["S1"],
+        "evidence_summary": "미국 국립보건원 자료는 식사 때 차와 커피를 피하면 식물성 식품에 들어 있는 철분의 흡수가 좋아진다고 안내한다.",
+        "why_interesting": "몸에 좋다고 챙겨 먹는 철분을 같이 마신 커피 한 잔이 깎는다는 점은 잘 알려져 있지 않다.",
+        "viewer_relevance": "식후 커피는 중장년에게 가장 굳어 있는 습관 중 하나다.",
+        "viewer_decision": "철분을 챙기는 날은 식사와 커피 사이를 띄운다.",
+        "necessary_condition": "식사와 같은 때 마실 때 해당한다.",
+        "limitation_or_boundary": "고기에 들어 있는 철분보다 채소나 곡물의 철분에서 영향이 크다.",
+        "confidence": "high"
+      },
+      {
+        "fact_id": "F2",
+        "claim": "칼슘과 철분은 같은 때 먹지 말고 시간을 나눠 먹도록 권한다.",
+        "source_ids": ["S1", "S2"],
+        "evidence_summary": "국립보건원 자료는 칼슘이 철분 흡수를 방해할 수 있고 아직 확정적이지는 않지만, 그래서 칼슘과 철분 보충제는 하루 중 서로 다른 때에 먹도록 전문가들이 권한다고 설명한다.",
+        "why_interesting": "몸에 좋은 것 두 가지를 한 번에 챙기려는 행동이 오히려 손해가 된다.",
+        "viewer_relevance": "아침에 영양제를 한꺼번에 털어 넣는 습관에 그대로 해당한다.",
+        "viewer_decision": "칼슘과 철분은 아침저녁으로 나눠 먹는다.",
+        "necessary_condition": "보충제로 함께 먹을 때 해당한다.",
+        "limitation_or_boundary": "방해 정도가 확정적으로 정해진 것은 아니다.",
+        "confidence": "moderate_high"
+      },
+      {
+        "fact_id": "F3",
+        "claim": "우유처럼 칼슘이 든 음식과 함께 먹으면 철분 흡수가 떨어진다.",
+        "source_ids": ["S1"],
+        "evidence_summary": "국립보건원 자료는 식사 때 칼슘이 들어 있는 우유를 피하면 철분 흡수가 좋아진다고 안내한다.",
+        "why_interesting": "영양제를 우유에 넘기는 것이 더 부드럽고 좋다고 여기는 통념과 반대다.",
+        "viewer_relevance": "약이나 영양제를 우유와 함께 넘기는 사람이 많다.",
+        "viewer_decision": "철분을 먹을 때는 우유 대신 물로 넘긴다.",
+        "necessary_condition": "철분을 챙기는 것이 목적일 때 해당한다.",
+        "limitation_or_boundary": "칼슘 자체를 피하라는 뜻이 아니라 같은 때를 피하라는 뜻이다.",
+        "confidence": "high"
+      },
+      {
+        "fact_id": "F4",
+        "claim": "비타민D는 기름기가 있는 식사와 함께 먹어야 잘 흡수된다.",
+        "source_ids": ["S3"],
+        "evidence_summary": "국립보건원 자료는 비타민D가 지용성이라 지방이 들어 있는 식사나 간식과 함께 먹을 때 가장 잘 흡수된다고 설명한다.",
+        "why_interesting": "빈속에 먹는 것이 더 좋다고 여겨 아침 공복에 챙기는 습관과 반대다.",
+        "viewer_relevance": "아침 공복에 영양제를 먹는 사람이 많다.",
+        "viewer_decision": "비타민D는 빈속 대신 기름기 있는 식사 뒤에 먹는다.",
+        "necessary_condition": "식사에 어느 정도 지방이 있어야 한다.",
+        "limitation_or_boundary": "많이 기름진 식사가 필요하다는 뜻은 아니다.",
+        "confidence": "high"
+      },
+      {
+        "fact_id": "F5",
+        "claim": "마그네슘은 일부 항생제나 골다공증 약과 시간을 띄워 먹어야 한다.",
+        "source_ids": ["S4"],
+        "evidence_summary": "국립보건원 자료는 마그네슘이 특정 계열 항생제와 결합해 흡수를 줄일 수 있어 항생제를 마그네슘보다 최소 두 시간 전이나 여러 시간 뒤에 먹도록 하고, 먹는 골다공증 약과도 최소 두 시간 간격을 두도록 안내한다.",
+        "why_interesting": "약을 잘 챙겨 먹으려고 한꺼번에 먹는 행동이 약효를 깎을 수 있다.",
+        "viewer_relevance": "골다공증 약이나 항생제를 먹는 중장년에게 직접 해당한다.",
+        "viewer_decision": "항생제나 골다공증 약을 먹는 날은 마그네슘을 다른 때로 옮긴다.",
+        "necessary_condition": "해당 약을 함께 먹는 경우에만 해당한다.",
+        "limitation_or_boundary": "모든 항생제가 아니라 특정 계열에 해당한다.",
+        "confidence": "high"
+      }
+    ],
+    "selected_angle": "영양제는 무엇을 고르냐보다 무엇과 같이, 언제 먹느냐에서 손해가 갈린다.",
+    "rejected_angles": [
+      "마그네슘 제형별 흡수율 비교 - 화학 이름과 흡수율 수치가 시청자 눈높이를 벗어남",
+      "영양제 무용론 - 근거가 한쪽으로 정리되지 않았고 채널 목적과도 어긋남",
+      "결핍 증상 나열 - 증상이 비특이적이라 시청자 판단을 바꾸지 못함"
+    ]
+  }
+}

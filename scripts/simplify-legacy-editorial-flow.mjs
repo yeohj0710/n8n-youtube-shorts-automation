@@ -101,10 +101,30 @@ function commentSummaryContract(target) {
   return 'COMMENT_SUMMARY_V1: Write pinned_comment as 2-4 short natural Korean 해요체 sentences under 260 Korean characters. In the first 1-3 sentences, summarize the exact title and item set by selecting 2-3 of the most useful actions or principles and preserving their practical meaning; do not copy the full description or list every item. End with one restrained subscription invitation aligned to the configured channel, with naturally varied wording rather than a fixed slogan. ' + channelClosing + ' Do not ask a question. Do not ask viewers to reply or comment. Do not ask for likes. Do not invent a first-person channel-owner or family anecdote, credentials, or personal experience. Avoid slang, cute phrasing, casual chatter, emoji decoration, sales language, and other engagement bait.';
 }
 
+function attentionPromiseContract(target) {
+  const channelAngle = target.profile.id === 'haru_health_literacy'
+    ? 'For 하루건강약사, create tension through a body signal, ingredient, interaction, comparison, or health-choice blind spot that the viewer can understand and act on.'
+    : 'For 건강장수비결, create tension through a familiar habit, functional change, chronic-risk signal, mobility problem, meal choice, or recovery pattern that matters to healthy aging and independence.';
+  return 'ATTENTION_PROMISE_V2: Before finalizing the topic, hook_title, and subtitle, create immediate truthful self-relevance for a Korean viewer over 50. The first screen must name a concrete condition, situation, action, choice, or observable signal and promise one specific decision-useful payoff. The viewer should immediately think "this may apply to me" and understand what the ranked list will resolve. subtitle must add the missing condition, contrast, or payoff instead of paraphrasing hook_title. ' + channelAngle + ' HOOK_PATTERNS: this channel already performs with a small set of proven Korean title shapes, and you should choose whichever one the researched facts actually earn: a belief reversal such as 대부분이 잘못 알고 있는 or 의외로; a loss frame such as 모르면 손해 보는, 버리면 손해 보는, or 괜히 사기 전 먼저; an insider reveal such as 의사들이 자주 말하는 or 주부 9단도 몰랐던; a head-to-head comparison such as A vs B; a targeted audience opener such as 50대 이후 or 나이 들수록; or a moment trigger such as 자기 전에, 아침에 눈뜨자마자, or 걷기 전후. Write the title the way a person actually speaks, not the way a report is labelled. A title such as 마그네슘 흡수율 비교 3가지 is a filing label and fails; 영양제 코너에서 대부분이 잘못 고르는 마그네슘 5 is the same fact written as a hook. These shapes are required to be earned, never decorative: use a loss frame only when the items really prevent a loss, an insider reveal only when the facts really are commonly missed, and a reversal only when the common belief really is wrong. Reject the shape and rewrite the title whenever the ranked items do not deliver that exact promise. Never use empty bait with no payoff behind it, and never use threats, shame, fake urgency, inflated stakes, invented authority, or guaranteed outcomes.';
+}
+
 const editorialRules = 'Editorial rules: use common everyday Korean and familiar actions and objects. Avoid uncommon furniture terms, unexplained jargon, filler, duplicate points, fake authority, fearmongering, invented statistics, dosage instructions, diagnosis, cure, or guaranteed prevention.';
 const clearKoreanCopyContract = 'CLEAR_KOREAN_COPY_V2: Write every viewer-facing field as idiomatic Korean that a Korean health educator would naturally say to one adult. Draft the complete reason first, then derive card_name and card_reason from that reason instead of compressing keywords independently. For every rank, read the title, card_name, and card_reason without the long reason. They must state what happens, under which condition, and the specific meaning or action without rereading or without mentally supplying a missing subject, object, particle, or situation. card_name must be a concrete standalone symptom, action, or condition in common words. card_reason must be one complete 해요체 sentence that names the observation and its specific health meaning or next action. Never use vague endings such as 확인해요 or 살펴봐요 without naming the object being checked. Do not reverse an observed loss of capacity into a cause; describe the comparable situation and the symptom that now appears. Natural short noun phrases and necessary medical terms are fine when immediately clear, but avoid report heading or search keyword list wording, forced noun chains, incompatible subject-predicate combinations, literal translation, unclear references, and repeated AI templates. Before returning JSON, perform one final native-Korean copy-edit pass over hook_title, subtitle, every name, card_name, reason, card_reason, caution, video_script, description, and pinned_comment, and rewrite any field that fails this standalone reading test.';
 const titleScopeContract = 'TITLE_SCOPE_V3: Before drafting, define one semantic class for a single ranked entry. The count-bearing phrase in hook_title must name that semantic class, and every name and card_name must be an instance of it. If a candidate title counts a topic, property, outcome, audience, or other abstraction rather than the entries, rewrite the title before writing the pack. Broad topical relation is not enough; mixed semantic classes are invalid.';
 const claimStrengthContract = 'CLAIM_STRENGTH_V2: Distinguish observation, association, cause, and diagnosis. Do not upgrade an observation or association into a cause or diagnosis unless the evidence supports that relation and the necessary conditions are stated. When the evidence supports several explanations, use calibrated language and give the decision-relevant boundary or next check. State certainty only at the level justified by the evidence.';
+const decisionDetailContract = 'DECISION_DETAIL_V1: Every ranked item must add at least one concrete fact not inferable from the title or item name: a relevant condition, body mechanism, comparison, label field, timing or situation, interaction, observable pattern, practical action, meaningful boundary, or an established number only when necessary. The reason must answer what the viewer should notice or do differently and why. Do not merely restate the title or name with generic phrases such as 건강에 좋아요, 도움이 될 수 있어요, 주의가 필요해요, 확인해요, 관리가 중요해요, or 사람마다 달라요. If an item has no concrete difference, replace the item or topic instead of padding the list. State established facts directly. Qualify only the exact uncertain relation or condition, and do not stack may, could, might, or 수 있어요 across the pack as generic safety padding. A specific condition, exception, or alternative explanation is useful; blanket caution is not.';
+const researchGroundingContract = 'RESEARCH_GROUNDING_V2: A research_source_pack is supplied below as supporting evidence for this topic. Prefer it wherever it covers what you are saying, and never contradict it. It does not have to supply every item: choose the topic and the ranked items for everyday usefulness first, then lean on the pack for the parts it covers. Write every factual claim it does cover only from its candidate_facts and sources. Do not add a condition, number, threshold, mechanism, comparison, interaction, exception, or causal relation that is absent from the cited fact evidence_summary. When an item is written from the pack, set its fact_id to exactly one candidate_fact id and source_ids to the source ids that fact cites; leave both empty for an item the pack does not cover. Aim for 5 ranked items, and use 6 or 7 when the pack holds that many genuinely distinct facts. Research enough material to reach 5 before writing: if the pack cannot support at least 4 real items, widen the angle or gather more facts rather than shipping a thin list or inventing an item. Carry each fact necessary_condition and limitation_or_boundary into the visible copy whenever they change what the viewer should do. Restate every fact as your own short Korean card copy; never copy source sentences verbatim and never cite institution names, study names, or numbers that the pack does not contain.';
+const sourceSelectionContract = (target) => {
+  const channelAngle = target.profile.id === 'haru_health_literacy'
+    ? 'For 하루건강약사, the strongest angles compare two similar-looking ingredients, products, or choices, expose an interaction or a label field the viewer never checks, or explain what an ordinary body signal actually means.'
+    : 'For 건강장수비결, the strongest angles reveal an early functional change the viewer can measure at home, a habit whose long-term cost is invisible day to day, or a concrete threshold that separates normal aging from a problem worth acting on.';
+  return 'SOURCE_SELECTION_V2: Pick the angle and the ranked facts that most change what the viewer already believes or already does. Before choosing, ask what an ordinary viewer would already assume about this topic, and prefer the facts that contradict, qualify, or sharpen that assumption. A fact nobody would argue with is not worth a card. Score every candidate fact on evidence strength, surprise value, self relevance for a Korean viewer over 50, decision value, card fit, channel fit, and novelty against recent titles, then keep only facts that win on surprise and decision value while staying fully supported by the pack. Dull, obvious, or universally known advice fails this channel and must be rejected when the sentence itself is the point rather than part of a concrete explanation: 물을 충분히 마셔요, 균형 잡힌 식사를 해요, 규칙적으로 운동해요, 영양제는 주의해서 먹어요, 몸의 신호를 확인해요, 전문가와 상담하세요. Prefer an important exception to common belief, an overlooked consequence of an ordinary habit, a real difference between two similar-looking choices, a specific interaction, an observable signal and what it means, a checkable label or measurement, or a well-established number that reframes the decision. Earn attention with the true finding itself. Never manufacture interest with vague bait, exaggerated stakes, fear, or a promise the supplied facts do not support. ' + channelAngle;
+};
+const everydayLanguageContract = 'EVERYDAY_LANGUAGE_V1: This is a senior lifestyle channel, not a clinical education channel. Every visible field must land instantly for a 60-year-old with no health background who is half-watching on a phone. Build each ranked item out of an ordinary thing they can picture: a food, a dish, a drink, an object in the house, a place, a time of day, an everyday action, or a feeling in the body. Say 밥, 국물, 김치, 커피, 우유, 소파, 냉장고, 자기 전, 아침 공복, 계단, 장바구니 rather than a category name. Never put a clinical measurement, screening threshold, lab value, percentage, chemical or salt name, medical scale name, diagnosis code, or study term into hook_title, subtitle, card_name, or card_reason. Wording such as 34cm 미만, 악력 28kg, 500mg, 분획 흡수율, 산화마그네슘, 유의하게, 선별 기준, or a questionnaire score is a hard failure even when the research pack contains it. The research pack may be clinical; the card must be kitchen-table Korean. Translate every fact into the everyday behaviour it implies and the everyday result the viewer would notice: 식후에 확 올라요, 천천히 올라요, 속이 편해요, 금방 배고파져요, 흡수가 떨어져요, 아침이 개운해요. A number is allowed only when it is a number the viewer already uses in daily life, such as 두 시간, 세 알, 하루 한 번, or 10분, and never as a cutoff to be measured against. If a fact cannot survive this translation without losing its meaning, drop it and pick a fact that can.';
+const everydayTopicAngleContract = 'EVERYDAY_TOPIC_ANGLE_V2: Choose the topic the way a well-informed Korean friend would raise it over coffee, not the way a clinician would file it. The strongest topics for this channel are ordinary life seen closely: things around the house, what is in the fridge or the car or the shopping basket, how people move and sit and sleep, what changes with the seasons, how to age with dignity, and the small choices at the dinner table. Health is the lens, not the vocabulary: a topic qualifies if it affects how a person over 50 lives, not because it appears in a medical guideline. Never build a card around a screening test, a lab value, a measurement procedure, an ingredient comparison, or anything whose natural home is a clinic handout. If a fact is true but only a professional would raise it, drop it. Pick the angle from ordinary daily life, not from the clinic. Good angles live at the dinner table, in the fridge, in the medicine drawer, in the bedroom at night, on the stairs, in the shopping basket, and in what the body feels after a meal or on waking. Even when the strongest evidence is a screening test, a lab threshold, an ingredient comparison, or a diagnosis, do not build the card around it; convert it into the everyday choice or habit it actually implies and rank those. A viewer should be able to act on every item tonight without measuring, testing, or buying anything new.';
+const researchGroundingRetryContract = researchGroundingContract;
+const attentionPromiseRetryContract = 'ATTENTION_PROMISE_V2: Rebuild the topic, hook_title, and subtitle with immediate truthful self-relevance for a Korean viewer over 50. Name a concrete condition, situation, action, choice, or observable signal and promise one specific decision-useful payoff. Use the configured channel profile: haru_health_literacy should create tension through body signals, ingredients, interactions, comparisons, or health-choice blind spots; longevity_daily_function should use familiar habits, functional changes, chronic-risk signals, mobility, meals, or recovery patterns that matter to healthy aging and independence. Choose whichever proven Korean title shape the researched facts actually earn: a belief reversal such as 대부분이 잘못 알고 있는, a loss frame such as 모르면 손해 보는 or 괜히 사기 전 먼저, an insider reveal such as 의사들이 자주 말하는, a head-to-head comparison, a targeted opener such as 50대 이후, or a moment trigger such as 자기 전에. Write the title the way a person speaks, not as a filing label. Earn the shape with the ranked items or rewrite it. Never use empty bait, threats, shame, fake urgency, inflated stakes, invented authority, guaranteed outcomes, or unsupported drama.';
+const decisionDetailRetryContract = decisionDetailContract;
 
 function replaceBetween(code, startAnchor, endAnchor, replacement, label) {
   const start = code.indexOf(startAnchor);
@@ -125,8 +145,115 @@ function replacePatternRequired(code, pattern, replacement, label) {
   return code.replace(pattern, replacement);
 }
 
+const researchResolverBlock = `// RESEARCH_SOURCE_PACK_V1_BEGIN
+const RESEARCH_SOURCE_CONTRACT = 'RESEARCH_SOURCE_PACK_V1';
+function normalizeResearchSourcePack(value) {
+  if (!value || typeof value !== 'object') return null;
+  const sources = (Array.isArray(value.sources) ? value.sources : [])
+    .map((entry, index) => ({
+      source_id: clean(entry?.source_id) || ('S' + (index + 1)),
+      title: clean(entry?.title),
+      publisher: clean(entry?.publisher),
+      url: clean(entry?.url),
+      published_at: clean(entry?.published_at),
+      source_type: clean(entry?.source_type),
+    }))
+    .filter((entry) => entry.title && entry.url);
+  const sourceIds = new Set(sources.map((entry) => entry.source_id));
+  const candidateFacts = (Array.isArray(value.candidate_facts) ? value.candidate_facts : [])
+    .map((entry, index) => ({
+      fact_id: clean(entry?.fact_id) || ('F' + (index + 1)),
+      claim: clean(entry?.claim),
+      source_ids: (Array.isArray(entry?.source_ids) ? entry.source_ids : []).map(clean).filter((id) => sourceIds.has(id)),
+      evidence_summary: clean(entry?.evidence_summary),
+      why_interesting: clean(entry?.why_interesting),
+      viewer_relevance: clean(entry?.viewer_relevance),
+      viewer_decision: clean(entry?.viewer_decision),
+      necessary_condition: clean(entry?.necessary_condition),
+      limitation_or_boundary: clean(entry?.limitation_or_boundary),
+      confidence: clean(entry?.confidence),
+    }))
+    .filter((entry) => entry.claim && entry.evidence_summary && entry.source_ids.length);
+  if (!sources.length || !candidateFacts.length) return null;
+  return {
+    contract: RESEARCH_SOURCE_CONTRACT,
+    channel_profile: clean(value.channel_profile) || channelEditorialProfile.id,
+    researched_at: clean(value.researched_at),
+    search_queries: (Array.isArray(value.search_queries) ? value.search_queries : []).map(clean).filter(Boolean),
+    sources,
+    candidate_facts: candidateFacts,
+    selected_angle: clean(value.selected_angle),
+    rejected_angles: (Array.isArray(value.rejected_angles) ? value.rejected_angles : []).map(clean).filter(Boolean),
+  };
+}
+const researchSourcePack = normalizeResearchSourcePack(
+  cfg.research_source_pack ||
+  cfg.topic_queue?.selected?.research_source_pack ||
+  queuedSpec?.research_source_pack ||
+  null,
+);
+const researchGrounded = Boolean(researchSourcePack);
+function normalizePreparedCardPack(value) {
+  if (!value || typeof value !== 'object') return null;
+  const title = clean(value.hook_title || value.title);
+  const items = (Array.isArray(value.rank_items) ? value.rank_items : []).map((item, index) => ({
+    rank: index + 1,
+    fact_id: clean(item?.fact_id),
+    source_ids: (Array.isArray(item?.source_ids) ? item.source_ids : []).map(clean).filter(Boolean),
+    name: clean(item?.name || item?.card_name),
+    card_name: clean(item?.card_name || item?.name),
+    reason: clean(item?.reason || item?.card_reason),
+    card_reason: clean(item?.card_reason),
+    caution: clean(item?.caution),
+  }));
+  if (!title) return null;
+  if (items.length < 4 || items.length > 7) {
+    throw new Error('PREPARED_CARD_PACK_INVALID: a prepared final_pack must carry 4-7 ranked items, got ' + items.length + '.');
+  }
+  for (const item of items) {
+    if (!item.card_name || !item.card_reason) {
+      throw new Error('PREPARED_CARD_PACK_INVALID: rank ' + item.rank + ' is missing card_name or card_reason, so it cannot be rendered verbatim.');
+    }
+  }
+  // Without a scene direction the image model falls back to a generic flat
+  // infographic, which is a visible quality regression on this channel.
+  if (!clean(value.visual_mood_hint)) {
+    throw new Error('PREPARED_CARD_PACK_INVALID: visual_mood_hint is required so the card gets a real scene, material and palette instead of a default flat layout.');
+  }
+  return {
+    hook_title: title,
+    subtitle: clean(value.subtitle),
+    visual_mood_hint: clean(value.visual_mood_hint),
+    visual_profile: clean(value.visual_profile),
+    rank_items: items,
+    video_script: clean(value.video_script),
+    description: String(value.description || '').trim(),
+    pinned_comment: String(value.pinned_comment || '').trim(),
+    tags: (Array.isArray(value.tags) ? value.tags : []).map(clean).filter(Boolean),
+    bgm_prompt: clean(value.bgm_prompt),
+    medical_claims: (Array.isArray(value.medical_claims) ? value.medical_claims : []).map(clean).filter(Boolean),
+    safety_notes: (Array.isArray(value.safety_notes) ? value.safety_notes : []).map(clean).filter(Boolean),
+  };
+}
+const preparedCardPack = normalizePreparedCardPack(
+  cfg.prepared_card_pack ||
+  cfg.topic_queue?.selected?.final_pack ||
+  queuedSpec?.final_pack ||
+  null,
+);
+// Research is a fact-check, not the topic source. Forcing every item to cite a
+// paper pulled the topics into clinical territory and cost the channel its
+// accessibility, so a research pack is used when supplied and never required.
+const researchRequired = cfg.require_research_source_pack === true && !cfg.dry_run && !cfg.test_mode;
+if (researchRequired && !researchGrounded && !preparedCardPack) {
+  throw new Error('RESEARCH_SOURCE_REQUIRED: require_research_source_pack was explicitly turned on but no usable research_source_pack was supplied.');
+}
+// RESEARCH_SOURCE_PACK_V1_END
+
+`;
+
 function compactPrompt(target) {
-  return `const editorialFlowVersion = 'single_writer_v1';
+  return researchResolverBlock + `const editorialFlowVersion = 'single_writer_v1';
 const prompt = [
   'You are the sole editorial writer for the Korean YouTube Shorts channel ${target.channel}.',
   'Create one complete, coherent editorial pack. You alone own the topic, hook title, subtitle, every ranked item, every explanation, video script, upload description, pinned comment, visual mood, and BGM direction.',
@@ -140,13 +267,18 @@ const prompt = [
   !usableQueuedSpec ? 'Suggested lane: ' + selectedLane.title + '. Suggested category: ' + selectedTopicCategory + '.' : '',
   !usableQueuedSpec ? 'Possible source ideas: ' + JSON.stringify(topic_candidates.slice(0, 10)) : '',
   recentTitles.length ? 'Avoid closely repeating these recent titles: ' + recentTitles.slice(0, 12).join(' / ') : '',
+  researchGrounded ? ${JSON.stringify(researchGroundingContract)} : '',
+  researchGrounded ? ${JSON.stringify(sourceSelectionContract(target))} : '',
+  researchGrounded ? 'research_source_pack: ' + JSON.stringify(researchSourcePack) : '',
   ${JSON.stringify(editorialRules)},
   ${JSON.stringify(clearKoreanCopyContract)},
   ${JSON.stringify(titleScopeContract)},
+  ${JSON.stringify(attentionPromiseContract(target))},
   ${JSON.stringify(claimStrengthContract)},
+  ${JSON.stringify(decisionDetailContract)},
   'Before writing, internally compare candidate claims and keep only established high-confidence facts. Do not expose private reasoning, invent citations, or use scientific-sounding detail as decoration.',
-  'CLINICAL_DEPTH_V1: Every topic and every ranked item must teach direct health value, not merely convenience. Each item must explain an established physiological, clinical, nutritional, medication-literacy, symptom-interpretation, or injury-prevention principle and connect it to a practical decision. Housekeeping, organizing, motivation, comfort, or generic self-care alone is insufficient health depth.',
-  'Each ranked item must add a genuinely different medically useful point and at least two linked elements: a credible body mechanism or clinically relevant signal, plus who or when it matters, an observable condition, a practical action, or a meaningful boundary. Avoid generic slogans and obvious filler. Write reason as the complete practical cause-and-effect explanation with all facts needed for accuracy. Do not fabricate exact minutes, repetitions, percentages, thresholds, or measurements merely to sound scientific; keep a number only when it is well-established, necessary, and safe. Write card_name as a short image label in common everyday Korean, at most 22 Korean characters, without obscure terms. Write card_reason as one independent 해요체 sentence for the image, at most 40 Korean characters, preserving the most useful body mechanism, signal, or medical decision. Never put 왜:, 이유:, 핵심:, or TIP: in card_reason. Keep only as many items as the topic naturally supports, between 3 and 5.',
+  'CLINICAL_DEPTH_V1: Every ranked item must carry a real consequence the viewer can act on or notice, not vague encouragement. That consequence may be physiological, clinical, nutritional, medication-related, or a signal to interpret — and it may equally be a household, appliance, grocery, money, errand, or family consequence, which counts as full depth rather than filler. The channel covers the whole life of an adult over 50, so do not narrow topics to what a clinic would hand out and do not treat a non-medical subject as shallow. What fails this bar is an item that teaches nothing usable: a slogan, a restatement of common knowledge, or generic self-care.',
+  'Each ranked item must add a genuinely different medically useful point and at least two linked elements: a credible body mechanism or clinically relevant signal, plus who or when it matters, an observable condition, a practical action, or a meaningful boundary. Avoid generic slogans and obvious filler. Write reason as the complete practical cause-and-effect explanation with all facts needed for accuracy. Do not fabricate exact minutes, repetitions, percentages, thresholds, or measurements merely to sound scientific; keep a number only when it is well-established, necessary, and safe. Write card_name as an image label in common everyday Korean, at most 30 Korean characters, without obscure terms. Write card_reason as one independent 해요체 sentence for the image, at most 60 Korean characters, preserving the most useful mechanism, signal, or decision. PLAIN_MEANING_V1: clarity outranks brevity — never trim a line until a first-time reader cannot tell what it refers to. card_reason must stand on its own without card_name: name the actual thing instead of leaning on 그것, 이때, 이렇게, or a comparative with nothing to compare to, and spend the extra characters when the shorter wording loses the subject, the object, or what actually happens. Short but vague is a defect. NO_FIGURATIVE_COPY_V1: state things directly — no metaphor, simile, analogy, or roundabout phrasing that makes the viewer infer the point; name the actual object, the actual action, and the actual consequence. KOREAN_VOICE_V1: write Korean somebody would speak, not English carried across into Korean words. Drop the subject when the situation already makes it obvious, the way a Korean speaker does — 두 식구가 큰 통을 다 쓰기 전에 냄새가 변해요 should be 큰 통은 다 쓰기도 전에 냄새부터 변해요. Do not let an inanimate thing drive a transitive verb: 소음이 말소리를 덮어요 is English word order, and Korean says 소음 때문에 말이 안 들려요. Do not bend every ranked line into the same sentence shape, especially the if-then 조건절; mix in 대조 with ~는데 or ~지만, plain statements, cause with ~어서, and endings such as 거든요 or 잖아요 so the list does not scan identically line after line. Prefer an active verb over stacked passives and causatives. Read each line aloud in your head and keep it only if a Korean speaker would say it that way to a neighbour. Never put 왜:, 이유:, 핵심:, or TIP: in card_reason. Write 5 ranked items by default. Use 6 or 7 when the researched facts genuinely support that many distinct points, and drop to 4 only when a fifth item would be filler. Never go below 4.',
   'Write description and pinned_comment as finished upload copy, not placeholders. Format description for easy scanning under 650 Korean characters: 1-2 short opening sentences, a blank line, a numbered list with one concise line per ranked item, another blank line, one calm closing sentence, then 3-5 relevant hashtags on the final line. Use the exact item order and preserve essential facts, but do not repeat every full explanation. Never make description one dense paragraph. In the upload description, do not add generic subscribe/like requests or visible medical disclaimers. Write pinned_comment as a short useful summary of the exact video, not a viewer question, and keep it under 260 Korean characters.',
   ${JSON.stringify(commentSummaryContract(target))},
   'Write bgm_prompt as a short warm acoustic instrumental mood direction for this exact video. Choose a fitting feel such as reflective, hopeful, reassuring, restorative, or gently lively instead of forcing the same mood every time. If naming instruments, use only felt piano, gentle acoustic piano, nylon acoustic guitar, or soft bowed strings. No synth, pad, ambient wash, breathy texture, percussion, drums, brushes, marimba, mallets, electronic or fusion sounds. No singing, lyrics, speech, humming, chanting, choir, ooh/aah, vocal chops, wordless vocals, or any human voice.',
@@ -209,8 +341,238 @@ const selectedChannelPillar = requestedPillar || suppliedTopicPillar || pick(
 );`;
 }
 
+const publishedLedgerPaths = [
+  'C:/dev/n8n-youtube-shorts-automation/하루건강약사 소재/기록/업로드기록.jsonl',
+  'C:/dev/n8n-youtube-shorts-automation/건강장수비결 소재/기록/업로드기록.jsonl',
+];
+
+function patchTopicDuplicateGuard(code, target) {
+  code = code.replace(/\/\/ TOPIC_DUPLICATE_GUARD_V1_BEGIN[\s\S]*?\/\/ TOPIC_DUPLICATE_GUARD_V1_END\n/, '');
+  const block = `// TOPIC_DUPLICATE_GUARD_V1_BEGIN
+// A topic already published on either channel must never be queued again.
+// Everything here reads local files only, so it costs nothing and runs before
+// any paid generation.
+const PUBLISHED_LEDGER_PATHS = ${JSON.stringify(publishedLedgerPaths, null, 2).replace(/\n/g, '\n')};
+
+function dupNormalize(value) {
+  return String(value || '')
+    .replace(/<[^>]*>/g, ' ').replace(/\\s+/g, ' ').trim().toLowerCase()
+    .replace(/top\\s*\\d+/gi, ' ')
+    .replace(/[0-9０-９]+\\s*(?:가지|개|위|선|순위|top)?/gi, ' ')
+    .replace(/[ㄱ-ㅎㅏ-ㅣ]/g, ' ')
+    .replace(/[^a-z0-9가-힣]+/gi, ' ')
+    .replace(/\\s+/g, '');
+}
+
+function dupGrams(value, size = 3) {
+  const text = dupNormalize(value);
+  if (text.length <= size) return text ? [text] : [];
+  const grams = [];
+  for (let index = 0; index <= text.length - size; index += 1) grams.push(text.slice(index, index + size));
+  return grams;
+}
+
+function dupSimilarity(left, right) {
+  const a = new Set(dupGrams(left));
+  const b = new Set(dupGrams(right));
+  if (!a.size || !b.size) return 0;
+  let shared = 0;
+  for (const gram of a) if (b.has(gram)) shared += 1;
+  return shared / Math.min(a.size, b.size);
+}
+
+function dupTokens(value) {
+  return String(value || '').replace(/\\s+/g, ' ').trim().toLowerCase()
+    .replace(/top\\s*\\d+/gi, ' ')
+    .replace(/[0-9０-９]+\\s*(?:가지|개|위|선|순위|top)?/gi, ' ')
+    .replace(/[^a-z0-9가-힣]+/gi, ' ')
+    .split(/\\s+/)
+    .map((token) => token.replace(/(에서|으로|부터|까지|처럼|만큼|보다|에게|한테|께|은|는|이|가|을|를|만|도|과|와|의|에|로)$/g, ''))
+    .filter((token) => token.length >= 2);
+}
+
+function dupTokenOverlap(left, right) {
+  const a = new Set(dupTokens(left));
+  const b = new Set(dupTokens(right));
+  if (!a.size || !b.size) return 0;
+  let shared = 0;
+  for (const token of a) if (b.has(token)) shared += 1;
+  return shared / Math.min(a.size, b.size);
+}
+
+function loadPublishedLedger(paths) {
+  const titles = [];
+  const topicKeys = new Set();
+  for (const filePath of paths) {
+    try {
+      if (!filePath || !fs.existsSync(filePath)) continue;
+      for (const line of fs.readFileSync(filePath, 'utf8').split(/\\r?\\n/)) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        let row = null;
+        try { row = JSON.parse(trimmed); } catch (error) { continue; }
+        if (!row || !row.url) continue;
+        const title = cleanString(row.title);
+        if (title) titles.push(title);
+        const key = cleanString(row.topic_key);
+        if (key) topicKeys.add(key.toLowerCase());
+      }
+    } catch (error) { continue; }
+  }
+  return { titles, topicKeys };
+}
+
+function findPublishedConflict(spec, ledger) {
+  const key = cleanString(spec?.topic_key || spec?.final_pack?.topic_key).toLowerCase();
+  if (key && ledger.topicKeys.has(key)) {
+    return { kind: 'topic_key', matched: key };
+  }
+  const title = cleanString(spec?.final_pack?.hook_title || spec?.title);
+  if (!title) return null;
+  for (const published of ledger.titles) {
+    const normalized = dupNormalize(title);
+    const publishedKey = dupNormalize(published);
+    if (!normalized || !publishedKey) continue;
+    if (normalized === publishedKey || normalized.includes(publishedKey) || publishedKey.includes(normalized)) {
+      return { kind: 'title_contains', matched: published };
+    }
+    if (dupTokenOverlap(title, published) >= 0.48) return { kind: 'title_tokens', matched: published };
+    if (dupSimilarity(normalized, publishedKey) >= 0.58) return { kind: 'title_similarity', matched: published };
+  }
+  return null;
+}
+// TOPIC_DUPLICATE_GUARD_V1_END
+`;
+  code = replacePatternRequired(
+    code,
+    /^function loadTopicQueue\(\{/m,
+    block + '$&',
+    `${target.id}: topic duplicate guard`,
+  );
+
+  // Normalise any previously injected picker back to the stock shape first, so this
+  // patch produces the same result whether it runs on pristine or already-patched code.
+  const stockPicker = `    const files = listPendingFiles(pendingDir);
+    result.remaining_before = files.length;
+    if (files.length) {
+      const picked = files[0];
+      const spec = parseTopicFile(picked.filePath);
+      if (!spec) throw new Error('Could not parse topic file: ' + picked.filePath);
+`;
+  code = code.replace(
+    /    const files = listPendingFiles\(pendingDir\);\n    result\.remaining_before = files\.length;\n    const ledger = loadPublishedLedger\(PUBLISHED_LEDGER_PATHS\);\n[\s\S]*?\n    if \((?:pickedFile|picked)\) \{\n(?:      const picked = pickedFile;\n      const spec = pickedSpec;\n)?/,
+    stockPicker,
+  );
+
+  // Pick the first topic that is not already published instead of blindly taking files[0].
+  code = code.replace(
+    /    const files = listPendingFiles\(pendingDir\);\n    result\.remaining_before = files\.length;\n    if \(files\.length\) \{\n      const picked = files\[0\];\n      const spec = parseTopicFile\(picked\.filePath\);\n      if \(!spec\) throw new Error\('Could not parse topic file: ' \+ picked\.filePath\);\n/,
+    `    const files = listPendingFiles(pendingDir);
+    result.remaining_before = files.length;
+    const ledger = loadPublishedLedger(PUBLISHED_LEDGER_PATHS);
+    let pickedFile = null;
+    let pickedSpec = null;
+    for (const candidate of files) {
+      const candidateSpec = parseTopicFile(candidate.filePath);
+      if (!candidateSpec) throw new Error('Could not parse topic file: ' + candidate.filePath);
+      const conflict = findPublishedConflict(candidateSpec, ledger);
+      if (conflict) {
+        result.skipped_duplicates.push({
+          file: candidate.filePath,
+          title: candidateSpec.final_pack?.hook_title || candidateSpec.title,
+          topic_key: candidateSpec.topic_key || null,
+          conflict_kind: conflict.kind,
+          conflicts_with: conflict.matched,
+        });
+        continue;
+      }
+      pickedFile = candidate;
+      pickedSpec = candidateSpec;
+      break;
+    }
+    if (files.length && !pickedFile) {
+      result.all_pending_are_duplicates = true;
+    }
+    if (pickedFile) {
+      const picked = pickedFile;
+      const spec = pickedSpec;
+`,
+  );
+  code = code.replace(
+    "      result.remaining_after = Math.max(0, files.length - (result.consumed ? 1 : 0));\n      return result;\n    }",
+    "      result.remaining_after = Math.max(0, files.length - result.skipped_duplicates.length - (result.consumed ? 1 : 0));\n      return result;\n    }",
+  );
+  if (!code.includes('skipped_duplicates: [],')) {
+    code = replaceRequired(
+      code,
+      '    remaining_before: 0,\n    remaining_after: 0,',
+      '    remaining_before: 0,\n    remaining_after: 0,\n    skipped_duplicates: [],\n    all_pending_are_duplicates: false,',
+      `${target.id}: duplicate skip report`,
+    );
+  }
+  return code;
+}
+
 function patchLoadConfig(code, target) {
   code = code.replace('return uniqueStrings(titles);', 'return titles;');
+  code = patchTopicDuplicateGuard(code, target);
+  if (!code.includes('research_source_pack: value.research_source_pack')) {
+    code = replaceRequired(
+      code,
+      "    source_format: value.source_format || (sourceFile ? 'topic_file' : 'manual'),\n  };",
+      "    source_format: value.source_format || (sourceFile ? 'topic_file' : 'manual'),\n    research_source_pack: value.research_source_pack || value.research_pack || null,\n  };",
+      `${target.id}: topic-file research source pack passthrough`,
+    );
+  }
+  if (!code.includes('final_pack: value.final_pack')) {
+    code = replaceRequired(
+      code,
+      '    research_source_pack: value.research_source_pack || value.research_pack || null,\n  };',
+      '    research_source_pack: value.research_source_pack || value.research_pack || null,\n    final_pack: value.final_pack || null,\n  };',
+      `${target.id}: topic-file prepared pack passthrough`,
+    );
+  }
+  code = code
+    .replace(/rank_count_min: Number\(incoming\.rank_count_min \|\| \d+\)/, 'rank_count_min: Number(incoming.rank_count_min || 4)')
+    .replace(/rank_count_max: Number\(incoming\.rank_count_max \|\| \d+\)/, 'rank_count_max: Number(incoming.rank_count_max || 7)');
+  if (!code.includes('require_research_source_pack:')) {
+    code = replaceRequired(
+      code,
+      '  medical_review_max_retries: Number(incoming.medical_review_max_retries || 2),',
+      '  medical_review_max_retries: Number(incoming.medical_review_max_retries || 2),\n  require_research_source_pack: bool(incoming.require_research_source_pack, false),\n  research_source_pack: incoming.research_source_pack || null,',
+      `${target.id}: research source config`,
+    );
+  }
+  // Research stays opt-in: an older install seeded this default as true, which
+  // made every live run without a research pack throw RESEARCH_SOURCE_REQUIRED.
+  code = code.replace(
+    'require_research_source_pack: bool(incoming.require_research_source_pack, true),',
+    'require_research_source_pack: bool(incoming.require_research_source_pack, false),',
+  );
+  if (!code.includes('prepared_card_pack: incoming.prepared_card_pack')) {
+    code = replaceRequired(
+      code,
+      '  research_source_pack: incoming.research_source_pack || null,',
+      '  research_source_pack: incoming.research_source_pack || null,',
+      `${target.id}: prepared card pack config`,
+    );
+  }
+  if (!code.includes('config.research_source_pack = config.research_source_pack')) {
+    code = replaceRequired(
+      code,
+      'if (topicQueue.selected) {\n  config.topic_candidates = [topicQueue.selected, ...config.topic_candidates];\n}',
+      'if (topicQueue.selected) {\n  config.topic_candidates = [topicQueue.selected, ...config.topic_candidates];\n}\nconfig.research_source_pack = config.research_source_pack || topicQueue.selected?.research_source_pack || null;',
+      `${target.id}: research source queue wiring`,
+    );
+  }
+  if (!code.includes('config.prepared_card_pack = config.prepared_card_pack')) {
+    code = replaceRequired(
+      code,
+      'config.research_source_pack = config.research_source_pack || topicQueue.selected?.research_source_pack || null;',
+      'config.research_source_pack = config.research_source_pack || topicQueue.selected?.research_source_pack || null;\nconfig.prepared_card_pack = config.prepared_card_pack || topicQueue.selected?.final_pack || null;',
+      `${target.id}: prepared card pack queue wiring`,
+    );
+  }
   if (!code.includes('function loadRecentBgmProfileHistory(')) {
     code = replaceRequired(
       code,
@@ -279,14 +641,137 @@ config.recent_titles = uniqueStrings([\n`,
   );
 }
 
+function patchUploadIdempotency(code, target) {
+  code = code.replace(/\/\/ ALREADY_UPLOADED_GUARD_V1_BEGIN[\s\S]*?\/\/ ALREADY_UPLOADED_GUARD_V1_END\n/, '');
+  code = code.replace(
+    /if \(alreadyUploaded\) \{\n  uploadGuard = \{ \.\.\.uploadGuard, acquired: false, reason: 'already_uploaded', already_uploaded: alreadyUploaded \};\n\} else \{\n  tryAcquire\(\);\n\}/,
+    'tryAcquire();',
+  );
+  code = code.replace(', upload_guard: uploadGuard, already_uploaded: alreadyUploaded }', ', upload_guard: uploadGuard }');
+  const block = `// ALREADY_UPLOADED_GUARD_V1_BEGIN
+function findAlreadyUploaded() {
+  const title = String(base.pack?.hook_title || '').replace(/\\s+/g, ' ').trim();
+  const logPath = String(cfg.upload_log_path || '').trim();
+  if (!title || !logPath) return null;
+  try {
+    if (!fs.existsSync(logPath)) return null;
+    const rows = fs.readFileSync(logPath, 'utf8').split(/\\r?\\n/).map((line) => line.trim()).filter(Boolean);
+    for (let index = rows.length - 1; index >= 0; index -= 1) {
+      let row = null;
+      try { row = JSON.parse(rows[index]); } catch (error) { continue; }
+      const rowTitle = String(row?.title || '').replace(/\\s+/g, ' ').trim();
+      if (rowTitle && rowTitle === title && row?.url) {
+        return { url: row.url, video_id: row.video_id || null, uploaded_at: row.uploaded_at || null, matched_title: rowTitle };
+      }
+    }
+  } catch (error) {
+    return null;
+  }
+  return null;
+}
+const alreadyUploaded = guardEnabled ? findAlreadyUploaded() : null;
+// ALREADY_UPLOADED_GUARD_V1_END
+`;
+  code = replacePatternRequired(
+    code,
+    /^tryAcquire\(\);$/m,
+    block + `if (alreadyUploaded) {
+  uploadGuard = { ...uploadGuard, acquired: false, reason: 'already_uploaded', already_uploaded: alreadyUploaded };
+} else {
+  tryAcquire();
+}`,
+    `${target.id}: already-uploaded guard`,
+  );
+  return replaceRequired(
+    code,
+    ', upload_guard: uploadGuard }',
+    ', upload_guard: uploadGuard, already_uploaded: alreadyUploaded }',
+    `${target.id}: already-uploaded guard output`,
+  );
+}
+
+function patchSkipUploadReason(code, target) {
+  if (code.includes("already_uploaded")) return code;
+  return replaceRequired(
+    code,
+    "if (data.upload_guard?.reason === 'overlapping_upload_in_progress') {",
+    `if (data.upload_guard?.reason === 'already_uploaded') {
+  return [{ json: { ...data, result_stage: 'skipped_already_uploaded', youtube: { skipped: true, reason: 'already_uploaded', existing_url: data.upload_guard?.already_uploaded?.url || null }, comment: { skipped: true, reason: 'Already uploaded in an earlier run' } } }];
+}
+if (data.upload_guard?.reason === 'overlapping_upload_in_progress') {`,
+    `${target.id}: already-uploaded skip branch`,
+  );
+}
+
+function patchFinalResultConsumeGate(code, target) {
+  if (code.includes('const alreadyUploadedRecovery =')) return code;
+  return replaceRequired(
+    code,
+    '  const youtube = data.youtube || {};\n  if (!youtube.url || youtube.skipped) return;',
+    `  const youtube = data.youtube || {};
+  // A run that was skipped because this exact topic was already published in an
+  // earlier run must still release the topic, or the queue would retry it forever.
+  const alreadyUploadedRecovery = data.upload_guard?.reason === 'already_uploaded'
+    ? (data.upload_guard?.already_uploaded || null)
+    : null;
+  const publishedUrl = youtube.url && !youtube.skipped ? youtube.url : (alreadyUploadedRecovery?.url || null);
+  if (!publishedUrl) return;`,
+    `${target.id}: consume gate recovery`,
+  ).replace(
+    /(\n      consumed_file: destination,[\s\S]*?)\n      url: youtube\.url,/,
+    '$1\n      url: publishedUrl,',
+  );
+}
+
 function patchFinalResult(code, target) {
   if (code.includes('bgm_profile_id: data.diversity?.bgm_profile?.id || null')) return code;
   return replaceRequired(
     code,
     '    video_id: youtube.video_id || null,\n    topic_queue:',
-    "    video_id: youtube.video_id || null,\n    bgm_profile_id: data.diversity?.bgm_profile?.id || null,\n    bgm_profile_title: data.diversity?.bgm_profile?.title || null,\n    topic_queue:",
+    "    video_id: youtube.video_id || null,\n    topic_key: data.topic_key || data.config?.topic_queue?.selected?.topic_key || data.prepared_card_pack?.topic_key || null,\n    bgm_profile_id: data.diversity?.bgm_profile?.id || null,\n    bgm_profile_title: data.diversity?.bgm_profile?.title || null,\n    topic_queue:",
     `${target.id}: upload log BGM profile`,
   );
+}
+
+function patchRankCountTarget(code, target) {
+  code = code.replace(/const rankCountMax = Number\(cfg\.rank_count_max \|\| \d+\);/, 'const rankCountMax = Number(cfg.rank_count_max || 7);');
+  code = code.replace(/const rankCountMin = Number\(cfg\.rank_count_min \|\| \d+\);/, 'const rankCountMin = Number(cfg.rank_count_min || 4);');
+  return replacePatternRequired(
+    code,
+    /: '- Choose the (?:strongest )?ranking count between ' \+ rankCountMin \+ ' and ' \+ rankCountMax \+ '\.[^']*';/,
+    ": '- Choose the ranking count between ' + rankCountMin + ' and ' + rankCountMax + '. Default to 5 items. Use 6 or 7 only when the researched facts genuinely support that many distinct points, and drop to 4 only when a fifth item would be filler. Do not add filler items just to make the list longer.';",
+    `${target.id}: rank count target`,
+  );
+}
+
+function patchResearchGrounding(code, target) {
+  code = code.replace(/\/\/ RESEARCH_SOURCE_PACK_V1_BEGIN[\s\S]*?\/\/ RESEARCH_SOURCE_PACK_V1_END\n\n/, '');
+  code = code.replace(/^\s*researchGrounded \? [^\n]+\n/gm, '');
+  code = code.replace(/^\s*"(?:EVERYDAY_LANGUAGE_V\d+|EVERYDAY_TOPIC_ANGLE_V\d+):[^\n]+\n/gm, '');
+  code = replacePatternRequired(
+    code,
+    /^const editorialFlowVersion = 'single_writer_v1';$/m,
+    researchResolverBlock + "const editorialFlowVersion = 'single_writer_v1';",
+    `${target.id}: research source resolver`,
+  );
+  code = replacePatternRequired(
+    code,
+    /^\s*"Editorial rules: use common everyday Korean[^\n]+$/m,
+    `  ${JSON.stringify(everydayLanguageContract)},\n  ${JSON.stringify(everydayTopicAngleContract)},\n  researchGrounded ? ${JSON.stringify(researchGroundingContract)} : '',\n  researchGrounded ? ${JSON.stringify(sourceSelectionContract(target))} : '',\n  researchGrounded ? 'research_source_pack: ' + JSON.stringify(researchSourcePack) : '',\n$&`,
+    `${target.id}: research grounding prompt`,
+  );
+  code = code.replace(
+    /rank_items: \[\n?\s*\{ rank: 1, (?:fact_id: [^\n]*?source_ids: \[[^\]]*\], )?name: '항목명',/,
+    "rank_items: [\n    { rank: 1, fact_id: 'research_source_pack candidate_fact id this item is written from; required whenever a research_source_pack is supplied', source_ids: ['source ids cited by that fact'], name: '항목명',",
+  );
+  code = code.replace(
+    /return \[\{ json: \{ \.\.\.base, (?:config: preparedCardPack [^,]+, [^,]+, prepared_card_pack: preparedCardPack, )?(?:research_source_pack: researchSourcePack, research_grounded: researchGrounded, )?channel_editorial_profile: channelEditorialProfile,/,
+    'return [{ json: { ...base, config: preparedCardPack ? { ...cfg, use_live_kie_ai: false } : cfg, prepared_card_pack: preparedCardPack, research_source_pack: researchSourcePack, research_grounded: researchGrounded, channel_editorial_profile: channelEditorialProfile,',
+  );
+  if (!code.includes('prepared_card_pack: preparedCardPack')) {
+    throw new Error(`${target.id}: prepared card pack output anchor missing`);
+  }
+  return code;
 }
 
 function patchBuild(code, target) {
@@ -382,10 +867,10 @@ const laneCandidates = channelTopicPool
     `${target.id}: channel prompt identity`,
   );
   code = code.replace(/^\s*['\"]COMMENT_(?:VOICE|SUMMARY)_V\d+:[^\n]+\n?/gm, '');
-  code = code.replace(/^\s*['\"](?:NATURAL_KOREAN_COPY_V1|FIRST_READ_KOREAN_V1|HUMAN_KOREAN_VOICE_V1|CLEAR_KOREAN_COPY_V2|TITLE_SCOPE_V\d+|CLAIM_STRENGTH_V\d+):[^\n]+\n?/gm, '');
+  code = code.replace(/^\s*['\"](?:NATURAL_KOREAN_COPY_V1|FIRST_READ_KOREAN_V1|HUMAN_KOREAN_VOICE_V1|CLEAR_KOREAN_COPY_V2|TITLE_SCOPE_V\d+|ATTENTION_PROMISE_V\d+|CLAIM_STRENGTH_V\d+|DECISION_DETAIL_V\d+):[^\n]+\n?/gm, '');
   code = code.replace(
     /^\s*['\"]Editorial rules:[^\n]+$/gm,
-    `  ${JSON.stringify(editorialRules)},\n  ${JSON.stringify(clearKoreanCopyContract)},\n  ${JSON.stringify(titleScopeContract)},\n  ${JSON.stringify(claimStrengthContract)},`,
+    `  ${JSON.stringify(editorialRules)},\n  ${JSON.stringify(clearKoreanCopyContract)},\n  ${JSON.stringify(titleScopeContract)},\n  ${JSON.stringify(attentionPromiseContract(target))},\n  ${JSON.stringify(claimStrengthContract)},\n  ${JSON.stringify(decisionDetailContract)},`,
   );
   code = code.replace(
     /^\s*'Write description and pinned_comment[^\n]+$/gm,
@@ -405,7 +890,7 @@ const laneCandidates = channelTopicPool
   );
   code = code.replace(
     /^\s*'Each ranked item[^\n]+$/gm,
-    "  'Before writing, internally compare candidate claims and keep only established high-confidence facts. Do not expose private reasoning, invent citations, or use scientific-sounding detail as decoration.',\n  'CLINICAL_DEPTH_V1: Every topic and every ranked item must teach direct health value, not merely convenience. Each item must explain an established physiological, clinical, nutritional, medication-literacy, symptom-interpretation, or injury-prevention principle and connect it to a practical decision. Housekeeping, organizing, motivation, comfort, or generic self-care alone is insufficient health depth.',\n  'Each ranked item must add a genuinely different medically useful point and at least two linked elements: a credible body mechanism or clinically relevant signal, plus who or when it matters, an observable condition, a practical action, or a meaningful boundary. Avoid generic slogans and obvious filler. Write reason as the complete practical cause-and-effect explanation with all facts needed for accuracy. Do not fabricate exact minutes, repetitions, percentages, thresholds, or measurements merely to sound scientific; keep a number only when it is well-established, necessary, and safe. Write card_name as a short image label in common everyday Korean, at most 22 Korean characters, without obscure terms. Write card_reason as one independent 해요체 sentence for the image, at most 40 Korean characters, preserving the most useful body mechanism, signal, or medical decision. Never put 왜:, 이유:, 핵심:, or TIP: in card_reason. Keep only as many items as the topic naturally supports, between 3 and 5.',",
+    "  'Before writing, internally compare candidate claims and keep only established high-confidence facts. Do not expose private reasoning, invent citations, or use scientific-sounding detail as decoration.',\n  'CLINICAL_DEPTH_V1: Every ranked item must carry a real consequence the viewer can act on or notice, not vague encouragement. That consequence may be physiological, clinical, nutritional, medication-related, or a signal to interpret — and it may equally be a household, appliance, grocery, money, errand, or family consequence, which counts as full depth rather than filler. The channel covers the whole life of an adult over 50, so do not narrow topics to what a clinic would hand out and do not treat a non-medical subject as shallow. What fails this bar is an item that teaches nothing usable: a slogan, a restatement of common knowledge, or generic self-care.',\n  'Each ranked item must add a genuinely different medically useful point and at least two linked elements: a credible body mechanism or clinically relevant signal, plus who or when it matters, an observable condition, a practical action, or a meaningful boundary. Avoid generic slogans and obvious filler. Write reason as the complete practical cause-and-effect explanation with all facts needed for accuracy. Do not fabricate exact minutes, repetitions, percentages, thresholds, or measurements merely to sound scientific; keep a number only when it is well-established, necessary, and safe. Write card_name as an image label in common everyday Korean, at most 30 Korean characters, without obscure terms. Write card_reason as one independent 해요체 sentence for the image, at most 60 Korean characters, preserving the most useful mechanism, signal, or decision. PLAIN_MEANING_V1: clarity outranks brevity — never trim a line until a first-time reader cannot tell what it refers to. card_reason must stand on its own without card_name: name the actual thing instead of leaning on 그것, 이때, 이렇게, or a comparative with nothing to compare to, and spend the extra characters when the shorter wording loses the subject, the object, or what actually happens. Short but vague is a defect. NO_FIGURATIVE_COPY_V1: state things directly — no metaphor, simile, analogy, or roundabout phrasing that makes the viewer infer the point; name the actual object, the actual action, and the actual consequence. KOREAN_VOICE_V1: write Korean somebody would speak, not English carried across into Korean words. Drop the subject when the situation already makes it obvious, the way a Korean speaker does — 두 식구가 큰 통을 다 쓰기 전에 냄새가 변해요 should be 큰 통은 다 쓰기도 전에 냄새부터 변해요. Do not let an inanimate thing drive a transitive verb: 소음이 말소리를 덮어요 is English word order, and Korean says 소음 때문에 말이 안 들려요. Do not bend every ranked line into the same sentence shape, especially the if-then 조건절; mix in 대조 with ~는데 or ~지만, plain statements, cause with ~어서, and endings such as 거든요 or 잖아요 so the list does not scan identically line after line. Prefer an active verb over stacked passives and causatives. Read each line aloud in your head and keep it only if a Korean speaker would say it that way to a neighbour. Never put 왜:, 이유:, 핵심:, or TIP: in card_reason. Write 5 ranked items by default. Use 6 or 7 when the researched facts genuinely support that many distinct points, and drop to 4 only when a fifth item would be filler. Never go below 4.',",
   );
   code = code.replace(
     /description: 'finished upload description tailored to this exact video; preserve the same facts and practical nuance',/,
@@ -472,7 +957,7 @@ const eligibleContentLanes = contentLanes.filter((lane) => channelAllowedLaneIds
     )
     .replace(
       'Each ranked item must add a genuinely different point. Explain the practical cause and effect in one easy complete Korean sentence. Write image-ready Korean: concise enough to read on a phone, but preserve any condition, number, medical term, or factual detail needed for accuracy. Do not add mechanical labels such as 왜:, 이유:, 핵심:, or TIP: to every item; the sentence itself should read naturally. Keep only as many items as the topic naturally supports, between 3 and 5.',
-      'Each ranked item must add a genuinely different point. Write reason as the complete practical cause-and-effect explanation with all facts needed for accuracy. Also write card_reason as one independent natural Korean sentence for the image: 18-42 Korean characters, one short line when possible, preserving the single most important cause and result. Never put 왜:, 이유:, 핵심:, or TIP: in card_reason. Keep only as many items as the topic naturally supports, between 3 and 5.',
+      'Each ranked item must add a genuinely different point. Write reason as the complete practical cause-and-effect explanation with all facts needed for accuracy. Also write card_reason as one independent natural Korean sentence for the image: 18-42 Korean characters, one short line when possible, preserving the single most important cause and result. Never put 왜:, 이유:, 핵심:, or TIP: in card_reason. Write 5 ranked items by default. Use 6 or 7 when the researched facts genuinely support that many distinct points, and drop to 4 only when a fifth item would be filler. Never go below 4.',
     )
     .replace(
       /description: 'Temporary draft only\.[^\n]+',/,
@@ -520,7 +1005,7 @@ const eligibleContentLanes = contentLanes.filter((lane) => channelAllowedLaneIds
     code = replaceRequired(
       code,
       "  'Before writing, internally compare candidate claims and keep only established high-confidence facts. Do not expose private reasoning, invent citations, or use scientific-sounding detail as decoration.',",
-      "  'Before writing, internally compare candidate claims and keep only established high-confidence facts. Do not expose private reasoning, invent citations, or use scientific-sounding detail as decoration.',\n  'CLINICAL_DEPTH_V1: Every topic and every ranked item must teach direct health value, not merely convenience. Each item must explain an established physiological, clinical, nutritional, medication-literacy, symptom-interpretation, or injury-prevention principle and connect it to a practical decision. Housekeeping, organizing, motivation, comfort, or generic self-care alone is insufficient health depth.',",
+      "  'Before writing, internally compare candidate claims and keep only established high-confidence facts. Do not expose private reasoning, invent citations, or use scientific-sounding detail as decoration.',\n  'CLINICAL_DEPTH_V1: Every ranked item must carry a real consequence the viewer can act on or notice, not vague encouragement. That consequence may be physiological, clinical, nutritional, medication-related, or a signal to interpret — and it may equally be a household, appliance, grocery, money, errand, or family consequence, which counts as full depth rather than filler. The channel covers the whole life of an adult over 50, so do not narrow topics to what a clinic would hand out and do not treat a non-medical subject as shallow. What fails this bar is an item that teaches nothing usable: a slogan, a restatement of common knowledge, or generic self-care.',",
       `${target.id}: clinical depth prompt`,
     );
   }
@@ -533,6 +1018,9 @@ const eligibleContentLanes = contentLanes.filter((lane) => channelAllowedLaneIds
       `${target.id}: conversational Korean tone`,
     );
   }
+
+  code = patchRankCountTarget(code, target);
+  code = patchResearchGrounding(code, target);
 
   const commentVoice = commentSummaryContract(target);
   if (commentVoice && !code.includes(commentVoice)) {
@@ -585,6 +1073,55 @@ function patchPrepare(code) {
     } else {
       code = replacePatternRequired(code, /const subtitle = pack\.subtitle[^\n]+;/, 'const subtitle = cleanQueuedValue(pack.subtitle || \'매일 하는데 놓치기 쉬운 것들\');', 'subtitle preservation');
     }
+  }
+  if (!code.includes('function channelFallbackCopy()')) {
+    code = replacePatternRequired(
+      code,
+      /function buildUniversalCommentCta\(\) \{[\s\S]*?\n\}/,
+      `function channelFallbackCopy() {
+  if (cfg.channel_editorial_profile === 'haru_health_literacy') {
+    return {
+      channel: '하루건강약사',
+      subscription: '몸과 성분을 이해하는 건강 이야기, 구독으로 함께 이어가요.',
+      intro: '영양, 음식, 영양제 성분, 몸의 신호를 일상 언어로 쉽게 설명해요.',
+      promise: '과장된 비법보다 내 몸에 맞는 건강 선택 기준을 차근차근 알려드려요.',
+      daily: '하루에 하나씩, 건강한 선택에 도움이 되는 내용을 전해드려요.',
+    };
+  }
+  return {
+    channel: '건강장수비결',
+    subscription: '건강한 노년을 지키는 습관, 구독으로 함께 이어가요.',
+    intro: '식사, 운동, 수면, 혈압, 혈당, 관절 관리 내용을 일상 언어로 쉽게 설명해요.',
+    promise: '특별한 비법보다 일상 기능과 자립을 오래 지키는 생활 습관을 정리해 드려요.',
+    daily: '하루에 하나씩, 건강한 노년에 도움이 되는 내용을 전해드려요.',
+  };
+}
+
+function buildUniversalCommentCta() {
+  return channelFallbackCopy().subscription;
+}`,
+      'channel fallback comment copy',
+    );
+    code = replacePatternRequired(
+      code,
+      /  const pharmacistIntro = \[[\s\S]*?\n  \]\.join\(LF\);/,
+      `  const channelCopy = channelFallbackCopy();
+  const pharmacistIntro = [
+    '안녕하세요. ' + channelCopy.channel + '입니다.',
+    '',
+    channelCopy.intro,
+    channelCopy.promise,
+    '',
+    channelCopy.daily,
+  ].join(LF);`,
+      'channel fallback description copy',
+    );
+    code = replacePatternRequired(
+      code,
+      /  const tagList = Array\.from\(new Set\(\[\.\.\.\(pack\.tags \|\| \[\]\), '[^']+', '건강정보', '시니어건강', '쇼츠'\]\)\)/,
+      "  const tagList = Array.from(new Set([...(pack.tags || []), channelCopy.channel, '건강정보', '시니어건강', '쇼츠']))",
+      'channel fallback description tags',
+    );
   }
   if (!code.includes("const youtubeDescription = String(pack.description || '').trim()")) {
     code = replaceRequired(code, 'const youtubeDescription = buildYoutubeDescription();', "const youtubeDescription = String(pack.description || '').trim() || buildYoutubeDescription();", 'description preservation');
@@ -761,6 +1298,46 @@ const posterReadabilityInstruction = [
   return code;
 }
 
+function patchPreparedCardPackPassthrough(code, target) {
+  code = code.replace(/\/\/ PREPARED_CARD_PACK_V1_BEGIN[\s\S]*?\/\/ PREPARED_CARD_PACK_V1_END\n/, '');
+  const block = `// PREPARED_CARD_PACK_V1_BEGIN
+const preparedCardPack = data.prepared_card_pack;
+if (preparedCardPack) {
+  const preparedItems = (preparedCardPack.rank_items || []).map((item, index) => ({ ...item, rank: index + 1 }));
+  if (preparedItems.length < 4 || preparedItems.length > 7) {
+    throw new Error('PREPARED_CARD_PACK_INVALID: a prepared final_pack must carry 4-7 ranked items.');
+  }
+  const preparedPack = {
+    channel_editorial_profile: data.config?.channel_editorial_profile || data.channel_editorial_profile?.id || '',
+    channel_content_pillar: data.selected_channel_pillar?.id || '',
+    content_lane: data.selected_content_lane?.id || 'prepared_source_grounded',
+    format_angle: 'prepared_card_pack_verbatim',
+    theme: preparedCardPack.hook_title,
+    hook_title: preparedCardPack.hook_title,
+    subtitle: preparedCardPack.subtitle || '',
+    visual_mood_hint: preparedCardPack.visual_mood_hint || '',
+    visual_profile: preparedCardPack.visual_profile || '',
+    rank_items: preparedItems,
+    video_script: preparedCardPack.video_script || preparedCardPack.hook_title,
+    description: preparedCardPack.description || '',
+    tags: preparedCardPack.tags || [],
+    pinned_comment: preparedCardPack.pinned_comment || '',
+    bgm_prompt: preparedCardPack.bgm_prompt || 'warm calm acoustic instrumental for this everyday health topic',
+    medical_claims: preparedCardPack.medical_claims || preparedItems.map((item) => item.reason),
+    safety_notes: preparedCardPack.safety_notes || ['사전 조사와 검수를 마친 고정 카드 팩'],
+  };
+  return [{ json: { ...data, pack: preparedPack, ai_source: 'prepared_card_pack' } }];
+}
+// PREPARED_CARD_PACK_V1_END
+`;
+  return replacePatternRequired(
+    code,
+    /^const dryRun = Boolean\(data\.config\?\.test_mode \|\| data\.config\?\.dry_run\);$/m,
+    block + '$&',
+    `${target.id}: prepared card pack passthrough`,
+  );
+}
+
 function patchFallbackTone(code) {
   const replacements = [
     ['익숙해서 더 놓치기 쉽습니다', '익숙해서 더 놓치기 쉬워요'],
@@ -866,6 +1443,30 @@ return [{
   throw new Error('missing duplicate-title fallback anchor');
 }
 
+function patchRetryContracts(code, target) {
+  code = code
+    .replace(/^const attentionPromiseRetryInstruction = [^\n]+\n/m, '')
+    .replace(/^const decisionDetailRetryInstruction = [^\n]+\n/m, '')
+    .replace(/^const researchGroundingRetryInstruction = [^\n]+\n/m, '')
+    .replace(/^const everydayLanguageRetryInstruction = [^\n]+\n/m, '')
+    .replace(/^\s*everydayLanguageRetryInstruction,\n/gm, '')
+    .replace(/^\s*attentionPromiseRetryInstruction,\n/gm, '')
+    .replace(/^\s*decisionDetailRetryInstruction,\n/gm, '')
+    .replace(/^\s*researchGroundingRetryInstruction,\n/gm, '');
+  code = replacePatternRequired(
+    code,
+    /^const claimStrengthRetryInstruction = [^\n]+$/m,
+    `$&\nconst attentionPromiseRetryInstruction = ${JSON.stringify(attentionPromiseRetryContract)};\nconst decisionDetailRetryInstruction = ${JSON.stringify(decisionDetailRetryContract)};\nconst everydayLanguageRetryInstruction = ${JSON.stringify(everydayLanguageContract + ' ' + everydayTopicAngleContract)};\nconst researchGroundingRetryInstruction = data.research_source_pack ? ${JSON.stringify(researchGroundingRetryContract)} + ' Regenerate strictly inside this same research_source_pack: ' + JSON.stringify(data.research_source_pack) : '';`,
+    `${target.id}: attention promise retry declaration`,
+  );
+  const claimStrengthReferences = (code.match(/^\s*claimStrengthRetryInstruction,$/gm) || []).length;
+  if (claimStrengthReferences < 2) throw new Error(`${target.id}: attention promise retry insertion points missing`);
+  return code.replace(
+    /^\s*claimStrengthRetryInstruction,$/gm,
+    '  claimStrengthRetryInstruction,\n  attentionPromiseRetryInstruction,\n  decisionDetailRetryInstruction,\n  everydayLanguageRetryInstruction,\n  researchGroundingRetryInstruction,',
+  );
+}
+
 function patchWorkflow(workflow, target) {
   const load = workflow.nodes.find((node) => node.name === 'Load Config');
   const build = workflow.nodes.find((node) => node.name === 'Build Viral Rank Pack Request');
@@ -873,13 +1474,20 @@ function patchWorkflow(workflow, target) {
   const prepare = workflow.nodes.find((node) => node.name === 'Prepare Image and BGM Payloads');
   const mock = workflow.nodes.find((node) => node.name === 'Mock Viral Rank Pack');
   const final = workflow.nodes.find((node) => node.name === 'Final Result');
-  if (!load || !build || !parse || !prepare || !mock || !final) throw new Error(`${target.id}: required editorial nodes missing`);
+  const retry = workflow.nodes.find((node) => node.name === 'Prepare Medical Retry Request');
+  if (!load || !build || !parse || !prepare || !mock || !final || !retry) throw new Error(`${target.id}: required editorial nodes missing`);
   load.parameters.jsCode = patchLoadConfig(load.parameters.jsCode, target);
   build.parameters.jsCode = patchBuild(build.parameters.jsCode, target);
   parse.parameters.jsCode = patchParse(parse.parameters.jsCode);
   prepare.parameters.jsCode = patchPrepare(prepare.parameters.jsCode);
-  mock.parameters.jsCode = patchFallbackTone(mock.parameters.jsCode);
-  final.parameters.jsCode = patchFinalResult(final.parameters.jsCode, target);
+  mock.parameters.jsCode = patchPreparedCardPackPassthrough(patchFallbackTone(mock.parameters.jsCode), target);
+  final.parameters.jsCode = patchFinalResultConsumeGate(patchFinalResult(final.parameters.jsCode, target), target);
+  const attach = workflow.nodes.find((node) => node.name === 'Attach Downloaded MP4');
+  const skipUpload = workflow.nodes.find((node) => node.name === 'Skip YouTube Upload');
+  if (!attach || !skipUpload) throw new Error(`${target.id}: upload guard nodes missing`);
+  attach.parameters.jsCode = patchUploadIdempotency(attach.parameters.jsCode, target);
+  skipUpload.parameters.jsCode = patchSkipUploadReason(skipUpload.parameters.jsCode, target);
+  retry.parameters.jsCode = patchRetryContracts(retry.parameters.jsCode, target);
   if (!mock.parameters.jsCode.includes('channel_editorial_profile: data.config?.channel_editorial_profile')) {
     mock.parameters.jsCode = mock.parameters.jsCode.replace(
       "    content_lane: lockedSource.lane || 'source_grounded',",

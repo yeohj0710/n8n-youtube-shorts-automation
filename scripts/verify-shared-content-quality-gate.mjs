@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -34,6 +34,21 @@ assert.match(buildCode, /observation.*association.*cause.*diagnosis/is);
 assert.match(parserCode, /incomplete_semantic_audit/);
 assert.match(parserCode, /title_item_type_mismatch/);
 assert.match(parserCode, /overstated_causal_attribution/);
+assert.match(buildCode, /useful_detail/);
+assert.match(buildCode, /detail_type/);
+assert.match(buildCode, /decision_change/);
+assert.match(buildCode, /claim_delivery/);
+assert.match(parserCode, /incomplete_detail_audit/);
+assert.match(parserCode, /generic_safe_summary/);
+assert.match(buildCode, /RESEARCH_GROUNDING_V\d+/);
+assert.match(buildCode, /claim_not_in_source_pack/);
+assert.match(buildCode, /fabricated_beyond_source/);
+assert.match(buildCode, /source_support/);
+assert.match(buildCode, /source_fact_id/);
+assert.match(buildCode, /function inspectSourceGrounding/);
+assert.match(deterministicCode, /function inspectSourceGrounding/);
+assert.match(parserCode, /incomplete_source_audit/);
+assert.match(parserCode, /claim_not_in_source_pack/);
 assert.match(deterministicCode, /unsupported_percentage/);
 assert.doesNotMatch(deterministicCode, /vague_fragment/, 'wording style must not be a hard block');
 

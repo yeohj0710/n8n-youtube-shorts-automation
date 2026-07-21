@@ -34,7 +34,9 @@ for (const name of fs.readdirSync(workflowDir)) {
   const parse = nodeCode(workflow, 'Parse KIE Claude Pack');
   const prepare = nodeCode(workflow, 'Prepare Image and BGM Payloads');
 
-  assert.match(loadConfig, /rank_count_max:\s*Number\(incoming\.rank_count_max\s*\|\|\s*5\)/, `${workflow.id}: max rank count must be 5`);
+  assert.match(loadConfig, /rank_count_max:\s*Number\(incoming\.rank_count_max\s*\|\|\s*7\)/, `${workflow.id}: max rank count must be 7`);
+  assert.match(loadConfig, /rank_count_min:\s*Number\(incoming\.rank_count_min\s*\|\|\s*4\)/, `${workflow.id}: min rank count must be 4`);
+  assert.match(build, /Default to 5 items/, `${workflow.id}: five-item default target missing`);
   assert.doesNotMatch(build, /8-14|8-16/, `${workflow.id}: short-reason contract remains`);
   assert.doesNotMatch(build, /18-32 Korean characters|10-24 Korean characters/, `${workflow.id}: hard reason/caution length contract remains`);
   assert.match(build, /card_name.*at most 22 Korean characters/is, `${workflow.id}: short mobile-card item-name contract missing`);

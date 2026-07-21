@@ -1,0 +1,203 @@
+{
+  "title": "텔레비전 소리를 자꾸 키우게 되는 이유 5",
+  "lane": "daily_health_lifestyle",
+  "notes": "텔레비전 볼륨은 귀가 나빠져서만 올라가는 게 아니라, 귀지·소음·좌우 차이·습관까지 다섯 갈래에서 올라간다.",
+  "research_source_pack": {
+    "channel_profile": "haru_health_literacy",
+    "researched_at": "2026-07-21",
+    "search_queries": [
+      "질병관리청 국가건강정보포털 노인성난청 고음 말소리 구별",
+      "질병관리청 외이도염 귀지 면봉 파내기",
+      "대한이비인후과학회 소음성난청 청각세포 손상 영구",
+      "unilateral hearing loss turn up volume TV"
+    ],
+    "sources": [
+      {
+        "source_id": "S1",
+        "title": "외이도염",
+        "publisher": "질병관리청 국가건강정보포털",
+        "url": "https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=1587",
+        "published_at": "2020-03-22",
+        "source_type": "government_health_agency"
+      },
+      {
+        "source_id": "S2",
+        "title": "노인성난청",
+        "publisher": "질병관리청 국가건강정보포털",
+        "url": "https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=5489",
+        "published_at": "2020-07-22",
+        "source_type": "government_health_agency"
+      },
+      {
+        "source_id": "S3",
+        "title": "Unilateral Hearing Loss (Single-Sided Deafness)",
+        "publisher": "Cleveland Clinic",
+        "url": "https://my.clevelandclinic.org/health/diseases/21625-unilateral-hearing-loss-single-sided-deafness",
+        "published_at": "",
+        "source_type": "hospital_health_info"
+      },
+      {
+        "source_id": "S4",
+        "title": "소음성난청",
+        "publisher": "대한이비인후과학회",
+        "url": "https://www.korl.or.kr/info/sub01_13.php",
+        "published_at": "",
+        "source_type": "professional_society"
+      }
+    ],
+    "candidate_facts": [
+      {
+        "fact_id": "F1",
+        "claim": "귀지가 귓길을 막으면 소리가 덜 들어오고, 면봉으로 파면 더 밀려 들어간다.",
+        "source_ids": [
+          "S1"
+        ],
+        "evidence_summary": "질병관리청 자료는 귀지가 저절로 밀려 나오므로 억지로 파낼 필요가 없고 면봉으로 파다가 상처를 내는 경우가 많다고 안내하며, 귓길이 막혀 생긴 먹먹함은 막힘이 풀리면 회복된다고 설명한다.",
+        "why_interesting": "잘 안 들려서 파낸 귀지가 오히려 더 막고 있었다는 점이 뜻밖이다.",
+        "viewer_relevance": "안 들리면 귀부터 후비는 습관이 흔하다.",
+        "viewer_decision": "면봉으로 파는 대신 그대로 둔다.",
+        "necessary_condition": "귀지로 막힌 경우에 해당한다.",
+        "limitation_or_boundary": "아프거나 진물이 나면 진료로 확인해야 한다.",
+        "confidence": "high"
+      },
+      {
+        "fact_id": "F2",
+        "claim": "나이가 들면 높은 소리부터 안 들려서 소리는 들려도 말이 또렷하지 않다.",
+        "source_ids": [
+          "S2"
+        ],
+        "evidence_summary": "질병관리청 자료는 노인성 난청에서 고음 영역이 먼저 나빠지면 밥과 밤처럼 비슷한 말을 구별하기 어려워진다고 설명한다.",
+        "why_interesting": "안 들리는 게 아니라 말이 뭉개지는 것이라는 점이 잘 안 알려져 있다.",
+        "viewer_relevance": "가족이 소리가 크다고 말하는 상황에 해당한다.",
+        "viewer_decision": "소리를 키우는 대신 말하는 사람을 마주 본다.",
+        "necessary_condition": "고음부터 나빠진 경우에 해당한다.",
+        "limitation_or_boundary": "진행 속도와 모양은 사람마다 다르다.",
+        "confidence": "high"
+      },
+      {
+        "fact_id": "F3",
+        "claim": "주변에 소음이 있으면 말소리가 묻혀 더 알아듣기 어렵다.",
+        "source_ids": [
+          "S2"
+        ],
+        "evidence_summary": "질병관리청 자료는 노인성 난청이 있으면 시끄러운 곳에서 말을 알아듣기 어렵다고 명시한다.",
+        "why_interesting": "귀가 아니라 방 안 소리 환경 때문일 수 있다는 점은 잘 생각하지 않는다.",
+        "viewer_relevance": "주방 물소리와 환풍기는 저녁마다 켜져 있다.",
+        "viewer_decision": "볼륨을 올리기 전에 환풍기부터 끈다.",
+        "necessary_condition": "주변 소음이 있을 때에 해당한다.",
+        "limitation_or_boundary": "청력이 좋아도 소음 속에서는 누구나 덜 들린다.",
+        "confidence": "high"
+      },
+      {
+        "fact_id": "F4",
+        "claim": "한쪽 귀만 나빠지면 본인은 잘 모르고 볼륨만 키우게 된다.",
+        "source_ids": [
+          "S3"
+        ],
+        "evidence_summary": "클리블랜드클리닉 자료는 한쪽 귀 난청의 증상으로 텔레비전이나 휴대전화의 볼륨을 키우는 것을 들고, 나빠진 쪽 소리를 덜 인식하게 된다고 설명한다.",
+        "why_interesting": "양쪽이 같이 나빠질 것이라는 생각과 달리 한쪽만 조용히 나빠진다.",
+        "viewer_relevance": "리모컨을 자꾸 누르는 상황에 해당한다.",
+        "viewer_decision": "한쪽 귀를 막고 소리를 들어 좌우를 비교해 본다.",
+        "necessary_condition": "한쪽만 나빠진 경우에 해당한다.",
+        "limitation_or_boundary": "좌우 차이는 검사로 확인해야 정확하다.",
+        "confidence": "moderate_high"
+      },
+      {
+        "fact_id": "F5",
+        "claim": "크게 오래 듣는 습관 자체가 귀를 더 나쁘게 만든다.",
+        "source_ids": [
+          "S4"
+        ],
+        "evidence_summary": "대한이비인후과학회 자료는 소음에 반복해서 노출되면 청각세포가 손상되어 영구적인 청력 장해로 남는다고 설명한다.",
+        "why_interesting": "안 들려서 키운 볼륨이 다시 귀를 깎는 되돌이가 된다는 점이 핵심이다.",
+        "viewer_relevance": "볼륨을 올린 채로 저녁 내내 켜 둔다.",
+        "viewer_decision": "한 칸씩이라도 낮추고 오래 켜 두지 않는다.",
+        "necessary_condition": "크게 오래 듣는 경우에 해당한다.",
+        "limitation_or_boundary": "손상 정도는 소리 크기와 듣는 시간에 따라 다르다.",
+        "confidence": "high"
+      }
+    ],
+    "selected_angle": "텔레비전 볼륨은 귀가 나빠져서만 올라가는 게 아니라, 귀지·소음·좌우 차이·습관까지 다섯 갈래에서 올라간다.",
+    "rejected_angles": [
+      "데시벨 기준과 청력검사 단계 설명 - 임상 수치라 눈높이를 벗어남",
+      "보청기 종류 비교 - 구매 상담 영역이라 채널 범위를 벗어남",
+      "자막 켜기 - 근거가 생활 관찰 수준이라 항목으로 세우지 않음"
+    ]
+  },
+  "topic_key": "tv_volume_hearing_causes",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_choices",
+    "topic_key": "tv_volume_hearing_causes",
+    "hook_title": "텔레비전 소리를 자꾸 키우게 되는 이유 5",
+    "subtitle": "귀만 탓하기 전에 확인할 것들이에요",
+    "visual_profile": "magazine_cover",
+    "visual_mood_hint": "저녁 거실 소파 앞에 놓인 텔레비전과 리모컨, 따뜻한 스탠드 조명, 짙은 남색과 크림색 팔레트, 패브릭 소파 질감",
+    "rank_items": [
+      {
+        "rank": 1,
+        "fact_id": "F1",
+        "source_ids": [
+          "S1"
+        ],
+        "name": "귀지가 귓길을 막고 있기",
+        "card_name": "귀지가 귓길을 막기",
+        "reason": "면봉으로 파내면 오히려 안쪽으로 밀려 들어가 더 막히게 돼요",
+        "card_reason": "면봉으로 파낼수록 귀지가 안쪽으로 더 들어가 버려요"
+      },
+      {
+        "rank": 2,
+        "fact_id": "F2",
+        "source_ids": [
+          "S2"
+        ],
+        "name": "높은 소리부터 안 들리기",
+        "card_name": "높은 소리부터 안 들리기",
+        "reason": "소리는 들리는데 말이 뭉개져 들리면 높은 소리부터 안 들리는 거예요",
+        "card_reason": "소리는 들리는데 말만 뭉개져요. 높은 소리부터 빠지거든요"
+      },
+      {
+        "rank": 3,
+        "fact_id": "F3",
+        "source_ids": [
+          "S2"
+        ],
+        "name": "주변 소음이 말소리를 덮기",
+        "card_name": "주변이 시끄럽기",
+        "reason": "환풍기나 물소리가 켜져 있으면 말소리가 묻혀서 더 안 들려요",
+        "card_reason": "환풍기랑 물소리 때문에 말이 안 들리는 거예요"
+      },
+      {
+        "rank": 4,
+        "fact_id": "F4",
+        "source_ids": [
+          "S3"
+        ],
+        "name": "한쪽 귀만 나빠지기",
+        "card_name": "한쪽 귀만 나빠지기",
+        "reason": "한쪽만 나빠지면 본인은 잘 모르고 리모컨만 자꾸 누르게 돼요",
+        "card_reason": "한쪽만 나빠진 건 본인이 몰라요. 볼륨만 자꾸 올리죠"
+      },
+      {
+        "rank": 5,
+        "fact_id": "F5",
+        "source_ids": [
+          "S4"
+        ],
+        "name": "크게 오래 듣는 습관",
+        "card_name": "크게 오래 듣기",
+        "reason": "크게 오래 듣는 것 자체가 귀를 더 나쁘게 만들어 다시 키우게 돼요",
+        "card_reason": "크게 오래 들을수록 귀가 더 나빠져서 또 키우게 돼요"
+      }
+    ],
+    "video_script": "볼륨이 올라가는 이유부터 확인해요.",
+    "description": "텔레비전 소리를 자꾸 키우게 되는 이유를 정리했어요.",
+    "pinned_comment": "볼륨이 올라가는 건 귀 하나 때문이 아니에요. 귀지, 주변 소음, 좌우 차이까지 확인하면 굳이 안 키워도 되는 경우가 있어요. 구독하시고 성분과 몸의 원리를 쉽게 이해하는 건강 정보를 받아보세요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "귀건강"
+    ],
+    "bgm_prompt": "warm calm piano with soft strings, quiet evening living room mood"
+  }
+}

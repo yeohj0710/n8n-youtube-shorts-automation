@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import sqlite3 from 'sqlite3';
 
@@ -33,6 +33,8 @@ const goodPack = {
     { rank: 1, name: '저녁의 밝은 빛 줄이기', card_name: '저녁 빛 낮추기', reason: '밝은 빛은 몸의 밤 신호를 늦춰 잠들기 어렵게 해요', card_reason: '밝은 빛은 몸의 밤 신호를 늦춰요' },
     { rank: 2, name: '늦은 카페인 확인하기', card_name: '늦은 카페인 피하기', reason: '카페인은 졸림 신호를 막아 잠이 얕아질 수 있어요', card_reason: '카페인은 졸림 신호를 막을 수 있어요' },
     { rank: 3, name: '코골이와 숨 멎음 살피기', card_name: '숨 멎는 코골이 확인', reason: '숨이 반복해 막히면 산소가 떨어져 자주 깰 수 있어요', card_reason: '숨이 막히면 잠이 반복해서 끊겨요' },
+    { rank: 4, name: '자기 전 술 줄이기', card_name: '자기 전 술 줄이기', reason: '술은 잠들기는 쉽게 해도 뒤쪽 수면을 얕게 만들어 새벽에 깨기 쉬워요', card_reason: '술은 새벽 잠을 얕게 만들어요' },
+    { rank: 5, name: '침실 온도 낮추기', card_name: '침실 온도 낮추기', reason: '몸속 온도가 떨어져야 잠이 깊어지는데 방이 더우면 그 과정이 늦어져요', card_reason: '방이 더우면 깊은 잠이 늦어져요' },
   ],
   video_script: '검증용 스크립트',
   description: '잠이 자주 깨는 원인을 몸의 신호와 함께 설명해요.',
@@ -92,6 +94,17 @@ assert.match(parserCode, /comment_question_cta/, 'quality parser must enforce th
 assert.match(parserCode, /comment_channel_closing/, 'quality parser must enforce the channel closing');
 assert.match(parserCode, /mechanical_ai_tone/, 'quality parser must enforce a mechanical-AI-tone finding');
 assert.match(parserCode, /content_duplicate_check/, 'quality parser must enforce duplicate-title failures');
+assert.match(buildCode, /detail_type/, 'quality audit must classify the concrete detail in every item');
+assert.match(buildCode, /decision_change/, 'quality audit must record what the viewer can decide differently');
+assert.match(buildCode, /claim_delivery/, 'quality audit must distinguish calibrated uncertainty from generic safety padding');
+assert.match(buildCode, /generic_safe_summary/, 'quality audit must reject safety-padded generic summaries');
+assert.match(parserCode, /incomplete_detail_audit/, 'quality parser must require complete decision-detail audit fields');
+assert.match(buildCode, /RESEARCH_GROUNDING_V\d+/, 'quality audit must enforce the research source pack as the only evidence base');
+assert.match(buildCode, /claim_not_in_source_pack/, 'quality audit must reject a claim missing from the cited research fact');
+assert.match(buildCode, /fabricated_beyond_source/, 'quality audit must reject detail invented beyond the research source pack');
+assert.match(buildCode, /Never reject an item merely for having no citation/i, 'an uncited item must not be rejected: research is supporting evidence, not the topic source');
+assert.match(parserCode, /incomplete_source_audit/, 'quality parser must require a complete per-rank source audit');
+assert.match(parserCode, /claim_not_in_source_pack/, 'quality parser must block claims the cited fact does not support');
 
 const goodDryRun = runCode(deterministicCode, { pack: goodPack })[0].json;
 assert.equal(goodDryRun.content_quality_review.pass, true, 'clear cause/effect pack should pass deterministic checks');
@@ -153,6 +166,12 @@ const highAudit = goodPack.rank_items.map((item) => ({
   health_depth: 'high',
   medical_relevance: 'direct',
   decision_value: 'actionable',
+  useful_detail: '밤에 밝은 빛을 줄이면 멜라토닌 분비가 늦어지는 자극을 줄일 수 있어요',
+  detail_type: 'mechanism',
+  decision_change: 'specific',
+  claim_delivery: 'direct',
+  everyday_language: 'plain',
+  everyday_object: '자기 전 침실의 조명과 커피',
   card_name_clarity: 'clear',
   card_reason_completeness: 'complete',
   card_meaning: 'direct',
@@ -287,6 +306,20 @@ const incompleteAuditResult = parseReview({ decision: 'pass', issues: [], audit:
 assert.equal(incompleteAuditResult.content_quality_review.pass, false, 'missing health-depth audit fields must block');
 assert.ok(incompleteAuditResult.content_quality_review.issues.some((issue) => issue.code === 'incomplete_health_audit'));
 
+const incompleteDetailAudit = highAudit.map(({ useful_detail, detail_type, decision_change, claim_delivery, ...entry }) => entry);
+const incompleteDetailAuditResult = parseReview({ decision: 'pass', issues: [], audit: incompleteDetailAudit });
+assert.equal(incompleteDetailAuditResult.content_quality_review.pass, false, 'missing decision-detail audit fields must block');
+assert.ok(incompleteDetailAuditResult.content_quality_review.issues.some((issue) => issue.code === 'incomplete_detail_audit'));
+
+const genericSafeAudit = structuredClone(highAudit);
+genericSafeAudit[0].useful_detail = '건강에 도움이 될 수 있어요';
+genericSafeAudit[0].detail_type = 'none';
+genericSafeAudit[0].decision_change = 'generic';
+genericSafeAudit[0].claim_delivery = 'generic_padding';
+const genericSafeResult = parseReview({ decision: 'pass', issues: [], audit: genericSafeAudit });
+assert.equal(genericSafeResult.content_quality_review.pass, false, 'generic safety-padded restatement must block even when reviewer says pass');
+assert.ok(genericSafeResult.content_quality_review.issues.some((issue) => issue.code === 'generic_safe_summary'));
+
 const incompleteVisibleCopyAudit = highAudit.map(({ card_name_clarity, card_reason_completeness, card_meaning, causal_direction, ...entry }) => entry);
 const incompleteVisibleCopyResult = parseReview({ decision: 'pass', issues: [], audit: incompleteVisibleCopyAudit });
 assert.equal(incompleteVisibleCopyResult.content_quality_review.pass, false, 'missing per-rank visible-copy audit fields must block');
@@ -411,6 +444,12 @@ const longAudit = longReasonPack.rank_items.map((item) => ({
   health_depth: 'high',
   medical_relevance: 'direct',
   decision_value: 'actionable',
+  useful_detail: '밝은 빛은 몸의 밤 신호를 늦추므로 잠들기 전 조명을 줄여요',
+  detail_type: 'mechanism',
+  decision_change: 'specific',
+  claim_delivery: 'direct',
+  everyday_language: 'plain',
+  everyday_object: '자기 전 침실의 조명과 커피',
   card_name_clarity: 'clear',
   card_reason_completeness: 'complete',
   card_meaning: 'direct',

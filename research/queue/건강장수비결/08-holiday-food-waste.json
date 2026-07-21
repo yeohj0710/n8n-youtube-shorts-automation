@@ -1,0 +1,61 @@
+{
+  "title": "명절에 사 오면 끝까지 안 먹고 버리는 것 5",
+  "lane": "food_nutrition_table",
+  "notes": "명절 선물은 받을 때 반갑고 두 달 뒤에 버리게 되는 것들이 정해져 있다.",
+  "topic_key": "holiday_gift_food_waste",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "longevity_meals",
+    "topic_key": "holiday_gift_food_waste",
+    "hook_title": "명절에 사 오면 끝까지 안 먹고 버리는 것 5",
+    "subtitle": "받을 땐 반갑고 두 달 뒤에 버려요",
+    "visual_profile": "market_receipt",
+    "visual_mood_hint": "거실 한쪽에 쌓인 명절 선물 상자와 아직 안 뜯은 포장, 창으로 들어오는 오후 빛, 따뜻한 베이지와 붉은 갈색 팔레트, 골판지와 보자기 질감",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "큰 통으로 든 기름 세트",
+        "card_name": "큰 통으로 든 기름 세트",
+        "reason": "두 식구가 큰 통을 다 쓰기 전에 냄새부터 변해서 결국 버리게 돼요",
+        "card_reason": "큰 통은 다 쓰기도 전에 냄새부터 변해 버려요"
+      },
+      {
+        "rank": 2,
+        "name": "통조림 여러 개 묶음",
+        "card_name": "통조림 여러 개 묶음",
+        "reason": "한두 개만 뜯고 나머지는 찬장 안쪽에서 기한을 넘겨요",
+        "card_reason": "한두 개만 뜯고 나머지는 찬장 안쪽에서 기한을 넘겨요"
+      },
+      {
+        "rank": 3,
+        "name": "대용량 건강즙 상자",
+        "card_name": "대용량 건강즙 상자",
+        "reason": "처음 며칠만 챙겨 먹고 상자째 베란다로 밀려나기 쉬워요",
+        "card_reason": "처음 며칠만 먹고 상자째 베란다로 밀려나요"
+      },
+      {
+        "rank": 4,
+        "name": "박스째 들어온 과일",
+        "card_name": "박스째 들어온 과일",
+        "reason": "아래쪽이 눌린 채로 며칠 지나면 한 번에 물러서 반은 못 먹어요",
+        "card_reason": "박스 아래쪽 과일이 눌려서 한 번에 물러 버려요"
+      },
+      {
+        "rank": 5,
+        "name": "한가득 받은 떡",
+        "card_name": "한가득 받은 떡",
+        "reason": "그날 다 못 먹고 상온에 두면 다음 날 딱딱해져서 손이 안 가요",
+        "card_reason": "그날 못 먹은 떡은 다음 날 딱딱해져서 손이 안 가요"
+      }
+    ],
+    "video_script": "명절 상자부터 다시 봐요.",
+    "description": "명절에 사 오면 끝까지 안 먹고 버리는 것을 정리했어요.",
+    "pinned_comment": "명절 선물은 받을 때 반갑고 두 달 뒤에 버리게 되는 것이 정해져 있어요. 큰 통 하나보다 작은 것 여러 개가 끝까지 먹게 돼요. 구독하시고 건강한 노년을 지키는 습관을 함께 이어가요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "장보기"
+    ],
+    "bgm_prompt": "warm gentle piano with soft plucked strings, calm and homely mood"
+  }
+}
