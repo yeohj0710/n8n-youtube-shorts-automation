@@ -1,0 +1,61 @@
+{
+  "title": "냉장고 칸마다 정해진 자리 5",
+  "lane": "home_kitchen_living",
+  "notes": "냉장고는 칸마다 온도가 달라서 넣을 자리가 정해져 있다.",
+  "topic_key": "fridge_shelf_assignment",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "fridge_shelf_assignment",
+    "hook_title": "냉장고 칸마다 정해진 자리 5",
+    "subtitle": "칸마다 온도가 달라서 자리가 갈려요",
+    "visual_profile": "clinic_checklist",
+    "visual_mood_hint": "문을 연 냉장고 안 선반들이 위아래로 보이는 장면, 칸마다 다른 음식이 정리된 모습, 차가운 흰빛과 크림색 팔레트, 유리 선반 질감",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "문 칸에는 잘 안 상하는 것만",
+        "card_name": "문 칸",
+        "reason": "여닫을 때마다 온도가 오르내려서 우유를 두기에는 위험해요",
+        "card_reason": "여닫을 때마다 온도가 오르내리는 자리예요"
+      },
+      {
+        "rank": 2,
+        "name": "맨 위 칸에는 바로 먹을 것",
+        "card_name": "맨 위 칸",
+        "reason": "눈에 바로 들어오는 자리라 남은 음식과 먹을 반찬을 둬요",
+        "card_reason": "눈에 바로 들어와서 남은 음식 자리예요"
+      },
+      {
+        "rank": 3,
+        "name": "가운데 칸에는 달걀",
+        "card_name": "가운데 칸",
+        "reason": "달걀은 온도가 일정한 가운데 칸이 제자리예요",
+        "card_reason": "온도가 일정해서 달걀 제자리예요"
+      },
+      {
+        "rank": 4,
+        "name": "맨 아래 칸에는 고기와 생선",
+        "card_name": "맨 아래 칸",
+        "reason": "핏물이 떨어져도 아래 칸이면 다른 음식에 닿지 않아요",
+        "card_reason": "핏물이 떨어져도 다른 데 안 닿아요"
+      },
+      {
+        "rank": 5,
+        "name": "채소 칸에는 물기를 닦고",
+        "card_name": "채소 칸",
+        "reason": "젖은 채로 넣은 채소는 서로 닿은 자리부터 무르기 시작해요",
+        "card_reason": "젖은 채 넣으면 닿은 자리부터 물러요"
+      }
+    ],
+    "video_script": "냉장고는 칸마다 자리가 달라요.",
+    "description": "냉장고 칸마다 정해진 자리를 정리했어요.",
+    "pinned_comment": "냉장고는 칸마다 온도가 달라서 넣을 자리가 정해져 있어요. 자리만 바꿔도 버리는 음식이 줄어들어요. 구독하시고 건강한 노년을 지키는 습관을 함께 이어가요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "주방살림"
+    ],
+    "bgm_prompt": "calm clean piano with light bells, tidy and orderly mood"
+  }
+}

@@ -180,7 +180,9 @@ function inspectPack(value, researchPack) {
   // 이때가 발톱을 보는 순간이에요 never says what changed about the 발톱.
   for (const [index, item] of items.entries()) {
     const cardReason = clean(item?.card_reason);
-    const demonstrative = cardReason.match(/(그것|그거|이것|이거|이때|그때|이렇게|그렇게)/);
+    // Must start a word: 물건이거든요 and 사람이거나 contain 이거 as a substring
+    // and are perfectly clear, so only a standalone demonstrative counts.
+    const demonstrative = cardReason.match(/(?:^|[^가-힣])(그것|그거|이것|이거|이때|그때|이렇게|그렇게)/);
     if (demonstrative) {
       issues.push({
         rank: Number(item?.rank || index + 1),
@@ -412,7 +414,9 @@ function inspectPack(value, researchPack) {
   // 이때가 발톱을 보는 순간이에요 never says what changed about the 발톱.
   for (const [index, item] of items.entries()) {
     const cardReason = clean(item?.card_reason);
-    const demonstrative = cardReason.match(/(그것|그거|이것|이거|이때|그때|이렇게|그렇게)/);
+    // Must start a word: 물건이거든요 and 사람이거나 contain 이거 as a substring
+    // and are perfectly clear, so only a standalone demonstrative counts.
+    const demonstrative = cardReason.match(/(?:^|[^가-힣])(그것|그거|이것|이거|이때|그때|이렇게|그렇게)/);
     if (demonstrative) {
       issues.push({
         rank: Number(item?.rank || index + 1),
@@ -593,7 +597,9 @@ function inspectPack(value, researchPack) {
   // 이때가 발톱을 보는 순간이에요 never says what changed about the 발톱.
   for (const [index, item] of items.entries()) {
     const cardReason = clean(item?.card_reason);
-    const demonstrative = cardReason.match(/(그것|그거|이것|이거|이때|그때|이렇게|그렇게)/);
+    // Must start a word: 물건이거든요 and 사람이거나 contain 이거 as a substring
+    // and are perfectly clear, so only a standalone demonstrative counts.
+    const demonstrative = cardReason.match(/(?:^|[^가-힣])(그것|그거|이것|이거|이때|그때|이렇게|그렇게)/);
     if (demonstrative) {
       issues.push({
         rank: Number(item?.rank || index + 1),

@@ -1,0 +1,61 @@
+{
+  "title": "같은 값이면 무조건 이쪽이 나은 것 5",
+  "lane": "practical_life_common_sense",
+  "notes": "같은 값에 놓인 두 물건은 오래 쓰는 쪽과 금방 버리는 쪽으로 갈린다.",
+  "topic_key": "same_price_better_choice",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_choices",
+    "topic_key": "same_price_better_choice",
+    "hook_title": "같은 값이면 무조건 이쪽이 나은 것 5",
+    "subtitle": "오래 쓰는 쪽을 기준으로 골랐어요",
+    "visual_profile": "myth_fact",
+    "visual_mood_hint": "마트 진열대 앞에 나란히 놓인 두 가지 물건과 가격표, 밝고 균일한 매장 조명, 크림색과 선명한 남색 팔레트, 종이 가격표 질감",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "얇은 도마보다 두꺼운 도마",
+        "card_name": "두꺼운 도마",
+        "reason": "얇은 도마는 휘어서 칼자국 사이에 물이 고여 냄새가 배요",
+        "card_reason": "얇은 건 휘어서 칼자국에 물이 고여요"
+      },
+      {
+        "rank": 2,
+        "name": "좁은 손잡이보다 넓은 손잡이",
+        "card_name": "넓은 손잡이",
+        "reason": "손아귀 힘이 줄어드는 나이에는 넓은 손잡이가 훨씬 안전해요",
+        "card_reason": "손아귀 힘이 줄면 넓은 쪽이 안전해요"
+      },
+      {
+        "rank": 3,
+        "name": "미끄러운 바닥보다 고무 바닥",
+        "card_name": "고무 바닥 신발",
+        "reason": "욕실 슬리퍼는 바닥 무늬가 굵고 고무인 쪽이 덜 미끄러워요",
+        "card_reason": "바닥 무늬가 굵은 고무가 덜 미끄러워요"
+      },
+      {
+        "rank": 4,
+        "name": "얇은 유리컵보다 두꺼운 컵",
+        "card_name": "두꺼운 컵",
+        "reason": "얇은 컵은 뜨거운 물을 부을 때 금이 가기 쉬워요",
+        "card_reason": "얇은 컵은 뜨거운 물에 금이 잘 가요"
+      },
+      {
+        "rank": 5,
+        "name": "작은 글씨보다 큰 글씨 표시",
+        "card_name": "큰 글씨 표시",
+        "reason": "눈금이나 버튼 글씨가 큰 쪽은 불 켜지 않고도 읽을 수 있어요",
+        "card_reason": "글씨 큰 쪽은 불 안 켜고도 읽어요"
+      }
+    ],
+    "video_script": "같은 값이면 고를 쪽이 정해져 있어요.",
+    "description": "같은 값이면 어느 쪽이 나은지 정리했어요.",
+    "pinned_comment": "값이 같을 때는 오래 쓰는 쪽이 정해져 있어요. 다음 장 볼 때 이 다섯 가지만 기억하셔도 돈이 덜 나가요. 구독하시고 성분과 몸의 원리를 쉽게 이해하는 건강 정보를 받아보세요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "생활상식"
+    ],
+    "bgm_prompt": "bright light piano with soft plucked strings, clear and decisive mood"
+  }
+}
