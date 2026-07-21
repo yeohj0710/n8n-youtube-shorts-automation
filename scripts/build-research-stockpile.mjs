@@ -694,7 +694,10 @@ export const PACKS = [
   // ---------------------------------------------------------------------------
   {
     channel: 'haru',
-    slug: '09-summer-spoils-first',
+    // 90-series: the user plans to produce these themselves with an image model,
+    // so they sort behind everything else. If their version publishes first, the
+    // duplicate guard skips the queued copy automatically.
+    slug: '90-summer-spoils-first',
     pillar: 'nutrition_food_choices',
     lane: 'food_nutrition_table',
     angle: '여름에 상하는 순서는 값이나 종류가 아니라 물기와 양념에서 갈린다.',
@@ -721,7 +724,7 @@ export const PACKS = [
 
   {
     channel: 'haru',
-    slug: '10-same-price-better-pick',
+    slug: '91-same-price-better-pick',
     pillar: 'daily_health_choices',
     lane: 'practical_life_common_sense',
     angle: '같은 값에 놓인 두 물건은 오래 쓰는 쪽과 금방 버리는 쪽으로 갈린다.',
@@ -748,7 +751,7 @@ export const PACKS = [
 
   {
     channel: 'longevity',
-    slug: '09-fridge-shelf-assignments',
+    slug: '90-fridge-shelf-assignments',
     pillar: 'daily_function',
     lane: 'home_kitchen_living',
     angle: '냉장고는 칸마다 온도가 달라서 넣을 자리가 정해져 있다.',
@@ -775,7 +778,7 @@ export const PACKS = [
 
   {
     channel: 'longevity',
-    slug: '10-spending-order-after-fifty',
+    slug: '91-spending-order-after-fifty',
     pillar: 'daily_function',
     lane: 'money_smart_living',
     angle: '나이 들어 돈을 쓰는 순서는 몸이 매일 닿는 것부터로 바뀌어야 한다.',
@@ -803,7 +806,7 @@ export const PACKS = [
   // A by-interval card is not a ranking, so labelMode turns off the N위 numbering.
   {
     channel: 'longevity',
-    slug: '11-replacement-intervals',
+    slug: '92-replacement-intervals',
     pillar: 'daily_function',
     lane: 'household_saving_tricks',
     angle: '집안 물건은 고장 나서 바꾸는 게 아니라 바꿀 때를 몰라서 계속 쓴다.',
