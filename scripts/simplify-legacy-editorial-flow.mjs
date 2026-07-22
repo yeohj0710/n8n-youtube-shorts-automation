@@ -220,6 +220,25 @@ function normalizePreparedCardPack(value) {
   if (!clean(value.visual_mood_hint)) {
     throw new Error('PREPARED_CARD_PACK_INVALID: visual_mood_hint is required so the card gets a real scene, material and palette instead of a default flat layout.');
   }
+  // The AI reviewer audits description and pinned_comment, and it now judges
+  // prepared packs too — so both must exist BEFORE the gate. A pack that
+  // supplies neither gets a ranked summary built here; the Prepare-stage
+  // fallback still exists but would arrive after the review and fail it.
+  const rowLabelMode = String(value.rank_label_mode || 'rank').trim().toLowerCase();
+  const rowLabel = function (item) {
+    if (rowLabelMode === 'none' || rowLabelMode === 'bullet') return '';
+    if (rowLabelMode === 'step') return item.rank + String.fromCharCode(45800, 44228) + ' ';
+    return item.rank + String.fromCharCode(50948) + ' ';
+  };
+  const NL = String.fromCharCode(10);
+  const preparedClosing = channelEditorialProfile.id === 'haru_health_literacy'
+    ? '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 구독해 두시면 놓치지 않고 받아보실 수 있어요.'
+    : '건강하게 나이 드는 습관을 매일 하나씩 전해 드려요. 구독해 두시면 놓치지 않고 받아보실 수 있어요.';
+  const descriptionRows = items.map(function (item) { return rowLabel(item) + item.name + ' - ' + item.reason; });
+  const commentRows = items.map(function (item) { return rowLabel(item) + item.name + ' - ' + item.card_reason; });
+  const builtDescription = [title, clean(value.subtitle), descriptionRows.join(NL + NL), preparedClosing]
+    .filter(Boolean).join(NL + NL);
+  const builtComment = ['오늘 영상 핵심 정리', title, ''].concat(commentRows).concat(['', preparedClosing]).join(NL);
   return {
     hook_title: title,
     subtitle: clean(value.subtitle),
@@ -227,8 +246,8 @@ function normalizePreparedCardPack(value) {
     visual_profile: clean(value.visual_profile),
     rank_items: items,
     video_script: clean(value.video_script),
-    description: String(value.description || '').trim(),
-    pinned_comment: String(value.pinned_comment || '').trim(),
+    description: String(value.description || '').trim() || builtDescription,
+    pinned_comment: String(value.pinned_comment || '').trim() || builtComment,
     tags: (Array.isArray(value.tags) ? value.tags : []).map(clean).filter(Boolean),
     bgm_prompt: clean(value.bgm_prompt),
     medical_claims: (Array.isArray(value.medical_claims) ? value.medical_claims : []).map(clean).filter(Boolean),
