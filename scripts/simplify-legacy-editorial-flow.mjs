@@ -1099,7 +1099,7 @@ const cardRows = sortedItems
   if (cfg.channel_editorial_profile === 'haru_health_literacy') {
     return {
       channel: '하루건강약사',
-      subscription: '몸과 성분을 이해하는 건강 이야기, 구독으로 함께 이어가요.',
+      subscription: '몸에 쓸모 있는 정보, 매일 하나씩 올려요. 구독해 두면 안 놓쳐요.',
       intro: '영양, 음식, 영양제 성분, 몸의 신호를 일상 언어로 쉽게 설명해요.',
       promise: '과장된 비법보다 내 몸에 맞는 건강 선택 기준을 차근차근 알려드려요.',
       daily: '하루에 하나씩, 건강한 선택에 도움이 되는 내용을 전해드려요.',
@@ -1107,7 +1107,7 @@ const cardRows = sortedItems
   }
   return {
     channel: '건강장수비결',
-    subscription: '건강한 노년을 지키는 습관, 구독으로 함께 이어가요.',
+    subscription: '건강하게 나이 드는 습관, 매일 하나씩 올려요. 구독해 두면 안 놓쳐요.',
     intro: '식사, 운동, 수면, 혈압, 혈당, 관절 관리 내용을 일상 언어로 쉽게 설명해요.',
     promise: '특별한 비법보다 일상 기능과 자립을 오래 지키는 생활 습관을 정리해 드려요.',
     daily: '하루에 하나씩, 건강한 노년에 도움이 되는 내용을 전해드려요.',
