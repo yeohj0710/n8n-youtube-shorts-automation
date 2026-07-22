@@ -8,7 +8,7 @@
     "channel_content_pillar": "nutrition_food_choices",
     "topic_key": "freezer_improves_food",
     "hook_title": "두부를 왜 얼리나 했는데, 얼리면 맛이 사는 것 5",
-    "subtitle": "냉동실은 오래 두려고만 쓰는 칸이 아니거든요",
+    "subtitle": "냉동실은 오래 두려고만 쓰는 칸이 아니에요",
     "visual_profile": "kitchen_table",
     "visual_mood_hint": "열린 냉동실 서랍 안에 가지런히 담긴 유리통과 종이봉투, 하얀 냉기와 따뜻한 주방 조명이 만나는 장면, 크림색과 맑은 하늘색 팔레트, 성에 질감",
     "rank_items": [
@@ -45,7 +45,7 @@
         "name": "국물용 멸치와 다시마",
         "card_name": "국물용 멸치와 다시마",
         "reason": "상온에 두면 눅눅해지고 비린내가 나는데 얼려 두면 맛이 그대로예요",
-        "card_reason": "상온에 둔 멸치는 눅눅해지고 비린내까지 나거든요"
+        "card_reason": "상온에 둔 멸치는 눅눅해지고 비린내가 나기 쉬워요"
       }
     ],
     "video_script": "냉동실은 맛을 살리는 칸이에요.",

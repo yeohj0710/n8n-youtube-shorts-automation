@@ -130,7 +130,7 @@
     "channel_content_pillar": "daily_health_choices",
     "topic_key": "tv_volume_hearing_causes",
     "hook_title": "보청기 값 쓰기 전에 꼭 확인할 것 5",
-    "subtitle": "귀가 나빠서만 TV 소리를 키우는 게 아니거든요",
+    "subtitle": "귀 때문이 아닌 경우가 생각보다 많아요",
     "visual_profile": "magazine_cover",
     "visual_mood_hint": "저녁 거실 소파 앞에 놓인 텔레비전과 리모컨, 따뜻한 스탠드 조명, 짙은 남색과 크림색 팔레트, 패브릭 소파 질감",
     "rank_items": [
@@ -154,7 +154,7 @@
         "name": "높은 소리부터 안 들리기",
         "card_name": "높은 소리부터 안 들리기",
         "reason": "소리는 들리는데 말이 뭉개져 들리면 높은 소리부터 안 들리는 거예요",
-        "card_reason": "소리는 들리는데 말만 뭉개져요. 높은 소리부터 빠지거든요"
+        "card_reason": "소리는 들리는데 말이 뭉개지면 높은 소리부터 줄어든 거예요"
       },
       {
         "rank": 3,
@@ -176,7 +176,7 @@
         "name": "한쪽 귀만 나빠지기",
         "card_name": "한쪽 귀만 나빠지기",
         "reason": "한쪽만 나빠지면 본인은 잘 모르고 리모컨만 자꾸 누르게 돼요",
-        "card_reason": "한쪽만 나빠진 건 본인이 몰라요. 볼륨만 자꾸 올리죠"
+        "card_reason": "한쪽만 나빠지면 본인은 모른 채 볼륨만 자꾸 올리게 돼요"
       },
       {
         "rank": 5,

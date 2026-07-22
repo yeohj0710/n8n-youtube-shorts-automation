@@ -526,11 +526,18 @@ for (const parent of parents) {
   );
 }
 
-// The shared gate must skip the AI reviewer for prepared packs.
+// Prepared packs face the AI reviewer like generated ones: a curated card of
+// pure common sense shipped verbatim when they were exempt. On rejection the
+// retry node must stop the run instead of regenerating the curated copy.
 const preparedGateInput = { pack: groundedPack, config: { ...groundedConfig, dry_run: false, test_mode: false }, prepared_card_pack: preparedFinalPack, research_source_pack: researchPack };
-assert.equal(runGate(buildReviewCode, preparedGateInput)[0].json.use_ai_quality_review, false, 'prepared packs must not be re-judged by the AI reviewer');
+assert.equal(runGate(buildReviewCode, preparedGateInput)[0].json.use_ai_quality_review, true, 'prepared packs must be judged by the AI reviewer for usefulness');
 const generatedGateInput = { pack: groundedPack, config: { ...groundedConfig, dry_run: false, test_mode: false }, research_source_pack: researchPack };
 assert.equal(runGate(buildReviewCode, generatedGateInput)[0].json.use_ai_quality_review, true, 'generated packs must still get the AI reviewer');
+assert.match(buildReviewCode, /COMMON_KNOWLEDGE_V1/, 'the reviewer lost the 나도 알지 usefulness test');
+for (const parent of parents) {
+  const retry = codeOf(readWorkflow(parent.file), 'Prepare Medical Retry Request');
+  assert.match(retry, /PREPARED_PACK_REJECTED/, `${parent.id}: a rejected prepared pack would be silently regenerated instead of stopping the run`);
+}
 
 // ---------------------------------------------------------------------------
 // 10, 11. Node identity preservation and live-database agreement.

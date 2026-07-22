@@ -110,7 +110,10 @@ for (const [channelDir, channel] of Object.entries(channels)) {
     );
 
     const gateBuild = new Function('$input', gateCode('Build Quality Review Request'))({ first: () => ({ json: rendered }) })[0].json;
-    assert.equal(gateBuild.use_ai_quality_review, false, `${label}: prepared pack should not be re-judged by the AI reviewer`);
+    // Offline this exercises only the request build; live runs send it to the
+    // AI reviewer, which now judges prepared packs for usefulness too.
+    assert.equal(gateBuild.use_ai_quality_review, true, `${label}: prepared pack must be judged by the AI reviewer`);
+    assert.ok(gateBuild.kie_quality_review_request?.messages?.length, `${label}: reviewer request was not built for the prepared pack`);
 
     const payload = new Function('require', '$input', code('Prepare Image and BGM Payloads'))(require, {
       first: () => ({ json: { ...rendered, config: { ...rendered.config, variation_seed: file, kie_bgm_model: 'V5_5', kie_image_model: 'gpt-image-2-text-to-image' } } }),

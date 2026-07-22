@@ -138,7 +138,7 @@
     "channel_content_pillar": "body_signals",
     "topic_key": "sock_moment_body_signals",
     "hook_title": "양말 신을 때 그냥 넘기면 안 되는 몸의 신호 5",
-    "subtitle": "매일 아침 몇 초 사이에 다 드러나거든요",
+    "subtitle": "매일 아침 몇 초 사이에 다 드러나는 신호들이에요",
     "visual_profile": "morning_light",
     "visual_mood_hint": "아침 침대 맡에 앉아 양말을 신는 발과 손, 창으로 들어오는 부드러운 햇살, 크림색과 따뜻한 베이지 팔레트, 면 이불 질감",
     "rank_items": [
@@ -184,7 +184,7 @@
         "name": "발 감각이 둔해지기",
         "card_name": "발 감각이 둔해지기",
         "reason": "양말이 닿는 느낌이 예전 같지 않은 날이 이어지면 발 감각이 둔해진 거예요",
-        "card_reason": "양말 닿는 느낌이 계속 둔하면 발을 눈으로도 살펴봐요"
+        "card_reason": "양말 닿는 느낌이 계속 둔하면 발을 눈으로 살펴보세요"
       },
       {
         "rank": 5,
