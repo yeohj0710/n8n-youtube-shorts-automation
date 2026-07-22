@@ -40,7 +40,7 @@ Latest known workflow:
 - Do not run the full workflow without considering cost and side effects. It spends KIE credits and can upload a public YouTube video.
 - Do not put visible boilerplate safety copy in generated output. Avoid footer/script/description/comment text like `전문인의 조언을 받으세요`, `전문가 조언`, `진료를 대신하지 않습니다`, or generic `not medical advice` disclaimers.
 - Keep internal medical safety checks for cure/guarantee/dosage/prescription-avoidance claims. Remove only the user-visible disclaimer padding.
-- Pinned/top-level YouTube comment should be exactly: `좋아요와 구독 한 번씩 부탁드립니다.`
+- Pinned/top-level YouTube comment is the pack's `pinned_comment`: a short useful summary of that exact video ending with the channel's calm subscribe line, under 260 Korean characters, never a viewer question. (The old rule of posting the fixed string `좋아요와 구독 한 번씩 부탁드립니다.` was replaced by summary-style comments; the upload node posts `pinned_comment` verbatim.)
 
 ## Card Copy Rules
 
@@ -438,6 +438,8 @@ rg -n "GOCSPX|Bearer [A-Za-z0-9_\-.]+|AIza|client_secret|api[_-]?key" . -g "!nod
 ```
 
 ## Git
+
+Multiple agents (Claude, Codex) work in this SAME worktree concurrently. Never stage by directory (`git add scripts/`, `git add workflows/`, `git add -A`): that sweeps another agent's in-progress files into your commit — it has actually happened, pushing ~3,000 lines of someone else's WIP under an unrelated commit message. Stage explicit file paths only, and read `git status` for files you did not create before every commit.
 
 Track:
 
