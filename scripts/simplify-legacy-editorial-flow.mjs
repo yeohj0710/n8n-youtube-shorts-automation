@@ -1232,7 +1232,8 @@ const bgm_payload = {
   'The main card should use nearly the full footprint. Make Korean title, item names, and card_reason substantially larger than decorative elements and readable in a small channel-grid thumbnail. Never solve fitting by shrinking all text; simplify decoration and secondary copy first.',
   'Only the title, ranked item names, and their supplied card_reason are critical. Auxiliary copy and decoration are optional and may be cropped or covered; never shrink critical information to preserve them.',
   'Assume channel grids and previews may crop the outer frame. The main card must keep its useful message intact, but auxiliary copy does not need protection.',
-  'Decorative background may extend edge to edge. Do not use full-bleed critical text, right-edge badges, bottom CTA strips, or cropped title letters.',
+  'Decorative background may extend edge to edge. Do not use full-bleed critical text, right-edge badges, or cropped title letters.',
+  'SUBSCRIBE_FOOTER_V1: render the supplied Korean footer subscribe line exactly once, as the smallest text in the frame, on a single line centered in the bottom band below the last ranked row. This one line deliberately lives inside the bottom reserved band and may sit under feed UI. Keep it clearly smaller than card_reason text and quieter in color so it reads as a gentle sign-off, not a banner. Copy it verbatim; never invent a different subscribe or follow request, and never render it anywhere except the bottom band.',
 ].join(LF);
 
 const posterReadabilityInstruction = [
@@ -1296,6 +1297,29 @@ const posterReadabilityInstruction = [
   code = code.replace(
     "  'RANKED EXPLANATION BLOCKS, keep ' + ('1' + rankSuffix) + ' first:',",
     "  (rankLabelMode === 'rank' ? 'RANKED EXPLANATION BLOCKS, keep ' + ('1' + rankSuffix) + ' first:' : 'EXPLANATION BLOCKS in the supplied order, with no rank numbers:'),",
+  );
+  // SUBSCRIBE_FOOTER_V1 copy: a small value-first subscribe line in the bottom
+  // band. It persuades by naming what the viewer gets every day and frames the
+  // subscription as the way not to miss tomorrow's — never a bare demand.
+  // Strip any previous injection first so re-runs stay idempotent.
+  code = code.replace(/\/\/ subscribe_footer_copy_v1\n[\s\S]*?\n\/\/ subscribe_footer_copy_end\n/g, '');
+  code = replaceRequired(
+    code,
+    'const visibleText = [',
+    `// subscribe_footer_copy_v1
+const subscribeCta = cfg.channel_editorial_profile === 'haru_health_literacy'
+  ? '몸에 쓸모 있는 정보를 매일 하나씩 쉽게 풀어드려요. 구독해 두면 내일 것을 놓치지 않아요'
+  : '건강하게 나이 드는 습관을 매일 하나씩 알려드려요. 구독해 두면 내일 것을 놓치지 않아요';
+// subscribe_footer_copy_end
+const visibleText = [`,
+    'prepare: subscribe footer copy',
+  );
+  code = code.replace(/  'FOOTER SUBSCRIBE LINE[^\n]*\n/g, '');
+  code = replaceRequired(
+    code,
+    "  imageRows,\n].filter(Boolean).join(LF);",
+    "  imageRows,\n  'FOOTER SUBSCRIBE LINE, small, bottom band only: ' + subscribeCta,\n].filter(Boolean).join(LF);",
+    'prepare: subscribe footer in visible text',
   );
   code = code.replace(
     "'; number marks: ' + sanitizeImageInstruction(badgeFamily) + '; motif: '",

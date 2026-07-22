@@ -241,6 +241,8 @@ for (const relativePath of workflowFiles) {
   assert.match(prepare, /VERTICAL_FILL_V2/, `${relativePath}: bottom-fill contract missing, cards will compress upward or clip again`);
   assert.match(prepare, /BAND_BACKGROUND_V1/, `${relativePath}: reserved bands would render as blank strips without the background-continuation contract`);
   assert.match(prepare, /GLYPH_INTEGRITY_V1/, `${relativePath}: minimum glyph size contract missing, small Korean text renders broken`);
+  assert.match(prepare, /SUBSCRIBE_FOOTER_V1/, `${relativePath}: bottom-band subscribe footer contract missing`);
+  assert.match(prepare, /구독해 두면 내일 것을 놓치지 않아요/, `${relativePath}: value-first subscribe copy missing`);
   assert.match(prepare, /POSTER_READABILITY_V2/, `${relativePath}: generalized poster readability marker missing`);
   assert.match(prepare, /one primary visual region/i, `${relativePath}: image prompt has no frame-level visual budget`);
   assert.match(prepare, /text-first ranked rows/i, `${relativePath}: ranked rows are not constrained to a readable information hierarchy`);
@@ -405,6 +407,7 @@ for (const relativePath of workflowFiles) {
   assert.match(prepared.image_payload.input.prompt, /VERTICAL_FILL_V2/, `${relativePath}: runtime image prompt lost the bottom-fill contract`);
   assert.match(prepared.image_payload.input.prompt, /BAND_BACKGROUND_V1/, `${relativePath}: runtime image prompt lost the band background continuation`);
   assert.match(prepared.image_payload.input.prompt, /GLYPH_INTEGRITY_V1/, `${relativePath}: runtime image prompt lost the glyph-size floor`);
+  assert.match(prepared.image_payload.input.prompt, /FOOTER SUBSCRIBE LINE.*구독해 두면/s, `${relativePath}: runtime image prompt lost the subscribe footer copy`);
   assert.match(prepared.image_payload.input.prompt, /largest practical Korean type/i, `${relativePath}: runtime image prompt lost large-type priority`);
   assert.match(prepared.image_payload.input.prompt, new RegExp(expected.channel), `${relativePath}: runtime image prompt lost the channel identity`);
   assert.doesNotMatch(prepared.visible_card_text, /(?:^|\n)왜\s*[:：]/, `${relativePath}: visible card still emits 왜 label`);
