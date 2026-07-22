@@ -128,7 +128,11 @@ for (const relativePath of workflowFiles) {
   assert.match(build, /this may apply to me/i, `${relativePath}: viewer self-relevance test missing`);
   assert.match(build, /concrete condition, situation, action, choice, or observable signal/i, `${relativePath}: concrete hook subject contract missing`);
   assert.match(build, /subtitle must add the missing condition, contrast, or payoff/i, `${relativePath}: subtitle only repeats the hook title`);
-  assert.match(build, /fake urgency.*inflated stakes.*invented authority/is, `${relativePath}: unsafe attention tactics are not prohibited`);
+  // The channel owner raised the aggression ceiling on 2026-07-21: urgency,
+  // stakes, and imperatives are now encouraged. What remains prohibited is the
+  // honesty floor — fabricated numbers, fake insiders, and disease scares.
+  assert.match(build, /INTENSITY:.*go hard/is, `${relativePath}: raised-intensity direction missing from the hook contract`);
+  assert.match(build, /invented statistics or percentages.*invented authority.*disease scares/is, `${relativePath}: the honesty floor under aggressive hooks is not prohibited`);
   assert.match(build, /RESEARCH_SOURCE_PACK_V1/, `${relativePath}: research source pack resolver missing`);
   assert.match(build, /RESEARCH_GROUNDING_V\d+/, `${relativePath}: research grounding contract marker missing`);
   assert.equal((build.match(/RESEARCH_GROUNDING_V\d+/g) || []).length, 1, `${relativePath}: research grounding contract is duplicated`);

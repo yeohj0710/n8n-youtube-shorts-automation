@@ -63,8 +63,8 @@ export const PACKS = [
     rejected: ['부종의 원인 질환 분류 - 임상 영역이라 시청자가 할 행동이 없음', '당뇨 발 관리 지침 - 특정 질환자 대상이라 채널 범위를 벗어남', '균형 검사 초 단위 기준 - 임상 검사 수치라 눈높이를 벗어남'],
     topicKey: 'sock_moment_body_signals',
     card: {
-      hook: '양말 신는 몇 초 동안 다 드러나는 몸의 신호 5',
-      sub: '병원 가기 전에 집에서 먼저 보이는 것들이에요',
+      hook: '양말 신을 때 그냥 넘기면 안 되는 몸의 신호 5',
+      sub: '매일 아침 몇 초 사이에 다 드러나거든요',
       visualProfile: 'morning_light',
       mood: '아침 침대 맡에 앉아 양말을 신는 발과 손, 창으로 들어오는 부드러운 햇살, 크림색과 따뜻한 베이지 팔레트, 면 이불 질감',
       bgm: 'warm gentle felt piano with soft strings, calm unhurried morning mood',
@@ -125,7 +125,7 @@ export const PACKS = [
     rejected: ['데시벨 기준과 청력검사 단계 설명 - 임상 수치라 눈높이를 벗어남', '보청기 종류 비교 - 구매 상담 영역이라 채널 범위를 벗어남', '자막 켜기 - 근거가 생활 관찰 수준이라 항목으로 세우지 않음'],
     topicKey: 'tv_volume_hearing_causes',
     card: {
-      hook: '보청기 알아보기 전에 먼저 확인할 것 5',
+      hook: '보청기 값 쓰기 전에 꼭 확인할 것 5',
       sub: '귀가 나빠서만 TV 소리를 키우는 게 아니거든요',
       visualProfile: 'magazine_cover',
       mood: '저녁 거실 소파 앞에 놓인 텔레비전과 리모컨, 따뜻한 스탠드 조명, 짙은 남색과 크림색 팔레트, 패브릭 소파 질감',
@@ -452,8 +452,8 @@ export const PACKS = [
     angle: '냉동실은 오래 두려고 넣는 곳인 줄 알지만, 넣었다 꺼내야 제맛이 나는 것도 있다.',
     topicKey: 'freezer_improves_food',
     card: {
-      hook: '냉동실에 넣으면 오히려 맛이 사는 것 5',
-      sub: '오래 두려고 넣는 게 아니에요',
+      hook: '두부를 왜 얼리나 했는데, 얼리면 맛이 사는 것 5',
+      sub: '냉동실은 오래 두려고만 쓰는 칸이 아니거든요',
       visualProfile: 'kitchen_table',
       mood: '열린 냉동실 서랍 안에 가지런히 담긴 유리통과 종이봉투, 하얀 냉기와 따뜻한 주방 조명이 만나는 장면, 크림색과 맑은 하늘색 팔레트, 성에 질감',
       bgm: 'bright gentle piano with soft bells, light and pleasant kitchen mood',
@@ -479,8 +479,8 @@ export const PACKS = [
     angle: '자식과 틀어지는 건 큰일 때문이 아니라, 정해두지 않은 작은 선들이 쌓여서다.',
     topicKey: 'boundaries_with_grown_children',
     card: {
-      hook: '자식한테 서운해지기 전에 미리 정해둘 선 5',
-      sub: '큰일이 아니라 작은 것들이 쌓여요',
+      hook: '자식과 멀어지고 후회하기 전에 정해둘 선 5',
+      sub: '큰일이 아니라 작은 것들이 쌓여서 멀어지거든요',
       visualProfile: 'magazine_cover',
       mood: '거실 창가 탁자에 놓인 찻잔 두 개와 반쯤 접힌 신문, 늦은 오후의 낮은 햇살, 따뜻한 베이지와 짙은 갈색 팔레트, 원목과 리넨 질감',
       bgm: 'warm calm piano with soft cello, gentle and dignified mood',
