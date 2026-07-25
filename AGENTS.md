@@ -370,6 +370,28 @@ Claiming on Google Drive was verified on 2026-07-25: `fs.renameSync` into `처�
 
 Two gotchas when re-importing: run `scripts\import-workflow.ps1` (it sets `N8N_USER_FOLDER=$Root`) — calling `n8n.cmd import:workflow` bare writes to `%USERPROFILE%\.n8n` instead, and the import silently appears to succeed.
 
+### Hand-Edited Workflow JSON Silently Reverted (2026-07-25)
+
+Cause:
+
+`simplify-legacy-editorial-flow.mjs` regenerates the two channel workflows, so an
+edit made directly in `workflows\*.json` survives only until the next run — and
+Codex runs it from the shared worktree. A 팔로우 CTA edit was lost this way.
+
+Worse, editing the generator is not always enough: several of its replacement
+blocks are one-time migrations guarded by `if (!code.includes('function …'))`.
+Changing a string inside such a block does nothing to an already-migrated
+workflow. The channel closing lines are now rewritten outside the guard, on
+every run.
+
+Fix:
+
+- Change copy in the generator, not in the workflow JSON.
+- Check whether the block you are editing sits behind a `!code.includes(...)`
+  guard. If it does, add an unconditional rewrite instead.
+- Verifier assertions that match copy literally must be updated in the same
+  change, or `npm test` fails on the next run.
+
 ### Workflow Node Positions Keep Moving
 
 Cause:
