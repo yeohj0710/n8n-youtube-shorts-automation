@@ -76,6 +76,7 @@ These are entertaining shorts for Korean adults over 50. Fun and useful is the w
 - Startup script: `C:\dev\n8n-youtube-shorts-automation\scripts\start-n8n.ps1`
 - Hidden startup launcher: `C:\dev\n8n-youtube-shorts-automation\scripts\start-n8n-hidden.vbs`
 - Renderer: `C:\dev\n8n-youtube-shorts-automation\scripts\render-static-card.mjs`
+- Shorts card derivation — makes the `(유튜브 9x16)` card from the `(인스타 4x5)` one: `scripts\derive-shorts-card.mjs`. GPT Image flattens per-edge margins into one uniform inset, so it will not reserve the 22% bottom band a 9:16 card needs; five prompt attempts failed the same way. The 9:16 is composited, not generated.
 - Card safe-zone check (draws the dead-zone bands onto a copy in `검수\`): `scripts\preview-card-safe-zone.mjs`
 - Card safe-zone fix (shrinks the card inside the dead zones, backs the original up to `보정전\`): `scripts\enforce-card-safe-zone.mjs`
 - Both scripts share one margin table. Change them together.
