@@ -231,8 +231,10 @@ function normalizePreparedCardPack(value) {
     return item.rank + String.fromCharCode(50948) + ' ';
   };
   const NL = String.fromCharCode(10);
+  // 하루건강약사는 같은 카드를 인스타(@haruyaksa)에도 올리므로 두 곳에서 통하는 '팔로우'로 부른다.
+  // 건강장수비결은 유튜브 전용이라 '구독'이 맞다.
   const preparedClosing = channelEditorialProfile.id === 'haru_health_literacy'
-    ? '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 구독해 두시면 놓치지 않고 받아보실 수 있어요.'
+    ? '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.'
     : '건강하게 나이 드는 습관을 매일 하나씩 전해 드려요. 구독해 두시면 놓치지 않고 받아보실 수 있어요.';
   const descriptionRows = items.map(function (item) { return rowLabel(item) + item.name + ' - ' + item.reason; });
   const commentRows = items.map(function (item) { return rowLabel(item) + item.name + ' - ' + item.card_reason; });
@@ -1118,7 +1120,7 @@ const cardRows = sortedItems
   if (cfg.channel_editorial_profile === 'haru_health_literacy') {
     return {
       channel: '하루건강약사',
-      subscription: '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 구독해 두시면 놓치지 않고 받아보실 수 있어요.',
+      subscription: '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.',
       intro: '영양, 음식, 영양제 성분, 몸의 신호를 일상 언어로 쉽게 설명해요.',
       promise: '과장된 비법보다 내 몸에 맞는 건강 선택 기준을 차근차근 알려드려요.',
       daily: '하루에 하나씩, 건강한 선택에 도움이 되는 내용을 전해드려요.',
@@ -1159,6 +1161,18 @@ function buildUniversalCommentCta() {
       'channel fallback description tags',
     );
   }
+  // 위 블록은 `channelFallbackCopy`가 없을 때만 도는 최초 1회 마이그레이션이다.
+  // 이미 이관된 워크플로우는 그 안의 문구를 고쳐도 반영되지 않으므로, 채널별 마무리
+  // 문구는 매 실행 여기서 다시 쓴다. 하루건강약사는 같은 카드를 인스타(@haruyaksa)에도
+  // 올리므로 '팔로우', 유튜브 전용인 건강장수비결은 '구독'.
+  code = code.replace(
+    /(channel: '하루건강약사',\s*\n\s*subscription: ')[^']*(')/,
+    '$1몸과 성분을 이해하는 건강 이야기, 팔로우로 함께 이어가요.$2',
+  );
+  code = code.replace(
+    /(channel: '건강장수비결',\s*\n\s*subscription: ')[^']*(')/,
+    '$1건강한 노년을 지키는 습관, 구독으로 함께 이어가요.$2',
+  );
   if (!code.includes("const youtubeDescription = String(pack.description || '').trim()")) {
     code = replaceRequired(code, 'const youtubeDescription = buildYoutubeDescription();', "const youtubeDescription = String(pack.description || '').trim() || buildYoutubeDescription();", 'description preservation');
   }
@@ -1328,7 +1342,7 @@ const posterReadabilityInstruction = [
     'const visibleText = [',
     `// subscribe_footer_copy_v1
 const subscribeCta = cfg.channel_editorial_profile === 'haru_health_literacy'
-  ? '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 구독해 두시면 놓치지 않고 받아보실 수 있어요'
+  ? '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요'
   : '건강하게 나이 드는 습관을 매일 하나씩 전해 드려요. 구독해 두시면 놓치지 않고 받아보실 수 있어요';
 // subscribe_footer_copy_end
 const visibleText = [`,

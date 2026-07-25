@@ -246,7 +246,9 @@ for (const relativePath of workflowFiles) {
   assert.match(prepare, /BAND_BACKGROUND_V1/, `${relativePath}: reserved bands would render as blank strips without the background-continuation contract`);
   assert.match(prepare, /GLYPH_INTEGRITY_V1/, `${relativePath}: minimum glyph size contract missing, small Korean text renders broken`);
   assert.match(prepare, /SUBSCRIBE_FOOTER_V1/, `${relativePath}: bottom-band subscribe footer contract missing`);
-  assert.match(prepare, /매일 하나씩 전해 드려요. 구독해 두시면/, `${relativePath}: dignified value-first subscribe copy missing`);
+  // 하루건강약사는 카드를 인스타에도 올리므로 '팔로우', 유튜브 전용인 건강장수비결은 '구독'.
+  const closingVerb = expected.profile === 'haru_health_literacy' ? '팔로우해' : '구독해';
+  assert.match(prepare, new RegExp(`매일 하나씩 전해 드려요. ${closingVerb} 두시면`), `${relativePath}: dignified value-first subscribe copy missing`);
   assert.match(prepare, /POSTER_READABILITY_V2/, `${relativePath}: generalized poster readability marker missing`);
   assert.match(prepare, /one primary visual region/i, `${relativePath}: image prompt has no frame-level visual budget`);
   assert.match(prepare, /text-first ranked rows/i, `${relativePath}: ranked rows are not constrained to a readable information hierarchy`);
@@ -411,7 +413,7 @@ for (const relativePath of workflowFiles) {
   assert.match(prepared.image_payload.input.prompt, /VERTICAL_FILL_V2/, `${relativePath}: runtime image prompt lost the bottom-fill contract`);
   assert.match(prepared.image_payload.input.prompt, /BAND_BACKGROUND_V1/, `${relativePath}: runtime image prompt lost the band background continuation`);
   assert.match(prepared.image_payload.input.prompt, /GLYPH_INTEGRITY_V1/, `${relativePath}: runtime image prompt lost the glyph-size floor`);
-  assert.match(prepared.image_payload.input.prompt, /FOOTER SUBSCRIBE LINE.*구독해 두시면/s, `${relativePath}: runtime image prompt lost the subscribe footer copy`);
+  assert.match(prepared.image_payload.input.prompt, new RegExp(`FOOTER SUBSCRIBE LINE.*${closingVerb} 두시면`, 's'), `${relativePath}: runtime image prompt lost the subscribe footer copy`);
   assert.match(prepared.image_payload.input.prompt, /largest practical Korean type/i, `${relativePath}: runtime image prompt lost large-type priority`);
   assert.match(prepared.image_payload.input.prompt, new RegExp(expected.channel), `${relativePath}: runtime image prompt lost the channel identity`);
   assert.doesNotMatch(prepared.visible_card_text, /(?:^|\n)왜\s*[:：]/, `${relativePath}: visible card still emits 왜 label`);
