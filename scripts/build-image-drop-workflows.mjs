@@ -21,7 +21,10 @@ const channels = [
     outputFile: 'n8n_image_drop_haru_manual.json',
     channelName: '하루건강약사',
     channelPurpose: '50대 이후 시청자가 영양, 음식, 영양제 성분, 몸 신호, 피부와 활력에 관한 선택을 이해하도록 돕는 건강정보 채널',
-    dropRoot: 'C:/dev/n8n-youtube-shorts-automation/하루건강약사 이미지',
+    dropRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/40_카드뉴스_이미지',
+    // 카드뉴스 파이프라인이 4:5와 9:16을 한 폴더에 저장하고 파일명으로 구분한다.
+    // 표기가 없는 파일은 쇼츠가 아닐 수 있으므로 9:16 표기를 요구한다.
+    requireShortsMarker: true,
   },
   {
     key: 'longevity',
@@ -155,11 +158,21 @@ function claimNextImageRuntime(definition) {
       fs.renameSync(claimedPath, uniquePath(dropRoot, entry.name.replace(/^[a-f0-9]{16}_/, '')));
     }
 
+    // 같은 폴더에 인스타용 4:5 카드가 섞여 있으므로 세로 쇼츠(9:16)만 집는다.
+    // 파일명에 4x5 / 4:5 / 인스타가 들어간 파일은 쇼츠 대상이 아니다.
+    // 카드뉴스 파이프라인 폴더는 표기 없는 파일이 4:5일 수 있어 9:16 표기를 요구한다.
+    const instagramOnly = /(4x5|4:5|인스타)/i;
+    const shortsMarker = /(9x16|9:16|유튜브|쇼츠)/i;
+    const requireShortsMarker = definition.requireShortsMarker === true;
     const candidates = fs.readdirSync(dropRoot, { withFileTypes: true })
       .filter((entry) => entry.isFile() && supported.has(path.extname(entry.name).toLowerCase()))
+      .filter((entry) => !instagramOnly.test(entry.name))
+      .filter((entry) => !requireShortsMarker || shortsMarker.test(entry.name))
       .map((entry) => entry.name);
     if (!candidates.length) {
-      throw new Error(definition.channelName + ' 이미지 폴더에 처리할 PNG, JPG, JPEG 또는 WebP 파일이 없습니다: ' + dropRoot);
+      throw new Error(definition.channelName + ' 이미지 폴더에 처리할 세로(9:16) 이미지가 없습니다. ' + (requireShortsMarker
+        ? '파일명에 "(유튜브 9x16)" 표기가 있는 카드만 처리합니다: '
+        : '파일명에 4x5·인스타가 들어간 카드는 제외됩니다: ') + dropRoot);
     }
 
     const originalName = candidates[crypto.randomInt(candidates.length)];
@@ -499,6 +512,7 @@ function buildWorkflow(channel) {
     channelName: channel.channelName,
     channelPurpose: channel.channelPurpose,
     dropRoot: channel.dropRoot,
+    requireShortsMarker: channel.requireShortsMarker === true,
   };
   const positions = {
     'Use Live BGM?': [2160, 300],

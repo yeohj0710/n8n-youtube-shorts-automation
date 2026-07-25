@@ -10,6 +10,8 @@
     "source:setup": "node ./scripts/source-media-pipeline.mjs setup",
     "source:run": "node ./scripts/source-media-pipeline.mjs run",
     "source:status": "node ./scripts/source-media-pipeline.mjs status",
+    "build:image-drop": "node ./scripts/build-image-drop-workflows.mjs",
+    "verify:image-drop": "node ./scripts/verify-image-drop-workflows.mjs",
     "test": "node ./scripts/run-project-qa.mjs"
   },
   "dependencies": {

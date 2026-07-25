@@ -39,6 +39,31 @@ config/source-pipeline.json
 건강장수비결 소재/기록/*
 !건강장수비결 소재/기록/.gitkeep
 
+# User-facing finished-image drop folders. Keep docs/placeholders, ignore images and runtime logs.
+하루건강약사 이미지/*
+!하루건강약사 이미지/README.txt
+!하루건강약사 이미지/처리중/
+!하루건강약사 이미지/사용완료/
+!하루건강약사 이미지/기록/
+하루건강약사 이미지/처리중/*
+!하루건강약사 이미지/처리중/.gitkeep
+하루건강약사 이미지/사용완료/*
+!하루건강약사 이미지/사용완료/.gitkeep
+하루건강약사 이미지/기록/*
+!하루건강약사 이미지/기록/.gitkeep
+
+건강장수비결 이미지/*
+!건강장수비결 이미지/README.txt
+!건강장수비결 이미지/처리중/
+!건강장수비결 이미지/사용완료/
+!건강장수비결 이미지/기록/
+건강장수비결 이미지/처리중/*
+!건강장수비결 이미지/처리중/.gitkeep
+건강장수비결 이미지/사용완료/*
+!건강장수비결 이미지/사용완료/.gitkeep
+건강장수비결 이미지/기록/*
+!건강장수비결 이미지/기록/.gitkeep
+
 .env
 .env.*
 *.log

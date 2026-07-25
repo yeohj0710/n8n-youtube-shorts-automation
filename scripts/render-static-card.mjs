@@ -67,11 +67,34 @@ const [imageBuffer, audioBuffer] = await Promise.all([
 
 await fs.writeFile(audioPath, audioBuffer);
 
-await sharp(imageBuffer)
-  .resize(width, height, { fit: 'cover', position: 'center', kernel: sharp.kernel.lanczos3 })
-  .sharpen({ sigma: 0.45, m1: 0.8, m2: 1.15 })
-  .png()
-  .toFile(cardPath);
+// 입력 비율을 감지: 이미 9:16이면 기존 cover, 4:5 같은 다른 비율이면
+// 원본이 잘리지 않게 블러 배경 위에 원본을 중앙 배치(레터박스 대체).
+const targetRatio = width / height;
+const meta = await sharp(imageBuffer).metadata();
+const inputRatio = (meta.width || width) / (meta.height || height);
+const matchesTarget = Math.abs(inputRatio - targetRatio) < 0.03;
+
+if (matchesTarget) {
+  await sharp(imageBuffer)
+    .resize(width, height, { fit: 'cover', position: 'center', kernel: sharp.kernel.lanczos3 })
+    .sharpen({ sigma: 0.45, m1: 0.8, m2: 1.15 })
+    .png()
+    .toFile(cardPath);
+} else {
+  const background = await sharp(imageBuffer)
+    .resize(width, height, { fit: 'cover', position: 'center' })
+    .blur(40)
+    .modulate({ brightness: 0.92 })
+    .toBuffer();
+  const foreground = await sharp(imageBuffer)
+    .resize(width, height, { fit: 'inside', kernel: sharp.kernel.lanczos3 })
+    .sharpen({ sigma: 0.45, m1: 0.8, m2: 1.15 })
+    .toBuffer();
+  await sharp(background)
+    .composite([{ input: foreground, gravity: 'center' }])
+    .png()
+    .toFile(cardPath);
+}
 
 await run(ffmpegPath, [
   '-y',

@@ -8,6 +8,8 @@ $Root = Split-Path -Parent $PSScriptRoot
 $BinaryFolder = Join-Path $Root "binary-data"
 $RenderFolder = Join-Path $Root "renders"
 $DefaultFilesFolder = Join-Path $env:USERPROFILE ".n8n-files"
+# 하루건강약사 카드뉴스 이미지 드롭 폴더(구글 드라이브). image_drop 워크플로가 여기서 9:16 이미지를 집는다.
+$CardDropFolder = "G:\내 드라이브\여형준님\27 영상 데이터\40_카드뉴스_이미지"
 
 $FallbackFfmpeg = "C:\Users\hjyeo\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1-full_build\bin\ffmpeg.exe"
 $FfmpegCommand = Get-Command ffmpeg -ErrorAction SilentlyContinue
@@ -30,7 +32,7 @@ $env:N8N_PROTOCOL = "http"
 $env:WEBHOOK_URL = "http://localhost:5678/"
 $env:N8N_DEFAULT_BINARY_DATA_MODE = "filesystem"
 $env:N8N_BINARY_DATA_STORAGE_PATH = $BinaryFolder
-$env:N8N_RESTRICT_FILE_ACCESS_TO = "$DefaultFilesFolder;$RenderFolder;$Root"
+$env:N8N_RESTRICT_FILE_ACCESS_TO = "$DefaultFilesFolder;$RenderFolder;$Root;$CardDropFolder"
 $env:NODE_FUNCTION_ALLOW_BUILTIN = "crypto,child_process,fs,path"
 $env:NODE_FUNCTION_ALLOW_EXTERNAL = ""
 $env:FFMPEG_PATH = $Ffmpeg

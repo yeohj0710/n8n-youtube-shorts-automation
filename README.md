@@ -2,6 +2,30 @@
 
 n8n-based YouTube Shorts automation for the 하루건강약사 and 건강장수비결 image+BGM workflows.
 
+## 완성 이미지 넣는 곳
+
+이미지 생성까지 직접 끝낸 경우 아래 폴더에 완성 이미지 파일을 바로 넣습니다.
+
+- 하루건강약사: `G:\내 드라이브\여형준님\27 영상 데이터\40_카드뉴스_이미지` (카드뉴스 파이프라인이 카드를 저장하는 폴더 그대로라 따로 넣을 것이 없습니다)
+- 건강장수비결: `C:\dev\n8n-youtube-shorts-automation\건강장수비결 이미지`
+
+하루건강약사 폴더에는 인스타용 4:5 카드가 같이 들어 있으므로, 파일명에 `(유튜브 9x16)` 표기가 있는 카드만 쇼츠로 처리합니다. 표기가 없는 파일은 건너뜁니다.
+
+지원 형식은 `.png`, `.jpg`, `.jpeg`, `.webp`이며 파일당 최대 크기는 50MB입니다. 각 채널에서 아래 회로를 한 번 실행하면 대기 이미지 중 1개를 무작위로 처리합니다.
+
+- `하루건강약사 - 완성 이미지 기반 쇼츠`
+- `건강장수비결 - 완성 이미지 기반 쇼츠`
+
+처리 순서:
+
+1. 회로가 이미지 1개를 `처리중`으로 옮겨 중복 처리를 막습니다.
+2. KIE GPT-5.2가 이미지와 이미지 속 한글을 읽고 YouTube 제목, 본문, 태그를 만듭니다.
+3. 회로가 BGM을 만들고 로컬 ffmpeg로 5초 MP4를 렌더링합니다.
+4. 회로가 기존 채널별 YouTube OAuth로 영상을 공개 업로드합니다.
+5. 회로가 그 영상 내용을 요약한 고정 댓글을 달고 이미지를 `사용완료`로 옮깁니다.
+
+가져온 회로는 비활성 상태입니다. n8n에서 회로를 가져오거나 여는 것만으로는 실행 또는 공개 게시가 시작되지 않습니다. 실행 중 오류가 난 이미지는 `처리중`에 남습니다. 실행이 완전히 끝난 것을 확인했다면 직접 원래 이미지 폴더로 돌려놓을 수 있고, 2시간이 지난 파일은 다음 실행 때 자동으로 대기 폴더에 복구됩니다.
+
 ## 소재 넣는 곳
 
 복잡한 `topics` 폴더는 더 이상 직접 쓰지 않습니다. 아래 한글 폴더에 영상 1개당 `.txt` 파일 1개를 바로 넣으면 됩니다.
@@ -40,6 +64,8 @@ n8n-based YouTube Shorts automation for the 하루건강약사 and 건강장수�
 - workflow exports:
   - `workflows\n8n_하루건강약사_수동실행.json`
   - `workflows\n8n_geongangjangsubigyeol_manual.json`
+  - `workflows\n8n_image_drop_haru_manual.json`
+  - `workflows\n8n_image_drop_longevity_manual.json`
 - startup script: `scripts\start-n8n.ps1`
 - renderer: `scripts\render-static-card.mjs`
 - topic drop folders:
@@ -53,6 +79,8 @@ npm install
 npm run start
 npm run import
 npm run export:workflow
+npm run build:image-drop
+npm run verify:image-drop
 ```
 
 `npm run start` launches n8n without importing any workflow JSON. On a fresh n8n DB only, seed the canonical workflows once with `npm run import` (or `.\scripts\start-n8n.ps1 -Import`); re-importing over an existing DB deactivates workflow gates and rewrites node positions.

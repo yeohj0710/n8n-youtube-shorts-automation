@@ -14,7 +14,7 @@ const cases = [
     id: 'haruImageDropShorts01',
     name: '하루건강약사 - 완성 이미지 기반 쇼츠',
     channelName: '하루건강약사',
-    dropRoot: 'C:/dev/n8n-youtube-shorts-automation/하루건강약사 이미지',
+    dropRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/40_카드뉴스_이미지',
     youtubeCredentialId: 'l7YqloikIKiIOtOq',
     youtubeCredentialName: 'YouTube account',
   },

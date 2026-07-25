@@ -76,6 +76,9 @@ These are entertaining shorts for Korean adults over 50. Fun and useful is the w
 - Startup script: `C:\dev\n8n-youtube-shorts-automation\scripts\start-n8n.ps1`
 - Hidden startup launcher: `C:\dev\n8n-youtube-shorts-automation\scripts\start-n8n-hidden.vbs`
 - Renderer: `C:\dev\n8n-youtube-shorts-automation\scripts\render-static-card.mjs`
+- Card safe-zone check (draws the dead-zone bands onto a copy in `검수\`): `scripts\preview-card-safe-zone.mjs`
+- Card safe-zone fix (shrinks the card inside the dead zones, backs the original up to `보정전\`): `scripts\enforce-card-safe-zone.mjs`
+- Both scripts share one margin table. Change them together.
 - 하루건강약사 topic drop folder: `C:\dev\n8n-youtube-shorts-automation\하루건강약사 소재`
 - 건강장수비결 topic drop folder: `C:\dev\n8n-youtube-shorts-automation\건강장수비결 소재`
 - Used topic archive: each drop folder's `사용완료`
@@ -349,15 +352,23 @@ Fix:
 
 Cause:
 
-n8n read-file nodes can only access configured paths. Rendered MP4s are under `C:\dev\n8n-youtube-shorts-automation\renders`.
+n8n read-file nodes can only access configured paths. Rendered MP4s are under `C:\dev\n8n-youtube-shorts-automation\renders`. The 하루건강약사 image-drop folder now lives on Google Drive (`G:\내 드라이브\여형준님\27 영상 데이터\40_카드뉴스_이미지`), so it must be listed too.
 
 Fix:
 
 ```powershell
-$env:N8N_RESTRICT_FILE_ACCESS_TO = "$DefaultFilesFolder;$RenderFolder;$Root"
+$env:N8N_RESTRICT_FILE_ACCESS_TO = "$DefaultFilesFolder;$RenderFolder;$Root;$CardDropFolder"
 ```
 
-Then restart n8n.
+Then restart n8n. `scripts\start-n8n.ps1` already sets `$CardDropFolder` to the 40_카드뉴스_이미지 path.
+
+### 하루건강약사 image drop folder is on Google Drive (2026-07-22)
+
+`하루건강약사 - 완성 이미지 기반 쇼츠` claims from `G:\내 드라이브\여형준님\27 영상 데이터\40_카드뉴스_이미지`, the same folder where the card-news pipeline saves finished cards — so the user drops nothing by hand. That folder holds BOTH aspect ratios, so `Claim Next Image` skips any filename matching `/(4x5|4:5|인스타)/i`. Excluding is not enough on its own: a card saved without any ratio marker slipped through and would have been published to YouTube as a 4:5 Instagram card (the first finished card, `01_아침에 먹기 좋은 과일 순위.png`, was exactly that). The haru channel definition therefore sets `requireShortsMarker: true`, and the claim additionally REQUIRES `/(9x16|9:16|유튜브|쇼츠)/i` in the filename. 건강장수비결 keeps the exclude-only behaviour because its images are hand-dropped with no naming convention. Keep the `(인스타 4x5)` / `(유튜브 9x16)` filename convention.
+
+Claiming on Google Drive was verified on 2026-07-25: `fs.renameSync` into `처리중` works there, and a marker-less 4:5 card is correctly left alone. 건강장수비결 still uses its local `건강장수비결 이미지` folder.
+
+Two gotchas when re-importing: run `scripts\import-workflow.ps1` (it sets `N8N_USER_FOLDER=$Root`) — calling `n8n.cmd import:workflow` bare writes to `%USERPROFILE%\.n8n` instead, and the import silently appears to succeed.
 
 ### Workflow Node Positions Keep Moving
 
