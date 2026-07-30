@@ -12,6 +12,25 @@ const KIE_CREDENTIAL = {
   },
 };
 
+// 메인 워크플로우(`n8n_하루건강약사_수동실행.json`)의 `Prepare Image and BGM Payloads`와
+// 글자 하나까지 같아야 한다. image_drop 쪽이 짧은 금지 목록을 쓰다가 허밍·무가사 보컬이
+// 섞인 BGM이 나왔다(2026-07-30 사용자 지적). verify-image-drop-workflows.mjs가 두
+// 회로의 이 문장들이 일치하는지 검사하므로, 고칠 때는 메인 쪽 원본을 먼저 고친다.
+const BGM_PROFILE_POOL = [
+  { id: 'intimate_felt_piano', sound_family: 'piano_solo', title: '포근한 펠트 피아노', prompt: 'Warm intimate felt piano solo, sparse rounded notes, reflective and unhurried.' },
+  { id: 'hopeful_acoustic_piano', sound_family: 'piano_solo', title: '밝은 어쿠스틱 피아노', prompt: 'Gentle acoustic piano solo, flowing melody, quietly hopeful and light.' },
+  { id: 'grounded_nylon_guitar', sound_family: 'guitar_solo', title: '차분한 나일론 기타', prompt: 'Warm nylon acoustic guitar solo, smooth fingerstyle phrases, calm and grounded.' },
+  { id: 'reassuring_piano_strings', sound_family: 'piano_strings', title: '피아노와 부드러운 현악', prompt: 'Gentle acoustic piano with soft bowed strings, reassuring and steady.' },
+  { id: 'daylight_guitar_piano', sound_family: 'guitar_piano', title: '나일론 기타와 피아노', prompt: 'Nylon acoustic guitar with sparse felt piano, warm daylight mood and easy movement.' },
+  { id: 'restorative_strings_piano', sound_family: 'piano_strings', title: '잔잔한 현악과 피아노', prompt: 'Soft bowed strings with minimal gentle piano, restorative and spacious.' },
+];
+const BGM_CONSTRAINT_LINES = [
+  'No voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh/aah, vocal chops, or wordless vocals.',
+  'Allowed instruments only: felt piano, gentle acoustic piano, nylon acoustic guitar, soft bowed strings.',
+  'No synth, pad, ambient wash, breathy texture, percussion, drums, brushes, marimba, mallets, electronic or fusion sounds.',
+];
+const BGM_SAFETY_ENVELOPE = 'warm_acoustic_zero_voice_v2';
+
 const channels = [
   {
     key: 'haru',
@@ -478,18 +497,16 @@ function buildPackFromCardCopyRuntime(definition) {
   const visibleText = card.items.map((item) => limit(headline(item), 120)).filter(Boolean).slice(0, 12);
   const imageSummary = limit(title + (clean(card.basis) ? ' — ' + clean(card.basis) : ''), 300);
 
-  const profiles = [
-    'Warm intimate felt piano solo, sparse rounded notes, reflective and unhurried.',
-    'Gentle acoustic piano solo, flowing melody, quietly hopeful and light.',
-    'Warm nylon acoustic guitar solo, smooth fingerstyle phrases, calm and grounded.',
-    'Gentle acoustic piano with soft bowed strings, reassuring and steady.',
-  ];
-  const profileIndex = Number.parseInt(String(base.image_sha256 || '0').slice(0, 8), 16) % profiles.length;
+  // 메인 워크플로우와 같은 풀·같은 금지 문장을 쓴다(definition으로 주입). 프로필은
+  // 이미지 해시로 골라 카드마다 달라지되 같은 이미지면 같은 곡 성격이 나온다.
+  const bgmPool = definition.bgmProfiles;
+  const bgmIndex = Number.parseInt(String(base.image_sha256 || '0').slice(0, 8), 16) % bgmPool.length;
+  const bgmVariation = bgmPool[Number.isFinite(bgmIndex) ? bgmIndex : 0];
   const bgmPrompt = [
-    profiles[Number.isFinite(profileIndex) ? profileIndex : 0],
-    'Premium Korean health-program mood for adults over 50, slow around 76 BPM.',
-    'No voice, vocals, singing, lyrics, speech, humming, choir, percussion, drums, synth, pad, ambient wash, or electronic sounds.',
-  ].join(' ').slice(0, 480);
+    'Profile ' + bgmVariation.id + ': ' + bgmVariation.prompt,
+    ...definition.bgmConstraints,
+  ].join(' ').replace(/\s+/g, ' ').trim().slice(0, 480);
+  const bgmProfile = { ...bgmVariation, safety_envelope: definition.bgmSafetyEnvelope };
 
   return [{
     json: {
@@ -516,6 +533,7 @@ function buildPackFromCardCopyRuntime(definition) {
       image_ready: true,
       video_source_id: base.image_sha256,
       bgm_prompt: bgmPrompt,
+      bgm_profile: bgmProfile,
       bgm_payload: {
         prompt: bgmPrompt,
         model: base.config?.kie_bgm_model || 'V5_5',
@@ -606,18 +624,16 @@ function parseVisionCopyRuntime(definition) {
     ? clean(parsed.confidence).toLowerCase()
     : 'medium';
 
-  const profiles = [
-    'Warm intimate felt piano solo, sparse rounded notes, reflective and unhurried.',
-    'Gentle acoustic piano solo, flowing melody, quietly hopeful and light.',
-    'Warm nylon acoustic guitar solo, smooth fingerstyle phrases, calm and grounded.',
-    'Gentle acoustic piano with soft bowed strings, reassuring and steady.',
-  ];
-  const profileIndex = Number.parseInt(String(base.image_sha256 || '0').slice(0, 8), 16) % profiles.length;
+  // 메인 워크플로우와 같은 풀·같은 금지 문장을 쓴다(definition으로 주입). 프로필은
+  // 이미지 해시로 골라 카드마다 달라지되 같은 이미지면 같은 곡 성격이 나온다.
+  const bgmPool = definition.bgmProfiles;
+  const bgmIndex = Number.parseInt(String(base.image_sha256 || '0').slice(0, 8), 16) % bgmPool.length;
+  const bgmVariation = bgmPool[Number.isFinite(bgmIndex) ? bgmIndex : 0];
   const bgmPrompt = [
-    profiles[Number.isFinite(profileIndex) ? profileIndex : 0],
-    'Premium Korean health-program mood for adults over 50, slow around 76 BPM.',
-    'No voice, vocals, singing, lyrics, speech, humming, choir, percussion, drums, synth, pad, ambient wash, or electronic sounds.',
-  ].join(' ').slice(0, 480);
+    'Profile ' + bgmVariation.id + ': ' + bgmVariation.prompt,
+    ...definition.bgmConstraints,
+  ].join(' ').replace(/\s+/g, ' ').trim().slice(0, 480);
+  const bgmProfile = { ...bgmVariation, safety_envelope: definition.bgmSafetyEnvelope };
 
   const pack = {
     hook_title: title,
@@ -646,6 +662,7 @@ function parseVisionCopyRuntime(definition) {
       image_ready: true,
       video_source_id: base.image_sha256,
       bgm_prompt: bgmPrompt,
+      bgm_profile: bgmProfile,
       bgm_payload: {
         prompt: bgmPrompt,
         model: base.config?.kie_bgm_model || 'V5_5',
@@ -776,6 +793,9 @@ function buildWorkflow(channel) {
     dropRoot: channel.dropRoot,
     selectShortsByAspect: channel.selectShortsByAspect === true,
     captionRoot: channel.captionRoot || null,
+    bgmProfiles: BGM_PROFILE_POOL,
+    bgmConstraints: BGM_CONSTRAINT_LINES,
+    bgmSafetyEnvelope: BGM_SAFETY_ENVELOPE,
   };
   const positions = {
     'Use Live BGM?': [2160, 300],

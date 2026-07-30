@@ -107,9 +107,14 @@ function executeParseNode(workflow, fixture) {
 
 function executeCodeNodeWithDefinition(workflow, nodeName, definition, inputJson) {
   const original = byName(workflow, nodeName).parameters.jsCode;
+  // 픽스처는 dropRoot·captionRoot만 바꾸고 나머지(BGM 풀 등)는 실제 빌드된 값을
+  // 그대로 써야 한다. 통째로 교체하면 테스트가 진짜 설정을 검사하지 않는다.
+  const builtDefinition = original.match(/^const channelDefinition = (.*);$/m);
+  assert.ok(builtDefinition, `${nodeName}: channelDefinition line not found`);
+  const merged = { ...JSON.parse(builtDefinition[1]), ...definition };
   const code = original.replace(
     /^const channelDefinition = .*;$/m,
-    `const channelDefinition = ${JSON.stringify(definition)};`,
+    `const channelDefinition = ${JSON.stringify(merged)};`,
   );
   const run = new Function('require', '$input', '$', code);
   return run(require, { first: () => ({ json: inputJson }) }, () => {
@@ -243,6 +248,55 @@ function verifyCardCopyPath(workflow, testCase) {
   }
 }
 
+// image_drop의 BGM 프롬프트는 메인 워크플로우와 같아야 한다. 예전에 image_drop 쪽
+// 금지 목록이 더 짧아(chant·ooh/aah·vocal chops·wordless vocals 누락, 악기
+// 화이트리스트 없음) 허밍 섞인 BGM이 나왔다. 두 회로가 갈리면 여기서 잡는다.
+function verifyBgmParityWithMainWorkflow(workflow, testCase) {
+  const mainFile = fs.readdirSync(workflowDir)
+    .filter((name) => name.endsWith('.json'))
+    .map((name) => ({ name, workflow: JSON.parse(fs.readFileSync(path.join(workflowDir, name), 'utf8')) }))
+    .find((entry) => entry.workflow.id === 'mxrYb3maJS31gEYC');
+  assert.ok(mainFile, 'main workflow mxrYb3maJS31gEYC not found; BGM parity cannot be checked');
+
+  const mainCode = mainFile.workflow.nodes.find((n) => n.name === 'Prepare Image and BGM Payloads').parameters.jsCode;
+  const requiredLines = [
+    'No voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh/aah, vocal chops, or wordless vocals.',
+    'Allowed instruments only: felt piano, gentle acoustic piano, nylon acoustic guitar, soft bowed strings.',
+    'No synth, pad, ambient wash, breathy texture, percussion, drums, brushes, marimba, mallets, electronic or fusion sounds.',
+  ];
+  for (const line of requiredLines) {
+    assert.ok(mainCode.includes(line), `main workflow no longer carries the BGM line "${line}" — update requiredLines here first`);
+  }
+
+  const copyNodes = ['Parse Vision Copy', ...(testCase.captionRoot ? ['Build Pack From Card Copy'] : [])];
+  for (const nodeName of copyNodes) {
+    const code = workflow.nodes.find((n) => n.name === nodeName).parameters.jsCode;
+    for (const line of requiredLines) {
+      assert.ok(code.includes(line), `${testCase.file} ${nodeName}: BGM prompt is missing "${line}"`);
+    }
+    // 예전의 짧은 금지 문장이 되살아나면 실패시킨다.
+    assert.ok(
+      !/humming, choir, percussion/.test(code),
+      `${testCase.file} ${nodeName}: the old short vocal-ban line is back; humming will leak into the BGM`,
+    );
+    for (const profileId of ['intimate_felt_piano', 'grounded_nylon_guitar', 'daylight_guitar_piano', 'restorative_strings_piano']) {
+      assert.ok(code.includes(profileId), `${testCase.file} ${nodeName}: BGM profile pool is missing ${profileId}`);
+    }
+  }
+}
+
+// Claim Next Image가 픽셀 크기로 비율을 판정하므로, 픽스처도 IHDR에 실제 크기를
+// 담은 PNG여야 한다. 서명 8바이트만 있는 파일은 판정 불가로 후보에서 빠진다.
+function pngWithSize(width, height) {
+  const buffer = Buffer.alloc(33, 0);
+  Buffer.from('89504e470d0a1a0a', 'hex').copy(buffer, 0);
+  buffer.writeUInt32BE(13, 8);
+  buffer.write('IHDR', 12, 'ascii');
+  buffer.writeUInt32BE(width, 16);
+  buffer.writeUInt32BE(height, 20);
+  return buffer;
+}
+
 function verifyImageLifecycle(workflow, testCase) {
   const etcRoot = path.join(root, 'etc');
   fs.mkdirSync(etcRoot, { recursive: true });
@@ -256,11 +310,17 @@ function verifyImageLifecycle(workflow, testCase) {
   };
   try {
     const sourcePath = path.join(testRoot, 'sample-card.png');
-    fs.writeFileSync(sourcePath, Buffer.from('89504e470d0a1a0a', 'hex'));
+    fs.writeFileSync(sourcePath, pngWithSize(1080, 1920));
+    // 세로 쇼츠만 집는 채널에서는 같은 폴더의 4:5 인스타 카드를 절대 집지 않아야 한다.
+    const instagramPath = path.join(testRoot, 'sample-instagram-card.png');
+    if (testCase.captionRoot) fs.writeFileSync(instagramPath, pngWithSize(1080, 1350));
     const claimed = executeCodeNodeWithDefinition(workflow, 'Claim Next Image', definition, {})[0].json;
     assert.equal(claimed.original_image_name, 'sample-card.png');
     assert.ok(fs.existsSync(claimed.claimed_path));
     assert.ok(!fs.existsSync(sourcePath));
+    if (testCase.captionRoot) {
+      assert.ok(fs.existsSync(instagramPath), `${testCase.file}: the 4:5 card was claimed; only 9:16 may be published`);
+    }
     assert.ok(fs.existsSync(claimed.config.workflow_lock_path));
     assert.equal(claimed.config.drop_root, testRoot);
 
@@ -390,6 +450,7 @@ for (const testCase of cases) {
   }), /치료 보장 또는 진료 회피/);
 
   verifyImageLifecycle(workflow, testCase);
+  verifyBgmParityWithMainWorkflow(workflow, testCase);
   if (testCase.captionRoot) verifyCardCopyPath(workflow, testCase);
 }
 
@@ -405,6 +466,7 @@ console.log(JSON.stringify({
     'vision_copy_parsing',
     'image_claim_and_archive',
     'card_copy_from_caption',
+    'bgm_parity_with_main_workflow',
     'medical_claim_block',
     'bgm_contract',
     'public_upload_contract',
