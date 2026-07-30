@@ -353,7 +353,7 @@ Fix:
 
 Cause:
 
-n8n read-file nodes can only access configured paths. Rendered MP4s are under `C:\dev\n8n-youtube-shorts-automation\renders`. The 하루건강약사 image-drop folder now lives on Google Drive (`G:\내 드라이브\여형준님\27 영상 데이터\40_카드뉴스_이미지`), so it must be listed too.
+n8n read-file nodes can only access configured paths. Rendered MP4s are under `C:\dev\n8n-youtube-shorts-automation\renders`. The 하루건강약사 image-drop folder now lives on Google Drive (`G:\내 드라이브\영상 편집\AI 크리에이터\영상 데이터\40_카드뉴스_이미지`), so it must be listed too.
 
 Fix:
 
@@ -365,7 +365,7 @@ Then restart n8n. `scripts\start-n8n.ps1` already sets `$CardDropFolder` to the 
 
 ### 하루건강약사 image drop folder is on Google Drive (2026-07-22)
 
-`하루건강약사 - 완성 이미지 기반 쇼츠` claims from `G:\내 드라이브\여형준님\27 영상 데이터\40_카드뉴스_이미지`, the same folder where the card-news pipeline saves finished cards — so the user drops nothing by hand. That folder holds BOTH aspect ratios. The haru channel definition sets `selectShortsByAspect: true`: `Claim Next Image` reads each candidate's pixel size from the file header (PNG/JPEG/WebP, no external deps — n8n Code nodes only get builtins) and takes only files with width/height < 0.7 (9:16 = 0.5625, 4:5 = 0.80). **Filenames don't matter for haru anymore** — the user found per-file naming tedious (2026-07-30). Marker names are still respected as overrides when present: `/(4x5|4:5|인스타)/i` always excludes, `/(9x16|9:16|유튜브|쇼츠)/i` includes without sniffing. A file whose dimensions can't be parsed is excluded (safe default: never publish an unknown). The pre-aspect history: a marker-less 4:5 slipped through the exclude-only filter and would have been published, which led to a require-marker phase, which lost to naming fatigue.
+`하루건강약사 - 완성 이미지 기반 쇼츠` claims from `G:\내 드라이브\영상 편집\AI 크리에이터\영상 데이터\40_카드뉴스_이미지`, the same folder where the card-news pipeline saves finished cards — so the user drops nothing by hand. That folder holds BOTH aspect ratios. The haru channel definition sets `selectShortsByAspect: true`: `Claim Next Image` reads each candidate's pixel size from the file header (PNG/JPEG/WebP, no external deps — n8n Code nodes only get builtins) and takes only files with width/height < 0.7 (9:16 = 0.5625, 4:5 = 0.80). **Filenames don't matter for haru anymore** — the user found per-file naming tedious (2026-07-30). Marker names are still respected as overrides when present: `/(4x5|4:5|인스타)/i` always excludes, `/(9x16|9:16|유튜브|쇼츠)/i` includes without sniffing. A file whose dimensions can't be parsed is excluded (safe default: never publish an unknown). The pre-aspect history: a marker-less 4:5 slipped through the exclude-only filter and would have been published, which led to a require-marker phase, which lost to naming fatigue.
 
 Both channels feed from the same card-news pipeline as of 2026-07-30, split by a
 channel folder under 40:
