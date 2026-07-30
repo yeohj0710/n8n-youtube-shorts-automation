@@ -1,0 +1,4 @@
+{
+  "_comment": "한글이 들어간 로컬 경로. Windows PowerShell 5는 BOM 없는 .ps1 안의 한글 리터럴을 CP949로 잘못 읽어 경로가 깨진다(N8N_RESTRICT_FILE_ACCESS_TO에 깨진 문자열이 들어가 Read File 노드가 'Access to the file is not allowed'로 실패). 그래서 한글 경로는 .ps1에 넣지 않고 이 UTF-8 JSON에 두고 start-n8n.ps1이 -Encoding UTF8로 읽는다.",
+  "cardDropFolder": "G:\\내 드라이브\\여형준님\\27 영상 데이터\\40_카드뉴스_이미지"
+}

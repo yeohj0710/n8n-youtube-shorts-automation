@@ -412,13 +412,29 @@ Fix:
 
 Cause:
 
-Windows PowerShell 5 can misread UTF-8 Korean literals in `.ps1`.
+Windows PowerShell 5 reads a BOM-less UTF-8 `.ps1` as ANSI (CP949 here), which
+mangles Korean literals. This bit hard on 2026-07-30: `start-n8n.ps1` hardcoded
+`$CardDropFolder = "G:\내 드라이브\...\40_카드뉴스_이미지"`, so
+`N8N_RESTRICT_FILE_ACCESS_TO` got `G:\???쒐...` and the `Read Claimed Image`
+node failed with `Access to the file is not allowed` — while listing the
+mangled path in its own "Allowed paths" message, which is the tell. Note that
+`Claim Next Image` succeeded first: Code nodes call `fs` directly and are not
+subject to the restriction, so the run gets past claim and dies one node later
+with the image already moved into `처리중`.
 
 Fix:
 
-- Avoid hardcoding Korean filenames inside PowerShell scripts.
+- Korean paths do not go in `.ps1`. They live in `config\local-paths.json` and
+  are read with `Get-Content -Encoding UTF8 | ConvertFrom-Json`.
+- `start-n8n.ps1` throws if the resolved folder fails `Test-Path`, so a mangled
+  path stops startup instead of surfacing later as a permissions error.
 - Prefer finding `workflows\*.json` with `Get-ChildItem`.
 - Node scripts can write UTF-8 Korean filenames safely.
+
+After a failure downstream of claim, put the image back before re-running: move
+`처리중\<16hex>_<name>` back to the drop folder minus the prefix and delete
+`기록\image-drop-workflow.lock`. Claim self-heals after 2 hours and the lock
+after 30 minutes, but there is no reason to wait.
 
 ## Inspecting Executions
 

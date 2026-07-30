@@ -8,8 +8,22 @@ $Root = Split-Path -Parent $PSScriptRoot
 $BinaryFolder = Join-Path $Root "binary-data"
 $RenderFolder = Join-Path $Root "renders"
 $DefaultFilesFolder = Join-Path $env:USERPROFILE ".n8n-files"
-# 하루건강약사 카드뉴스 이미지 드롭 폴더(구글 드라이브). image_drop 워크플로가 여기서 9:16 이미지를 집는다.
-$CardDropFolder = "G:\내 드라이브\여형준님\27 영상 데이터\40_카드뉴스_이미지"
+# Korean paths must NOT be literals in this file. Windows PowerShell 5 reads a
+# BOM-less .ps1 as ANSI, which mangles them, and the mangled string lands in
+# N8N_RESTRICT_FILE_ACCESS_TO — the Read File node then fails with
+# "Access to the file is not allowed". Read them from UTF-8 JSON instead.
+$LocalPathsFile = Join-Path $Root "config\local-paths.json"
+if (-not (Test-Path -LiteralPath $LocalPathsFile)) {
+  throw "Local paths config not found: $LocalPathsFile"
+}
+$LocalPaths = (Get-Content -LiteralPath $LocalPathsFile -Encoding UTF8 -Raw) | ConvertFrom-Json
+$CardDropFolder = $LocalPaths.cardDropFolder
+if (-not $CardDropFolder) {
+  throw "cardDropFolder missing from $LocalPathsFile"
+}
+if (-not (Test-Path -LiteralPath $CardDropFolder)) {
+  throw "cardDropFolder does not exist (encoding problem?): $CardDropFolder"
+}
 
 $FallbackFfmpeg = "C:\Users\hjyeo\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1-full_build\bin\ffmpeg.exe"
 $FfmpegCommand = Get-Command ffmpeg -ErrorAction SilentlyContinue
