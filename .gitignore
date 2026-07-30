@@ -64,6 +64,14 @@ config/source-pipeline.json
 건강장수비결 이미지/기록/*
 !건강장수비결 이미지/기록/.gitkeep
 
+# 레퍼런스 카드 회로. 안내문과 선별 기준만 추적하고, 실행 기록은 추적하지 않는다.
+레퍼런스 카드/*
+!레퍼런스 카드/README.txt
+!레퍼런스 카드/selection-gate.json
+!레퍼런스 카드/기록/
+레퍼런스 카드/기록/*
+!레퍼런스 카드/기록/.gitkeep
+
 .env
 .env.*
 *.log

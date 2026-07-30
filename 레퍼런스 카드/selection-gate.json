@@ -1,0 +1,9 @@
+{
+  "require_publish_ready": true,
+  "allowed_claim_risk": [
+    "low"
+  ],
+  "allow_fact_check_required": false,
+  "min_items": 4,
+  "max_items": 13
+}

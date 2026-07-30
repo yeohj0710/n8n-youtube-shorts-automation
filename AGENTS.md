@@ -84,6 +84,8 @@ These are entertaining shorts for Korean adults over 50. Fun and useful is the w
 - 건강장수비결 topic drop folder: `C:\dev\n8n-youtube-shorts-automation\건강장수비결 소재`
 - Used topic archive: each drop folder's `사용완료`
 - Topic/upload logs: each drop folder's `기록`
+- Reference-card circuit builder: `scripts\build-reference-card-workflow.mjs` (verify with `scripts\verify-reference-card-workflow.mjs`)
+- Reference-card work folder / checklist: `레퍼런스 카드\기록\사용기록.jsonl`
 - Workflow export script: `C:\dev\n8n-youtube-shorts-automation\scripts\export-workflow-from-db.mjs`
 - Workflow import script: `C:\dev\n8n-youtube-shorts-automation\scripts\import-workflow.ps1`
 - Original user folder: `G:\내 드라이브\영상 편집\유튜브 닌자`
@@ -387,6 +389,35 @@ twin lands in the same tree.
 Claiming on Google Drive was verified on 2026-07-25 (`fs.renameSync` into `처리중` works). Aspect selection verified 2026-07-30 against the user's real files: 8 runs claimed only the 941x1672 card and never the 1122x1402 one. 건강장수비결 still uses its local `건강장수비결 이미지` folder.
 
 Two gotchas when re-importing: run `scripts\import-workflow.ps1` (it sets `N8N_USER_FOLDER=$Root`) — calling `n8n.cmd import:workflow` bare writes to `%USERPROFILE%\.n8n` instead, and the import silently appears to succeed.
+
+### Reference-Card Circuit: 2,000 Prepared Cards, 11 Publishable (2026-07-30)
+
+`하루건강약사 - 레퍼런스 카드 쇼츠` (`haruReferenceCardShorts01`) picks one unused
+record from `research\single-screen-references\videos.jsonl` and ships the user's
+own `*_reworked_ko` copy verbatim — no LLM rewrite of the text. The image, BGM,
+render and upload nodes are **clones** of the main workflow, so quality matches
+the existing Shorts; `verify-reference-card-workflow.mjs` deep-compares those
+clones against the main workflow and fails on drift. Fix the main workflow and
+re-run the builder rather than editing the clones.
+
+The number that matters: all 2,000 rows carry reworked copy, but the dataset's own
+QA marks only **11** as `publish_ready`. `claim_risk` is `high` on 1,945 and
+`fact_check_required` is true on 1,975. That is not a sloppy tagger — the high-risk
+rows are the medical ones (낙상, 하체 운동, 시니어 건강) and the 11 ready ones are
+lifestyle (요리, 관계, 예절). The default gate respects those flags, so the circuit
+has 11 videos of runway before it refuses to pick.
+
+Widening the gate is a content-safety decision, not a code change: it lives in
+`레퍼런스 카드\selection-gate.json` (`require_publish_ready`,
+`allowed_claim_risk`, `allow_fact_check_required`, item-count range) and takes
+effect on the next run. `Medical Safety Review` only blocks cure/guarantee/
+care-avoidance phrasing; it does not check whether a claim is true.
+
+The checklist is `레퍼런스 카드\기록\사용기록.jsonl`, keyed by `record_id`. A card
+that reached render is checked off even if the upload failed — the credits are
+already spent and re-picking it is worse. A card blocked by medical review is NOT
+checked off. The Google Sheet's own checkboxes are untouched: n8n has no Google
+Sheets credential, and sheet writes need an OAuth grant nobody has given yet.
 
 ### Copy Comes From the Caption File, Not From Reading the Image (2026-07-30)
 
