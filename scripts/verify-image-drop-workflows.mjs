@@ -315,11 +315,14 @@ function verifyImageLifecycle(workflow, testCase) {
   fs.mkdirSync(etcRoot, { recursive: true });
   const testRoot = fs.mkdtempSync(path.join(etcRoot, 'image-drop-verify-'));
   assert.ok(testRoot.startsWith(etcRoot + path.sep));
+  // 채널 폴더 우선 규칙을 검사하려면 공용 루트도 픽스처로 만들어야 한다.
+  const sharedRoot = fs.mkdtempSync(path.join(etcRoot, 'image-drop-shared-'));
   const definition = {
     key: 'fixture',
     channelName: testCase.channelName,
     channelPurpose: 'fixture',
     dropRoot: testRoot,
+    fallbackDropRoot: sharedRoot,
   };
   try {
     const sourcePath = path.join(testRoot, 'sample-card.png');
@@ -329,6 +332,7 @@ function verifyImageLifecycle(workflow, testCase) {
     if (testCase.captionRoot) fs.writeFileSync(instagramPath, pngWithSize(1080, 1350));
     const claimed = executeCodeNodeWithDefinition(workflow, 'Claim Next Image', definition, {})[0].json;
     assert.equal(claimed.original_image_name, 'sample-card.png');
+    assert.equal(claimed.claimed_from_shared_root, false, `${testCase.file}: the channel folder must win over the shared root`);
     assert.ok(fs.existsSync(claimed.claimed_path));
     assert.ok(!fs.existsSync(sourcePath));
     if (testCase.captionRoot) {
@@ -349,8 +353,22 @@ function verifyImageLifecycle(workflow, testCase) {
     assert.ok(!fs.existsSync(claimed.config.workflow_lock_path));
     assert.match(fs.readFileSync(claimed.config.image_log_path, 'utf8'), /"result":"published"/);
     assert.match(fs.readFileSync(claimed.config.upload_log_path, 'utf8'), /"video_id":"fixture-video"/);
+
+    // 채널 폴더가 비면 공용 루트에 그냥 둔 카드도 집고, 처리중은 채널 폴더에 남는다.
+    // 채널 폴더로 옮기는 걸 잊었을 때 실행이 막히지 않게 하는 장치다.
+    const strayPath = path.join(sharedRoot, 'stray-card.png');
+    fs.writeFileSync(strayPath, pngWithSize(1080, 1920));
+    const adopted = executeCodeNodeWithDefinition(workflow, 'Claim Next Image', definition, {})[0].json;
+    assert.equal(adopted.original_image_name, 'stray-card.png', `${testCase.file}: a card left in the shared root was not picked up`);
+    assert.equal(adopted.claimed_from_shared_root, true, `${testCase.file}: shared-root adoption must be flagged`);
+    assert.ok(
+      adopted.claimed_path.startsWith(testRoot + path.sep),
+      `${testCase.file}: an adopted card must be processed inside the channel folder`,
+    );
+    assert.ok(!fs.existsSync(strayPath), `${testCase.file}: the adopted card should leave the shared root`);
   } finally {
     fs.rmSync(testRoot, { recursive: true, force: true });
+    fs.rmSync(sharedRoot, { recursive: true, force: true });
   }
 }
 

@@ -43,6 +43,9 @@ const channels = [
     // 40_카드뉴스_이미지는 두 채널 공용이라 채널 폴더로 나눈다(2026-07-30 사용자 확정).
     // 한 더미에서 둘 다 무작위로 집으면 하루건강약사 카드가 건강장수비결에 올라간다.
     dropRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/40_카드뉴스_이미지/하루건강약사',
+    // 채널 폴더가 비었으면 40 루트에 그냥 둔 카드도 집는다. 어느 채널로 갈지는
+    // 사용자가 어느 회로를 실행하느냐로 정해진다(2026-07-30).
+    fallbackDropRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/40_카드뉴스_이미지',
     // 카드뉴스 파이프라인이 4:5(인스타)와 9:16(쇼츠)을 한 폴더에 저장한다.
     // 파일명 표기에 기대지 않고 이미지 픽셀 크기를 읽어 9:16만 집는다
     // (사용자가 매번 이름 붙이기 귀찮다고 함, 2026-07-30). 파일명 표기는
@@ -65,6 +68,7 @@ const channels = [
     // MD 생성.md`). 채널 폴더만 다르고 캡션은 50_캡션에 번호로 함께 들어간다.
     // 로컬 `건강장수비결 이미지` 폴더는 이제 쓰지 않는다.
     dropRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/40_카드뉴스_이미지/건강장수비결',
+    fallbackDropRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/40_카드뉴스_이미지',
     selectShortsByAspect: true,
     captionRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/50_캡션',
   },
@@ -235,24 +239,46 @@ function claimNextImageRuntime(definition) {
     const instagramOnly = /(4x5|4:5|인스타)/i;
     const shortsMarker = /(9x16|9:16|유튜브|쇼츠)/i;
     const selectShortsByAspect = definition.selectShortsByAspect === true;
-    const candidates = fs.readdirSync(dropRoot, { withFileTypes: true })
-      .filter((entry) => entry.isFile() && supported.has(path.extname(entry.name).toLowerCase()))
-      .filter((entry) => !instagramOnly.test(entry.name))
-      .filter((entry) => {
-        if (!selectShortsByAspect) return true;
-        if (shortsMarker.test(entry.name)) return true;
-        const size = imageDimensions(fs.readFileSync(path.join(dropRoot, entry.name)));
-        return size !== null && size.height > 0 && size.width / size.height < 0.7;
-      })
-      .map((entry) => entry.name);
+
+    function shortsCandidatesIn(directory) {
+      if (!fs.existsSync(directory)) return [];
+      return fs.readdirSync(directory, { withFileTypes: true })
+        .filter((entry) => entry.isFile() && supported.has(path.extname(entry.name).toLowerCase()))
+        .filter((entry) => !instagramOnly.test(entry.name))
+        .filter((entry) => {
+          if (!selectShortsByAspect) return true;
+          if (shortsMarker.test(entry.name)) return true;
+          const size = imageDimensions(fs.readFileSync(path.join(directory, entry.name)));
+          return size !== null && size.height > 0 && size.width / size.height < 0.7;
+        })
+        .map((entry) => entry.name);
+    }
+
+    // 채널 폴더를 먼저 본다. 비어 있으면 공용 루트(40_카드뉴스_이미지)에 그냥 둔
+    // 카드도 집는다 — 채널 폴더로 옮기는 걸 잊어도 실행이 막히지 않게. 어느 채널로
+    // 갈지는 사용자가 어느 회로를 실행하느냐로 정해지고, 집은 카드는 채널 폴더로
+    // 옮겨 놓은 뒤 처리하므로 처리중·사용완료 기록은 채널 폴더에 남는다.
+    let sourceDir = dropRoot;
+    let candidates = shortsCandidatesIn(dropRoot);
+    let adoptedFromFallback = false;
+    const fallbackRoot = definition.fallbackDropRoot;
+    if (!candidates.length && fallbackRoot && path.resolve(fallbackRoot) !== path.resolve(dropRoot)) {
+      const fallbackCandidates = shortsCandidatesIn(fallbackRoot);
+      if (fallbackCandidates.length) {
+        sourceDir = fallbackRoot;
+        candidates = fallbackCandidates;
+        adoptedFromFallback = true;
+      }
+    }
     if (!candidates.length) {
       throw new Error(definition.channelName + ' 이미지 폴더에 처리할 세로(9:16) 이미지가 없습니다. ' + (selectShortsByAspect
         ? '이미지 크기를 읽어 9:16 비율만 처리하며, 파일명에 4x5·인스타가 들어간 카드는 제외됩니다: '
-        : '파일명에 4x5·인스타가 들어간 카드는 제외됩니다: ') + dropRoot);
+        : '파일명에 4x5·인스타가 들어간 카드는 제외됩니다: ') + dropRoot
+        + (fallbackRoot ? ' (공용 루트도 확인했습니다: ' + fallbackRoot + ')' : ''));
     }
 
     const originalName = candidates[crypto.randomInt(candidates.length)];
-    const sourcePath = path.join(dropRoot, originalName);
+    const sourcePath = path.join(sourceDir, originalName);
     const stat = fs.statSync(sourcePath);
     if (!stat.size) throw new Error('빈 이미지 파일은 처리할 수 없습니다: ' + sourcePath);
     if (stat.size > maxImageBytes) throw new Error('이미지 파일이 50MB를 초과합니다: ' + sourcePath);
@@ -295,6 +321,7 @@ function claimNextImageRuntime(definition) {
         channel_key: definition.key,
         channel_name: definition.channelName,
         original_image_name: originalName,
+        claimed_from_shared_root: adoptedFromFallback,
         claimed_path: claimedPath,
         image_sha256: sha256,
         image_mime_type: supported.get(extension),
@@ -794,6 +821,7 @@ function buildWorkflow(channel) {
     dropRoot: channel.dropRoot,
     selectShortsByAspect: channel.selectShortsByAspect === true,
     captionRoot: channel.captionRoot || null,
+    fallbackDropRoot: channel.fallbackDropRoot || null,
     bgmProfiles: BGM_PROFILE_POOL,
     bgmConstraints: BGM_CONSTRAINT_LINES,
     bgmSafetyEnvelope: BGM_SAFETY_ENVELOPE,
