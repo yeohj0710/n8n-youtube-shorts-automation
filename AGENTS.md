@@ -373,6 +373,40 @@ Claiming on Google Drive was verified on 2026-07-25 (`fs.renameSync` into `처�
 
 Two gotchas when re-importing: run `scripts\import-workflow.ps1` (it sets `N8N_USER_FOLDER=$Root`) — calling `n8n.cmd import:workflow` bare writes to `%USERPROFILE%\.n8n` instead, and the import silently appears to succeed.
 
+### Copy Comes From the Caption File, Not From Reading the Image (2026-07-30)
+
+The 하루건강약사 image-drop circuit used to send the finished card to GPT-5.2
+vision and have it write the title, description, and tags from what it could
+read in the picture. That is backwards: the text already exists. The card-news
+pipeline wrote `50_캡션\NN_제목.caption.txt` from the curated material JSON, and
+the card image is a rendering of that same text. Reverse-engineering it costs a
+call and loses content — the vision prompt says to omit unreadable text rather
+than guess, so any item the model misreads is silently dropped from a list the
+user hand-restored.
+
+`Load Card Copy` now takes the `NN_` prefix off the claimed image filename,
+finds the caption file with the same number, and parses it (title / `기준:` /
+`N. [등급] 이름` or `N. 이름 (N위)` / `→ 설명` / `⚠ 주의`, stopping at the
+`──────────` divider so the CTA and disclaimer block stays out). `Card Copy
+Found?` then routes: found → `Build Pack From Card Copy` straight to the BGM
+stage, no vision call; not found → the old `Read Claimed Image` → upload →
+analyze chain unchanged. `Read Claimed Image` only ever fed the vision upload,
+so it now lives on the fallback branch alone; the ffmpeg render reads
+`claimed_path` directly.
+
+Label kinds are mixed across cards and must survive verbatim: `1위 이름` for
+ranks, `[S] 이름` for letter grades, `이름 (추천)` / `이름 (900mg 이상)` for
+Korean grades and values. Some cards have no `→` line at all — the item name IS
+the content (당뇨 신호, 영양제 조합) — which is not a defect.
+
+Titles are used exactly as the caption has them. They are the user's curated
+titles; do not append counts or rewrite them into hooks mechanically.
+
+`verify-image-drop-workflows.mjs` covers this as `card_copy_from_caption`: the
+branch wiring, all four label kinds, the 260-char pinned-comment cap ending in
+the channel closing line, the medical-claim block, and fallback when the prefix
+is missing or unknown.
+
 ### Hand-Edited Workflow JSON Silently Reverted (2026-07-25)
 
 Cause:

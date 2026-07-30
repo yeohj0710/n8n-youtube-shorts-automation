@@ -27,6 +27,10 @@ const channels = [
     // (사용자가 매번 이름 붙이기 귀찮다고 함, 2026-07-30). 파일명 표기는
     // 있으면 우선 존중한다: 인스타/4x5 → 제외, 9x16/유튜브/쇼츠 → 포함.
     selectShortsByAspect: true,
+    // 카드 문안의 원본. 카드뉴스 파이프라인이 소재 JSON에서 만든 사람이 읽는 산문이며
+    // 이미지 파일과 `NN_` 접두어를 공유한다. 이게 있으면 vision을 안 부른다 —
+    // 그림에서 글자를 역산하면 못 읽은 항목이 조용히 빠진다(2026-07-30 사용자 지적).
+    captionRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/50_캡션',
   },
   {
     key: 'longevity',
@@ -320,6 +324,208 @@ function buildVisionCopyRequestRuntime(definition) {
   }];
 }
 
+// 이미지 파일명의 `NN_` 접두어로 같은 번호의 캡션 파일을 찾아 문안 원본을 읽는다.
+// 찾으면 vision을 건너뛴다. 못 찾으면 card_copy=null로 두고 vision 경로로 흐른다.
+function loadCardCopyRuntime(definition) {
+  const fs = require('fs');
+  const path = require('path');
+  const base = $input.first().json;
+
+  function emptyResult(reason) {
+    return [{ json: { ...base, card_copy: null, card_copy_found: false, card_copy_skip_reason: reason } }];
+  }
+
+  const captionRoot = definition.captionRoot;
+  if (!captionRoot || !fs.existsSync(captionRoot)) return emptyResult('캡션 폴더가 없습니다: ' + captionRoot);
+
+  const prefixMatch = String(base.original_image_name || '').match(/^(\d+)[_\s-]/);
+  if (!prefixMatch) return emptyResult('파일명에 NN_ 접두어가 없습니다: ' + base.original_image_name);
+  const prefix = prefixMatch[1];
+
+  const captionFile = fs.readdirSync(captionRoot)
+    .filter((name) => name.toLowerCase().endsWith('.caption.txt'))
+    .find((name) => {
+      const own = name.match(/^(\d+)[_\s-]/);
+      return own && own[1] === prefix;
+    });
+  if (!captionFile) return emptyResult(prefix + '번 캡션 파일을 찾지 못했습니다');
+
+  const text = fs.readFileSync(path.join(captionRoot, captionFile), 'utf8').replace(/\r/g, '');
+  const lines = text.split('\n');
+  const title = (lines[0] || '').trim();
+  let basis = '';
+  const items = [];
+  let current = null;
+  for (const rawLine of lines.slice(1)) {
+    const line = rawLine.trim();
+    if (!line) continue;
+    if (/^[─-╿]+$/.test(line)) break; // 구분선 아래는 CTA·면책 블록
+    if (line.startsWith('기준:')) { basis = line.replace(/^기준:\s*/, '').trim(); continue; }
+    const head = line.match(/^(\d+)\.\s*(.+)$/);
+    if (head) {
+      if (current) items.push(current);
+      let name = head[2].trim();
+      let label = '';
+      const bracket = name.match(/^\[([^\]]+)\]\s*(.+)$/);
+      if (bracket) {
+        label = bracket[1].trim();
+        name = bracket[2].trim();
+      } else {
+        const trailing = name.match(/^(.+?)\s*\(([^()]+)\)$/);
+        if (trailing) {
+          name = trailing[1].trim();
+          label = trailing[2].trim();
+        }
+      }
+      current = { rank: Number(head[1]), label, name, description: '', note: '' };
+      continue;
+    }
+    if (!current) continue;
+    if (line.startsWith('→')) { current.description = line.replace(/^→\s*/, '').trim(); continue; }
+    if (line.startsWith('⚠')) { current.note = line.replace(/^⚠\s*/, '').trim(); continue; }
+  }
+  if (current) items.push(current);
+
+  if (!title || items.length < 2) {
+    return emptyResult('캡션을 읽었지만 제목/항목이 부족합니다 (' + captionFile + ', 항목 ' + items.length + '개)');
+  }
+
+  return [{
+    json: {
+      ...base,
+      card_copy: { title, basis, items, source_file: captionFile },
+      card_copy_found: true,
+      card_copy_skip_reason: '',
+    },
+  }];
+}
+
+// 캡션에서 읽은 문안으로 업로드용 pack을 만든다. Parse Vision Copy와 같은 모양을
+// 내보내야 하며(둘 다 Use Live BGM?으로 들어간다), 원문에 없는 말은 만들지 않는다.
+function buildPackFromCardCopyRuntime(definition) {
+  const base = $input.first().json;
+  const card = base.card_copy;
+  if (!card) throw new Error('card_copy가 비어 있습니다. Card Copy Found? 분기가 잘못 연결됐습니다.');
+
+  function clean(value) {
+    return String(value || '').replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, ' ').replace(/[ \t]+/g, ' ').trim();
+  }
+  function limit(value, maxLength) {
+    return Array.from(clean(value)).slice(0, maxLength).join('').trim();
+  }
+
+  // 라벨은 종류가 섞여 있다: 순위(1위), 등급(S·A·B), 수치(900mg 이상), 우리말 등급(추천).
+  function headline(item) {
+    const label = clean(item.label);
+    const name = clean(item.name);
+    if (!label) return name;
+    if (/^\d+위$/.test(label)) return label + ' ' + name;
+    if (/^[A-Z]{1,2}$/.test(label)) return '[' + label + '] ' + name;
+    return name + ' (' + label + ')';
+  }
+
+  const title = limit(card.title, 95);
+  if (title.length < 4) throw new Error('캡션 제목이 너무 짧습니다: ' + card.title);
+
+  const descriptionRows = card.items.map((item) => {
+    const parts = [headline(item)];
+    if (clean(item.description)) parts.push(clean(item.description));
+    const row = parts.join(' — ');
+    return clean(item.note) ? row + ' (주의: ' + clean(item.note) + ')' : row;
+  });
+
+  const unsafeCopy = [title, card.basis, descriptionRows.join(' ')].join(' ');
+  if (/(완치|치료\s*보장|무조건\s*(?:낫|효과)|약(?:물)?을?\s*끊|병원\s*(?:갈|에\s*갈)?\s*필요\s*(?:가\s*)?없|의사\s*(?:상담|진료)?\s*필요\s*(?:가\s*)?없)/i.test(unsafeCopy)) {
+    throw new Error('캡션 문안에 치료 보장 또는 진료 회피 표현이 있어 게시를 중단했습니다.');
+  }
+
+  const closing = definition.key === 'haru'
+    ? '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.'
+    : '건강하게 나이 드는 습관을 매일 하나씩 전해 드려요. 구독해 두시면 놓치지 않고 받아보실 수 있어요.';
+  const hashtags = ['#건강정보', '#쇼츠', '#' + definition.channelName.replace(/\s+/g, '')].join(' ');
+  const description = limit([
+    title,
+    clean(card.basis) ? '기준: ' + clean(card.basis) : '',
+    descriptionRows.join('\n'),
+    closing,
+    hashtags,
+  ].filter(Boolean).join('\n\n'), 4500);
+
+  // 고정 댓글은 260자 이내이고 채널 마무리 줄로 끝나야 한다. 마무리 줄 자리를 먼저
+  // 확보한 뒤 남는 만큼만 항목 요약을 넣는다.
+  const commentRoom = 260 - closing.length - 2;
+  const summaryRows = [];
+  let used = title.length + 1;
+  for (const item of card.items) {
+    const row = headline(item);
+    if (used + row.length + 2 > commentRoom) break;
+    summaryRows.push(row);
+    used += row.length + 2;
+  }
+  const pinnedComment = limit([title, summaryRows.join(', '), closing].filter(Boolean).join('\n'), 260);
+
+  const titleTags = title.split(/\s+/)
+    .map((token) => token.replace(/[^0-9A-Za-z가-힣]/g, ''))
+    .filter((token) => token.length >= 2);
+  const tags = [...new Set([
+    definition.channelName.replace(/\s+/g, ''),
+    '건강정보',
+    '시니어건강',
+    '쇼츠',
+    ...titleTags,
+  ])].slice(0, 12);
+
+  const visibleText = card.items.map((item) => limit(headline(item), 120)).filter(Boolean).slice(0, 12);
+  const imageSummary = limit(title + (clean(card.basis) ? ' — ' + clean(card.basis) : ''), 300);
+
+  const profiles = [
+    'Warm intimate felt piano solo, sparse rounded notes, reflective and unhurried.',
+    'Gentle acoustic piano solo, flowing melody, quietly hopeful and light.',
+    'Warm nylon acoustic guitar solo, smooth fingerstyle phrases, calm and grounded.',
+    'Gentle acoustic piano with soft bowed strings, reassuring and steady.',
+  ];
+  const profileIndex = Number.parseInt(String(base.image_sha256 || '0').slice(0, 8), 16) % profiles.length;
+  const bgmPrompt = [
+    profiles[Number.isFinite(profileIndex) ? profileIndex : 0],
+    'Premium Korean health-program mood for adults over 50, slow around 76 BPM.',
+    'No voice, vocals, singing, lyrics, speech, humming, choir, percussion, drums, synth, pad, ambient wash, or electronic sounds.',
+  ].join(' ').slice(0, 480);
+
+  return [{
+    json: {
+      ...base,
+      ai_source: 'card_news_caption',
+      vision_response: null,
+      vision_analysis: {
+        image_summary: imageSummary,
+        visible_text: visibleText,
+        confidence: 'high',
+      },
+      pack: {
+        hook_title: title,
+        caption: title,
+        description,
+        tags,
+        pinned_comment: pinnedComment,
+        image_summary: imageSummary,
+        visible_text: visibleText,
+        vision_confidence: 'high',
+      },
+      image_url: base.claimed_path,
+      image_state: 'local_finished_image',
+      image_ready: true,
+      video_source_id: base.image_sha256,
+      bgm_prompt: bgmPrompt,
+      bgm_payload: {
+        prompt: bgmPrompt,
+        model: base.config?.kie_bgm_model || 'V5_5',
+        customMode: false,
+        instrumental: true,
+      },
+    },
+  }];
+}
+
 function parseVisionCopyRuntime(definition) {
   const base = $('Build Vision Copy Request').first().json;
   // KIE가 JSON 본문을 text/plain 등으로 돌려주면 n8n HTTP 노드가 파싱하지 않고
@@ -569,6 +775,7 @@ function buildWorkflow(channel) {
     channelPurpose: channel.channelPurpose,
     dropRoot: channel.dropRoot,
     selectShortsByAspect: channel.selectShortsByAspect === true,
+    captionRoot: channel.captionRoot || null,
   };
   const positions = {
     'Use Live BGM?': [2160, 300],
@@ -614,13 +821,28 @@ function buildWorkflow(channel) {
     createNode(channel.workflowId, 'Claim Next Image', 'n8n-nodes-base.code', 2, [240, 120], {
       jsCode: codeFor(claimNextImageRuntime, definition),
     }),
-    createNode(channel.workflowId, 'Read Claimed Image', 'n8n-nodes-base.readWriteFile', 1, [480, 120], {
-      fileSelector: '={{$json.claimed_path}}',
+    ...(channel.captionRoot ? [
+      createNode(channel.workflowId, 'Load Card Copy', 'n8n-nodes-base.code', 2, [480, 120], {
+        jsCode: codeFor(loadCardCopyRuntime, definition),
+      }),
+      createNode(channel.workflowId, 'Card Copy Found?', 'n8n-nodes-base.if', 1, [720, 120], {
+        conditions: {
+          boolean: [
+            { value1: '={{$json.card_copy_found}}', value2: true },
+          ],
+        },
+      }),
+      createNode(channel.workflowId, 'Build Pack From Card Copy', 'n8n-nodes-base.code', 2, [960, 0], {
+        jsCode: codeFor(buildPackFromCardCopyRuntime, definition),
+      }),
+    ] : []),
+    createNode(channel.workflowId, 'Read Claimed Image', 'n8n-nodes-base.readWriteFile', 1, [960, 320], {
+      fileSelector: "={{$('Claim Next Image').first().json.claimed_path}}",
       options: {
         dataPropertyName: 'data',
       },
     }),
-    createNode(channel.workflowId, 'Upload Image for Vision', 'n8n-nodes-base.httpRequest', 4.2, [720, 120], {
+    createNode(channel.workflowId, 'Upload Image for Vision', 'n8n-nodes-base.httpRequest', 4.2, [1200, 320], {
       method: 'POST',
       url: 'https://kieai.redpandaai.co/api/file-stream-upload',
       authentication: 'genericCredentialType',
@@ -636,10 +858,10 @@ function buildWorkflow(channel) {
       },
       options: {},
     }, { credentials: KIE_CREDENTIAL, retryOnFail: true, maxTries: 3, waitBetweenTries: 10000 }),
-    createNode(channel.workflowId, 'Build Vision Copy Request', 'n8n-nodes-base.code', 2, [960, 120], {
+    createNode(channel.workflowId, 'Build Vision Copy Request', 'n8n-nodes-base.code', 2, [1440, 320], {
       jsCode: codeFor(buildVisionCopyRequestRuntime, definition),
     }),
-    createNode(channel.workflowId, 'Analyze Image with GPT-5.2', 'n8n-nodes-base.httpRequest', 4.2, [1200, 120], {
+    createNode(channel.workflowId, 'Analyze Image with GPT-5.2', 'n8n-nodes-base.httpRequest', 4.2, [1680, 320], {
       method: 'POST',
       url: 'https://api.kie.ai/gpt-5-2/v1/chat/completions',
       authentication: 'genericCredentialType',
@@ -651,7 +873,7 @@ function buildWorkflow(channel) {
       jsonBody: '={{ JSON.stringify($json.vision_request) }}',
       options: {},
     }, { credentials: KIE_CREDENTIAL, retryOnFail: true, maxTries: 3, waitBetweenTries: 10000 }),
-    createNode(channel.workflowId, 'Parse Vision Copy', 'n8n-nodes-base.code', 2, [1440, 120], {
+    createNode(channel.workflowId, 'Parse Vision Copy', 'n8n-nodes-base.code', 2, [1920, 320], {
       jsCode: codeFor(parseVisionCopyRuntime, definition),
     }),
   ];
@@ -681,7 +903,18 @@ function buildWorkflow(channel) {
   }
 
   connect('Manual Trigger', 'Claim Next Image');
-  connect('Claim Next Image', 'Read Claimed Image');
+  // 캡션 파일에 문안 원본이 있으면 vision을 건너뛴다. 없으면 기존 vision 경로로 흐른다.
+  // Read Claimed Image는 vision 업로드에만 쓰이므로 폴백 쪽에만 있으면 된다
+  // (ffmpeg 렌더는 claimed_path를 직접 읽는다).
+  if (definition.captionRoot) {
+    connect('Claim Next Image', 'Load Card Copy');
+    connect('Load Card Copy', 'Card Copy Found?');
+    connect('Card Copy Found?', 'Build Pack From Card Copy', 0);
+    connect('Card Copy Found?', 'Read Claimed Image', 1);
+    connect('Build Pack From Card Copy', 'Use Live BGM?');
+  } else {
+    connect('Claim Next Image', 'Read Claimed Image');
+  }
   connect('Read Claimed Image', 'Upload Image for Vision');
   connect('Upload Image for Vision', 'Build Vision Copy Request');
   connect('Build Vision Copy Request', 'Analyze Image with GPT-5.2');

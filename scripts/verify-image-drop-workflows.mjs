@@ -17,6 +17,7 @@ const cases = [
     dropRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/40_카드뉴스_이미지',
     youtubeCredentialId: 'l7YqloikIKiIOtOq',
     youtubeCredentialName: 'YouTube account',
+    captionRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/50_캡션',
   },
   {
     file: 'n8n_image_drop_longevity_manual.json',
@@ -114,6 +115,132 @@ function executeCodeNodeWithDefinition(workflow, nodeName, definition, inputJson
   return run(require, { first: () => ({ json: inputJson }) }, () => {
     throw new Error(`${nodeName}: unexpected cross-node lookup in behavior test`);
   });
+}
+
+// 캡션 문안 경로. 이미지에서 글자를 역산하지 않고 카드뉴스 캡션 원문을 쓴다.
+// 여기서 지키는 계약: 원문 항목이 하나도 안 빠지고, 고정 댓글이 260자 이내로
+// 채널 마무리 줄로 끝나고, 캡션이 없으면 vision 경로로 폴백한다.
+function verifyCardCopyPath(workflow, testCase) {
+  const closing = '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.';
+  const etcRoot = path.join(root, 'etc');
+  fs.mkdirSync(etcRoot, { recursive: true });
+  const captionRoot = fs.mkdtempSync(path.join(etcRoot, 'card-copy-verify-'));
+  assert.ok(captionRoot.startsWith(etcRoot + path.sep));
+
+  const connections = workflow.connections;
+  assert.deepEqual(
+    connections['Claim Next Image'].main[0].map((c) => c.node),
+    ['Load Card Copy'],
+    `${testCase.file}: Claim Next Image must hand off to the caption lookup`,
+  );
+  assert.deepEqual(
+    connections['Card Copy Found?'].main[0].map((c) => c.node),
+    ['Build Pack From Card Copy'],
+    `${testCase.file}: caption-found branch must skip vision`,
+  );
+  assert.deepEqual(
+    connections['Card Copy Found?'].main[1].map((c) => c.node),
+    ['Read Claimed Image'],
+    `${testCase.file}: caption-missing branch must fall back to the vision chain`,
+  );
+  assert.deepEqual(
+    connections['Build Pack From Card Copy'].main[0].map((c) => c.node),
+    ['Use Live BGM?'],
+    `${testCase.file}: caption pack must rejoin the BGM stage`,
+  );
+
+  const definition = {
+    key: 'haru',
+    channelName: testCase.channelName,
+    channelPurpose: 'fixture',
+    dropRoot: testCase.dropRoot,
+    selectShortsByAspect: true,
+    captionRoot,
+  };
+  const claimed = {
+    original_image_name: '07_검증용 카드_.png',
+    claimed_path: path.join(testCase.dropRoot, '처리중', 'fixture.png'),
+    image_sha256: 'abcdef0123456789',
+    config: { channel_name: testCase.channelName, kie_bgm_model: 'V5_5' },
+  };
+
+  try {
+    // 라벨 종류를 섞어 둔다: 순위, 문자 등급, 우리말 등급, 설명 없는 항목.
+    fs.writeFileSync(path.join(captionRoot, '07_검증용 카드.caption.txt'), [
+      '검증용 카드 제목',
+      '',
+      '기준: 검증용 분류 기준',
+      '',
+      '1. 첫째 항목 (1위)',
+      '→ 첫째 항목의 이유예요',
+      '⚠ 첫째 항목 주의사항이에요',
+      '',
+      '2. [S] 둘째 항목',
+      '→ 둘째 항목의 이유예요',
+      '',
+      '3. 셋째 항목 (추천)',
+      '',
+      '4. 넷째 항목',
+      '→ 넷째 항목의 이유예요',
+      '',
+      '──────────',
+      '🔖 저장해두면 좋아요',
+      '※ 일반적인 건강 정보예요.',
+    ].join('\n'), 'utf8');
+
+    const loaded = executeCodeNodeWithDefinition(workflow, 'Load Card Copy', definition, claimed)[0].json;
+    assert.equal(loaded.card_copy_found, true, `${testCase.file}: caption lookup missed the NN_ prefix match`);
+    assert.equal(loaded.card_copy.items.length, 4, `${testCase.file}: caption items were dropped`);
+    assert.equal(loaded.card_copy.title, '검증용 카드 제목');
+    assert.equal(loaded.card_copy.basis, '검증용 분류 기준');
+    assert.ok(
+      loaded.card_copy.items.every((item) => !/저장해두면|일반적인 건강 정보/.test(item.name)),
+      `${testCase.file}: CTA/disclaimer block leaked into the items`,
+    );
+
+    const built = executeCodeNodeWithDefinition(workflow, 'Build Pack From Card Copy', definition, loaded)[0].json;
+    assert.equal(built.ai_source, 'card_news_caption');
+    assert.equal(built.image_ready, true);
+    assert.equal(built.image_url, claimed.claimed_path);
+    assert.equal(built.pack.hook_title, '검증용 카드 제목');
+    const description = built.pack.description;
+    // 라벨 종류별 렌더 규칙: 순위는 앞에, 문자 등급은 대괄호, 나머지는 괄호 뒤.
+    assert.match(description, /1위 첫째 항목 — 첫째 항목의 이유예요 \(주의: 첫째 항목 주의사항이에요\)/);
+    assert.match(description, /\[S\] 둘째 항목 — 둘째 항목의 이유예요/);
+    assert.match(description, /셋째 항목 \(추천\)/);
+    assert.match(description, /넷째 항목 — 넷째 항목의 이유예요/);
+    assert.ok(description.includes(closing), `${testCase.file}: description lost the channel closing line`);
+    assert.ok(description.split('\n').length >= 5, `${testCase.file}: description collapsed onto one line`);
+
+    const commentLength = Array.from(built.pack.pinned_comment).length;
+    assert.ok(commentLength <= 260, `${testCase.file}: pinned comment is ${commentLength} chars, over the 260 cap`);
+    assert.ok(
+      built.pack.pinned_comment.endsWith(closing),
+      `${testCase.file}: pinned comment must end with the channel closing line`,
+    );
+    assert.ok(built.pack.tags.includes('건강정보') && built.pack.tags.length <= 12);
+
+    assert.throws(() => executeCodeNodeWithDefinition(workflow, 'Build Pack From Card Copy', definition, {
+      ...loaded,
+      card_copy: { ...loaded.card_copy, items: [{ rank: 1, label: '', name: '약을 끊어도 괜찮아요', description: '무조건 낫습니다', note: '' }] },
+    }), /치료 보장 또는 진료 회피/, `${testCase.file}: caption path lost the medical-claim block`);
+
+    // 접두어가 없거나 캡션이 없으면 vision 경로로 흘러야 한다.
+    const noPrefix = executeCodeNodeWithDefinition(workflow, 'Load Card Copy', definition, {
+      ...claimed,
+      original_image_name: '접두어없는카드.png',
+    })[0].json;
+    assert.equal(noPrefix.card_copy_found, false);
+    assert.ok(noPrefix.card_copy_skip_reason.length > 0);
+
+    const unknownPrefix = executeCodeNodeWithDefinition(workflow, 'Load Card Copy', definition, {
+      ...claimed,
+      original_image_name: '99_없는 번호_.png',
+    })[0].json;
+    assert.equal(unknownPrefix.card_copy_found, false);
+  } finally {
+    fs.rmSync(captionRoot, { recursive: true, force: true });
+  }
 }
 
 function verifyImageLifecycle(workflow, testCase) {
@@ -263,6 +390,7 @@ for (const testCase of cases) {
   }), /치료 보장 또는 진료 회피/);
 
   verifyImageLifecycle(workflow, testCase);
+  if (testCase.captionRoot) verifyCardCopyPath(workflow, testCase);
 }
 
 console.log(JSON.stringify({
@@ -276,6 +404,7 @@ console.log(JSON.stringify({
     'vision_upload',
     'vision_copy_parsing',
     'image_claim_and_archive',
+    'card_copy_from_caption',
     'medical_claim_block',
     'bgm_contract',
     'public_upload_contract',
