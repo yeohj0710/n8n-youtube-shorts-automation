@@ -22,9 +22,11 @@ const channels = [
     channelName: '하루건강약사',
     channelPurpose: '50대 이후 시청자가 영양, 음식, 영양제 성분, 몸 신호, 피부와 활력에 관한 선택을 이해하도록 돕는 건강정보 채널',
     dropRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/40_카드뉴스_이미지',
-    // 카드뉴스 파이프라인이 4:5와 9:16을 한 폴더에 저장하고 파일명으로 구분한다.
-    // 표기가 없는 파일은 쇼츠가 아닐 수 있으므로 9:16 표기를 요구한다.
-    requireShortsMarker: true,
+    // 카드뉴스 파이프라인이 4:5(인스타)와 9:16(쇼츠)을 한 폴더에 저장한다.
+    // 파일명 표기에 기대지 않고 이미지 픽셀 크기를 읽어 9:16만 집는다
+    // (사용자가 매번 이름 붙이기 귀찮다고 함, 2026-07-30). 파일명 표기는
+    // 있으면 우선 존중한다: 인스타/4x5 → 제외, 9x16/유튜브/쇼츠 → 포함.
+    selectShortsByAspect: true,
   },
   {
     key: 'longevity',
@@ -160,18 +162,62 @@ function claimNextImageRuntime(definition) {
 
     // 같은 폴더에 인스타용 4:5 카드가 섞여 있으므로 세로 쇼츠(9:16)만 집는다.
     // 파일명에 4x5 / 4:5 / 인스타가 들어간 파일은 쇼츠 대상이 아니다.
-    // 카드뉴스 파이프라인 폴더는 표기 없는 파일이 4:5일 수 있어 9:16 표기를 요구한다.
+    // selectShortsByAspect 채널은 파일명 표기 없이도 이미지 헤더에서 픽셀 크기를
+    // 읽어 판정한다. 4:5=0.80, 9:16=0.5625이므로 0.7을 경계로 나눈다.
+    function imageDimensions(buffer) {
+      try {
+        if (buffer.length > 24 && buffer.readUInt32BE(0) === 0x89504e47) {
+          return { width: buffer.readUInt32BE(16), height: buffer.readUInt32BE(20) };
+        }
+        if (buffer.length > 4 && buffer[0] === 0xff && buffer[1] === 0xd8) {
+          let i = 2;
+          while (i + 9 < buffer.length) {
+            if (buffer[i] !== 0xff) { i += 1; continue; }
+            const marker = buffer[i + 1];
+            if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
+              return { width: buffer.readUInt16BE(i + 7), height: buffer.readUInt16BE(i + 5) };
+            }
+            if (marker === 0xd8 || marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) { i += 2; continue; }
+            i += 2 + buffer.readUInt16BE(i + 2);
+          }
+          return null;
+        }
+        if (buffer.length > 30 && buffer.toString('ascii', 0, 4) === 'RIFF' && buffer.toString('ascii', 8, 12) === 'WEBP') {
+          const chunk = buffer.toString('ascii', 12, 16);
+          if (chunk === 'VP8X') {
+            return {
+              width: 1 + (buffer[24] | (buffer[25] << 8) | (buffer[26] << 16)),
+              height: 1 + (buffer[27] | (buffer[28] << 8) | (buffer[29] << 16)),
+            };
+          }
+          if (chunk === 'VP8 ') {
+            return { width: buffer.readUInt16LE(26) & 0x3fff, height: buffer.readUInt16LE(28) & 0x3fff };
+          }
+          if (chunk === 'VP8L') {
+            const bits = buffer.readUInt32LE(21);
+            return { width: 1 + (bits & 0x3fff), height: 1 + ((bits >> 14) & 0x3fff) };
+          }
+        }
+      } catch (error) { /* 판정 불가 파일은 후보에서 제외 */ }
+      return null;
+    }
+
     const instagramOnly = /(4x5|4:5|인스타)/i;
     const shortsMarker = /(9x16|9:16|유튜브|쇼츠)/i;
-    const requireShortsMarker = definition.requireShortsMarker === true;
+    const selectShortsByAspect = definition.selectShortsByAspect === true;
     const candidates = fs.readdirSync(dropRoot, { withFileTypes: true })
       .filter((entry) => entry.isFile() && supported.has(path.extname(entry.name).toLowerCase()))
       .filter((entry) => !instagramOnly.test(entry.name))
-      .filter((entry) => !requireShortsMarker || shortsMarker.test(entry.name))
+      .filter((entry) => {
+        if (!selectShortsByAspect) return true;
+        if (shortsMarker.test(entry.name)) return true;
+        const size = imageDimensions(fs.readFileSync(path.join(dropRoot, entry.name)));
+        return size !== null && size.height > 0 && size.width / size.height < 0.7;
+      })
       .map((entry) => entry.name);
     if (!candidates.length) {
-      throw new Error(definition.channelName + ' 이미지 폴더에 처리할 세로(9:16) 이미지가 없습니다. ' + (requireShortsMarker
-        ? '파일명에 "(유튜브 9x16)" 표기가 있는 카드만 처리합니다: '
+      throw new Error(definition.channelName + ' 이미지 폴더에 처리할 세로(9:16) 이미지가 없습니다. ' + (selectShortsByAspect
+        ? '이미지 크기를 읽어 9:16 비율만 처리하며, 파일명에 4x5·인스타가 들어간 카드는 제외됩니다: '
         : '파일명에 4x5·인스타가 들어간 카드는 제외됩니다: ') + dropRoot);
     }
 
@@ -512,7 +558,7 @@ function buildWorkflow(channel) {
     channelName: channel.channelName,
     channelPurpose: channel.channelPurpose,
     dropRoot: channel.dropRoot,
-    requireShortsMarker: channel.requireShortsMarker === true,
+    selectShortsByAspect: channel.selectShortsByAspect === true,
   };
   const positions = {
     'Use Live BGM?': [2160, 300],
