@@ -322,7 +322,17 @@ function buildVisionCopyRequestRuntime(definition) {
 
 function parseVisionCopyRuntime(definition) {
   const base = $('Build Vision Copy Request').first().json;
-  const response = $input.first().json || {};
+  // KIE가 JSON 본문을 text/plain 등으로 돌려주면 n8n HTTP 노드가 파싱하지 않고
+  // 문자열 그대로 json.data에 담아 넘긴다. 그러면 choices를 못 찾아 "분석 결과가
+  // 비어 있습니다"로 죽는다 — 정작 호출은 성공했고 크레딧도 이미 쓴 상태다.
+  // (2026-07-30 실제 실행에서 발생.) 그래서 문자열로 온 경우를 먼저 푼다.
+  let response = $input.first().json || {};
+  if (typeof response === 'string') {
+    try { response = JSON.parse(response); } catch (error) { response = { data: response }; }
+  }
+  if (typeof response.data === 'string' && response.data.trim().startsWith('{')) {
+    try { response = JSON.parse(response.data); } catch (error) { /* 아래에서 빈 응답으로 처리 */ }
+  }
   let content = response.choices?.[0]?.message?.content ?? response.output_text ?? response.content ?? '';
   if (Array.isArray(content)) {
     content = content.map((part) => part?.text || part?.content || '').filter(Boolean).join('\n');
