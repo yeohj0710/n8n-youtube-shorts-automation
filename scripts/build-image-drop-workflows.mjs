@@ -449,7 +449,7 @@ function buildPackFromCardCopyRuntime(definition) {
   const descriptionRows = card.items.map((item) => {
     const parts = [headline(item)];
     if (clean(item.description)) parts.push(clean(item.description));
-    const row = parts.join(' — ');
+    const row = parts.join(' - ');
     return clean(item.note) ? row + ' (주의: ' + clean(item.note) + ')' : row;
   });
 
@@ -458,30 +458,24 @@ function buildPackFromCardCopyRuntime(definition) {
     throw new Error('캡션 문안에 치료 보장 또는 진료 회피 표현이 있어 게시를 중단했습니다.');
   }
 
+  // 메인 워크플로우(Build Viral Rank Pack Request)의 조립 방식을 그대로 쓴다.
+  // 설명: [제목, 부제, 항목들(빈 줄 구분), 마무리]를 빈 줄로 이어붙임.
+  // 고정 댓글: '오늘 영상 핵심 정리' / 제목 / 빈 줄 / 항목들(한 줄씩) / 빈 줄 / 마무리.
+  // 구분자는 ' - '이고 항목마다 이유를 붙인다. 한쪽만 바꾸면 두 회로 문안이 갈린다.
+  const NL = '\n';
   const closing = definition.key === 'haru'
     ? '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.'
     : '건강하게 나이 드는 습관을 매일 하나씩 전해 드려요. 구독해 두시면 놓치지 않고 받아보실 수 있어요.';
-  const hashtags = ['#건강정보', '#쇼츠', '#' + definition.channelName.replace(/\s+/g, '')].join(' ');
   const description = limit([
     title,
-    clean(card.basis) ? '기준: ' + clean(card.basis) : '',
-    descriptionRows.join('\n'),
+    clean(card.basis),
+    descriptionRows.join(NL + NL),
     closing,
-    hashtags,
-  ].filter(Boolean).join('\n\n'), 4500);
-
-  // 고정 댓글은 260자 이내이고 채널 마무리 줄로 끝나야 한다. 마무리 줄 자리를 먼저
-  // 확보한 뒤 남는 만큼만 항목 요약을 넣는다.
-  const commentRoom = 260 - closing.length - 2;
-  const summaryRows = [];
-  let used = title.length + 1;
-  for (const item of card.items) {
-    const row = headline(item);
-    if (used + row.length + 2 > commentRoom) break;
-    summaryRows.push(row);
-    used += row.length + 2;
-  }
-  const pinnedComment = limit([title, summaryRows.join(', '), closing].filter(Boolean).join('\n'), 260);
+  ].filter(Boolean).join(NL + NL), 4500);
+  const pinnedComment = limit(
+    ['오늘 영상 핵심 정리', title, ''].concat(descriptionRows).concat(['', closing]).join(NL),
+    1000,
+  );
 
   const titleTags = title.split(/\s+/)
     .map((token) => token.replace(/[^0-9A-Za-z가-힣]/g, ''))

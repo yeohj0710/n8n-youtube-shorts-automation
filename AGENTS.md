@@ -402,6 +402,17 @@ the content (당뇨 신호, 영양제 조합) — which is not a defect.
 Titles are used exactly as the caption has them. They are the user's curated
 titles; do not append counts or rewrite them into hooks mechanically.
 
+Description and pinned comment are assembled exactly like the main workflow's
+`Build Viral Rank Pack Request` (2026-07-30, user asked for parity): rows are
+`<label><name> - <reason>`, the description joins title / basis / rows / closing
+with blank lines and blank lines between rows, and the pinned comment is
+`오늘 영상 핵심 정리` / title / blank / one row per line / blank / closing. No
+hashtag block, no em dash, and no length truncation — an earlier version packed
+the rows onto one comma-separated line to fit 260 characters and it read badly.
+The 260-character pinned-comment guidance above applies to the generation path's
+reviewer; the prepared/caption builders do not truncate. Change the main
+workflow's copy first, then mirror it here.
+
 `verify-image-drop-workflows.mjs` covers this as `card_copy_from_caption`: the
 branch wiring, all four label kinds, the 260-char pinned-comment cap ending in
 the channel closing line, the medical-claim block, and fallback when the prefix

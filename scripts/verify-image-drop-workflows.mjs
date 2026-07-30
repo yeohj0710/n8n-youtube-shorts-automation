@@ -210,18 +210,26 @@ function verifyCardCopyPath(workflow, testCase) {
     assert.equal(built.pack.hook_title, '검증용 카드 제목');
     const description = built.pack.description;
     // 라벨 종류별 렌더 규칙: 순위는 앞에, 문자 등급은 대괄호, 나머지는 괄호 뒤.
-    assert.match(description, /1위 첫째 항목 — 첫째 항목의 이유예요 \(주의: 첫째 항목 주의사항이에요\)/);
-    assert.match(description, /\[S\] 둘째 항목 — 둘째 항목의 이유예요/);
+    // 구분자는 메인 워크플로우와 같은 ' - '다.
+    assert.match(description, /1위 첫째 항목 - 첫째 항목의 이유예요 \(주의: 첫째 항목 주의사항이에요\)/);
+    assert.match(description, /\[S\] 둘째 항목 - 둘째 항목의 이유예요/);
     assert.match(description, /셋째 항목 \(추천\)/);
-    assert.match(description, /넷째 항목 — 넷째 항목의 이유예요/);
+    assert.match(description, /넷째 항목 - 넷째 항목의 이유예요/);
     assert.ok(description.includes(closing), `${testCase.file}: description lost the channel closing line`);
     assert.ok(description.split('\n').length >= 5, `${testCase.file}: description collapsed onto one line`);
+    // 메인과 같은 구조: 항목 사이 빈 줄, 섹션 사이 빈 줄.
+    assert.match(description, /^검증용 카드 제목\n\n검증용 분류 기준\n\n1위 첫째 항목/);
+    assert.ok(description.endsWith(closing), `${testCase.file}: description must end with the closing line`);
 
-    const commentLength = Array.from(built.pack.pinned_comment).length;
-    assert.ok(commentLength <= 260, `${testCase.file}: pinned comment is ${commentLength} chars, over the 260 cap`);
+    // 고정 댓글도 메인 워크플로우 조립을 그대로 따른다: 머리말 / 제목 / 빈 줄 /
+    // 항목 한 줄씩 / 빈 줄 / 마무리. 길이를 잘라 붙이지 않는다.
+    const comment = built.pack.pinned_comment;
+    assert.ok(comment.startsWith('오늘 영상 핵심 정리\n검증용 카드 제목\n\n'), `${testCase.file}: pinned comment header does not match the main workflow`);
+    assert.ok(comment.endsWith('\n\n' + closing), `${testCase.file}: pinned comment must end with a blank line then the closing line`);
+    assert.match(comment, /\n1위 첫째 항목 - 첫째 항목의 이유예요/);
     assert.ok(
-      built.pack.pinned_comment.endsWith(closing),
-      `${testCase.file}: pinned comment must end with the channel closing line`,
+      !/\n\n1위[\s\S]*\n\n\[S\]/.test(comment),
+      `${testCase.file}: pinned comment rows must be single-spaced, unlike the description`,
     );
     assert.ok(built.pack.tags.includes('건강정보') && built.pack.tags.length <= 12);
 
