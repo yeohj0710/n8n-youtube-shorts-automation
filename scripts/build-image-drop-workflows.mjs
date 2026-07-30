@@ -60,6 +60,11 @@ const channels = [
     channelName: '건강장수비결',
     channelPurpose: '50대 이후 시청자가 식사, 운동, 수면, 혈압, 혈당과 관절을 관리해 일상 기능과 자립을 오래 지키도록 돕는 건강정보 채널',
     dropRoot: 'C:/dev/n8n-youtube-shorts-automation/건강장수비결 이미지',
+    // 하루건강약사와 같은 방식(2026-07-30 사용자 요청). 이 채널은 카드뉴스
+    // 파이프라인이 없어 캡션을 받을 폴더가 없었으므로 drop 폴더 아래에 만든다.
+    // 이미지와 같은 `NN_` 접두어를 쓰는 `NN_제목.caption.txt`를 여기 두면 된다.
+    selectShortsByAspect: true,
+    captionRoot: 'C:/dev/n8n-youtube-shorts-automation/건강장수비결 이미지/캡션',
   },
 ];
 

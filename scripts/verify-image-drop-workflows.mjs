@@ -27,6 +27,7 @@ const cases = [
     dropRoot: 'C:/dev/n8n-youtube-shorts-automation/건강장수비결 이미지',
     youtubeCredentialId: 'kVQv10ElQmt2iazM',
     youtubeCredentialName: 'YouTube account 2',
+    captionRoot: 'C:/dev/n8n-youtube-shorts-automation/건강장수비결 이미지/캡션',
   },
 ];
 
@@ -126,7 +127,11 @@ function executeCodeNodeWithDefinition(workflow, nodeName, definition, inputJson
 // 여기서 지키는 계약: 원문 항목이 하나도 안 빠지고, 고정 댓글이 260자 이내로
 // 채널 마무리 줄로 끝나고, 캡션이 없으면 vision 경로로 폴백한다.
 function verifyCardCopyPath(workflow, testCase) {
-  const closing = '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.';
+  // 하루건강약사는 인스타에도 올려 '팔로우', 건강장수비결은 유튜브 전용이라 '구독'.
+  const channelKey = testCase.id === 'haruImageDropShorts01' ? 'haru' : 'longevity';
+  const closing = channelKey === 'haru'
+    ? '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.'
+    : '건강하게 나이 드는 습관을 매일 하나씩 전해 드려요. 구독해 두시면 놓치지 않고 받아보실 수 있어요.';
   const etcRoot = path.join(root, 'etc');
   fs.mkdirSync(etcRoot, { recursive: true });
   const captionRoot = fs.mkdtempSync(path.join(etcRoot, 'card-copy-verify-'));
@@ -155,7 +160,7 @@ function verifyCardCopyPath(workflow, testCase) {
   );
 
   const definition = {
-    key: 'haru',
+    key: channelKey,
     channelName: testCase.channelName,
     channelPurpose: 'fixture',
     dropRoot: testCase.dropRoot,
