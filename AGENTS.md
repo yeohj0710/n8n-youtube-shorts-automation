@@ -367,10 +367,22 @@ Then restart n8n. `scripts\start-n8n.ps1` already sets `$CardDropFolder` to the 
 
 `하루건강약사 - 완성 이미지 기반 쇼츠` claims from `G:\내 드라이브\여형준님\27 영상 데이터\40_카드뉴스_이미지`, the same folder where the card-news pipeline saves finished cards — so the user drops nothing by hand. That folder holds BOTH aspect ratios. The haru channel definition sets `selectShortsByAspect: true`: `Claim Next Image` reads each candidate's pixel size from the file header (PNG/JPEG/WebP, no external deps — n8n Code nodes only get builtins) and takes only files with width/height < 0.7 (9:16 = 0.5625, 4:5 = 0.80). **Filenames don't matter for haru anymore** — the user found per-file naming tedious (2026-07-30). Marker names are still respected as overrides when present: `/(4x5|4:5|인스타)/i` always excludes, `/(9x16|9:16|유튜브|쇼츠)/i` includes without sniffing. A file whose dimensions can't be parsed is excluded (safe default: never publish an unknown). The pre-aspect history: a marker-less 4:5 slipped through the exclude-only filter and would have been published, which led to a require-marker phase, which lost to naming fatigue.
 
-건강장수비결 works the same way as of 2026-07-30 (the user asked for parity): it
-also sets `selectShortsByAspect` and now takes 9:16 only, so a 4:5 dropped there
-is skipped rather than blur-padded. Its images are hand-dropped, so the number
-prefix is on the person doing the dropping — see `건강장수비결 이미지\README.txt`.
+Both channels feed from the same card-news pipeline as of 2026-07-30, split by a
+channel folder under 40:
+
+- 하루건강약사: `…\40_카드뉴스_이미지\하루건강약사`
+- 건강장수비결: `…\40_카드뉴스_이미지\건강장수비결`
+- Captions for both: `…\50_캡션` (flat, matched by the `NN_` number)
+
+The split is not cosmetic. Both circuits pick a random file from their drop root,
+so pointing them at one shared folder publishes 하루건강약사 cards to 건강장수비결
+and back. Do not collapse these folders. The local
+`C:\dev\n8n-youtube-shorts-automation\건강장수비결 이미지` folder is retired; its
+README points at the new location.
+
+건강장수비결 also sets `selectShortsByAspect`, so it takes 9:16 only and skips a
+4:5 rather than blur-padding it — which is what you want now that the Instagram
+twin lands in the same tree.
 
 Claiming on Google Drive was verified on 2026-07-25 (`fs.renameSync` into `처리중` works). Aspect selection verified 2026-07-30 against the user's real files: 8 runs claimed only the 941x1672 card and never the 1122x1402 one. 건강장수비결 still uses its local `건강장수비결 이미지` folder.
 
@@ -416,9 +428,12 @@ The 260-character pinned-comment guidance above applies to the generation path's
 reviewer; the prepared/caption builders do not truncate. Change the main
 workflow's copy first, then mirror it here.
 
-건강장수비결 has no card-news pipeline, so its caption folder is
-`건강장수비결 이미지\캡션` — same `NN_` prefix rule, format documented in that
-folder's README. Its closing line stays 구독 (YouTube only); haru's is 팔로우.
+Both channels read captions from the same `50_캡션` folder — the pipeline numbers
+materials in one global sequence (`01B_시작 프롬프트 - 건강장수비결 MD 생성.md`
+produces 건강장수비결 material alongside haru's), so a number identifies a card
+regardless of channel. The closing line is the per-channel part: haru posts the
+same card to Instagram so it asks for 팔로우, 건강장수비결 is YouTube-only and
+keeps 구독.
 
 `verify-image-drop-workflows.mjs` covers this as `card_copy_from_caption`: the
 branch wiring, all four label kinds, the 260-char pinned-comment cap ending in

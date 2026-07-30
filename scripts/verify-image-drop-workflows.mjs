@@ -14,7 +14,7 @@ const cases = [
     id: 'haruImageDropShorts01',
     name: '하루건강약사 - 완성 이미지 기반 쇼츠',
     channelName: '하루건강약사',
-    dropRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/40_카드뉴스_이미지',
+    dropRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/40_카드뉴스_이미지/하루건강약사',
     youtubeCredentialId: 'l7YqloikIKiIOtOq',
     youtubeCredentialName: 'YouTube account',
     captionRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/50_캡션',
@@ -24,10 +24,10 @@ const cases = [
     id: 'longevityImageDropShorts01',
     name: '건강장수비결 - 완성 이미지 기반 쇼츠',
     channelName: '건강장수비결',
-    dropRoot: 'C:/dev/n8n-youtube-shorts-automation/건강장수비결 이미지',
+    dropRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/40_카드뉴스_이미지/건강장수비결',
     youtubeCredentialId: 'kVQv10ElQmt2iazM',
     youtubeCredentialName: 'YouTube account 2',
-    captionRoot: 'C:/dev/n8n-youtube-shorts-automation/건강장수비결 이미지/캡션',
+    captionRoot: 'G:/내 드라이브/여형준님/27 영상 데이터/50_캡션',
   },
 ];
 
