@@ -273,9 +273,11 @@ function verifyBgmParityWithMainWorkflow(workflow, testCase) {
 
   const mainCode = mainFile.workflow.nodes.find((n) => n.name === 'Prepare Image and BGM Payloads').parameters.jsCode;
   const requiredLines = [
+    'Bright, cheerful, warm, optimistic major-key instrumental background music, gently lively at about 92-106 BPM.',
     'No voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh/aah, vocal chops, or wordless vocals.',
     'Allowed instruments only: felt piano, gentle acoustic piano, nylon acoustic guitar, soft bowed strings.',
     'No synth, pad, ambient wash, breathy texture, percussion, drums, brushes, marimba, mallets, electronic or fusion sounds.',
+    'No dark, sad, melancholic, ominous, tense, sleepy, or minor-key mood.',
   ];
   for (const line of requiredLines) {
     assert.ok(mainCode.includes(line), `main workflow no longer carries the BGM line "${line}" — update requiredLines here first`);
@@ -467,8 +469,15 @@ for (const testCase of cases) {
   assert.ok(parsed.pack.tags.every((tag) => !tag.startsWith('#')));
   assert.equal(parsed.pack.pinned_comment, exactComment);
   assert.equal(parsed.vision_analysis.confidence, 'high');
+  assert.equal(workflow.nodes.find((node) => node.name === 'KIE Create BGM Task')?.parameters?.url, 'https://api.kie.ai/api/v1/generate');
+  assert.equal(parsed.bgm_payload.customMode, true);
   assert.equal(parsed.bgm_payload.instrumental, true);
-  assert.ok(parsed.bgm_payload.prompt.length < 500);
+  assert.ok(parsed.bgm_payload.style.length <= 1000);
+  assert.match(parsed.bgm_payload.style, /Bright, cheerful, warm, optimistic major-key/i);
+  assert.match(parsed.bgm_payload.style, /No voice, vocals.*humming.*wordless vocals/i);
+  assert.ok(parsed.bgm_payload.title.length <= 80);
+  assert.match(parsed.bgm_payload.negativeTags, /voice.*humming.*wordless vocals/i);
+  assert.equal(parsed.bgm_payload.prompt, undefined);
   assert.equal(parsed.bgm_payload.model, 'V5_5');
   assert.equal(parsed.ai_source, 'kie_gpt_5_2_vision');
 

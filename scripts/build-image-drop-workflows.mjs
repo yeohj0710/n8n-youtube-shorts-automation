@@ -17,19 +17,22 @@ const KIE_CREDENTIAL = {
 // 섞인 BGM이 나왔다(2026-07-30 사용자 지적). verify-image-drop-workflows.mjs가 두
 // 회로의 이 문장들이 일치하는지 검사하므로, 고칠 때는 메인 쪽 원본을 먼저 고친다.
 const BGM_PROFILE_POOL = [
-  { id: 'intimate_felt_piano', sound_family: 'piano_solo', title: '포근한 펠트 피아노', prompt: 'Warm intimate felt piano solo, sparse rounded notes, reflective and unhurried.' },
-  { id: 'hopeful_acoustic_piano', sound_family: 'piano_solo', title: '밝은 어쿠스틱 피아노', prompt: 'Gentle acoustic piano solo, flowing melody, quietly hopeful and light.' },
-  { id: 'grounded_nylon_guitar', sound_family: 'guitar_solo', title: '차분한 나일론 기타', prompt: 'Warm nylon acoustic guitar solo, smooth fingerstyle phrases, calm and grounded.' },
-  { id: 'reassuring_piano_strings', sound_family: 'piano_strings', title: '피아노와 부드러운 현악', prompt: 'Gentle acoustic piano with soft bowed strings, reassuring and steady.' },
-  { id: 'daylight_guitar_piano', sound_family: 'guitar_piano', title: '나일론 기타와 피아노', prompt: 'Nylon acoustic guitar with sparse felt piano, warm daylight mood and easy movement.' },
-  { id: 'restorative_strings_piano', sound_family: 'piano_strings', title: '잔잔한 현악과 피아노', prompt: 'Soft bowed strings with minimal gentle piano, restorative and spacious.' },
+  { id: 'intimate_felt_piano', sound_family: 'piano_solo', title: '햇살 펠트 피아노', prompt: 'Bright friendly felt piano solo, buoyant rounded melody, sunny and gently cheerful.' },
+  { id: 'hopeful_acoustic_piano', sound_family: 'piano_solo', title: '희망찬 어쿠스틱 피아노', prompt: 'Uplifting acoustic piano solo, flowing major-key melody, warm, light, and optimistic.' },
+  { id: 'grounded_nylon_guitar', sound_family: 'guitar_solo', title: '밝은 나일론 기타', prompt: 'Sunny nylon acoustic guitar solo, lively fingerstyle phrases, friendly and contented.' },
+  { id: 'reassuring_piano_strings', sound_family: 'piano_strings', title: '기분 좋은 피아노와 현악', prompt: 'Cheerful acoustic piano with soft bowed strings, reassuring, graceful, and positive.' },
+  { id: 'daylight_guitar_piano', sound_family: 'guitar_piano', title: '햇살 기타와 피아노', prompt: 'Happy nylon acoustic guitar with bright piano, warm daylight mood and easy movement.' },
+  { id: 'restorative_strings_piano', sound_family: 'piano_strings', title: '산뜻한 현악과 피아노', prompt: 'Light joyful bowed strings with gentle piano, spacious, fresh, and quietly celebratory.' },
 ];
 const BGM_CONSTRAINT_LINES = [
+  'Bright, cheerful, warm, optimistic major-key instrumental background music, gently lively at about 92-106 BPM.',
   'No voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh/aah, vocal chops, or wordless vocals.',
   'Allowed instruments only: felt piano, gentle acoustic piano, nylon acoustic guitar, soft bowed strings.',
   'No synth, pad, ambient wash, breathy texture, percussion, drums, brushes, marimba, mallets, electronic or fusion sounds.',
+  'No dark, sad, melancholic, ominous, tense, sleepy, or minor-key mood.',
 ];
-const BGM_SAFETY_ENVELOPE = 'warm_acoustic_zero_voice_v2';
+const BGM_NEGATIVE_TAGS = 'voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh, aah, vocal chops, wordless vocals, spoken words, whispering, breathing, dark, sad, melancholic, ominous, tense, sleepy, minor key';
+const BGM_SAFETY_ENVELOPE = 'bright_acoustic_zero_voice_v3';
 
 const channels = [
   {
@@ -563,10 +566,14 @@ function buildPackFromCardCopyRuntime(definition) {
       bgm_prompt: bgmPrompt,
       bgm_profile: bgmProfile,
       bgm_payload: {
-        prompt: bgmPrompt,
         model: base.config?.kie_bgm_model || 'V5_5',
-        customMode: false,
+        customMode: true,
         instrumental: true,
+        style: bgmPrompt,
+        title: ('Bright instrumental - ' + bgmVariation.title).slice(0, 80),
+        negativeTags: definition.bgmNegativeTags,
+        styleWeight: 0.9,
+        weirdnessConstraint: 0.1,
       },
     },
   }];
@@ -692,10 +699,14 @@ function parseVisionCopyRuntime(definition) {
       bgm_prompt: bgmPrompt,
       bgm_profile: bgmProfile,
       bgm_payload: {
-        prompt: bgmPrompt,
         model: base.config?.kie_bgm_model || 'V5_5',
-        customMode: false,
+        customMode: true,
         instrumental: true,
+        style: bgmPrompt,
+        title: ('Bright instrumental - ' + bgmVariation.title).slice(0, 80),
+        negativeTags: definition.bgmNegativeTags,
+        styleWeight: 0.9,
+        weirdnessConstraint: 0.1,
       },
     },
   }];
@@ -824,6 +835,7 @@ function buildWorkflow(channel) {
     fallbackDropRoot: channel.fallbackDropRoot || null,
     bgmProfiles: BGM_PROFILE_POOL,
     bgmConstraints: BGM_CONSTRAINT_LINES,
+    bgmNegativeTags: BGM_NEGATIVE_TAGS,
     bgmSafetyEnvelope: BGM_SAFETY_ENVELOPE,
   };
   const positions = {

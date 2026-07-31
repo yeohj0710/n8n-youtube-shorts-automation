@@ -2,6 +2,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import sqlite3 from 'sqlite3';
+import { safeBoxFor, shortsSafeZoneInstructionSource } from './lib/safe-zone.mjs';
+
+const SAFE_ZONE_BOX = safeBoxFor(1080, 1920, '9:16');
+
+// 안전 영역 지시문 뒤에 붙는 채널 전용 문구. 좌표는 표에서 받아 쓴다.
+function footerSafeZoneLine(box) {
+  return `SUBSCRIBE_FOOTER_V2: render the supplied Korean footer subscribe line exactly once, as one compact footer block inside the critical-content box below the last row. Use at most two centered lines, keep its bottom edge at or above y ${box.bottom}, and never place any part of it in the bottom UI band. Keep it smaller than card_reason text and quieter in color so it reads as a gentle sign-off, not a banner. Copy it verbatim; never invent a different subscribe or follow request.`;
+}
 
 const root = 'C:/dev/n8n-youtube-shorts-automation';
 const dbPath = path.join(root, '.n8n', 'database.sqlite');
@@ -348,6 +356,13 @@ const broadPillarPool = cooldownEligiblePillars.length
   ? cooldownEligiblePillars
   : (nonImmediatePillars.length ? nonImmediatePillars : (categoryEligiblePillars.length ? categoryEligiblePillars : channelEditorialProfile.pillars));
 const requestedPillar = findById(channelEditorialProfile.pillars, cfg.channel_pillar_override);
+// A queued pack declares the pillar it was written for. Letting the rotation
+// overwrite it audited hand-written copy against an unrelated pillar and failed
+// it with channel_pillar_mismatch, so the pack's own choice wins over rotation.
+const preparedPackPillarId = clean(
+  (cfg.prepared_card_pack || cfg.topic_queue?.selected?.final_pack || queuedSpec?.final_pack || {}).channel_content_pillar,
+);
+const preparedPillar = findById(channelEditorialProfile.pillars, preparedPackPillarId);
 const suppliedTopic = Array.isArray(cfg.topic_candidates) ? cfg.topic_candidates[0] : null;
 const suppliedTopicTitle = typeof suppliedTopic === 'string'
   ? suppliedTopic
@@ -356,7 +371,7 @@ const suppliedTopicPillar = findById(channelEditorialProfile.pillars, channelPil
 const requestedLanePillars = clean(cfg.content_lane_override)
   ? broadPillarPool.filter((pillar) => pillar.lane === clean(cfg.content_lane_override))
   : [];
-const selectedChannelPillar = requestedPillar || suppliedTopicPillar || pick(
+const selectedChannelPillar = requestedPillar || preparedPillar || suppliedTopicPillar || pick(
   requestedLanePillars.length ? requestedLanePillars : broadPillarPool,
   'channel_pillar|' + recentChannelPillars.join(',') + '|' + recentPillarTitleHistory.slice(0, 10).join('|'),
 );`;
@@ -1185,12 +1200,12 @@ function buildUniversalCommentCta() {
 const rawBgmWriterDirection = String(pack.bgm_prompt || '').replace(/\\s+/g, ' ').trim();
 const bgmWriterDirection = rawBgmWriterDirection || 'warm calm acoustic instrumental for this health topic';
 const bgmProfilePool = [
-  { id: 'intimate_felt_piano', sound_family: 'piano_solo', title: '포근한 펠트 피아노', prompt: 'Warm intimate felt piano solo, sparse rounded notes, reflective and unhurried.' },
-  { id: 'hopeful_acoustic_piano', sound_family: 'piano_solo', title: '밝은 어쿠스틱 피아노', prompt: 'Gentle acoustic piano solo, flowing melody, quietly hopeful and light.' },
-  { id: 'grounded_nylon_guitar', sound_family: 'guitar_solo', title: '차분한 나일론 기타', prompt: 'Warm nylon acoustic guitar solo, smooth fingerstyle phrases, calm and grounded.' },
-  { id: 'reassuring_piano_strings', sound_family: 'piano_strings', title: '피아노와 부드러운 현악', prompt: 'Gentle acoustic piano with soft bowed strings, reassuring and steady.' },
-  { id: 'daylight_guitar_piano', sound_family: 'guitar_piano', title: '나일론 기타와 피아노', prompt: 'Nylon acoustic guitar with sparse felt piano, warm daylight mood and easy movement.' },
-  { id: 'restorative_strings_piano', sound_family: 'piano_strings', title: '잔잔한 현악과 피아노', prompt: 'Soft bowed strings with minimal gentle piano, restorative and spacious.' },
+  { id: 'intimate_felt_piano', sound_family: 'piano_solo', title: '햇살 펠트 피아노', prompt: 'Bright friendly felt piano solo, buoyant rounded melody, sunny and gently cheerful.' },
+  { id: 'hopeful_acoustic_piano', sound_family: 'piano_solo', title: '희망찬 어쿠스틱 피아노', prompt: 'Uplifting acoustic piano solo, flowing major-key melody, warm, light, and optimistic.' },
+  { id: 'grounded_nylon_guitar', sound_family: 'guitar_solo', title: '밝은 나일론 기타', prompt: 'Sunny nylon acoustic guitar solo, lively fingerstyle phrases, friendly and contented.' },
+  { id: 'reassuring_piano_strings', sound_family: 'piano_strings', title: '기분 좋은 피아노와 현악', prompt: 'Cheerful acoustic piano with soft bowed strings, reassuring, graceful, and positive.' },
+  { id: 'daylight_guitar_piano', sound_family: 'guitar_piano', title: '햇살 기타와 피아노', prompt: 'Happy nylon acoustic guitar with bright piano, warm daylight mood and easy movement.' },
+  { id: 'restorative_strings_piano', sound_family: 'piano_strings', title: '산뜻한 현악과 피아노', prompt: 'Light joyful bowed strings with gentle piano, spacious, fresh, and quietly celebratory.' },
 ];
 const requestedBgmProfile = findById(bgmProfilePool, cfg.bgm_profile_override);
 const recentBgmProfileIds = (Array.isArray(cfg.recent_bgm_profiles) ? cfg.recent_bgm_profiles : []).slice(0, 2);
@@ -1206,18 +1221,25 @@ const bgmVariation = requestedBgmProfile || pick(
   selectableBgmProfiles,
   'bgm_variation|' + (pack.content_lane || data.selected_content_lane?.id || 'general') + '|' + bgmWriterDirection,
 );
-const bgmPrompt = limitPrompt([
+const bgmStyle = limitPrompt([
   'Profile ' + bgmVariation.id + ': ' + bgmVariation.prompt,
+  'Bright, cheerful, warm, optimistic major-key instrumental background music, gently lively at about 92-106 BPM.',
   'No voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh/aah, vocal chops, or wordless vocals.',
   'Allowed instruments only: felt piano, gentle acoustic piano, nylon acoustic guitar, soft bowed strings.',
   'No synth, pad, ambient wash, breathy texture, percussion, drums, brushes, marimba, mallets, electronic or fusion sounds.',
-].join(' '), 480);
-const bgmProfile = { ...bgmVariation, writer_direction: bgmWriterDirection, safety_envelope: 'warm_acoustic_zero_voice_v2' };
+  'No dark, sad, melancholic, ominous, tense, sleepy, or minor-key mood.',
+].join(' '), 900);
+const bgmNegativeTags = 'voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh, aah, vocal chops, wordless vocals, spoken words, whispering, breathing, dark, sad, melancholic, ominous, tense, sleepy, minor key';
+const bgmProfile = { ...bgmVariation, writer_direction: bgmWriterDirection, safety_envelope: 'bright_acoustic_zero_voice_v3' };
 const bgm_payload = {
-  prompt: bgmPrompt,
   model: cfg.kie_bgm_model,
-  customMode: false,
+  customMode: true,
   instrumental: true,
+  style: bgmStyle,
+  title: limitPrompt('Bright instrumental - ' + bgmVariation.title, 80),
+  negativeTags: bgmNegativeTags,
+  styleWeight: 0.9,
+  weirdnessConstraint: 0.1,
 };
 
 `;
@@ -1255,20 +1277,12 @@ const bgm_payload = {
     unifiedFormatModeBlock + 'const formatMode = pick(',
     'unified poster format modes',
   );
-  const safeZoneBlock = `const shortsSafeZoneInstruction = [
-  'MANDATORY SHORTS SAFE LAYOUT for 1080x1920: make the main information card large, left-expanded, and visually dominant without making the copy dense.',
-  'Use main-card footprint x 0-990 px and y 130-1800 px. There is no reserved left background band. The main card may reach the left frame edge, while critical text uses comfortable internal padding inside the card.',
-  'Reserve 90 px right, 130 px top, and 120 px bottom for feed UI and crop tolerance. Published frames placed the title against the very top edge where the Shorts search bar sits, so the top reserve is moderately deeper than a bare margin. Keep the title, rank numbers, item names, card_reason, faces, logos, and key objects clear of the top, right, and bottom UI bands.',
-  'BAND_BACKGROUND_V1: the reserved bands are exclusion zones for critical content, not empty voids. The card background — its color, texture, pattern, and soft decorative elements — must continue through the top and bottom bands to the frame edges, so the frame never shows a blank strip. Only text, faces, logos, and key subject objects stay out of the bands.',
-  'VERTICAL_FILL_V2: distribute the content across the full footprint from y 130 to y 1800. The title zone starts at the top of the footprint and the last ranked row sits fully inside it, ending just above y 1800 with a visible cushion — never touching, crossing, or getting cropped by the bottom of the frame. One published frame compressed all rows into the upper half leaving a dead band below, and the next overfilled until the last row clipped; both are layout failures. When vertical space remains, spend it on taller ranked rows and wider row spacing. When space is tight, cut decoration and secondary copy, never the Korean type size.',
-  'TITLE_ZONE_CAP_V1: the title plus subtitle zone takes at most one third of the footprint height, and about one quarter is the target. Set the title in at most 3 lines, preferably 2. A published frame spent nearly half the card on a five-line title and starved the ranked rows; that is a failure. Leftover vertical space always goes to the ranked rows, never to enlarging the title further.',
-  'GLYPH_INTEGRITY_V1: small Korean type renders with broken or malformed strokes, so glyph size is a rendering-safety floor, not a style choice. Keep card_reason text no smaller than about 3 percent of frame height (roughly 55 px) and item names clearly larger. If the copy cannot fit at that size, remove decoration or drop the frame to fewer visual elements; never render Korean text small enough to risk broken glyphs.',
-  'The main card should use nearly the full footprint. Make Korean title, item names, and card_reason substantially larger than decorative elements and readable in a small channel-grid thumbnail. Never solve fitting by shrinking all text; simplify decoration and secondary copy first.',
-  'Only the title, ranked item names, and their supplied card_reason are critical. Auxiliary copy and decoration are optional and may be cropped or covered; never shrink critical information to preserve them.',
-  'Assume channel grids and previews may crop the outer frame. The main card must keep its useful message intact, but auxiliary copy does not need protection.',
-  'Decorative background may extend edge to edge. Do not use full-bleed critical text, right-edge badges, or cropped title letters.',
-  'SUBSCRIBE_FOOTER_V1: render the supplied Korean footer subscribe line exactly once, as the smallest text in the frame, on a single line centered in the bottom band below the last ranked row. This one line deliberately lives inside the bottom reserved band and may sit under feed UI. Keep it clearly smaller than card_reason text and quieter in color so it reads as a gentle sign-off, not a banner. Copy it verbatim; never invent a different subscribe or follow request, and never render it anywhere except the bottom band.',
-].join(LF);
+  // 좌표는 scripts/lib/safe-zone.mjs의 마진 표에서 계산해 박는다. 여기에 픽셀
+  // 숫자를 손으로 쓰면 렌더 단계의 강제 좌표와 조용히 어긋난다.
+  const safeZoneBlock = `${shortsSafeZoneInstructionSource({
+    joiner: 'LF',
+    extraLines: [footerSafeZoneLine(SAFE_ZONE_BOX)],
+  })}
 
 const posterReadabilityInstruction = [
   'POSTER_READABILITY_V2: Build one unified typography-led information poster with one coherent reading path.',
@@ -1332,8 +1346,8 @@ const posterReadabilityInstruction = [
     "  'RANKED EXPLANATION BLOCKS, keep ' + ('1' + rankSuffix) + ' first:',",
     "  (rankLabelMode === 'rank' ? 'RANKED EXPLANATION BLOCKS, keep ' + ('1' + rankSuffix) + ' first:' : 'EXPLANATION BLOCKS in the supplied order, with no rank numbers:'),",
   );
-  // SUBSCRIBE_FOOTER_V1 copy: a small value-first subscribe line in the bottom
-  // band. It persuades by naming what the viewer gets every day and frames the
+  // SUBSCRIBE_FOOTER_V2 copy: a small value-first subscribe line protected by
+  // the shared Shorts safe area. It names what the viewer gets every day and frames the
   // subscription as the way not to miss tomorrow's — never a bare demand.
   // Strip any previous injection first so re-runs stay idempotent.
   code = code.replace(/\/\/ subscribe_footer_copy_v1\n[\s\S]*?\n\/\/ subscribe_footer_copy_end\n/g, '');
@@ -1352,7 +1366,7 @@ const visibleText = [`,
   code = replaceRequired(
     code,
     "  imageRows,\n].filter(Boolean).join(LF);",
-    "  imageRows,\n  'FOOTER SUBSCRIBE LINE, small, bottom band only: ' + subscribeCta,\n].filter(Boolean).join(LF);",
+    "  imageRows,\n  'FOOTER SUBSCRIBE LINE, small, safe-area footer only: ' + subscribeCta,\n].filter(Boolean).join(LF);",
     'prepare: subscribe footer in visible text',
   );
   code = code.replace(
@@ -1578,7 +1592,8 @@ function patchWorkflow(workflow, target) {
   const mock = workflow.nodes.find((node) => node.name === 'Mock Viral Rank Pack');
   const final = workflow.nodes.find((node) => node.name === 'Final Result');
   const retry = workflow.nodes.find((node) => node.name === 'Prepare Medical Retry Request');
-  if (!load || !build || !parse || !prepare || !mock || !final || !retry) throw new Error(`${target.id}: required editorial nodes missing`);
+  const createBgm = workflow.nodes.find((node) => node.name === 'KIE Create BGM Task');
+  if (!load || !build || !parse || !prepare || !mock || !final || !retry || !createBgm) throw new Error(`${target.id}: required editorial nodes missing`);
   load.parameters.jsCode = patchLoadConfig(load.parameters.jsCode, target);
   build.parameters.jsCode = patchBuild(build.parameters.jsCode, target);
   parse.parameters.jsCode = patchParse(parse.parameters.jsCode);
@@ -1591,6 +1606,11 @@ function patchWorkflow(workflow, target) {
   attach.parameters.jsCode = patchUploadIdempotency(attach.parameters.jsCode, target);
   skipUpload.parameters.jsCode = patchSkipUploadReason(skipUpload.parameters.jsCode, target);
   retry.parameters.jsCode = patchRetryContracts(retry.parameters.jsCode, target);
+  createBgm.parameters.url = 'https://api.kie.ai/api/v1/generate';
+  // KIE's music endpoint rejects creation without callBackUrl even when the
+  // workflow uses record-info polling. The default sink accepts the required
+  // POST with HTTP 200; callers can override it with their own public HTTPS URL.
+  createBgm.parameters.jsonBody = "={{ JSON.stringify({ ...$json.bgm_payload, callBackUrl: $json.config?.kie_bgm_callback_url || 'https://httpbin.org/status/200' }) }}";
   if (!mock.parameters.jsCode.includes('channel_editorial_profile: data.config?.channel_editorial_profile')) {
     mock.parameters.jsCode = mock.parameters.jsCode.replace(
       "    content_lane: lockedSource.lane || 'source_grounded',",
@@ -1685,6 +1705,18 @@ if (process.argv.includes('--emit-workflow-json')) {
     return { filePath, content: JSON.stringify(workflow, null, 2) + '\n' };
   });
   process.stdout.write(JSON.stringify(emitted));
+  process.exit(0);
+}
+
+if (process.argv.includes('--write-workflow-json-only')) {
+  const written = [];
+  for (const target of targets) {
+    const filePath = path.join(root, target.file);
+    const workflow = patchWorkflow(JSON.parse(fs.readFileSync(filePath, 'utf8')), target);
+    fs.writeFileSync(filePath, JSON.stringify(workflow, null, 2) + '\n', 'utf8');
+    written.push(filePath);
+  }
+  console.log(JSON.stringify({ ok: true, db_updated: false, files: written }, null, 2));
   process.exit(0);
 }
 

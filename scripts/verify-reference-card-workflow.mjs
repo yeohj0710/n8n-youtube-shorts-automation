@@ -15,7 +15,13 @@ const byName = (name) => {
   return node;
 };
 const HANDLE = '@haruyaksa';
-const CLOSING = '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.';
+const HEALTH_CLOSING = '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.';
+const WISDOM_CLOSING = '관계와 삶에 도움 되는 지혜를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.';
+const SPREADSHEET_ID = '1K6gT9TY_WHuxB3SHEx5VyJK2JunQWJRdkdV4ecNu_fc';
+const SHEET_ID = 159350994;
+const SHEET_NAME = '통과 영상';
+const SHEETS_CREDENTIAL_ID = 'haruSheetsOAuth1';
+const UPLOAD_COMPLETE_COLUMN = '업로드 완료';
 
 assert.equal(workflow.id, 'haruReferenceCardShorts01');
 assert.equal(workflow.name, '하루건강약사 - 레퍼런스 카드 쇼츠');
@@ -46,6 +52,26 @@ const privacy = String(upload.parameters?.options?.privacyStatus ?? upload.param
 assert.match(privacy, /youtube_privacy_status|public/, 'upload node lost its privacy setting');
 assert.match(byName('Post Top-Level Comment').parameters.jsonBody, /pack\.pinned_comment/);
 assert.deepEqual(
+  (workflow.connections['Manual Trigger']?.main?.[0] || []).map((e) => e.node),
+  ['Read Reference Sheet'],
+  'sheet pull must run before local selection',
+);
+assert.deepEqual(
+  (workflow.connections['Read Reference Sheet']?.main?.[0] || []).map((e) => e.node),
+  ['Merge Sheet Into Dataset'],
+  'sheet rows must be merged into videos.jsonl',
+);
+assert.deepEqual(
+  (workflow.connections['Merge Sheet Into Dataset']?.main?.[0] || []).map((e) => e.node),
+  ['Apply Sheet Checklist Sync'],
+  'used-log reconciliation must follow the sheet merge',
+);
+assert.deepEqual(
+  (workflow.connections['Apply Sheet Checklist Sync']?.main?.[0] || []).map((e) => e.node),
+  ['Load Config'],
+  'media generation must wait for sheet synchronization',
+);
+assert.deepEqual(
   (workflow.connections['Attach Comment Result']?.main?.[0] || []).map((e) => e.node),
   ['Complete Reference Card'],
   'upload must end in the checklist write',
@@ -58,10 +84,38 @@ for (const stop of ['Skip YouTube Upload', 'Mock Render Result']) {
   );
 }
 assert.deepEqual(
+  (workflow.connections['Complete Reference Card']?.main?.[0] || []).map((e) => e.node),
+  ['Mark Upload Complete In Sheet'],
+  'local checklist completion must immediately update the sheet checkbox',
+);
+assert.deepEqual(
   (workflow.connections['Medical Review Passed?']?.main?.[1] || []).map((e) => e.node),
   ['Blocked Reference Card'],
   'a blocked card must not fall through to image generation',
 );
+
+const readSheet = byName('Read Reference Sheet');
+assert.equal(readSheet.type, 'n8n-nodes-base.googleSheets');
+assert.equal(readSheet.parameters.documentId?.value, SPREADSHEET_ID);
+assert.equal(readSheet.parameters.sheetName?.value, SHEET_NAME);
+assert.equal(readSheet.parameters.options?.dataLocationOnSheet?.values?.range, 'A1:AU2001');
+assert.equal(readSheet.credentials?.googleSheetsOAuth2Api?.id, SHEETS_CREDENTIAL_ID);
+
+const mergeSheet = byName('Merge Sheet Into Dataset');
+assert.doesNotMatch(mergeSheet.parameters.jsCode, /\bprocess\./, 'Task Runner code must not use the process global');
+
+const applyChecklist = byName('Apply Sheet Checklist Sync');
+assert.equal(applyChecklist.parameters.nodeCredentialType, 'googleSheetsOAuth2Api');
+assert.match(applyChecklist.parameters.url, new RegExp(SPREADSHEET_ID));
+assert.equal(applyChecklist.credentials?.googleSheetsOAuth2Api?.id, SHEETS_CREDENTIAL_ID);
+
+const markComplete = byName('Mark Upload Complete In Sheet');
+assert.equal(markComplete.type, 'n8n-nodes-base.googleSheets');
+assert.deepEqual(markComplete.parameters.columns?.matchingColumns, ['record_id']);
+assert.equal(markComplete.parameters.columns?.value?.[UPLOAD_COMPLETE_COLUMN], true, 'checkbox must be Boolean true');
+assert.equal(markComplete.parameters.columns?.value?.record_id, '={{ $json.reference_result.record_id }}');
+assert.equal(markComplete.parameters.options?.cellFormat, 'RAW');
+assert.equal(markComplete.credentials?.googleSheetsOAuth2Api?.id, SHEETS_CREDENTIAL_ID);
 
 // 복제 노드가 메인 워크플로우와 같은지. 갈리면 그림·음악이 기존 쇼츠와 달라진다.
 const mainFile = fs.readdirSync(path.join(root, 'workflows'))
@@ -79,15 +133,49 @@ for (const name of ['Prepare Image and BGM Payloads', 'Load Config', 'Medical Sa
 const etcRoot = path.join(root, 'etc');
 fs.mkdirSync(etcRoot, { recursive: true });
 const tmpWork = fs.mkdtempSync(path.join(etcRoot, 'reference-card-verify-'));
+const tmpDataset = path.join(tmpWork, 'videos.jsonl');
+const tmpDatasetBackup = path.join(tmpWork, 'videos.before-sheet-sync.jsonl');
+const tmpState = path.join(tmpWork, 'state.json');
+const tmpSyncConfig = path.join(tmpWork, 'google_sheet_sync_config.json');
+fs.copyFileSync(path.join(root, 'research', 'single-screen-references', 'videos.jsonl'), tmpDataset);
+fs.copyFileSync(path.join(root, 'research', 'single-screen-references', 'state.json'), tmpState);
+fs.copyFileSync(
+  path.join(root, 'research', 'single-screen-references', 'etc', 'google_sheet_sync_config.json'),
+  tmpSyncConfig,
+);
 function runNode(name, json) {
   let code = byName(name).parameters.jsCode;
   code = code.replace(/^const referenceDefinition = (.*);$/m, (match, body) => {
     const parsed = JSON.parse(body);
     parsed.workRoot = tmpWork.replace(/\\/g, '/');
+    parsed.datasetPath = tmpDataset.replace(/\\/g, '/');
+    parsed.datasetBackupPath = tmpDatasetBackup.replace(/\\/g, '/');
+    parsed.datasetStatePath = tmpState.replace(/\\/g, '/');
+    parsed.sheetSyncConfigPath = tmpSyncConfig.replace(/\\/g, '/');
     return `const referenceDefinition = ${JSON.stringify(parsed)};`;
   });
   return new Function('require', '$input', '$', code)(
-    require, { first: () => ({ json }) }, () => { throw new Error(`${name}: unexpected cross-node lookup`); },
+    require,
+    { first: () => ({ json }), all: () => [{ json }] },
+    () => { throw new Error(`${name}: unexpected cross-node lookup`); },
+  );
+}
+function runNodeMany(name, rows) {
+  let code = byName(name).parameters.jsCode;
+  code = code.replace(/^const referenceDefinition = (.*);$/m, (match, body) => {
+    const parsed = JSON.parse(body);
+    parsed.workRoot = tmpWork.replace(/\\/g, '/');
+    parsed.datasetPath = tmpDataset.replace(/\\/g, '/');
+    parsed.datasetBackupPath = tmpDatasetBackup.replace(/\\/g, '/');
+    parsed.datasetStatePath = tmpState.replace(/\\/g, '/');
+    parsed.sheetSyncConfigPath = tmpSyncConfig.replace(/\\/g, '/');
+    return `const referenceDefinition = ${JSON.stringify(parsed)};`;
+  });
+  const items = rows.map((json) => ({ json }));
+  return new Function('require', '$input', '$', code)(
+    require,
+    { first: () => items[0], all: () => items },
+    () => { throw new Error(`${name}: unexpected cross-node lookup`); },
   );
 }
 function runCloned(name, json) {
@@ -97,6 +185,73 @@ function runCloned(name, json) {
 }
 
 try {
+  const sourceRecords = fs.readFileSync(tmpDataset, 'utf8').split(/\r?\n/)
+    .filter((line) => line.trim()).map((line) => JSON.parse(line));
+  const sourceOrder = sourceRecords.map((record) => record.record_id);
+  const sheetRows = sourceRecords.map((record, index) => {
+    const row = { row_number: index + 2 };
+    for (const [key, value] of Object.entries(record)) {
+      if (value === null || value === undefined) continue;
+      row[key] = Array.isArray(value) ? JSON.stringify(value) : value;
+    }
+    return row;
+  });
+  sheetRows[0].title_reworked_ko = '시트에서 고친 제목이 JSONL에 반영되는지 확인';
+  sheetRows[1][UPLOAD_COMPLETE_COLUMN] = true;
+  const formulaSafeIndex = sourceRecords.findIndex((record) => String(record.record_id).startsWith('-'));
+  assert.notEqual(formulaSafeIndex, -1, 'negative record_id fixture missing');
+  sheetRows[formulaSafeIndex].item_id = "'" + sourceRecords[formulaSafeIndex].item_id;
+  const handleIndex = sourceRecords.findIndex((record) => String(record.source_handle).startsWith('@'));
+  assert.notEqual(handleIndex, -1, 'source_handle fixture missing');
+  sheetRows[handleIndex].source_handle = "'" + sourceRecords[handleIndex].source_handle;
+  const collectedAtIndex = sourceRecords.findIndex((record) => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+09:00$/.test(record.collected_at));
+  assert.notEqual(collectedAtIndex, -1, 'collected_at fixture missing');
+  sheetRows[collectedAtIndex].collected_at = sourceRecords[collectedAtIndex].collected_at
+    .replace('T', ' ').replace('+09:00', ' (KST)');
+  fs.mkdirSync(path.join(tmpWork, '기록'), { recursive: true });
+  fs.writeFileSync(
+    path.join(tmpWork, '기록', '사용기록.jsonl'),
+    `${JSON.stringify({ record_id: sourceRecords[0].record_id })}\n`,
+    'utf8',
+  );
+
+  const merged = runNodeMany('Merge Sheet Into Dataset', sheetRows)[0].json;
+  assert.equal(merged.sheet_sync.rows, 2000);
+  assert.equal(merged.sheet_sync.changed_records, 1);
+  assert.equal(merged.sheet_sync.used_records, 1);
+  assert.equal(merged.sheet_sync.checked_rows, 2, 'used log and existing true checkbox must both survive');
+  const mergedRecords = fs.readFileSync(tmpDataset, 'utf8').split(/\r?\n/)
+    .filter((line) => line.trim()).map((line) => JSON.parse(line));
+  assert.deepEqual(mergedRecords.map((record) => record.record_id), sourceOrder, 'sheet merge reordered or deleted records');
+  assert.equal(mergedRecords[0].title_reworked_ko, sheetRows[0].title_reworked_ko);
+  assert.equal(mergedRecords[formulaSafeIndex].item_id, sourceRecords[formulaSafeIndex].item_id);
+  assert.equal(mergedRecords[handleIndex].source_handle, sourceRecords[handleIndex].source_handle);
+  assert.equal(mergedRecords[collectedAtIndex].collected_at, sourceRecords[collectedAtIndex].collected_at);
+  assert.ok(fs.existsSync(tmpDatasetBackup), 'sheet merge did not back up videos.jsonl');
+  const backupRecords = fs.readFileSync(tmpDatasetBackup, 'utf8').split(/\r?\n/)
+    .filter((line) => line.trim()).map((line) => JSON.parse(line));
+  assert.equal(backupRecords[0].title_reworked_ko, sourceRecords[0].title_reworked_ko);
+  const syncedState = JSON.parse(fs.readFileSync(tmpState, 'utf8'));
+  assert.equal(syncedState.google_sheet.last_synced_row, 2000);
+  assert.ok(Date.parse(syncedState.google_sheet.last_synced_at));
+
+  const batchRequests = merged.sheet_batch_update.requests;
+  assert.equal(batchRequests.length, 2);
+  const updateCells = batchRequests.find((request) => request.updateCells)?.updateCells;
+  assert.ok(updateCells, 'checklist batch is missing updateCells');
+  assert.equal(updateCells.range.sheetId, SHEET_ID);
+  assert.equal(updateCells.range.startColumnIndex, 46, 'AU must be a new column after AT');
+  assert.equal(updateCells.rows.length, 2000);
+  assert.equal(typeof updateCells.rows[0].values[0].userEnteredValue.boolValue, 'boolean');
+  assert.equal(updateCells.rows[0].values[0].userEnteredValue.boolValue, true);
+  assert.equal(updateCells.rows[1].values[0].userEnteredValue.boolValue, true);
+  const validation = batchRequests.find((request) => request.setDataValidation)?.setDataValidation;
+  assert.equal(validation.rule.condition.type, 'BOOLEAN');
+  assert.equal(validation.rule.strict, true);
+
+  // 이후 기존 선별/체크리스트 테스트는 빈 사용기록에서 시작한다.
+  fs.writeFileSync(path.join(tmpWork, '기록', '사용기록.jsonl'), '', 'utf8');
+
   const config = runCloned('Load Config', {})[0].json;
   const picked = runNode('Pick Reference Card', config)[0].json;
   assert.ok(picked.reference?.record_id, 'no record was picked');
@@ -115,8 +270,14 @@ try {
   assert.equal(pack.rank_items.length, picked.reference.card_items_reworked_ko.length, 'items were dropped');
   assert.equal(pack.rank_label_mode, 'bullet', 'these are lists, not rankings — no N위 labels');
   assert.ok(pack.pinned_comment.startsWith('오늘 영상 핵심 정리\n'), 'pinned comment header must match the other circuits');
-  assert.ok(pack.pinned_comment.endsWith(CLOSING), 'pinned comment must end with the follow line');
-  assert.ok(pack.description.endsWith(CLOSING), 'description must end with the follow line');
+  assert.ok(
+    pack.pinned_comment.endsWith(HEALTH_CLOSING) || pack.pinned_comment.endsWith(WISDOM_CLOSING),
+    'pinned comment must end with a topic-appropriate follow line',
+  );
+  assert.ok(
+    pack.description.endsWith(HEALTH_CLOSING) || pack.description.endsWith(WISDOM_CLOSING),
+    'description must end with a topic-appropriate follow line',
+  );
   assert.ok(pack.rank_items.every((item) => !/^\s*\d+\s*[.)]/.test(item.name)), 'source numbering must be stripped');
 
   const reviewed = runCloned('Medical Safety Review', built)[0].json;
@@ -129,12 +290,40 @@ try {
   const handled = runNode('Add Handle To Card Footer', prepared)[0].json;
   assert.ok(handled.image_payload.input.prompt.includes(HANDLE), 'the card footer lost the channel handle');
   assert.ok(handled.visible_card_text.includes(HANDLE), 'the visible card text lost the channel handle');
-  assert.match(handled.image_payload.input.prompt, /130 px top/, 'Shorts safe-zone instruction missing');
-  assert.match(
-    handled.bgm_payload.prompt,
-    /ooh\/aah, vocal chops, or wordless vocals/,
-    'BGM prompt lost the humming ban',
+  assert.equal(
+    (handled.image_payload.input.prompt.match(/@haruyaksa/g) || []).length,
+    1,
+    'the image prompt must contain the footer handle exactly once',
   );
+  assert.equal(
+    (handled.visible_card_text.match(/@haruyaksa/g) || []).length,
+    1,
+    'the visible footer must contain the handle exactly once',
+  );
+  assert.match(handled.image_payload.input.prompt, /x 54-961 px and y 230-1498 px/, 'shared 9:16 critical-content box missing');
+  assert.match(handled.image_payload.input.prompt, /54 px left, 119 px right, 230 px top, and 422 px bottom/, 'shared 9:16 UI margins missing');
+  assert.match(handled.image_payload.input.prompt, /footer.*inside the critical-content box/i, 'footer is not protected from Shorts UI');
+  assert.doesNotMatch(handled.image_payload.input.prompt, /may sit under feed UI|bottom band only/i, 'legacy obscured-footer instruction remains');
+  assert.equal(byName('KIE Create BGM Task').parameters.url, 'https://api.kie.ai/api/v1/generate');
+  assert.equal(handled.bgm_payload.customMode, true, 'BGM must use custom music mode');
+  assert.equal(handled.bgm_payload.instrumental, true, 'BGM must force instrumental-only output');
+  assert.match(handled.bgm_payload.style, /ooh\/aah, vocal chops, or wordless vocals/, 'BGM style lost the humming ban');
+  assert.match(handled.bgm_payload.style, /bright|cheerful|happy|joyful|sunny|uplifting/i, 'BGM lost the bright and happy direction');
+  assert.match(handled.bgm_payload.negativeTags, /humming/i, 'BGM negative tags lost the humming ban');
+
+  const wisdomReference = sourceRecords.find((record) => (
+    record.publish_ready === true
+      && Array.isArray(record.topics)
+      && record.topics.some((topic) => /인간관계|인생교훈|심리/.test(topic))
+  ));
+  assert.ok(wisdomReference, 'no publish-ready life-wisdom fixture found');
+  const wisdomBuilt = runNode('Build Reference Pack', {
+    ...picked,
+    reference: wisdomReference,
+    reference_summary: undefined,
+  })[0].json;
+  assert.ok(wisdomBuilt.pack.description.endsWith(WISDOM_CLOSING), 'life-wisdom description uses the health-only closing');
+  assert.ok(wisdomBuilt.pack.pinned_comment.endsWith(WISDOM_CLOSING), 'life-wisdom comment uses the health-only closing');
 
   const completed = runNode('Complete Reference Card', {
     ...handled,
@@ -167,6 +356,13 @@ try {
     checks: [
       'structure',
       'reachability',
+      'sheet_pull_before_selection',
+      'record_id_merge_preserves_count_and_order',
+      'sheet_edits_replace_local_copy',
+      'local_backup_and_state_update',
+      'used_log_to_boolean_checkbox_batch',
+      'immediate_checkbox_update_after_completion',
+      'google_sheets_credential_binding',
       'clone_parity_with_main_workflow',
       'public_upload_contract',
       'blocked_path_does_not_publish',

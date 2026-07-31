@@ -11,23 +11,14 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
+import {
+  SAFE_ZONE_MARGINS as MARGINS,
+  SUPPORTED_IMAGE_EXTENSIONS as supported,
+  detectAspect,
+} from './lib/safe-zone.mjs';
 
 const targetDir = process.argv[2];
 if (!targetDir) throw new Error('보정할 폴더 경로를 인자로 넘겨주세요.');
-
-// 캔버스 가장자리에서 띄울 비율 (프롬프트의 안전 영역과 동일)
-const MARGINS = {
-  '4:5': { top: 0.08, bottom: 0.12, left: 0.05, right: 0.12 },
-  '9:16': { top: 0.12, bottom: 0.22, left: 0.05, right: 0.11 },
-};
-
-const supported = new Set(['.png', '.jpg', '.jpeg', '.webp']);
-
-function detectAspect(width, height) {
-  const ratio = width / height;
-  // 4:5 = 0.800, 9:16 = 0.5625 — 가까운 쪽으로 판정
-  return Math.abs(ratio - 0.8) < Math.abs(ratio - 0.5625) ? '4:5' : '9:16';
-}
 
 const entries = await fs.readdir(targetDir, { withFileTypes: true });
 const files = entries

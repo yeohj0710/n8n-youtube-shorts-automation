@@ -14,7 +14,10 @@
     "verify:image-drop": "node ./scripts/verify-image-drop-workflows.mjs",
     "test": "node ./scripts/run-project-qa.mjs",
     "build:reference-card": "node ./scripts/build-reference-card-workflow.mjs",
-    "verify:reference-card": "node ./scripts/verify-reference-card-workflow.mjs"
+    "verify:reference-card": "node ./scripts/verify-reference-card-workflow.mjs",
+    "setup:reference-card-sheets-auth": "node ./scripts/setup-google-sheets-auth.mjs",
+    "authorize:reference-card-sheets": "node ./scripts/setup-google-sheets-auth.mjs --authorize",
+    "smoke:reference-card-sheets": "node ./scripts/smoke-reference-card-sheet-sync.mjs"
   },
   "dependencies": {
     "n8n": "2.26.8",

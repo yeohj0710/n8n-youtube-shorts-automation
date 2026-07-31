@@ -21,12 +21,28 @@ const WORKFLOW_NAME = '하루건강약사 - 레퍼런스 카드 쇼츠';
 const OUTPUT_FILE = 'n8n_reference_card_haru_manual.json';
 
 const KIE_CREDENTIAL = { httpHeaderAuth: { id: 'MV5JVbdiJSoVx9O8', name: 'Header Auth account' } };
+const GOOGLE_SHEETS_CREDENTIAL = {
+  googleSheetsOAuth2Api: { id: 'haruSheetsOAuth1', name: 'Google Sheets account' },
+};
+const REFERENCE_SPREADSHEET_ID = '1K6gT9TY_WHuxB3SHEx5VyJK2JunQWJRdkdV4ecNu_fc';
+const REFERENCE_SHEET_ID = 159350994;
+const REFERENCE_SHEET_NAME = '통과 영상';
+const UPLOAD_COMPLETE_COLUMN = '업로드 완료';
+const UPLOAD_COMPLETE_COLUMN_INDEX = 46; // AU, zero-based
 
 const definition = {
   channelName: '하루건강약사',
   handle: '@haruyaksa',
   datasetPath: path.join(root, 'research', 'single-screen-references', 'videos.jsonl').replace(/\\/g, '/'),
+  datasetBackupPath: path.join(root, 'research', 'single-screen-references', 'etc', 'videos.before-sheet-sync.jsonl').replace(/\\/g, '/'),
+  datasetStatePath: path.join(root, 'research', 'single-screen-references', 'state.json').replace(/\\/g, '/'),
+  sheetSyncConfigPath: path.join(root, 'research', 'single-screen-references', 'etc', 'google_sheet_sync_config.json').replace(/\\/g, '/'),
   workRoot: path.join(root, '레퍼런스 카드').replace(/\\/g, '/'),
+  spreadsheetId: REFERENCE_SPREADSHEET_ID,
+  sheetId: REFERENCE_SHEET_ID,
+  sheetName: REFERENCE_SHEET_NAME,
+  uploadCompleteColumn: UPLOAD_COMPLETE_COLUMN,
+  uploadCompleteColumnIndex: UPLOAD_COMPLETE_COLUMN_INDEX,
   // 선별 기준은 파일로 뺀다. 데이터셋의 자체 QA 플래그가 2,000건 중 11건만
   // publish_ready로 표시하므로(claim_risk high 1,945건), 기준을 넓히는 판단은
   // 사용자가 이 파일을 고쳐서 하도록 한다. 코드 수정 없이 바꿀 수 있다.
@@ -125,8 +141,226 @@ function createNode(name, type, typeVersion, position, parameters, extra = {}) {
 }
 
 // ---------------------------------------------------------------------------
-// 새로 쓰는 노드 3개 + 차단 처리 1개
+// 새로 쓰는 노드 + 차단 처리
 // ---------------------------------------------------------------------------
+
+// Google Sheet의 현재 2,000행을 record_id로 videos.jsonl에 병합한다. 로컬 레코드의
+// 개수와 순서는 유지한다. 이어서 사용기록 전체를 AU 체크박스에 반영할 batchUpdate 본문을
+// 만든다. 이 동기화가 실패하면 소재 선택 전에 실행을 중단한다.
+function mergeReferenceSheetRuntime(definition) {
+  const fs = require('fs');
+  const path = require('path');
+  const crypto = require('crypto');
+
+  const sheetRows = $input.all().map((item) => item.json || {});
+  if (!fs.existsSync(definition.datasetPath)) {
+    throw new Error('레퍼런스 데이터셋을 찾지 못했습니다: ' + definition.datasetPath);
+  }
+
+  const originalText = fs.readFileSync(definition.datasetPath, 'utf8');
+  const localRecords = originalText.split(/\r?\n/).filter((line) => line.trim()).map((line, index) => {
+    try { return JSON.parse(line); }
+    catch (error) { throw new Error('videos.jsonl ' + (index + 1) + '행 JSON 오류: ' + error.message); }
+  });
+  if (!localRecords.length) throw new Error('레퍼런스 데이터셋이 비어 있습니다.');
+  if (sheetRows.length !== localRecords.length) {
+    throw new Error('Google Sheet 행 수가 videos.jsonl과 다릅니다: sheet=' + sheetRows.length + ', jsonl=' + localRecords.length);
+  }
+
+  const state = JSON.parse(fs.readFileSync(definition.datasetStatePath, 'utf8'));
+  const syncConfig = JSON.parse(fs.readFileSync(definition.sheetSyncConfigPath, 'utf8'));
+  const ids = [definition.spreadsheetId, state.google_sheet?.sheet_id, syncConfig.spreadsheet_id];
+  if (new Set(ids).size !== 1) {
+    throw new Error('Google Sheet ID가 설정 파일마다 다릅니다: ' + ids.join(', '));
+  }
+
+  const localById = new Map();
+  for (const record of localRecords) {
+    const id = String(record.record_id || '');
+    if (!id) throw new Error('videos.jsonl에 record_id가 없는 레코드가 있습니다.');
+    if (localById.has(id)) throw new Error('videos.jsonl record_id 중복: ' + id);
+    localById.set(id, record);
+  }
+
+  const sheetById = new Map();
+  const rowsByNumber = new Map();
+  for (let index = 0; index < sheetRows.length; index += 1) {
+    const row = sheetRows[index];
+    const id = String(row.record_id || '');
+    if (!id) throw new Error('Google Sheet ' + (index + 2) + '행에 record_id가 없습니다.');
+    if (!localById.has(id)) throw new Error('Google Sheet에 videos.jsonl에 없는 record_id가 있습니다: ' + id);
+    if (sheetById.has(id)) throw new Error('Google Sheet record_id 중복: ' + id);
+    const rowNumber = Number(row.row_number || index + 2);
+    if (!Number.isInteger(rowNumber) || rowNumber < 2 || rowNumber > localRecords.length + 1) {
+      throw new Error('Google Sheet row_number가 범위를 벗어났습니다: ' + rowNumber);
+    }
+    if (rowsByNumber.has(rowNumber)) throw new Error('Google Sheet row_number 중복: ' + rowNumber);
+    sheetById.set(id, row);
+    rowsByNumber.set(rowNumber, row);
+  }
+  for (let rowNumber = 2; rowNumber <= localRecords.length + 1; rowNumber += 1) {
+    if (!rowsByNumber.has(rowNumber)) throw new Error('Google Sheet 데이터 행이 비어 있습니다: ' + rowNumber);
+  }
+
+  const schema = new Map();
+  for (const key of Object.keys(localRecords[0])) schema.set(key, { types: new Set(), nullable: false });
+  for (const record of localRecords) {
+    for (const key of schema.keys()) {
+      const value = record[key];
+      const entry = schema.get(key);
+      if (value === null || value === undefined) entry.nullable = true;
+      else entry.types.add(Array.isArray(value) ? 'array' : typeof value);
+    }
+  }
+
+  function parseCell(key, row, recordId, priorValue) {
+    const entry = schema.get(key);
+    const present = Object.prototype.hasOwnProperty.call(row, key);
+    const value = present ? row[key] : undefined;
+    if (value === undefined || value === null || value === '') {
+      if (entry.nullable) return null;
+      if (entry.types.has('array')) return [];
+      if (entry.types.has('boolean')) return false;
+      if (entry.types.has('string')) return '';
+      return null;
+    }
+    if (entry.types.has('array')) {
+      if (Array.isArray(value)) return value;
+      if (typeof value !== 'string') throw new Error(recordId + ' ' + key + ': 배열은 JSON 문자열이어야 합니다.');
+      let parsed;
+      try { parsed = JSON.parse(value); }
+      catch (error) { throw new Error(recordId + ' ' + key + ': 배열 JSON 오류: ' + error.message); }
+      if (!Array.isArray(parsed)) throw new Error(recordId + ' ' + key + ': JSON 배열이 아닙니다.');
+      return parsed;
+    }
+    if (entry.types.size === 1 && entry.types.has('boolean')) {
+      if (typeof value !== 'boolean') throw new Error(recordId + ' ' + key + ': Boolean 체크박스 값이 아닙니다.');
+      return value;
+    }
+    if (entry.types.size === 1 && entry.types.has('number')) {
+      if (typeof value !== 'number' || !Number.isFinite(value)) throw new Error(recordId + ' ' + key + ': 숫자 값이 아닙니다.');
+      return value;
+    }
+    if (entry.types.size === 1 && entry.types.has('string')) {
+      if (typeof value !== 'string') throw new Error(recordId + ' ' + key + ': 문자열 값이 아닙니다.');
+      if (value.startsWith("'") && value.slice(1) === priorValue) return priorValue;
+      if (key === 'source_handle' && value.startsWith("'@")) return value.slice(1);
+      if (key === 'item_id' && value.startsWith("'") && value.slice(1) === recordId) return value.slice(1);
+      if (key === 'collected_at') {
+        const kst = value.match(/^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}) \(KST\)$/);
+        if (kst) return kst[1] + 'T' + kst[2] + '+09:00';
+      }
+      return value;
+    }
+    return value;
+  }
+
+  const mergedRecords = localRecords.map((record) => {
+    const id = String(record.record_id);
+    const row = sheetById.get(id);
+    const merged = { ...record };
+    for (const key of schema.keys()) {
+      if (key === 'record_id') continue;
+      merged[key] = parseCell(key, row, id, record[key]);
+    }
+    return merged;
+  });
+  const mergedText = mergedRecords.map((record) => JSON.stringify(record)).join('\n') + '\n';
+  const changedRecords = mergedRecords.reduce((count, record, index) => (
+    JSON.stringify(record) === JSON.stringify(localRecords[index]) ? count : count + 1
+  ), 0);
+  const syncRunId = Date.now().toString(36) + '-' + crypto.randomBytes(6).toString('hex');
+
+  if (mergedText !== originalText) {
+    fs.mkdirSync(path.dirname(definition.datasetBackupPath), { recursive: true });
+    fs.copyFileSync(definition.datasetPath, definition.datasetBackupPath);
+    const tempPath = definition.datasetPath + '.sheet-sync-' + syncRunId + '.tmp';
+    try {
+      fs.writeFileSync(tempPath, mergedText, 'utf8');
+      fs.renameSync(tempPath, definition.datasetPath);
+    } finally {
+      if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
+    }
+  }
+
+  const syncedAt = new Date().toISOString();
+  state.google_sheet ||= {};
+  state.google_sheet.last_synced_row = mergedRecords.length;
+  state.google_sheet.last_synced_at = syncedAt;
+  state.updated_at = syncedAt;
+  const stateTempPath = definition.datasetStatePath + '.sheet-sync-' + syncRunId + '.tmp';
+  try {
+    fs.writeFileSync(stateTempPath, JSON.stringify(state, null, 2) + '\n', 'utf8');
+    fs.renameSync(stateTempPath, definition.datasetStatePath);
+  } finally {
+    if (fs.existsSync(stateTempPath)) fs.unlinkSync(stateTempPath);
+  }
+
+  const usedIds = new Set();
+  const usedLogPath = path.join(definition.workRoot, '기록', '사용기록.jsonl');
+  if (fs.existsSync(usedLogPath)) {
+    for (const line of fs.readFileSync(usedLogPath, 'utf8').split(/\r?\n/)) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      try {
+        const entry = JSON.parse(trimmed);
+        if (entry.record_id) usedIds.add(String(entry.record_id));
+      } catch (error) { throw new Error('사용기록.jsonl JSON 오류: ' + error.message); }
+    }
+  }
+
+  const uploadValues = [];
+  let checkedRows = 0;
+  for (let rowNumber = 2; rowNumber <= mergedRecords.length + 1; rowNumber += 1) {
+    const row = rowsByNumber.get(rowNumber);
+    const checked = row[definition.uploadCompleteColumn] === true || usedIds.has(String(row.record_id));
+    if (checked) checkedRows += 1;
+    uploadValues.push({ values: [{ userEnteredValue: { boolValue: checked } }] });
+  }
+
+  return [{
+    json: {
+      sheet_sync: {
+        spreadsheet_id: definition.spreadsheetId,
+        sheet_name: definition.sheetName,
+        rows: mergedRecords.length,
+        changed_records: changedRecords,
+        used_records: usedIds.size,
+        checked_rows: checkedRows,
+        synced_at: syncedAt,
+      },
+      sheet_batch_update: {
+        requests: [
+          {
+            updateCells: {
+              range: {
+                sheetId: definition.sheetId,
+                startRowIndex: 1,
+                endRowIndex: mergedRecords.length + 1,
+                startColumnIndex: definition.uploadCompleteColumnIndex,
+                endColumnIndex: definition.uploadCompleteColumnIndex + 1,
+              },
+              rows: uploadValues,
+              fields: 'userEnteredValue',
+            },
+          },
+          {
+            setDataValidation: {
+              range: {
+                sheetId: definition.sheetId,
+                startRowIndex: 1,
+                endRowIndex: mergedRecords.length + 1,
+                startColumnIndex: definition.uploadCompleteColumnIndex,
+                endColumnIndex: definition.uploadCompleteColumnIndex + 1,
+              },
+              rule: { condition: { type: 'BOOLEAN' }, strict: true, showCustomUi: true },
+            },
+          },
+        ],
+      },
+    },
+  }];
+}
 
 // 데이터셋에서 아직 안 쓴 레코드 하나를 고르고 잠금을 잡는다.
 function pickReferenceCardRuntime(definition) {
@@ -298,7 +532,11 @@ function buildReferencePackRuntime(definition) {
     });
   if (items.length < 3) throw new Error('재가공 항목이 3개 미만입니다: ' + record.record_id);
 
-  const closing = '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.';
+  const topicText = (Array.isArray(record.topics) ? record.topics : []).join(' ');
+  const lifeWisdomTopic = /인간관계|부부관계|인생교훈|심리|예절|말|관계/.test(topicText);
+  const closing = lifeWisdomTopic
+    ? '관계와 삶에 도움 되는 지혜를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.'
+    : '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.';
   const descriptionRows = items.map((item) => item.name + (item.card_reason ? ' - ' + item.card_reason : ''));
   const description = limit([title, headline, descriptionRows.join(LF + LF), closing].filter(Boolean).join(LF + LF), 4500);
   const pinnedComment = limit(
@@ -333,7 +571,9 @@ function buildReferencePackRuntime(definition) {
         tags,
         topic_category: (Array.isArray(record.topics) ? record.topics[0] : '') || 'reference_card',
         content_lane: 'single_screen_reference',
-        bgm_prompt: 'warm calm acoustic instrumental for this everyday-life topic',
+        bgm_prompt: lifeWisdomTopic
+          ? 'bright happy acoustic instrumental for a warm life-wisdom topic'
+          : 'bright happy acoustic instrumental for this health topic',
         visual_mood_hint: '',
       },
       reference_summary: {
@@ -359,8 +599,7 @@ function addHandleToCardFooterRuntime(definition) {
     const value = String(text == null ? '' : text);
     if (!value || value.includes(handle)) return value;
     // 푸터 줄 끝에만 붙인다. 줄 전체를 다시 쓰지 않아야 안전영역·크기 지시가 살아남는다.
-    return value.replace(/(FOOTER SUBSCRIBE LINE[^\n]*?)(\s*)$/m, '$1 · ' + handle)
-      .replace(/(FOOTER SUBSCRIBE LINE[^\n]*?)(\n)/m, '$1 · ' + handle + '$2');
+    return value.replace(/(FOOTER SUBSCRIBE LINE[^\n]*?)(?=\n|$)/m, '$1 · ' + handle);
   }
 
   const imagePayload = data.image_payload ? JSON.parse(JSON.stringify(data.image_payload)) : null;
@@ -512,9 +751,18 @@ const positions = {
   'Complete Reference Card': [8400, 60],
 };
 
+// 시작 동기화 노드 3개가 들어가므로 기존 본선은 오른쪽으로 같은 간격만큼 민다.
+for (const position of Object.values(positions)) position[0] += 720;
+Object.assign(positions, {
+  'Read Reference Sheet': [240, 300],
+  'Merge Sheet Into Dataset': [480, 300],
+  'Apply Sheet Checklist Sync': [720, 300],
+  'Mark Upload Complete In Sheet': [9360, 60],
+});
+
 const nodes = [
   createNode('Operation Note', 'n8n-nodes-base.stickyNote', 1, [-80, -260], {
-    content: `## ${WORKFLOW_NAME}\n\n소재: \`research/single-screen-references/videos.jsonl\` (2,000건)\n체크리스트: \`레퍼런스 카드/기록/사용기록.jsonl\`\n선별 기준: \`레퍼런스 카드/selection-gate.json\`\n\n한 번 실행하면 아직 안 쓴 레코드 1건을 무작위로 골라 재가공 문안 그대로 카드 이미지를 만들고, BGM → 5초 MP4 → YouTube 공개 업로드 → 고정 댓글 → 사용기록 체크까지 처리합니다. 가져오기만 해서는 실행되거나 게시되지 않습니다.`,
+    content: `## ${WORKFLOW_NAME}\n\n소재: \`research/single-screen-references/videos.jsonl\` (2,000건)\n원본 시트: \`${REFERENCE_SHEET_NAME}\`\n체크리스트: \`레퍼런스 카드/기록/사용기록.jsonl\` + 시트 \`${UPLOAD_COMPLETE_COLUMN}\`\n선별 기준: \`레퍼런스 카드/selection-gate.json\`\n\n실행 시작 때 시트 수정 내용을 JSONL에 병합하고 사용기록을 체크박스에 맞춥니다. 그 뒤 미사용 레코드 1건을 골라 재가공 문안 그대로 카드 이미지를 만들고, BGM → 5초 MP4 → YouTube 공개 업로드 → 고정 댓글 → 사용기록과 시트 체크까지 처리합니다. 가져오기만 해서는 실행되거나 게시되지 않습니다.`,
     height: 320,
     width: 940,
     color: 5,
@@ -526,6 +774,75 @@ const nodes = [
     color: 3,
   }),
   createNode('Manual Trigger', 'n8n-nodes-base.manualTrigger', 1, [0, 300], {}),
+  createNode('Read Reference Sheet', 'n8n-nodes-base.googleSheets', 4.7, positions['Read Reference Sheet'], {
+    authentication: 'oAuth2',
+    resource: 'sheet',
+    operation: 'read',
+    documentId: { __rl: true, mode: 'id', value: REFERENCE_SPREADSHEET_ID },
+    sheetName: { __rl: true, mode: 'name', value: REFERENCE_SHEET_NAME },
+    filtersUI: { values: [] },
+    combineFilters: 'OR',
+    options: {
+      dataLocationOnSheet: {
+        values: { rangeDefinition: 'specifyRangeA1', range: 'A1:AU2001' },
+      },
+      outputFormatting: {
+        values: { general: 'UNFORMATTED_VALUE', date: 'FORMATTED_STRING' },
+      },
+      returnFirstMatch: false,
+    },
+  }, { credentials: GOOGLE_SHEETS_CREDENTIAL }),
+  createNode('Apply Sheet Checklist Sync', 'n8n-nodes-base.httpRequest', 4.2, positions['Apply Sheet Checklist Sync'], {
+    method: 'POST',
+    url: `https://sheets.googleapis.com/v4/spreadsheets/${REFERENCE_SPREADSHEET_ID}:batchUpdate`,
+    authentication: 'predefinedCredentialType',
+    nodeCredentialType: 'googleSheetsOAuth2Api',
+    sendBody: true,
+    specifyBody: 'json',
+    jsonBody: '={{ JSON.stringify($json.sheet_batch_update) }}',
+    options: {},
+  }, { credentials: GOOGLE_SHEETS_CREDENTIAL }),
+  createNode('Mark Upload Complete In Sheet', 'n8n-nodes-base.googleSheets', 4.7, positions['Mark Upload Complete In Sheet'], {
+    authentication: 'oAuth2',
+    resource: 'sheet',
+    operation: 'update',
+    documentId: { __rl: true, mode: 'id', value: REFERENCE_SPREADSHEET_ID },
+    sheetName: { __rl: true, mode: 'name', value: REFERENCE_SHEET_NAME },
+    columns: {
+      mappingMode: 'defineBelow',
+      value: {
+        record_id: '={{ $json.reference_result.record_id }}',
+        [UPLOAD_COMPLETE_COLUMN]: true,
+      },
+      matchingColumns: ['record_id'],
+      schema: [
+        {
+          id: 'record_id',
+          displayName: 'record_id',
+          required: false,
+          defaultMatch: true,
+          display: true,
+          type: 'string',
+          canBeUsedToMatch: true,
+        },
+        {
+          id: UPLOAD_COMPLETE_COLUMN,
+          displayName: UPLOAD_COMPLETE_COLUMN,
+          required: false,
+          defaultMatch: false,
+          display: true,
+          type: 'boolean',
+          canBeUsedToMatch: false,
+        },
+      ],
+      attemptToConvertTypes: false,
+      convertFieldsToString: false,
+    },
+    options: {
+      cellFormat: 'RAW',
+      locationDefine: { values: { headerRow: 1, firstDataRow: 2 } },
+    },
+  }, { credentials: GOOGLE_SHEETS_CREDENTIAL }),
 ];
 
 for (const name of clonedNodeNames) {
@@ -538,6 +855,9 @@ for (const name of clonedNodeNames) {
 }
 
 nodes.push(
+  createNode('Merge Sheet Into Dataset', 'n8n-nodes-base.code', 2, positions['Merge Sheet Into Dataset'], {
+    jsCode: codeFor(mergeReferenceSheetRuntime, definition),
+  }),
   createNode('Pick Reference Card', 'n8n-nodes-base.code', 2, positions['Pick Reference Card'], {
     jsCode: codeFor(pickReferenceCardRuntime, definition),
   }),
@@ -562,7 +882,10 @@ function connect(from, to, output = 0) {
   connections[from].main[output].push({ node: to, type: 'main', index: 0 });
 }
 
-connect('Manual Trigger', 'Load Config');
+connect('Manual Trigger', 'Read Reference Sheet');
+connect('Read Reference Sheet', 'Merge Sheet Into Dataset');
+connect('Merge Sheet Into Dataset', 'Apply Sheet Checklist Sync');
+connect('Apply Sheet Checklist Sync', 'Load Config');
 connect('Load Config', 'Pick Reference Card');
 connect('Pick Reference Card', 'Build Reference Pack');
 connect('Build Reference Pack', 'Medical Safety Review');
@@ -617,6 +940,7 @@ connect('Post Top-Level Comment', 'Attach Comment Result');
 connect('Attach Comment Result', 'Complete Reference Card');
 connect('Skip YouTube Upload', 'Complete Reference Card');
 connect('Mock Render Result', 'Complete Reference Card');
+connect('Complete Reference Card', 'Mark Upload Complete In Sheet');
 
 const workflow = {
   name: WORKFLOW_NAME,

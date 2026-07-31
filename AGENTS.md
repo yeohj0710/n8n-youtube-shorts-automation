@@ -77,9 +77,10 @@ These are entertaining shorts for Korean adults over 50. Fun and useful is the w
 - Hidden startup launcher: `C:\dev\n8n-youtube-shorts-automation\scripts\start-n8n-hidden.vbs`
 - Renderer: `C:\dev\n8n-youtube-shorts-automation\scripts\render-static-card.mjs`
 - Shorts card derivation — makes the `(유튜브 9x16)` card from the `(인스타 4x5)` one: `scripts\derive-shorts-card.mjs`. GPT Image flattens per-edge margins into one uniform inset, so it will not reserve the 22% bottom band a 9:16 card needs; five prompt attempts failed the same way. The 9:16 is composited, not generated.
+- Dead-zone single source of truth (margin table, prompt coordinates, content measurement, render-time fit): `scripts\lib\safe-zone.mjs`
 - Card safe-zone check (draws the dead-zone bands onto a copy in `검수\`): `scripts\preview-card-safe-zone.mjs`
 - Card safe-zone fix (shrinks the card inside the dead zones, backs the original up to `보정전\`): `scripts\enforce-card-safe-zone.mjs`
-- Both scripts share one margin table. Change them together.
+- Both scripts, `derive-shorts-card.mjs`, the renderer, and every image prompt read the table from `lib\safe-zone.mjs`. Never copy the numbers.
 - 하루건강약사 topic drop folder: `C:\dev\n8n-youtube-shorts-automation\하루건강약사 소재`
 - 건강장수비결 topic drop folder: `C:\dev\n8n-youtube-shorts-automation\건강장수비결 소재`
 - Used topic archive: each drop folder's `사용완료`
@@ -416,8 +417,56 @@ care-avoidance phrasing; it does not check whether a claim is true.
 The checklist is `레퍼런스 카드\기록\사용기록.jsonl`, keyed by `record_id`. A card
 that reached render is checked off even if the upload failed — the credits are
 already spent and re-picking it is worse. A card blocked by medical review is NOT
-checked off. The Google Sheet's own checkboxes are untouched: n8n has no Google
-Sheets credential, and sheet writes need an OAuth grant nobody has given yet.
+checked off. On every run the circuit first merges the `통과 영상` Sheet into
+`videos.jsonl` by `record_id` without deleting or reordering local records, then
+reconciles `사용기록.jsonl` into the Sheet's dedicated `AU` (`업로드 완료`) Boolean
+checkbox column. After a rendered card is logged, the same row is checked
+immediately. The n8n credential name is `Google Sheets account`; the workflow
+must stop before selection when the Sheet read or write fails.
+
+### Dead Zones Are Enforced at Render, Not by the Prompt (2026-07-31)
+
+Every circuit ignored the Shorts dead zones for weeks even though three of them
+carried a detailed `SHARED_SAFE_ZONE_V1` block in the image prompt. The published
+`health_1785475066236` frame put the title in the top band, the last two rows and
+the follow CTA deep in the bottom band, and ran copy past the right-hand button
+column. The card-news 9:16 output did the same. **A prompt cannot hold this
+line** — the same finding `derive-shorts-card.mjs` recorded after five attempts.
+Checking only that the prompt contains the block is how it stayed broken:
+the text was there the whole time.
+
+The enforcement now lives in `scripts\render-static-card.mjs`, which every
+publishing circuit already routes through. It calls `fitCanvasWithSafeZone`
+from `scripts\lib\safe-zone.mjs`: if the frame's content reaches into a band,
+the whole frame is scaled into the critical-content box (x 54-961, y 230-1498
+for 1080x1920) and the edges are filled with a strongly blurred, dimmed,
+zoomed copy of the same art, so no blank strip appears. The render result
+reports `safe_zone.applied / reason / scale / card`, visible in the n8n
+execution output.
+
+Three properties are deliberate:
+
+- **The shrink is measured from the whole frame, not from the detected text
+  box.** Content detection on a photographic background over- and under-reports;
+  under-reporting would leave a violation, which is the one outcome that must be
+  impossible. Worst case here is a card smaller than it needed to be.
+- **Detection only decides whether to skip.** A frame already inside the box is
+  left alone (`reason: already_inside`), so refits never stack.
+- **`safe_zone_mode` in the render payload** takes `auto` (default), `fit`
+  (always shrink), `off`. Nothing sets `off`; adding it re-opens the hole.
+
+A 9:16 source can only reach scale 0.66 — the safe box is relatively wider than
+9:16, so height binds first. Generating the card at 4:5 instead and letting the
+renderer place it would reach 0.84 and fill the box's width exactly (verified in
+`verify-safe-zone-enforcement.mjs`). That change needs one paid KIE call to
+confirm the endpoint accepts `aspect_ratio: '4:5'`; it has not been made.
+
+`scripts\verify-safe-zone-enforcement.mjs` (in `npm test`) checks the geometry,
+that the three CLI tools import the shared table instead of copying it, that all
+7 publishing circuits render through `render-static-card.mjs` and no other
+script, that all 5 image-generating circuits carry the generated coordinates in
+both the JSON and the live DB, and that the fit actually lands inside the box for
+full-bleed, compliant, and 4:5 inputs.
 
 ### Copy Comes From the Caption File, Not From Reading the Image (2026-07-30)
 

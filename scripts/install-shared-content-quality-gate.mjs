@@ -789,7 +789,11 @@ for (const [index, item] of (base.pack?.rank_items || []).entries()) {
   const claimStrength = clean(auditItem?.claim_strength).toLowerCase();
   const alternativeCauses = clean(auditItem?.alternative_causes).toLowerCase();
   const validHealthDepth = new Set(['high', 'adequate']);
-  const validMedicalRelevance = new Set(['direct']);
+  // Rule K sets the floor at usefulness, not medical relevance: a household,
+  // errand, or money item is asked to teach something, not to be clinical.
+  // Requiring 'direct' here contradicted that and made every non-medical topic
+  // impossible to ship, so the audit only has to name the relevance it found.
+  const validMedicalRelevance = new Set(['direct', 'incidental', 'none']);
   const validDecisionValue = new Set(['actionable', 'limited']);
   if (!auditItem || !validHealthDepth.has(healthDepth) || !validMedicalRelevance.has(medicalRelevance) || !validDecisionValue.has(decisionValue)) {
     localIssues.push({
@@ -802,7 +806,7 @@ for (const [index, item] of (base.pack?.rank_items || []).entries()) {
   }
   if (confidence === 'low' || confidence === 'medium') localIssues.push({ rank, code: 'insufficient_confidence', confidence });
   if (basisType === 'uncertain') localIssues.push({ rank, code: 'uncertain_basis', basis_type: basisType });
-  if (healthDepth === 'low' || medicalRelevance === 'incidental' || medicalRelevance === 'none') {
+  if (healthDepth === 'low') {
     localIssues.push({ rank, code: 'insufficient_health_depth', health_depth: healthDepth || null, medical_relevance: medicalRelevance || null });
   }
   if (decisionValue === 'none') localIssues.push({ rank, code: 'low_information_value', decision_value: decisionValue });

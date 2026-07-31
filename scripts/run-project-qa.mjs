@@ -16,6 +16,12 @@ function run(label, command, args) {
 for (const name of fs.readdirSync(scriptsDir).filter((name) => name.endsWith('.mjs')).sort()) {
   run(`syntax:${name}`, process.execPath, ['--check', path.join(scriptsDir, name)]);
 }
+const libDir = path.join(scriptsDir, 'lib');
+if (fs.existsSync(libDir)) {
+  for (const name of fs.readdirSync(libDir).filter((name) => name.endsWith('.mjs')).sort()) {
+    run(`syntax:lib/${name}`, process.execPath, ['--check', path.join(libDir, name)]);
+  }
+}
 for (const name of fs.readdirSync(scriptsDir).filter((name) => name.startsWith('verify-') && name.endsWith('.mjs')).sort()) {
   run(name, process.execPath, [path.join(scriptsDir, name)]);
 }

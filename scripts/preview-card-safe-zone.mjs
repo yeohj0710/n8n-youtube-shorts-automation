@@ -11,22 +11,14 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
+import {
+  SAFE_ZONE_MARGINS as MARGINS,
+  SUPPORTED_IMAGE_EXTENSIONS as supported,
+  detectAspect,
+} from './lib/safe-zone.mjs';
 
 const target = process.argv[2];
 if (!target) throw new Error('검수할 폴더 또는 이미지 경로를 인자로 넘겨주세요.');
-
-// enforce-card-safe-zone.mjs와 같은 값을 쓴다. 한쪽만 바꾸지 말 것.
-const MARGINS = {
-  '4:5': { top: 0.08, bottom: 0.12, left: 0.05, right: 0.12 },
-  '9:16': { top: 0.12, bottom: 0.22, left: 0.05, right: 0.11 },
-};
-
-const supported = new Set(['.png', '.jpg', '.jpeg', '.webp']);
-
-function detectAspect(width, height) {
-  const ratio = width / height;
-  return Math.abs(ratio - 0.8) < Math.abs(ratio - 0.5625) ? '4:5' : '9:16';
-}
 
 function overlaySvg(width, height, aspect, m) {
   const top = Math.round(height * m.top);

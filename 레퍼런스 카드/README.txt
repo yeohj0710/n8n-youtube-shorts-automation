@@ -50,9 +50,25 @@
 Google Sheet 체크박스
 
 원본 시트(`한 화면 정보 카드 레퍼런스 1-2000`, ID 1K6gT9TY_WHuxB3SHEx5VyJK2JunQWJRdkdV4ecNu_fc)의
-체크박스는 이 회로가 직접 건드리지 않습니다. n8n에 Google Sheets 자격 증명이 없고,
-시트 쓰기는 OAuth 승인이 필요합니다. 지금은 위 `사용기록.jsonl`이 체크리스트입니다.
-시트에도 반영하려면 n8n에 Google Sheets 자격 증명을 추가한 뒤 알려주세요.
+`통과 영상` 탭 `AU` 열(`업로드 완료`)을 이 회로가 동기화합니다.
+
+실행 시작 시:
+  - 시트의 2,000행을 `record_id`로 videos.jsonl에 병합합니다.
+  - 기존 JSONL 레코드 개수와 순서는 바꾸지 않습니다.
+  - `사용기록.jsonl`에 있는 record_id의 `AU` 체크박스를 Boolean TRUE로 맞춥니다.
+
+렌더 이후:
+  - `사용기록.jsonl`을 기록한 뒤 현재 record_id의 `AU` 체크박스를 즉시 TRUE로 바꿉니다.
+  - 업로드가 실패해도 렌더 비용이 발생했으면 체크합니다.
+
+필요한 n8n 자격 증명은 `Google Sheets account`입니다. OAuth 연결이 끊기면 소재 선택 전에
+동기화 단계에서 실패하므로 오래된 로컬 문안으로 게시되지 않습니다.
+자격 증명을 다시 만들 때는 n8n을 먼저 끈 뒤 `npm run setup:reference-card-sheets-auth`를
+실행하고, n8n 자격 증명 화면에서 Google 계정을 연결하세요.
+로컬 n8n 로그인을 사용할 수 없으면 n8n을 끈 뒤
+`npm run authorize:reference-card-sheets`를 실행해 Google 승인 화면에서 연결할 수 있습니다.
+이미지 생성이나 공개 업로드 없이 동기화 네 노드만 점검하려면 n8n을 끈 뒤
+`npm run smoke:reference-card-sheets`를 실행하세요.
 
 
 주의: 실행하면 KIE 비용이 발생하고 YouTube에 공개 영상이 게시됩니다. 회로를 가져오거나

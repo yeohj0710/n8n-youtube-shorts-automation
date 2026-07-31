@@ -16,17 +16,16 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
+import { SUPPORTED_IMAGE_EXTENSIONS as supported, marginsFor } from './lib/safe-zone.mjs';
 
 const target = process.argv[2];
 if (!target) throw new Error('4:5 카드가 있는 폴더 또는 이미지 경로를 인자로 넘겨주세요.');
 
 const CANVAS = { width: 1080, height: 1920 };
-// 9:16 데드존. preview-card-safe-zone.mjs / enforce-card-safe-zone.mjs와 같은 값.
-const MARGIN = { top: 0.12, bottom: 0.22, left: 0.05, right: 0.11 };
+const MARGIN = marginsFor('9:16');
 
 const INSTAGRAM_TAG = '(인스타 4x5)';
 const SHORTS_TAG = '(유튜브 9x16)';
-const supported = new Set(['.png', '.jpg', '.jpeg', '.webp']);
 
 function isFourByFive(width, height) {
   return Math.abs(width / height - 0.8) < Math.abs(width / height - 0.5625);

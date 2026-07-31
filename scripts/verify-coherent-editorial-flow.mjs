@@ -236,16 +236,16 @@ for (const relativePath of workflowFiles) {
   assert.doesNotMatch(prepare, /const bgmProfile = pickBgmProfile\(\);/, `${relativePath}: deterministic BGM profile still active`);
   assert.doesNotMatch(prepare, /soundTempo: bgmProfile\.tempo|soundKey: bgmProfile\.key/, `${relativePath}: forced tempo or key remains`);
   assert.match(final, /bgm_profile_id/, `${relativePath}: completed upload does not persist its BGM profile`);
-  assert.match(prepare, /x 0-990 px and y 130-1800 px/, `${relativePath}: expanded main-card footprint missing`);
-  assert.match(prepare, /no reserved left background band/i, `${relativePath}: left dead zone was not removed`);
-  // Published frames tried both extremes: title against the Shorts search bar,
-  // then the last row clipped at the bottom. 130 top / 120 bottom is the tuned
-  // middle, and the fill contract requires the last row fully inside.
-  assert.match(prepare, /90 px right.*130 px top.*120 px bottom/s, `${relativePath}: Shorts UI exclusion bands missing or wrong depth`);
+  // Keep the prompt aligned with the repository's preview/enforcement tools:
+  // 9:16 critical-content margins are top 12%, bottom 22%, left 5%, right 11%.
+  assert.match(prepare, /x 54-961 px and y 230-1498 px/, `${relativePath}: shared 9:16 critical-content box missing`);
+  assert.match(prepare, /54 px left.*119 px right.*230 px top.*422 px bottom/s, `${relativePath}: shared 9:16 UI exclusion bands missing or wrong depth`);
   assert.match(prepare, /VERTICAL_FILL_V2/, `${relativePath}: bottom-fill contract missing, cards will compress upward or clip again`);
   assert.match(prepare, /BAND_BACKGROUND_V1/, `${relativePath}: reserved bands would render as blank strips without the background-continuation contract`);
   assert.match(prepare, /GLYPH_INTEGRITY_V1/, `${relativePath}: minimum glyph size contract missing, small Korean text renders broken`);
-  assert.match(prepare, /SUBSCRIBE_FOOTER_V1/, `${relativePath}: bottom-band subscribe footer contract missing`);
+  assert.match(prepare, /SUBSCRIBE_FOOTER_V2/, `${relativePath}: safe-area subscribe footer contract missing`);
+  assert.match(prepare, /footer.*inside the critical-content box/i, `${relativePath}: footer can still fall under Shorts UI`);
+  assert.doesNotMatch(prepare, /may sit under feed UI|bottom band only/i, `${relativePath}: legacy obscured-footer instruction remains`);
   // 하루건강약사는 카드를 인스타에도 올리므로 '팔로우', 유튜브 전용인 건강장수비결은 '구독'.
   const closingVerb = expected.profile === 'haru_health_literacy' ? '팔로우해' : '구독해';
   assert.match(prepare, new RegExp(`매일 하나씩 전해 드려요. ${closingVerb} 두시면`), `${relativePath}: dignified value-first subscribe copy missing`);
@@ -262,8 +262,8 @@ for (const relativePath of workflowFiles) {
   assert.match(prepare, /auxiliary.*may be cropped or covered/i, `${relativePath}: auxiliary-copy crop tolerance missing`);
   assert.match(prepare, /readable in a small channel-grid thumbnail/i, `${relativePath}: thumbnail readability contract missing`);
   assert.match(prepare, /Never solve fitting by shrinking all text/i, `${relativePath}: tiny-text prevention missing`);
-  assert.match(prepare, /main card may reach the left frame edge/i, `${relativePath}: left-expanded card permission missing`);
-  assert.match(prepare, /clear of the top, right, and bottom UI bands/i, `${relativePath}: critical UI clearance missing`);
+  assert.match(prepare, /background.*may reach every frame edge/i, `${relativePath}: edge-to-edge background permission missing`);
+  assert.match(prepare, /all supplied text.*clear of the top, right, and bottom UI bands/i, `${relativePath}: critical UI clearance missing`);
   assert.doesNotMatch(prepare, /dominate the whole composition/, `${relativePath}: full-bleed layout instruction conflicts with safe zone`);
   assert.doesNotMatch(prepare, /the 왜: explanation below it/i, `${relativePath}: literal 왜 label is still forced`);
   assert.match(prepare, /supplied card_reason exactly once/i, `${relativePath}: image card_reason contract missing`);
@@ -395,25 +395,36 @@ for (const relativePath of workflowFiles) {
   const hostileBgmPack = structuredClone(runtimePack);
   hostileBgmPack.bgm_prompt = 'warm saxophone solo with gentle brass and flute';
   const hostilePrepared = executePrepare(require, { first: () => ({ json: { pack: hostileBgmPack, config: { ...channelConfig, variation_seed: 'verification-hostile', kie_bgm_model: 'V5_5', kie_image_model: 'gpt-image-2-text-to-image' } } }) })[0].json;
-  assert.doesNotMatch(hostilePrepared.bgm_payload.prompt, /saxophone|brass|flute/i, `${relativePath}: writer-supplied unsafe instrument leaked into runtime prompt`);
-  assert.match(prepared.bgm_payload.prompt, new RegExp(`^Profile ${prepared.diversity.bgm_profile.id}:`, 'i'), `${relativePath}: distinct profile direction is not first in the KIE prompt`);
-  assert.match(prepared.bgm_payload.prompt, /No voice, vocals.*humming.*ooh\/aah.*wordless vocals/i, `${relativePath}: zero-voice safety envelope missing`);
-  assert.match(prepared.bgm_payload.prompt, /Allowed instruments only:.*felt piano.*gentle acoustic piano.*nylon acoustic guitar.*soft bowed strings/i, `${relativePath}: acoustic allowlist missing`);
-  assert.match(prepared.bgm_payload.prompt, /No synth, pad, ambient wash, breathy texture, percussion, drums, brushes, marimba, mallets/i, `${relativePath}: voice-like and rhythmic timbre guard missing`);
-  assert.ok(prepared.bgm_payload.prompt.includes(prepared.diversity.bgm_profile.prompt), `${relativePath}: profile-specific sound direction was truncated`);
+  assert.equal(
+    workflow.nodes.find((node) => node.name === 'KIE Create BGM Task')?.parameters?.url,
+    'https://api.kie.ai/api/v1/generate',
+    `${relativePath}: BGM must use the music-generation endpoint`,
+  );
+  assert.doesNotMatch(hostilePrepared.bgm_payload.style, /saxophone|brass|flute/i, `${relativePath}: writer-supplied unsafe instrument leaked into runtime style`);
+  assert.match(prepared.bgm_payload.style, new RegExp(`^Profile ${prepared.diversity.bgm_profile.id}:`, 'i'), `${relativePath}: distinct profile direction is not first in the KIE style`);
+  assert.match(prepared.bgm_payload.style, /Bright, cheerful, warm, optimistic major-key/i, `${relativePath}: bright and happy BGM direction missing`);
+  assert.match(prepared.bgm_payload.style, /No voice, vocals.*humming.*ooh\/aah.*wordless vocals/i, `${relativePath}: zero-voice safety envelope missing`);
+  assert.match(prepared.bgm_payload.style, /Allowed instruments only:.*felt piano.*gentle acoustic piano.*nylon acoustic guitar.*soft bowed strings/i, `${relativePath}: acoustic allowlist missing`);
+  assert.match(prepared.bgm_payload.style, /No synth, pad, ambient wash, breathy texture, percussion, drums, brushes, marimba, mallets/i, `${relativePath}: voice-like and rhythmic timbre guard missing`);
+  assert.ok(prepared.bgm_payload.style.includes(prepared.diversity.bgm_profile.prompt), `${relativePath}: profile-specific sound direction was truncated`);
   assert.doesNotMatch(prepared.diversity?.bgm_profile?.prompt || '', /gayageum|korean fusion|pad|woodwind|marimba|percussion|drums/i, `${relativePath}: unsafe BGM variation remains`);
-  assert.ok(prepared.bgm_payload.prompt.length <= 480, `${relativePath}: BGM prompt exceeds KIE limit`);
-  assert.equal(prepared.bgm_payload.customMode, false, `${relativePath}: BGM must use simple mode`);
+  assert.ok(prepared.bgm_payload.style.length <= 1000, `${relativePath}: BGM style exceeds KIE V5_5 limit`);
+  assert.equal(prepared.bgm_payload.customMode, true, `${relativePath}: BGM must use custom mode so instrumental is enforced`);
   assert.equal(prepared.bgm_payload.instrumental, true, `${relativePath}: KIE instrumental flag missing`);
+  assert.ok(prepared.bgm_payload.title.length <= 80, `${relativePath}: BGM title exceeds KIE limit`);
+  assert.match(prepared.bgm_payload.negativeTags, /voice.*humming.*wordless vocals/i, `${relativePath}: BGM negative tags lost the voice ban`);
+  assert.match(prepared.bgm_payload.negativeTags, /dark.*sad.*melancholic.*minor key/i, `${relativePath}: BGM negative tags lost the dark-mood ban`);
+  assert.equal(prepared.bgm_payload.prompt, undefined, `${relativePath}: instrumental custom mode must not send a lyrics prompt`);
   assert.equal(prepared.bgm_payload.grabLyrics, undefined, `${relativePath}: obsolete grabLyrics flag remains`);
   assert.equal(prepared.bgm_payload.soundTempo, undefined, `${relativePath}: runtime forced tempo`);
   assert.equal(prepared.bgm_payload.soundKey, undefined, `${relativePath}: runtime forced key`);
-  assert.match(prepared.image_payload.input.prompt, /x 0-990 px and y 130-1800 px/, `${relativePath}: runtime image prompt lost expanded main-card footprint`);
-  assert.match(prepared.image_payload.input.prompt, /90 px right, 130 px top, and 120 px bottom/i, `${relativePath}: runtime image prompt lost the UI reserve bands`);
+  assert.match(prepared.image_payload.input.prompt, /x 54-961 px and y 230-1498 px/, `${relativePath}: runtime image prompt lost the shared 9:16 critical-content box`);
+  assert.match(prepared.image_payload.input.prompt, /54 px left, 119 px right, 230 px top, and 422 px bottom/i, `${relativePath}: runtime image prompt lost the shared 9:16 UI reserve bands`);
   assert.match(prepared.image_payload.input.prompt, /VERTICAL_FILL_V2/, `${relativePath}: runtime image prompt lost the bottom-fill contract`);
   assert.match(prepared.image_payload.input.prompt, /BAND_BACKGROUND_V1/, `${relativePath}: runtime image prompt lost the band background continuation`);
   assert.match(prepared.image_payload.input.prompt, /GLYPH_INTEGRITY_V1/, `${relativePath}: runtime image prompt lost the glyph-size floor`);
   assert.match(prepared.image_payload.input.prompt, new RegExp(`FOOTER SUBSCRIBE LINE.*${closingVerb} 두시면`, 's'), `${relativePath}: runtime image prompt lost the subscribe footer copy`);
+  assert.doesNotMatch(prepared.image_payload.input.prompt, /may sit under feed UI|bottom band only/i, `${relativePath}: runtime image prompt can still hide the footer under UI`);
   assert.match(prepared.image_payload.input.prompt, /largest practical Korean type/i, `${relativePath}: runtime image prompt lost large-type priority`);
   assert.match(prepared.image_payload.input.prompt, new RegExp(expected.channel), `${relativePath}: runtime image prompt lost the channel identity`);
   assert.doesNotMatch(prepared.visible_card_text, /(?:^|\n)왜\s*[:：]/, `${relativePath}: visible card still emits 왜 label`);

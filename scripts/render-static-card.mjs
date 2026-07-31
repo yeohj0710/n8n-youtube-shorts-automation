@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import sharp from 'sharp';
+import { fitCanvasWithSafeZone } from './lib/safe-zone.mjs';
 
 const payloadArg = process.argv[2];
 if (!payloadArg) {
@@ -67,34 +67,15 @@ const [imageBuffer, audioBuffer] = await Promise.all([
 
 await fs.writeFile(audioPath, audioBuffer);
 
-// 입력 비율을 감지: 이미 9:16이면 기존 cover, 4:5 같은 다른 비율이면
-// 원본이 잘리지 않게 블러 배경 위에 원본을 중앙 배치(레터박스 대체).
-const targetRatio = width / height;
-const meta = await sharp(imageBuffer).metadata();
-const inputRatio = (meta.width || width) / (meta.height || height);
-const matchesTarget = Math.abs(inputRatio - targetRatio) < 0.03;
-
-if (matchesTarget) {
-  await sharp(imageBuffer)
-    .resize(width, height, { fit: 'cover', position: 'center', kernel: sharp.kernel.lanczos3 })
-    .sharpen({ sigma: 0.45, m1: 0.8, m2: 1.15 })
-    .png()
-    .toFile(cardPath);
-} else {
-  const background = await sharp(imageBuffer)
-    .resize(width, height, { fit: 'cover', position: 'center' })
-    .blur(40)
-    .modulate({ brightness: 0.92 })
-    .toBuffer();
-  const foreground = await sharp(imageBuffer)
-    .resize(width, height, { fit: 'inside', kernel: sharp.kernel.lanczos3 })
-    .sharpen({ sigma: 0.45, m1: 0.8, m2: 1.15 })
-    .toBuffer();
-  await sharp(background)
-    .composite([{ input: foreground, gravity: 'center' }])
-    .png()
-    .toFile(cardPath);
-}
+// 데드존(안전 영역) 강제 지점. 모든 회로가 이 스크립트를 거치므로, 여기서
+// 한 번 막으면 이미지 출처(생성 모델이든 완성 카드 폴더든)와 무관하게 지켜진다.
+// 이미지 프롬프트로는 안 된다는 게 이 저장소의 결론이다 — lib/safe-zone.mjs 주석 참고.
+const safeZone = await fitCanvasWithSafeZone(imageBuffer, {
+  width,
+  height,
+  mode: payload.safe_zone_mode || 'auto',
+});
+await fs.writeFile(cardPath, safeZone.buffer);
 
 await run(ffmpegPath, [
   '-y',
@@ -123,5 +104,18 @@ console.log(JSON.stringify({
   audio_path: audioPath,
   output_path: outputPath,
   rendered_video_url: outputPath,
-  duration_seconds: duration
+  duration_seconds: duration,
+  safe_zone: {
+    applied: safeZone.applied,
+    reason: safeZone.reason,
+    scale: safeZone.scale,
+    box: safeZone.safe_box && {
+      left: safeZone.safe_box.left,
+      top: safeZone.safe_box.top,
+      right: safeZone.safe_box.right,
+      bottom: safeZone.safe_box.bottom,
+    },
+    card: safeZone.card,
+    violation: safeZone.violation,
+  },
 }));

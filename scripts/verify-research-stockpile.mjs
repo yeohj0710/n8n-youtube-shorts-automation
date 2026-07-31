@@ -122,7 +122,11 @@ for (const [channelDir, channel] of Object.entries(channels)) {
       assert.ok(payload.visible_card_text.includes(item.card_name), `${label}: rank ${item.rank} card_name missing from the image text`);
       assert.ok(payload.visible_card_text.includes(item.card_reason), `${label}: rank ${item.rank} card_reason missing from the image text`);
     }
-    assert.ok(payload.bgm_payload.prompt.length <= 480, `${label}: BGM prompt exceeds the KIE limit`);
+    assert.equal(payload.bgm_payload.customMode, true, `${label}: BGM must use custom music mode`);
+    assert.equal(payload.bgm_payload.instrumental, true, `${label}: BGM must be instrumental only`);
+    assert.ok(payload.bgm_payload.style.length <= 1000, `${label}: BGM style exceeds the KIE V5_5 limit`);
+    assert.match(payload.bgm_payload.style, /bright|cheerful|happy|joyful|sunny|uplifting/i, `${label}: BGM is not bright and happy`);
+    assert.match(payload.bgm_payload.negativeTags, /voice.*humming.*wordless vocals/i, `${label}: BGM voice ban is incomplete`);
 
     fs.rmSync(tmp, { recursive: true, force: true });
     checked += 1;

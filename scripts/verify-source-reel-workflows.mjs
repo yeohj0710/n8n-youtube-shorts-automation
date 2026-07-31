@@ -35,10 +35,15 @@ for (const file of files) {
   }
   for (const name of ['Post Top-Level Comment','Attach Comment Result']) if (!names.has(name)) throw new Error(`${file}: missing ${name}`);
   const image = workflow.nodes.find((node) => node.name === 'KIE Create Image Task');
+  const createBgm = workflow.nodes.find((node) => node.name === 'KIE Create BGM Task');
   const youtube = workflow.nodes.find((node) => node.name === 'YouTube Upload Public');
   const comment = workflow.nodes.find((node) => node.name === 'Post Top-Level Comment');
   const loadCode = workflow.nodes.find((node) => node.name === 'Load Source Reel Bundle').parameters.jsCode;
   if (image.credentials?.httpHeaderAuth?.id !== expected.kie) throw new Error(`${file}: KIE credential changed`);
+  if (createBgm?.parameters?.url !== 'https://api.kie.ai/api/v1/generate') throw new Error(`${file}: BGM is not using the music-generation endpoint`);
+  for (const contract of ['customMode:true','instrumental:true','style:','title:','negativeTags:','Bright cheerful warm optimistic','humming','wordless vocals']) {
+    if (!loadCode.includes(contract)) throw new Error(`${file}: BGM contract missing ${contract}`);
+  }
   const expectedYoutube = file.includes('longevity') ? expected.youtube.longevity : expected.youtube.haru;
   if (youtube.credentials?.youTubeOAuth2Api?.id !== expectedYoutube) throw new Error(`${file}: wrong channel YouTube credential`);
   if (comment.credentials?.youTubeOAuth2Api?.id !== expectedYoutube) throw new Error(`${file}: wrong channel comment credential`);
