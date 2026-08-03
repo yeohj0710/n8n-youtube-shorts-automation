@@ -15,8 +15,11 @@ const byName = (name) => {
   return node;
 };
 const HANDLE = '@haruyaksa';
-const HEALTH_CLOSING = '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.';
-const WISDOM_CLOSING = '관계와 삶에 도움 되는 지혜를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.';
+// 이 회로는 건강과 관계·인생 주제를 섞어 고른다. 카드 이미지의 푸터는 메인 회로가
+// 채널 프로필만 보고 찍기 때문에 주제별로 가를 수 없어서, 카드·설명·고정 댓글이
+// 전부 같은 한 줄을 쓴다.
+const CLOSING = '삶에 도움 되는 지혜를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.';
+const MAIN_CLOSING_LEAD = '몸에 도움 되는 정보를 매일 하나씩 전해 드려요';
 const SPREADSHEET_ID = '1K6gT9TY_WHuxB3SHEx5VyJK2JunQWJRdkdV4ecNu_fc';
 const SHEET_ID = 159350994;
 const SHEET_NAME = '통과 영상';
@@ -72,17 +75,50 @@ assert.deepEqual(
   'media generation must wait for sheet synchronization',
 );
 assert.deepEqual(
+  (workflow.connections['Normalize YouTube Upload']?.main?.[0] || []).map((e) => e.node),
+  ['Prepare Instagram Package'],
+  'a successful YouTube upload must prepare Instagram before posting a comment',
+);
+assert.deepEqual(
+  (workflow.connections['Prepare Instagram Package']?.main?.[0] || []).map((e) => e.node),
+  ['Post Comment?'],
+  'Instagram staging must decide whether a new comment is needed',
+);
+assert.deepEqual(
+  (workflow.connections['Post Comment?']?.main?.[0] || []).map((e) => e.node),
+  ['Post Top-Level Comment'],
+  'a new upload must continue to the comment API',
+);
+assert.deepEqual(
+  (workflow.connections['Post Comment?']?.main?.[1] || []).map((e) => e.node),
+  ['Complete Reference Card'],
+  'an already-uploaded recovery must skip duplicate comments',
+);
+assert.deepEqual(
   (workflow.connections['Attach Comment Result']?.main?.[0] || []).map((e) => e.node),
   ['Complete Reference Card'],
-  'upload must end in the checklist write',
+  'comment handling must continue to the durable checklist write',
 );
-for (const stop of ['Skip YouTube Upload', 'Mock Render Result']) {
-  assert.deepEqual(
-    (workflow.connections[stop]?.main?.[0] || []).map((e) => e.node),
-    ['Complete Reference Card'],
-    `${stop} must also reach the checklist write`,
-  );
-}
+const instagramStage = byName('Prepare Instagram Package');
+assert.match(instagramStage.parameters.jsCode, /stage-instagram-package\.mjs/);
+assert.match(instagramStage.parameters.jsCode, /n8n_reference_card_direct_render/);
+assert.match(instagramStage.parameters.jsCode, /failed_after_youtube_upload/);
+assert.match(instagramStage.parameters.jsCode, /existing_url/);
+assert.doesNotMatch(instagramStage.parameters.jsCode, /\bprocess\./, 'Task Runner code must not use the process global');
+assert.deepEqual(
+  (workflow.connections['Skip YouTube Upload']?.main?.[0] || []).map((e) => e.node),
+  ['Prepare Instagram Package'],
+  'already-uploaded runs must get an Instagram recovery attempt',
+);
+assert.deepEqual(
+  (workflow.connections['Mock Render Result']?.main?.[0] || []).map((e) => e.node),
+  ['Complete Reference Card'],
+  'mock renders must reach the checklist without Instagram staging',
+);
+assert.equal(byName('Post Top-Level Comment').onError, 'continueRegularOutput');
+assert.match(byName('Attach Comment Result').parameters.jsCode, /\$\('Prepare Instagram Package'\)/);
+assert.match(byName('Complete Reference Card').parameters.jsCode, /instagram_stage/);
+assert.match(byName('Complete Reference Card').parameters.jsCode, /already_uploaded/);
 assert.deepEqual(
   (workflow.connections['Complete Reference Card']?.main?.[0] || []).map((e) => e.node),
   ['Mark Upload Complete In Sheet'],
@@ -183,6 +219,23 @@ function runCloned(name, json) {
     require, { first: () => ({ json }) }, () => ({ first: () => ({ json: {} }) }),
   );
 }
+function runWithLookups(name, json, lookups) {
+  const lookup = (nodeName) => {
+    if (!Object.hasOwn(lookups, nodeName)) throw new Error(`${name}: unexpected lookup ${nodeName}`);
+    const values = Array.isArray(lookups[nodeName]) ? lookups[nodeName] : [lookups[nodeName]];
+    const items = values.map((value) => ({ json: value }));
+    return {
+      first: () => items[0],
+      last: () => items.at(-1),
+      all: () => items,
+    };
+  };
+  return new Function('require', '$input', '$', byName(name).parameters.jsCode)(
+    require,
+    { first: () => ({ json }), all: () => [{ json }] },
+    lookup,
+  );
+}
 
 try {
   const sourceRecords = fs.readFileSync(tmpDataset, 'utf8').split(/\r?\n/)
@@ -270,14 +323,8 @@ try {
   assert.equal(pack.rank_items.length, picked.reference.card_items_reworked_ko.length, 'items were dropped');
   assert.equal(pack.rank_label_mode, 'bullet', 'these are lists, not rankings — no N위 labels');
   assert.ok(pack.pinned_comment.startsWith('오늘 영상 핵심 정리\n'), 'pinned comment header must match the other circuits');
-  assert.ok(
-    pack.pinned_comment.endsWith(HEALTH_CLOSING) || pack.pinned_comment.endsWith(WISDOM_CLOSING),
-    'pinned comment must end with a topic-appropriate follow line',
-  );
-  assert.ok(
-    pack.description.endsWith(HEALTH_CLOSING) || pack.description.endsWith(WISDOM_CLOSING),
-    'description must end with a topic-appropriate follow line',
-  );
+  assert.ok(pack.pinned_comment.endsWith(CLOSING), 'pinned comment must end with the reference closing line');
+  assert.ok(pack.description.endsWith(CLOSING), 'description must end with the reference closing line');
   assert.ok(pack.rank_items.every((item) => !/^\s*\d+\s*[.)]/.test(item.name)), 'source numbering must be stripped');
 
   const reviewed = runCloned('Medical Safety Review', built)[0].json;
@@ -300,9 +347,47 @@ try {
     1,
     'the visible footer must contain the handle exactly once',
   );
-  assert.match(handled.image_payload.input.prompt, /x 54-961 px and y 230-1498 px/, 'shared 9:16 critical-content box missing');
-  assert.match(handled.image_payload.input.prompt, /54 px left, 119 px right, 230 px top, and 422 px bottom/, 'shared 9:16 UI margins missing');
-  assert.match(handled.image_payload.input.prompt, /footer.*inside the critical-content box/i, 'footer is not protected from Shorts UI');
+  assert.equal(handled.image_payload.input.aspect_ratio, '9:16', 'reference cards must fill the 9:16 Shorts frame');
+  assert.ok(handled.image_payload.input.prompt.includes(CLOSING.split('. ')[0]), 'the card footer lost the reference closing line');
+  assert.ok(!handled.image_payload.input.prompt.includes(MAIN_CLOSING_LEAD), 'the main circuit closing line leaked into the card prompt');
+  assert.ok(handled.visible_card_text.includes(CLOSING.split('. ')[0]), 'the visible card text lost the reference closing line');
+  assert.ok(!handled.visible_card_text.includes(MAIN_CLOSING_LEAD), 'the main circuit closing line leaked into the visible card text');
+  // 이 회로는 렌더 단계 축소를 쓰지 않으므로 여백은 프롬프트로만 확보한다. 아래 검사는
+  // "지시가 프롬프트 맨 뒤에 살아 있는가"까지만 본다 — 모델이 지켰는지는 증명하지 못한다.
+  // 발행된 프레임이 실제로 상자 안에 들어갔는지는 렌더 결과를 눈으로 봐야 안다.
+  assert.match(handled.image_payload.input.prompt, /REFERENCE_CARD_MARGIN_V1/, 'the reference margin instruction is missing');
+  assert.match(
+    handled.image_payload.input.prompt.split('REFERENCE_CARD_MARGIN_V1')[1] || '',
+    /top 230 px \(top 12 percent\)[\s\S]*bottom 422 px \(bottom 22 percent\)/,
+    'the margin instruction lost the shared band sizes',
+  );
+  assert.ok(
+    handled.image_payload.input.prompt.trimEnd().endsWith('so any Korean text placed there is lost.'),
+    'the margin instruction must be the last thing the model reads',
+  );
+  assert.match(handled.image_payload.input.prompt, /Create one finished vertical 9:16/i, 'prompt must request a full-height 9:16 source');
+  assert.match(handled.image_payload.input.prompt, /x 54-961 px and y 230-1498 px/, 'critical text still needs the shared UI-safe coordinates');
+  assert.doesNotMatch(handled.image_payload.input.prompt, /REFERENCE_CARD_4X5_SOURCE_V1|finished vertical 4:5/i, 'obsolete 4:5 source-card contract remains');
+  assert.equal(handled.config?.reference_card_frame_mode, 'full_frame_9x16', 'reference full-frame policy marker missing');
+  assert.equal(handled.config?.safe_zone_mode, 'off', 'reference cards must bypass post-render shrinking');
+  const normalizedImage = runWithLookups('Normalize Image Task', { data: { taskId: 'reference-image-task' } }, {
+    'Prepare Image Task Retry': [],
+    'Add Handle To Card Footer': handled,
+    'Prepare Image and BGM Payloads': prepared,
+  })[0].json;
+  assert.equal(normalizedImage.config?.safe_zone_mode, 'off', 'image-task normalization discarded the reference full-frame policy');
+  assert.equal(normalizedImage.image_payload?.input?.aspect_ratio, '9:16', 'image-task normalization restored stale image metadata');
+  const parsedImage = runWithLookups('Parse Image Result', {
+    data: { state: 'success', resultJson: JSON.stringify({ resultUrls: ['C:/test/reference-card.png'] }) },
+  }, { 'Normalize Image Task': normalizedImage })[0].json;
+  const normalizedBgm = runWithLookups('Normalize BGM Task', { data: { taskId: 'reference-bgm-task' } }, {
+    'Use Live BGM?': parsedImage,
+  })[0].json;
+  const parsedBgm = runWithLookups('Parse BGM Result', {
+    data: { status: 'SUCCESS', response: { sunoData: [{ audioUrl: 'C:/test/reference-card.mp3', duration: 30 }] } },
+  }, { 'Normalize BGM Task': normalizedBgm })[0].json;
+  const renderPrepared = runCloned('Prepare Local FFmpeg Render', parsedBgm)[0].json;
+  assert.equal(renderPrepared.render_payload.safe_zone_mode, 'off', 'reference full-frame mode was not forwarded to the renderer');
   assert.doesNotMatch(handled.image_payload.input.prompt, /may sit under feed UI|bottom band only/i, 'legacy obscured-footer instruction remains');
   assert.equal(byName('KIE Create BGM Task').parameters.url, 'https://api.kie.ai/api/v1/generate');
   assert.equal(handled.bgm_payload.customMode, true, 'BGM must use custom music mode');
@@ -322,8 +407,8 @@ try {
     reference: wisdomReference,
     reference_summary: undefined,
   })[0].json;
-  assert.ok(wisdomBuilt.pack.description.endsWith(WISDOM_CLOSING), 'life-wisdom description uses the health-only closing');
-  assert.ok(wisdomBuilt.pack.pinned_comment.endsWith(WISDOM_CLOSING), 'life-wisdom comment uses the health-only closing');
+  assert.ok(wisdomBuilt.pack.description.endsWith(CLOSING), 'life-wisdom description drifted from the reference closing line');
+  assert.ok(wisdomBuilt.pack.pinned_comment.endsWith(CLOSING), 'life-wisdom comment drifted from the reference closing line');
 
   const completed = runNode('Complete Reference Card', {
     ...handled,
@@ -369,6 +454,7 @@ try {
       'gate_respects_dataset_flags',
       'reworked_copy_verbatim',
       'channel_handle_in_card_footer',
+      'full_frame_policy_survives_media_route',
       'bgm_humming_ban',
       'checklist_write_and_dedupe',
     ],

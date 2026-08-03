@@ -36,7 +36,11 @@ async function readInputBuffer(input, label) {
   if (!response.ok) {
     throw new Error(`${label} download failed: ${response.status} ${response.statusText}`);
   }
-  return Buffer.from(await response.arrayBuffer());
+  const buffer = Buffer.from(await response.arrayBuffer());
+  if (buffer.length === 0) {
+    throw new Error(`${label} download returned an empty file.`);
+  }
+  return buffer;
 }
 
 function run(command, args) {

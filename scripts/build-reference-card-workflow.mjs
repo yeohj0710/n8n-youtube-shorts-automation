@@ -11,6 +11,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { safeBoxFor } from './lib/safe-zone.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const workflowDir = path.join(root, 'workflows');
@@ -29,10 +30,39 @@ const REFERENCE_SHEET_ID = 159350994;
 const REFERENCE_SHEET_NAME = '통과 영상';
 const UPLOAD_COMPLETE_COLUMN = '업로드 완료';
 const UPLOAD_COMPLETE_COLUMN_INDEX = 46; // AU, zero-based
+const INSTAGRAM_AUTOMATION_SCRIPT = 'G:/내 드라이브/영상 편집/AI 크리에이터/인스타그램 자동화/scripts/stage-instagram-package.mjs';
+
+// 카드 푸터·설명·고정 댓글이 모두 이 한 줄을 쓴다. 이 회로가 고르는 레퍼런스는
+// 건강뿐 아니라 관계·인생 주제가 섞여 있는데, 메인 회로에서 물려받은 '몸에 도움 되는
+// 정보'는 채널 프로필만 보고 붙어서 관계 주제 카드에도 그대로 찍혔다(2026-08-03 발행분).
+// 주제로 문구를 갈라도 카드 이미지 쪽은 갈라지지 않으므로, 양쪽 다 덮는 한 줄로 통일한다.
+const REFERENCE_CLOSING_LEAD = '삶에 도움 되는 지혜를 매일 하나씩 전해 드려요';
+const REFERENCE_CLOSING_FOLLOW = '팔로우해 두시면 놓치지 않고 받아보실 수 있어요';
+const MAIN_CLOSING_LEAD = '몸에 도움 되는 정보를 매일 하나씩 전해 드려요';
+
+// 데드존 좌표는 손으로 쓰지 않는다. 이 저장소는 마진 표를 lib/safe-zone.mjs 한 곳에만
+// 두기로 했고, 과거에 표가 복제돼 한쪽만 고쳐지는 사고가 있었다. n8n Code 노드는
+// import을 못 하므로 빌드 시점에 계산해서 definition에 박아 넣는다.
+const REFERENCE_SAFE_BOX = safeBoxFor(1080, 1920, '9:16');
 
 const definition = {
   channelName: '하루건강약사',
   handle: '@haruyaksa',
+  closingLead: REFERENCE_CLOSING_LEAD,
+  closingFollow: REFERENCE_CLOSING_FOLLOW,
+  mainClosingLead: MAIN_CLOSING_LEAD,
+  safeBox: {
+    width: 1080,
+    height: 1920,
+    left: REFERENCE_SAFE_BOX.left,
+    top: REFERENCE_SAFE_BOX.top,
+    right: REFERENCE_SAFE_BOX.right,
+    bottom: REFERENCE_SAFE_BOX.bottom,
+    topInset: REFERENCE_SAFE_BOX.topInset,
+    bottomInset: REFERENCE_SAFE_BOX.bottomInset,
+    topPercent: Math.round(REFERENCE_SAFE_BOX.margins.top * 100),
+    bottomPercent: Math.round(REFERENCE_SAFE_BOX.margins.bottom * 100),
+  },
   datasetPath: path.join(root, 'research', 'single-screen-references', 'videos.jsonl').replace(/\\/g, '/'),
   datasetBackupPath: path.join(root, 'research', 'single-screen-references', 'etc', 'videos.before-sheet-sync.jsonl').replace(/\\/g, '/'),
   datasetStatePath: path.join(root, 'research', 'single-screen-references', 'state.json').replace(/\\/g, '/'),
@@ -362,6 +392,110 @@ function mergeReferenceSheetRuntime(definition) {
   }];
 }
 
+function prepareInstagramPackageRuntime(referenceDefinition) {
+  const data = $input.first().json;
+  const { spawn } = require('child_process');
+  const skipReason = data.youtube?.reason || null;
+  if (data.youtube?.skipped === true && skipReason !== 'already_uploaded') {
+    return [{
+      json: {
+        ...data,
+        instagram_stage: {
+          ok: false,
+          status: 'skipped_youtube_not_published',
+          reason: skipReason || 'youtube_not_published',
+        },
+      },
+    }];
+  }
+  const sourceUrl = data.youtube?.url || data.youtube?.existing_url || null;
+  const videoPath = data.output_path || data.rendered_video_url || null;
+  if (!sourceUrl || !videoPath) {
+    return [{
+      json: {
+        ...data,
+        instagram_stage: {
+          ok: false,
+          status: 'skipped_missing_input',
+          source_url: sourceUrl,
+          video_path: videoPath,
+          error: 'YouTube URL 또는 렌더 MP4 경로가 없습니다.',
+        },
+      },
+    }];
+  }
+
+  const payload = {
+    video_path: videoPath,
+    source_url: sourceUrl,
+    title: data.pack?.hook_title || null,
+    description: data.pack?.description || '',
+    caption_text: data.pack?.description || '',
+    pack: data.pack || {},
+    uploader: referenceDefinition.channelName,
+    publication_date: new Date().toISOString(),
+    preparation_source: 'n8n_reference_card_direct_render',
+  };
+  const payloadBase64 = Buffer.from(JSON.stringify(payload), 'utf8').toString('base64');
+  const nodePath = data.config?.node_path || 'C:/Program Files/nodejs/node.exe';
+  const scriptPath = referenceDefinition.instagramAutomationScript;
+
+  return (async () => {
+    const childResult = await new Promise((resolve) => {
+      const child = spawn(nodePath, [scriptPath, '--payload-base64', payloadBase64], { windowsHide: true });
+      const maxBuffer = 4 * 1024 * 1024;
+      let stdout = '';
+      let stderr = '';
+      let settled = false;
+      let timer = null;
+      const finish = (result) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(result);
+      };
+      const append = (target, chunk) => {
+        const next = target + chunk.toString('utf8');
+        if (Buffer.byteLength(next, 'utf8') > maxBuffer) {
+          child.kill();
+          return next.slice(-maxBuffer);
+        }
+        return next;
+      };
+      child.stdout.on('data', (chunk) => { stdout = append(stdout, chunk); });
+      child.stderr.on('data', (chunk) => { stderr = append(stderr, chunk); });
+      child.on('error', (error) => finish({ exitCode: 1, stdout, stderr: stderr + error.message }));
+      child.on('close', (code) => finish({ exitCode: code ?? 1, stdout, stderr }));
+      timer = setTimeout(() => {
+        child.kill();
+        finish({ exitCode: 1, stdout, stderr: stderr + '\nInstagram package staging timed out after 300 seconds.' });
+      }, 5 * 60 * 1000);
+    });
+
+    let parsed = null;
+    try {
+      parsed = JSON.parse(String(childResult.stdout || '').trim());
+    } catch (error) {
+      parsed = null;
+    }
+    const ok = childResult.exitCode === 0 && parsed?.ok === true;
+    return [{
+      json: {
+        ...data,
+        instagram_stage: ok
+          ? { ...parsed, status: 'ready_for_instagram_review' }
+          : {
+              ok: false,
+              status: 'failed_after_youtube_upload',
+              source_url: sourceUrl,
+              video_path: videoPath,
+              error: String(childResult.stderr || childResult.stdout || 'Instagram package staging failed.').trim(),
+            },
+      },
+    }];
+  })();
+}
+
 // 데이터셋에서 아직 안 쓴 레코드 하나를 고르고 잠금을 잡는다.
 function pickReferenceCardRuntime(definition) {
   const fs = require('fs');
@@ -534,9 +668,9 @@ function buildReferencePackRuntime(definition) {
 
   const topicText = (Array.isArray(record.topics) ? record.topics : []).join(' ');
   const lifeWisdomTopic = /인간관계|부부관계|인생교훈|심리|예절|말|관계/.test(topicText);
-  const closing = lifeWisdomTopic
-    ? '관계와 삶에 도움 되는 지혜를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.'
-    : '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.';
+  // 주제로 가르지 않는다. 카드 이미지의 푸터는 메인 회로가 채널 프로필만 보고 찍기
+  // 때문에 같은 분기를 만들 수 없어서, 설명만 갈라두면 영상과 설명이 어긋난다.
+  const closing = definition.closingLead + '. ' + definition.closingFollow + '.';
   const descriptionRows = items.map((item) => item.name + (item.card_reason ? ' - ' + item.card_reason : ''));
   const description = limit([title, headline, descriptionRows.join(LF + LF), closing].filter(Boolean).join(LF + LF), 4500);
   const pinnedComment = limit(
@@ -589,11 +723,17 @@ function buildReferencePackRuntime(definition) {
 }
 
 // 메인 회로의 이미지 프롬프트 푸터에는 팔로우 문구만 있고 채널 핸들이 없다. 카드뉴스
-// 디자인처럼 마무리 줄에 `@haruyaksa`를 붙인다(사용자 요청). 메인 회로를 건드리지 않고
-// 이 회로에서만 프롬프트 문자열을 손보는 방식이라, 메인 쇼츠 문안은 그대로다.
+// 디자인처럼 마무리 줄에 `@haruyaksa`를 붙인다(사용자 요청).
+//
+// REFERENCE_CARD_FULL_FRAME_V1: 이 회로는 카드 자체가 완성된 9:16 화면이다. 생성 프롬프트는
+// 중요 문구를 Shorts UI 안전 좌표 안에 두되, 렌더 단계에서는 카드를 다시 축소하지 않는다.
+// 축소 합성(흐린 띠)은 쓰지 않는다 — 잘못 올라간 영상이 여러 번 나와서 사용자가 막았다.
+// 그래서 위아래 여백은 생성 프롬프트에서만 확보한다.
 function addHandleToCardFooterRuntime(definition) {
+  // REFERENCE_CARD_FULL_FRAME_V1
   const data = $input.first().json;
   const handle = definition.handle;
+  const LF = String.fromCharCode(10);
 
   function withHandle(text) {
     const value = String(text == null ? '' : text);
@@ -602,17 +742,58 @@ function addHandleToCardFooterRuntime(definition) {
     return value.replace(/(FOOTER SUBSCRIBE LINE[^\n]*?)(?=\n|$)/m, '$1 · ' + handle);
   }
 
+  // 메인 회로의 푸터 문구는 채널 프로필만 보고 붙어서, 관계·인생 주제 카드에도
+  // '몸에 도움 되는 정보'가 찍혔다. 이 회로에서만 한 줄로 바꾼다.
+  function withReferenceClosing(text) {
+    const value = String(text == null ? '' : text);
+    if (!value) return value;
+    return value.split(definition.mainClosingLead).join(definition.closingLead);
+  }
+
+  // 프롬프트 맨 뒤에 붙이는 여백 지시. 메인 회로의 SHARED_SAFE_ZONE_V1은 프롬프트
+  // 중간에 좌표만 적어두는데, 발행된 카드는 제목을 y 68, 푸터를 y 1892까지 밀어냈다.
+  // 그래서 (1) 맨 끝에 두고 (2) 좌표 대신 "위/아래 띠에는 배경만"이라는 장면 지시로
+  // 다시 말하고 (3) 푸터를 프레임 바닥 막대가 아니라 본문의 마지막 줄로 재정의한다.
+  // 렌더 단계 축소는 쓰지 않으므로, 여백은 이 지시가 지켜지는 만큼만 생긴다.
+  function referenceMarginInstruction() {
+    const box = definition.safeBox;
+    return [
+      'REFERENCE_CARD_MARGIN_V1 — this is the last word on vertical placement and overrides any earlier line it contradicts.',
+      'Every letter of the Korean copy — title, subtitle, all rows, and the closing line — sits between y ' + box.top + ' and y ' + box.bottom + ' of the ' + box.width + 'x' + box.height + ' frame.',
+      'The top ' + box.topInset + ' px (top ' + box.topPercent + ' percent) and the bottom ' + box.bottomInset + ' px (bottom ' + box.bottomPercent + ' percent) are open background: photographed scene, soft blur, plants, wood, cloth, light. Draw no letters, no panel edge, no footer bar, and no divider line in those two strips. Leaving them visibly empty is the point, not a mistake.',
+      'The closing line is the final line of the text block, tucked directly under the last row. It is never a strip along the bottom of the frame.',
+      'The title begins below the top strip, with clear background above its first line. Do not let the title touch the top edge.',
+      'If the copy runs long, tighten row spacing, shrink decoration, or set the title in two lines. Never gain room by pushing the title up or the closing line down into the strips.',
+      'The app interface covers those two strips on a phone, so any Korean text placed there is lost.',
+    ].join(String.fromCharCode(10));
+  }
+
   const imagePayload = data.image_payload ? JSON.parse(JSON.stringify(data.image_payload)) : null;
   if (imagePayload?.input?.prompt) {
-    imagePayload.input.prompt = withHandle(imagePayload.input.prompt);
+    imagePayload.input.prompt = withReferenceClosing(withHandle(imagePayload.input.prompt));
+    imagePayload.input.prompt += LF + referenceMarginInstruction();
+    imagePayload.input.aspect_ratio = '9:16';
   }
-  const visibleCardText = withHandle(data.visible_card_text);
+  const config = {
+    ...(data.config || {}),
+    reference_card_frame_mode: 'full_frame_9x16',
+    safe_zone_mode: 'off',
+  };
+  const visibleCardText = withReferenceClosing(withHandle(data.visible_card_text));
 
   if (imagePayload?.input?.prompt && !imagePayload.input.prompt.includes(handle)) {
     throw new Error('이미지 프롬프트에 채널 핸들을 넣지 못했습니다. 메인 회로의 FOOTER SUBSCRIBE LINE 문구가 바뀌었는지 확인하세요.');
   }
+  // 문구가 살아남았는지 본다. 메인 회로가 푸터 문구를 바꾸면 조용히 옛말이 나가는 대신
+  // 여기서 멈춘다.
+  if (imagePayload?.input?.prompt && imagePayload.input.prompt.includes(definition.mainClosingLead)) {
+    throw new Error('카드 푸터에 메인 회로 문구가 남았습니다: ' + definition.mainClosingLead);
+  }
+  if (imagePayload?.input?.prompt && !imagePayload.input.prompt.includes(definition.closingLead)) {
+    throw new Error('카드 푸터 문구를 바꾸지 못했습니다. 메인 회로의 구독 문구가 바뀌었는지 확인하세요.');
+  }
 
-  return [{ json: { ...data, image_payload: imagePayload, visible_card_text: visibleCardText, card_footer_handle: handle } }];
+  return [{ json: { ...data, config, image_payload: imagePayload, visible_card_text: visibleCardText, card_footer_handle: handle } }];
 }
 
 // 의학 안전 검수에서 막히면 잠금을 풀고 사유만 남긴다. 이 회로는 재생성하지 않는다.
@@ -647,7 +828,12 @@ function completeReferenceCardRuntime(definition) {
   const config = data.config || {};
   const summary = data.reference_summary || {};
   const youtube = data.youtube || {};
-  const uploaded = !!youtube.video_id && youtube.skipped !== true;
+  const videoUrl = youtube.url || youtube.existing_url || null;
+  const videoId = youtube.video_id
+    || (videoUrl ? String(videoUrl).match(/(?:v=|shorts\/|youtu\.be\/)([A-Za-z0-9_-]{6,})/)?.[1] : null)
+    || null;
+  const uploaded = !!videoId && (youtube.skipped !== true || youtube.reason === 'already_uploaded');
+  const instagramStage = data.instagram_stage || null;
   const now = new Date().toISOString();
 
   if (summary.record_id) {
@@ -658,8 +844,16 @@ function completeReferenceCardRuntime(definition) {
       claim_risk: summary.claim_risk || null,
       item_count: summary.item_count || null,
       published: uploaded,
-      video_id: youtube.video_id || null,
-      video_url: youtube.url || null,
+      video_id: videoId,
+      video_url: videoUrl,
+      instagram_stage: instagramStage ? {
+        status: instagramStage.status || null,
+        ok: instagramStage.ok === true,
+        output_dir: instagramStage.output_dir || null,
+        video_path: instagramStage.video_path || null,
+        caption_html: instagramStage.caption_html || null,
+        error: instagramStage.error || null,
+      } : null,
       used_at: now,
     };
     // 업로드 여부와 무관하게 소비된 것으로 표시한다. 렌더까지 갔으면 비용이 났고,
@@ -685,7 +879,8 @@ function completeReferenceCardRuntime(definition) {
         blocked: false,
         record_id: summary.record_id || null,
         title: data.pack?.hook_title || null,
-        video_url: youtube.url || null,
+        video_url: videoUrl,
+        instagram_stage: instagramStage,
         checked_off_at: now,
         pool: data.reference_pool || null,
       },
@@ -745,10 +940,12 @@ const positions = {
   'Allow YouTube Upload?': [7200, 0],
   'YouTube Upload Public': [7440, -120],
   'Normalize YouTube Upload': [7680, -120],
-  'Post Top-Level Comment': [7920, -120],
-  'Attach Comment Result': [8160, -120],
+  'Post Comment?': [8160, -120],
+  'Post Top-Level Comment': [8400, -220],
+  'Attach Comment Result': [8640, -220],
   'Skip YouTube Upload': [7440, 200],
-  'Complete Reference Card': [8400, 60],
+  'Prepare Instagram Package': [7920, -120],
+  'Complete Reference Card': [8880, 60],
 };
 
 // 시작 동기화 노드 3개가 들어가므로 기존 본선은 오른쪽으로 같은 간격만큼 민다.
@@ -757,12 +954,12 @@ Object.assign(positions, {
   'Read Reference Sheet': [240, 300],
   'Merge Sheet Into Dataset': [480, 300],
   'Apply Sheet Checklist Sync': [720, 300],
-  'Mark Upload Complete In Sheet': [9360, 60],
+  'Mark Upload Complete In Sheet': [9600, 60],
 });
 
 const nodes = [
   createNode('Operation Note', 'n8n-nodes-base.stickyNote', 1, [-80, -260], {
-    content: `## ${WORKFLOW_NAME}\n\n소재: \`research/single-screen-references/videos.jsonl\` (2,000건)\n원본 시트: \`${REFERENCE_SHEET_NAME}\`\n체크리스트: \`레퍼런스 카드/기록/사용기록.jsonl\` + 시트 \`${UPLOAD_COMPLETE_COLUMN}\`\n선별 기준: \`레퍼런스 카드/selection-gate.json\`\n\n실행 시작 때 시트 수정 내용을 JSONL에 병합하고 사용기록을 체크박스에 맞춥니다. 그 뒤 미사용 레코드 1건을 골라 재가공 문안 그대로 카드 이미지를 만들고, BGM → 5초 MP4 → YouTube 공개 업로드 → 고정 댓글 → 사용기록과 시트 체크까지 처리합니다. 가져오기만 해서는 실행되거나 게시되지 않습니다.`,
+    content: `## ${WORKFLOW_NAME}\n\n소재: \`research/single-screen-references/videos.jsonl\` (2,000건)\n원본 시트: \`${REFERENCE_SHEET_NAME}\`\n체크리스트: \`레퍼런스 카드/기록/사용기록.jsonl\` + 시트 \`${UPLOAD_COMPLETE_COLUMN}\`\n선별 기준: \`레퍼런스 카드/selection-gate.json\`\n\n실행 시작 때 시트 수정 내용을 JSONL에 병합하고 사용기록을 체크박스에 맞춥니다. 그 뒤 미사용 레코드 1건을 골라 재가공 문안 그대로 카드 이미지를 만들고, BGM → 5초 MP4 → YouTube 공개 업로드 → Instagram 업로드 폴더 준비 → 고정 댓글 → 사용기록과 시트 체크까지 처리합니다. 댓글 API가 실패해도 Instagram 준비 결과와 사용기록을 남깁니다. 가져오기만 해서는 실행되거나 게시되지 않습니다.`,
     height: 320,
     width: 940,
     color: 5,
@@ -854,6 +1051,29 @@ for (const name of clonedNodeNames) {
   nodes.push(clone);
 }
 
+// The shared node normally restores its base object from Prepare Image and BGM Payloads
+// because the main circuit has no postprocessor between payload preparation and KIE. This
+// reference circuit does: Add Handle also establishes the full-frame render policy. Keep
+// that enriched object when the KIE HTTP node returns only a task id.
+const normalizeImageTask = nodes.find((node) => node.name === 'Normalize Image Task');
+const staleNormalizeBase = "  base = $('Prepare Image and BGM Payloads').first().json;";
+const referenceNormalizeBase = "  // REFERENCE_CARD_PRESERVE_FULL_FRAME_V1\n  base = $('Add Handle To Card Footer').first().json;";
+if (!normalizeImageTask?.parameters?.jsCode?.includes(staleNormalizeBase)) {
+  throw new Error('Normalize Image Task base lookup changed; preserve the reference postprocessor output explicitly.');
+}
+normalizeImageTask.parameters.jsCode = normalizeImageTask.parameters.jsCode.replace(staleNormalizeBase, referenceNormalizeBase);
+
+// Instagram 준비는 댓글 API보다 먼저 끝내고, 댓글 실패는 기록 단계를 막지 않는다.
+const postTopLevelComment = nodes.find((node) => node.name === 'Post Top-Level Comment');
+const attachCommentResult = nodes.find((node) => node.name === 'Attach Comment Result');
+const staleCommentBase = "const base = $('Normalize YouTube Upload').first().json;";
+const stagedCommentBase = "const base = $('Prepare Instagram Package').first().json;";
+if (!postTopLevelComment || !attachCommentResult?.parameters?.jsCode?.includes(staleCommentBase)) {
+  throw new Error('Comment nodes changed; preserve Instagram staging data before updating the workflow.');
+}
+postTopLevelComment.onError = 'continueRegularOutput';
+attachCommentResult.parameters.jsCode = attachCommentResult.parameters.jsCode.replace(staleCommentBase, stagedCommentBase);
+
 nodes.push(
   createNode('Merge Sheet Into Dataset', 'n8n-nodes-base.code', 2, positions['Merge Sheet Into Dataset'], {
     jsCode: codeFor(mergeReferenceSheetRuntime, definition),
@@ -869,6 +1089,20 @@ nodes.push(
   }),
   createNode('Add Handle To Card Footer', 'n8n-nodes-base.code', 2, positions['Add Handle To Card Footer'], {
     jsCode: codeFor(addHandleToCardFooterRuntime, definition),
+  }),
+  createNode('Prepare Instagram Package', 'n8n-nodes-base.code', 2, positions['Prepare Instagram Package'], {
+    jsCode: codeFor(prepareInstagramPackageRuntime, {
+      channelName: definition.channelName,
+      instagramAutomationScript: INSTAGRAM_AUTOMATION_SCRIPT,
+    }),
+  }),
+  createNode('Post Comment?', 'n8n-nodes-base.if', 1, positions['Post Comment?'], {
+    conditions: {
+      boolean: [{
+        value1: '={{$json.youtube?.skipped !== true}}',
+        value2: true,
+      }],
+    },
   }),
   createNode('Complete Reference Card', 'n8n-nodes-base.code', 2, positions['Complete Reference Card'], {
     jsCode: codeFor(completeReferenceCardRuntime, definition),
@@ -935,10 +1169,13 @@ connect('Attach Downloaded MP4', 'Allow YouTube Upload?');
 connect('Allow YouTube Upload?', 'YouTube Upload Public', 0);
 connect('Allow YouTube Upload?', 'Skip YouTube Upload', 1);
 connect('YouTube Upload Public', 'Normalize YouTube Upload');
-connect('Normalize YouTube Upload', 'Post Top-Level Comment');
+connect('Normalize YouTube Upload', 'Prepare Instagram Package');
+connect('Skip YouTube Upload', 'Prepare Instagram Package');
+connect('Prepare Instagram Package', 'Post Comment?');
+connect('Post Comment?', 'Post Top-Level Comment', 0);
+connect('Post Comment?', 'Complete Reference Card', 1);
 connect('Post Top-Level Comment', 'Attach Comment Result');
 connect('Attach Comment Result', 'Complete Reference Card');
-connect('Skip YouTube Upload', 'Complete Reference Card');
 connect('Mock Render Result', 'Complete Reference Card');
 connect('Complete Reference Card', 'Mark Upload Complete In Sheet');
 

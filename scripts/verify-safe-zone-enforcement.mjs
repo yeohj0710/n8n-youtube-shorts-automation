@@ -77,8 +77,12 @@ for (const file of workflowFiles) {
   const renderNode = nodes.find((node) => node.name === 'Local FFmpeg Render');
   const renderCode = renderNode?.parameters?.jsCode || '';
   if (!renderCode.includes('render-static-card.mjs')) fail(`${file}: Local FFmpeg Render has no render-static-card.mjs fallback`);
+  // 발행 회로의 로컬 스크립트는 안전 영역 렌더러와, 렌더가 끝난 뒤 파일을 복사하는
+  // Instagram staging만 허용한다. 전체 Code 노드를 계속 검사하므로 Load Config나
+  // 실행 명령이 다른 렌더러를 가리키면 노드 이름과 관계없이 실패한다.
+  const allowedScripts = new Set(['render-static-card', 'stage-instagram-package']);
   for (const match of allCode.matchAll(/scripts\/([\w-]+)\.mjs/g)) {
-    if (match[1] !== 'render-static-card') fail(`${file}: routes rendering through scripts/${match[1]}.mjs, which skips the safe-zone fit`);
+    if (!allowedScripts.has(match[1])) fail(`${file}: references unapproved local script scripts/${match[1]}.mjs`);
   }
 
   const generatesImage = nodes.some((node) => node.name === 'KIE Create Image Task');

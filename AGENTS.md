@@ -68,6 +68,17 @@ These are entertaining shorts for Korean adults over 50. Fun and useful is the w
 
 ## Important Paths
 
+### Instagram handoff
+
+- Automation root: `G:\내 드라이브\영상 편집\AI 크리에이터\인스타그램 자동화`
+- URL entry point: `G:\내 드라이브\영상 편집\AI 크리에이터\인스타그램 자동화\scripts\prepare-instagram.ps1`
+- n8n staging script: `G:\내 드라이브\영상 편집\AI 크리에이터\인스타그램 자동화\scripts\stage-instagram-package.mjs`
+- Prepared Reel folders: `G:\내 드라이브\영상 편집\AI 크리에이터\인스타그램 업로드용`
+- The reference-card circuit stages the already-rendered MP4 after a successful YouTube upload. It does not publish to Instagram.
+- A staging failure after YouTube upload must be recorded as `failed_after_youtube_upload` and must not cause another YouTube upload.
+- Reuse an existing folder when its `metadata.json` has the same YouTube video ID. Do not create duplicate handoff folders.
+- Instagram `공유` is a separate public-publishing action. Do not trigger it from this n8n circuit without explicit user approval and an authenticated Meta publishing setup.
+
 - Runner root: `C:\dev\n8n-youtube-shorts-automation`
 - n8n user folder: `C:\dev\n8n-youtube-shorts-automation\.n8n`
 - n8n DB: `C:\dev\n8n-youtube-shorts-automation\.n8n\database.sqlite`
@@ -283,16 +294,28 @@ Fix/limits:
 
 Cause:
 
-KIE tasks can return `generating` or `PENDING` after the first wait.
+KIE tasks can return `generating`, `PENDING`, or `TEXT_SUCCESS` after the first
+wait. `TEXT_SUCCESS` means the text metadata exists; it does not mean the MP3 is
+ready. On execution 252, both `streamAudioUrl` values returned HTTP 200 with a
+zero-byte body while `audioUrl` was empty and `duration` was null.
 
 Fix:
 
-- Do not let render nodes run until `image_url` and `bgm_audio_url` exist.
+- Do not let render nodes run until `image_url` and a final BGM `audioUrl` exist.
+- `Parse BGM Result` and `Parse BGM Result Final` use `BGM_FINAL_AUDIO_V1` from
+  `scripts/install-media-readiness-guard.mjs`. Never accept `streamAudioUrl` or
+  `sourceStreamAudioUrl` as completion; require a final state (`SUCCESS`,
+  `COMPLETE`, or `COMPLETED`), a final URL, and positive track duration.
 - Current BGM guard must remain:
   - `Parse BGM Result -> BGM Ready?`
   - true: `Use Live Render?`
   - false: `Wait BGM Retry 90s -> KIE Get BGM Task Retry -> Parse BGM Result Final`
-- If final retry still has no URL, throw a BGM-specific error before render.
+- If final retry still has no final URL, use `assets/fallback-bgm.mp3` before render.
+- `Local FFmpeg Render` uses asynchronous child-process execution
+  (`RENDER_ASYNC_SPAWN_V1`) so the n8n task runner can send heartbeat messages
+  during downloads and ffmpeg. Do not restore synchronous child-process waiting.
+- `render-static-card.mjs` rejects a zero-byte image or audio response before
+  starting ffmpeg.
 
 ### KIE BGM `task id cannot be empty`
 
@@ -399,7 +422,39 @@ own `*_reworked_ko` copy verbatim — no LLM rewrite of the text. The image, BGM
 render and upload nodes are **clones** of the main workflow, so quality matches
 the existing Shorts; `verify-reference-card-workflow.mjs` deep-compares those
 clones against the main workflow and fails on drift. Fix the main workflow and
-re-run the builder rather than editing the clones.
+re-run the builder rather than editing the clones. The reference-only
+`Add Handle To Card Footer` postprocessor keeps the generated source at 9:16,
+adds the channel handle, and sets `reference_card_frame_mode: full_frame_9x16`
+plus `safe_zone_mode: off`. This is an explicit one-circuit rule: the source is
+already the finished full-screen card, while its prompt still places critical
+text inside the shared Shorts UI-safe coordinates. Do not move the exception
+into another publishing circuit. `Normalize Image Task` is the one adapted clone:
+on its first task it must restore the base object from `Add Handle To Card Footer`,
+not `Prepare Image and BGM Payloads`. Otherwise the KIE HTTP response discards
+the 9:16/full-frame policy before the image and BGM branches rejoin.
+
+**Margins here are prompt-only, on purpose (2026-08-03).** The published
+`health_1785734317444` card put the title at y 68 and the footer at y 1892 —
+153 px into the top band, 385 px into the bottom one. The mechanical fix would be
+`safe_zone_mode: auto`, but on a full-bleed 9:16 card that lands at 0.66 scale
+inside a blurred surround (measured, not estimated), and the user has ruled that
+out: wrongly-shrunk frames have gone up before. So this one circuit keeps
+`safe_zone_mode: off` and buys its margins with `REFERENCE_CARD_MARGIN_V1`, a
+short block `Add Handle To Card Footer` appends to the **end** of the prompt.
+It restates the shared box as a scene ("the top 230 px and bottom 422 px are open
+background") and, most importantly, redefines the closing line as the last line of
+the text block rather than a bar across the bottom of the frame — that is where
+the mid-prompt `SHARED_SAFE_ZONE_V1` coordinates were losing. Nothing verifies the
+model obeyed; `verify-reference-card-workflow.mjs` only checks the block survived
+and is last. Judge it by looking at the rendered frames.
+
+The closing line is also one line for every topic here: `삶에 도움 되는 지혜를 매일
+하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.` The main circuit
+builds the card footer from `channel_editorial_profile` alone, so it stamped
+`몸에 도움 되는 정보` on relationship-topic cards; the description could branch on
+topic but the image could not, which put the card and its caption at odds.
+`Add Handle To Card Footer` rewrites the inherited line and throws if the main
+circuit's wording drifts out from under it.
 
 The number that matters: all 2,000 rows carry reworked copy, but the dataset's own
 QA marks only **11** as `publish_ready`. `claim_risk` is `high` on 1,945 and
@@ -453,20 +508,28 @@ Three properties are deliberate:
 - **Detection only decides whether to skip.** A frame already inside the box is
   left alone (`reason: already_inside`), so refits never stack.
 - **`safe_zone_mode` in the render payload** takes `auto` (default), `fit`
-  (always shrink), `off`. Nothing sets `off`; adding it re-opens the hole.
+  (always shrink), `off`. Only the reference-card circuit sets `off`, because the
+  user explicitly requires its finished 9:16 card to fill the screen. The other
+  six publishing circuits remain on `auto` unless a deliberate circuit rule says
+  otherwise.
 
 A 9:16 source can only reach scale 0.66 — the safe box is relatively wider than
-9:16, so height binds first. Generating the card at 4:5 instead and letting the
-renderer place it would reach 0.84 and fill the box's width exactly (verified in
-`verify-safe-zone-enforcement.mjs`). That change needs one paid KIE call to
-confirm the endpoint accepts `aspect_ratio: '4:5'`; it has not been made.
+9:16, so height binds first. That automatic fit caused execution 251 to render at
+0.66 scale and the attempted 4:5 correction caused execution 253 to render at
+0.84 scale, leaving blurred bands in both cases. The reference-card circuit now
+requests 9:16 and forwards its explicit `off` policy through `Prepare Local
+FFmpeg Render`, so the renderer preserves the complete frame at 1080x1920.
 
 `scripts\verify-safe-zone-enforcement.mjs` (in `npm test`) checks the geometry,
 that the three CLI tools import the shared table instead of copying it, that all
 7 publishing circuits render through `render-static-card.mjs` and no other
-script, that all 5 image-generating circuits carry the generated coordinates in
-both the JSON and the live DB, and that the fit actually lands inside the box for
-full-bleed, compliant, and 4:5 inputs.
+script, that all 5 image-generating circuits carry the shared source prompt code
+in both the JSON and the live DB, and that the fit actually lands inside the box
+for full-bleed, compliant, and 4:5 inputs.
+`scripts\verify-reference-card-workflow.mjs` separately enforces the intentional
+reference-card exception: 9:16 generation, the full-frame policy marker, and
+`safe_zone_mode: off` surviving image-task normalization, image parsing, BGM-task
+normalization, BGM parsing, and finally reaching the render payload.
 
 ### Copy Comes From the Caption File, Not From Reading the Image (2026-07-30)
 

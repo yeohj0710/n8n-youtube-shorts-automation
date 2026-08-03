@@ -85,3 +85,8 @@ scripts/convert-workflow-local.mjs
 *client_secret*
 *credential*
 *credentials*
+
+# `etc/`는 위에서 이미 전부 무시한다. research/single-screen-references/etc 에는
+# 썸네일 277MB와 node_modules, 일회성 수집 스크립트가 들어 있어서 그대로 두면 된다.
+# 다만 회로가 읽는 google_sheet_sync_config.json 한 개는 `git add -f`로 추적 중이다.
+# 부모 폴더가 무시되면 `!` 예외가 먹지 않으므로, 되살릴 때도 -f 를 써야 한다.
