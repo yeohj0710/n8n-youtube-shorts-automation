@@ -261,6 +261,60 @@ function verifyCardCopyPath(workflow, testCase) {
   }
 }
 
+// 완성 카드는 렌더 단계에서 줄이면 안 된다.
+//
+// 이 회로가 집는 건 카드뉴스 파이프라인이 이미 완성한 9:16 풀블리드 카드다. 그림이
+// 네 변까지 차 있어 안전영역 검사는 언제나 violation을 내고, 9:16은 안전 상자보다
+// 세로로 길어 높이가 먼저 걸린다. auto로 두면 예외 없이 0.66배로 줄어들어 블러 테두리가
+// 둘린 채 올라간다 — 발행된 941x1672 카드로 scale 0.6604를 실측했다(2026-08-03).
+//
+// 값이 config에 박혀 있는 것만으로는 부족하다. 레퍼런스 카드 회로에서 Normalize Image
+// Task가 중간에 base를 갈아끼우며 정책을 통째로 흘린 전례가 있다. 그래서 BGM 분기를
+// 지나 렌더 페이로드에 실제로 도착하는지까지 본다.
+function verifyFullFrameRenderPolicy(workflow, testCase) {
+  const runCloned = (nodeName, inputJson, lookups = {}) => {
+    const code = byName(workflow, nodeName).parameters.jsCode;
+    const run = new Function('require', '$input', '$', code);
+    return run(require, { first: () => ({ json: inputJson }) }, (name) => {
+      assert.ok(name in lookups, `${testCase.file} ${nodeName}: unexpected cross-node lookup ${name}`);
+      return { first: () => ({ json: lookups[name] }) };
+    });
+  };
+
+  const claim = byName(workflow, 'Claim Next Image').parameters.jsCode;
+  assert.match(claim, /safe_zone_mode:\s*'off'/, `${testCase.file}: finished cards must bypass post-render shrinking`);
+  assert.match(claim, /image_drop_frame_mode:\s*'full_frame_9x16'/, `${testCase.file}: full-frame policy marker missing`);
+
+  const config = {
+    safe_zone_mode: 'off',
+    image_drop_frame_mode: 'full_frame_9x16',
+    kie_bgm_model: 'V5_5',
+    duration_seconds: 5,
+    local_render_dir: 'C:/fixture/renders',
+    local_render_script: 'C:/dev/n8n-youtube-shorts-automation/scripts/render-static-card.mjs',
+    ffmpeg_path: 'C:/fixture/ffmpeg.exe',
+    node_path: 'C:/fixture/node.exe',
+  };
+  const claimed = { config, image_url: 'C:/fixture/card.png' };
+
+  const normalizedBgm = runCloned('Normalize BGM Task', { data: { taskId: 'fixture-bgm-task' } }, {
+    'Use Live BGM?': claimed,
+  })[0].json;
+  assert.equal(normalizedBgm.config?.safe_zone_mode, 'off', `${testCase.file}: BGM task normalization discarded the full-frame policy`);
+
+  const parsedBgm = runCloned('Parse BGM Result', {
+    data: { status: 'SUCCESS', response: { sunoData: [{ audioUrl: 'C:/fixture/card.mp3', duration: 30 }] } },
+  }, { 'Normalize BGM Task': normalizedBgm })[0].json;
+  assert.equal(parsedBgm.config?.safe_zone_mode, 'off', `${testCase.file}: BGM parsing discarded the full-frame policy`);
+
+  const renderPrepared = runCloned('Prepare Local FFmpeg Render', parsedBgm)[0].json;
+  assert.equal(
+    renderPrepared.render_payload.safe_zone_mode,
+    'off',
+    `${testCase.file}: full-frame mode never reached the renderer; finished cards will ship at 0.66 scale`,
+  );
+}
+
 // image_drop의 BGM 프롬프트는 메인 워크플로우와 같아야 한다. 예전에 image_drop 쪽
 // 금지 목록이 더 짧아(chant·ooh/aah·vocal chops·wordless vocals 누락, 악기
 // 화이트리스트 없음) 허밍 섞인 BGM이 나왔다. 두 회로가 갈리면 여기서 잡는다.
@@ -490,6 +544,7 @@ for (const testCase of cases) {
   }), /치료 보장 또는 진료 회피/);
 
   verifyImageLifecycle(workflow, testCase);
+  verifyFullFrameRenderPolicy(workflow, testCase);
   verifyBgmParityWithMainWorkflow(workflow, testCase);
   if (testCase.captionRoot) verifyCardCopyPath(workflow, testCase);
 }
@@ -506,6 +561,7 @@ console.log(JSON.stringify({
     'vision_copy_parsing',
     'image_claim_and_archive',
     'card_copy_from_caption',
+    'full_frame_render_policy',
     'bgm_parity_with_main_workflow',
     'medical_claim_block',
     'bgm_contract',

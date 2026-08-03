@@ -425,10 +425,11 @@ clones against the main workflow and fails on drift. Fix the main workflow and
 re-run the builder rather than editing the clones. The reference-only
 `Add Handle To Card Footer` postprocessor keeps the generated source at 9:16,
 adds the channel handle, and sets `reference_card_frame_mode: full_frame_9x16`
-plus `safe_zone_mode: off`. This is an explicit one-circuit rule: the source is
-already the finished full-screen card, while its prompt still places critical
-text inside the shared Shorts UI-safe coordinates. Do not move the exception
-into another publishing circuit. `Normalize Image Task` is the one adapted clone:
+plus `safe_zone_mode: off`. The reason is that the source is already the finished
+full-screen card, while its prompt still places critical text inside the shared
+Shorts UI-safe coordinates. That reasoning was extended to the two image-drop
+circuits on 2026-08-03 (see below); it still must not reach a circuit that
+generates a card from a prompt. `Normalize Image Task` is the one adapted clone:
 on its first task it must restore the base object from `Add Handle To Card Footer`,
 not `Prepare Image and BGM Payloads`. Otherwise the KIE HTTP response discards
 the 9:16/full-frame policy before the image and BGM branches rejoin.
@@ -508,10 +509,13 @@ Three properties are deliberate:
 - **Detection only decides whether to skip.** A frame already inside the box is
   left alone (`reason: already_inside`), so refits never stack.
 - **`safe_zone_mode` in the render payload** takes `auto` (default), `fit`
-  (always shrink), `off`. Only the reference-card circuit sets `off`, because the
-  user explicitly requires its finished 9:16 card to fill the screen. The other
-  six publishing circuits remain on `auto` unless a deliberate circuit rule says
-  otherwise.
+  (always shrink), `off`. The three finished-card circuits set `off` — the
+  reference-card one and both 완성 이미지 기반 쇼츠 — because their input is
+  already a complete full-bleed 9:16 card that must fill the screen. The other
+  four publishing circuits remain on `auto` unless a deliberate circuit rule says
+  otherwise. The dividing line is not the channel but whether the circuit
+  *generates* a card that still has to be laid out, or *claims* one that is
+  already laid out. Generating circuits keep `auto`.
 
 A 9:16 source can only reach scale 0.66 — the safe box is relatively wider than
 9:16, so height binds first. That automatic fit caused execution 251 to render at
@@ -530,6 +534,41 @@ for full-bleed, compliant, and 4:5 inputs.
 reference-card exception: 9:16 generation, the full-frame policy marker, and
 `safe_zone_mode: off` surviving image-task normalization, image parsing, BGM-task
 normalization, BGM parsing, and finally reaching the render payload.
+
+### Finished Cards Must Not Be Refit (2026-08-03)
+
+`하루건강약사 - 완성 이미지 기반 쇼츠` published `dnIsiR-2Pkg` (다이어트 라면 등급표)
+as a card floating at two-thirds size inside a blurred surround. The circuit was
+never given a `safe_zone_mode`, so `Prepare Local FFmpeg Render` fell back to
+`auto`. Running the published source through `fitCanvasWithSafeZone` reproduces
+it exactly: `04_다이어트 라면 등급표_.png` is 941x1672, and `auto` returns
+`applied: true, reason: violation, scale: 0.6604` — matching the 0.666 measured
+off the YouTube frame.
+
+This is structural, not a bad card. A finished card is full-bleed by
+construction: its artwork runs to all four edges, so content detection always
+reports a band violation, and a 9:16 source is taller than the safe box, so
+height binds first at 0.66. `auto` therefore shrinks **every** card this circuit
+will ever claim. It is the same failure the reference-card circuit hit, and it
+takes the same fix — both image-drop circuits now set
+`image_drop_frame_mode: full_frame_9x16` and `safe_zone_mode: off` in
+`Claim Next Image`'s config.
+
+건강장수비결 got the change too. Both image-drop circuits claim from the same
+card-news pipeline (`40_카드뉴스_이미지`) with `selectShortsByAspect`, so the
+defect and the reasoning are identical; fixing only the channel that happened to
+publish first would have left a live trap.
+
+Margins are now bought entirely upstream, in the card-news layout. Nothing in
+this repo checks that a claimed card respects the bands — `render-static-card.mjs`
+no longer will. If cards start landing under the Shorts UI, fix the card-news
+template, not this circuit.
+
+`verify-image-drop-workflows.mjs` covers this as `full_frame_render_policy`. It
+asserts the policy reaches `render_payload`, not merely that it appears in the
+config — the reference-card circuit once lost the same flag mid-chain when
+`Normalize Image Task` swapped its base object. Deleting the config line makes
+the chain fall back to `auto`, which the check catches.
 
 ### Copy Comes From the Caption File, Not From Reading the Image (2026-07-30)
 

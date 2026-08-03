@@ -320,6 +320,16 @@ function claimNextImageRuntime(definition) {
           local_render_script: 'C:/dev/n8n-youtube-shorts-automation/scripts/render-static-card.mjs',
           ffmpeg_path: 'C:/Users/hjyeo/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe',
           node_path: 'C:/Program Files/nodejs/node.exe',
+          // RENDER_SAFE_ZONE_MODE_V1 — 이 회로는 렌더 단계 축소를 쓰지 않는다.
+          // 여기서 집는 건 카드뉴스 파이프라인이 이미 완성한 9:16 풀블리드 카드다.
+          // 그림이 네 변까지 차 있으니 안전영역 검사는 언제나 violation을 내고,
+          // 9:16은 안전 상자보다 세로로 길어 높이가 먼저 걸린다. 그래서 auto로 두면
+          // 예외 없이 0.66배로 줄어든 카드에 블러 테두리가 둘린다 — 발행된
+          // `04_다이어트 라면 등급표_.png`(941x1672)를 실제로 돌려 scale 0.6604를
+          // 확인했다(2026-08-03, 영상 dnIsiR-2Pkg). 레퍼런스 카드 회로와 같은 이유,
+          // 같은 처방이다. 여백은 카드뉴스 쪽 레이아웃에서 확보한다.
+          image_drop_frame_mode: 'full_frame_9x16',
+          safe_zone_mode: 'off',
         },
         channel_key: definition.key,
         channel_name: definition.channelName,
