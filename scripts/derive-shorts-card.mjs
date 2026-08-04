@@ -6,7 +6,7 @@
 // 기계적으로 배치해 만든다. 항상 정확히 맞는다.
 //
 // 사용:
-//   node scripts/derive-shorts-card.mjs "G:\내 드라이브\여형준님\27 영상 데이터\40_카드뉴스_이미지"
+//   node scripts/derive-shorts-card.mjs "G:\내 드라이브\영상 편집\AI 크리에이터\영상 데이터\카드뉴스_이미지"
 //   node scripts/derive-shorts-card.mjs "…\01_제목 (인스타 4x5).png"
 //
 // 입력: 파일명에 `(인스타 4x5)`가 들어간 4:5 이미지

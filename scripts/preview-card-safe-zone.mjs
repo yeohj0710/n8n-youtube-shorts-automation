@@ -2,7 +2,7 @@
 // 생성된 카드가 안전선을 넘었는지 눈으로 1초 만에 판정하기 위한 도구다.
 //
 // 사용:
-//   node scripts/preview-card-safe-zone.mjs "G:\내 드라이브\여형준님\27 영상 데이터\40_카드뉴스_이미지"
+//   node scripts/preview-card-safe-zone.mjs "G:\내 드라이브\영상 편집\AI 크리에이터\영상 데이터\카드뉴스_이미지"
 //   node scripts/preview-card-safe-zone.mjs "…\40_카드뉴스_이미지\01_… (유튜브 9x16).png"
 //
 // 원본은 건드리지 않고 같은 폴더의 `검수/`에 `<이름>.검수.png`로 저장한다.
