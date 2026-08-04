@@ -318,9 +318,29 @@ try {
 
   const built = runNode('Build Reference Pack', picked)[0].json;
   const pack = built.pack;
-  assert.equal(pack.hook_title, picked.reference.title_reworked_ko, 'title must be the reworked one, verbatim');
-  assert.equal(pack.subtitle, picked.reference.card_headline_reworked_ko, 'subtitle must be the reworked headline');
-  assert.equal(pack.rank_items.length, picked.reference.card_items_reworked_ko.length, 'items were dropped');
+  // 행 수 상한(render_max_items)이 걸리면 앞에서부터 그만큼만 쓰고, 제목·부제의 개수도
+  // 같이 내린다. 그 두 자리 말고는 재가공 문안을 한 글자도 바꾸지 않는다.
+  const sourceItemCount = picked.reference.card_items_reworked_ko.length;
+  const renderMax = Number(picked.reference_pool.gate.render_max_items || 0);
+  const expectedItems = renderMax > 0 ? Math.min(renderMax, sourceItemCount) : sourceItemCount;
+  const expectCount = (text) => (expectedItems === sourceItemCount
+    ? text
+    : text.replace(new RegExp(sourceItemCount + '\\s*(가지|개|곳|줄)', 'g'), expectedItems + '$1'));
+  assert.equal(pack.rank_items.length, expectedItems, 'rendered row count does not match the render cap');
+  assert.equal(pack.hook_title, expectCount(picked.reference.title_reworked_ko), 'title must be the reworked one apart from the row count');
+  assert.equal(pack.subtitle, expectCount(picked.reference.card_headline_reworked_ko), 'subtitle must be the reworked headline apart from the row count');
+  assert.deepEqual(
+    pack.rank_items.map((item) => item.rank),
+    Array.from({ length: expectedItems }, (unused, index) => index + 1),
+    'kept rows must stay in source order, taken from the front',
+  );
+  if (expectedItems !== sourceItemCount) {
+    const stale = new RegExp(sourceItemCount + '\\s*(가지|개|곳|줄)');
+    assert.ok(!stale.test(pack.hook_title), 'title still claims the pre-cap row count');
+    assert.ok(!stale.test(pack.subtitle), 'subtitle still claims the pre-cap row count');
+    assert.equal(built.reference_summary.source_item_count, sourceItemCount, 'source row count was not recorded');
+    assert.equal(built.reference_summary.dropped_items, sourceItemCount - expectedItems, 'dropped row count was not recorded');
+  }
   assert.equal(pack.rank_label_mode, 'bullet', 'these are lists, not rankings — no N위 labels');
   assert.ok(pack.pinned_comment.startsWith('오늘 영상 핵심 정리\n'), 'pinned comment header must match the other circuits');
   assert.ok(pack.pinned_comment.endsWith(CLOSING), 'pinned comment must end with the reference closing line');
@@ -355,12 +375,8 @@ try {
   // 이 회로는 렌더 단계 축소를 쓰지 않으므로 여백은 프롬프트로만 확보한다. 아래 검사는
   // "지시가 프롬프트 맨 뒤에 살아 있는가"까지만 본다 — 모델이 지켰는지는 증명하지 못한다.
   // 발행된 프레임이 실제로 상자 안에 들어갔는지는 렌더 결과를 눈으로 봐야 안다.
-  assert.match(handled.image_payload.input.prompt, /REFERENCE_CARD_MARGIN_V1/, 'the reference margin instruction is missing');
-  assert.match(
-    handled.image_payload.input.prompt.split('REFERENCE_CARD_MARGIN_V1')[1] || '',
-    /top 230 px \(top 12 percent\)[\s\S]*bottom 422 px \(bottom 22 percent\)/,
-    'the margin instruction lost the shared band sizes',
-  );
+  // 문구 자체와 5개 회로 일괄 적용은 verify-frame-margin-policy.mjs가 본다.
+  assert.match(handled.image_payload.input.prompt, /SHORTS_MARGIN_V1/, 'the shared margin instruction is missing');
   assert.ok(
     handled.image_payload.input.prompt.trimEnd().endsWith('so any Korean text placed there is lost.'),
     'the margin instruction must be the last thing the model reads',

@@ -71,6 +71,28 @@ export function shortsSafeZonePromptLines(width = 1080, height = 1920) {
   ];
 }
 
+// 프롬프트 맨 뒤에 붙이는 여백 지시. 위 SHARED_SAFE_ZONE_V1과 내용이 겹치지만
+// 자리와 어법이 다르다 — 그게 요점이다. 좌표 블록은 프롬프트 중간에 있었고 몇 주 동안
+// 한 프레임도 안 지켜졌다. 여기서는 (1) 맨 끝에 두고 (2) 좌표 대신 "위/아래 띠에는
+// 배경만"이라는 장면 지시로 다시 말하고 (3) 마무리 줄을 프레임 바닥 막대가 아니라
+// 본문의 마지막 줄로 재정의한다. 모델이 푸터를 늘 바닥에 붙이던 게 아래쪽 위반의
+// 주원인이었다. 2026-08-03 레퍼런스 카드에서 먼저 넣어 위쪽 위반이 사라졌고,
+// 아래쪽은 행이 10개일 때 여전히 남았다(행 수 문제는 회로별 상한으로 따로 잡는다).
+export function shortsMarginPromptLines(width = 1080, height = 1920) {
+  const box = safeBoxFor(width, height, '9:16');
+  const topPercent = Math.round(box.margins.top * 100);
+  const bottomPercent = Math.round(box.margins.bottom * 100);
+  return [
+    'SHORTS_MARGIN_V1 — this is the last word on vertical placement and overrides any earlier line it contradicts.',
+    `Every letter of the Korean copy — title, subtitle, all rows, and the closing line — sits between y ${box.top} and y ${box.bottom} of the ${width}x${height} frame.`,
+    `The top ${box.topInset} px (top ${topPercent} percent) and the bottom ${box.bottomInset} px (bottom ${bottomPercent} percent) are open background: photographed scene, soft blur, plants, wood, cloth, light. Draw no letters, no panel edge, no footer bar, and no divider line in those two strips. Leaving them visibly empty is the point, not a mistake.`,
+    'The closing line is the final line of the text block, tucked directly under the last row. It is never a strip along the bottom of the frame.',
+    'The title begins below the top strip, with clear background above its first line. Do not let the title touch the top edge.',
+    'If the copy runs long, tighten row spacing, shrink decoration, or set the title in two lines. Never gain room by pushing the title up or the closing line down into the strips.',
+    'The app interface covers those two strips on a phone, so any Korean text placed there is lost.',
+  ];
+}
+
 // 위 지시문 뒤에 붙는, 채널 공통 레이아웃 문구. 레거시 워크플로우가 하나의
 // shortsSafeZoneInstruction 배열로 갖고 있던 것을 그대로 유지한다.
 export function shortsCardLayoutPromptLines() {

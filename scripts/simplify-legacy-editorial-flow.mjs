@@ -3,6 +3,7 @@ import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import sqlite3 from 'sqlite3';
 import { safeBoxFor, shortsSafeZoneInstructionSource } from './lib/safe-zone.mjs';
+import { applyFrameMarginPolicy } from './lib/frame-margin-policy.mjs';
 
 const SAFE_ZONE_BOX = safeBoxFor(1080, 1920, '9:16');
 
@@ -1661,6 +1662,10 @@ const pack = {
       `${target.id}: mock fallback channel metadata`,
     );
   }
+  // 발행 프레임 여백 정책은 마지막에 얹는다. 설치 스크립트로만 덧칠하면 이 정본을
+  // 다시 돌리는 순간 지워지고, 그러면 회로마다 정책이 어긋난다 —
+  // 실제로 여백 지시가 5개 회로 중 1개에만 들어 있던 적이 있다.
+  applyFrameMarginPolicy(workflow);
   workflow.versionId = randomUUID();
   return workflow;
 }

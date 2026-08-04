@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { applyFrameMarginPolicy } from './lib/frame-margin-policy.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const workflowDir = path.join(root, 'workflows');
@@ -1041,6 +1042,9 @@ fs.mkdirSync(workflowDir, { recursive: true });
 const results = [];
 for (const channel of channels) {
   const workflow = buildWorkflow(channel);
+  // 여백 정책은 빌드의 마지막 단계다. 이 회로는 카드를 생성하지 않으므로 렌더 축소
+  // 차단만 걸린다. 여기서 얹지 않으면 이 빌더를 돌릴 때마다 정책이 벗겨진다.
+  applyFrameMarginPolicy(workflow);
   const outputPath = path.join(workflowDir, channel.outputFile);
   fs.writeFileSync(outputPath, JSON.stringify(workflow, null, 2) + '\n', 'utf8');
   results.push({

@@ -12,6 +12,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { safeBoxFor } from './lib/safe-zone.mjs';
+import { applyFrameMarginPolicy } from './lib/frame-margin-policy.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const workflowDir = path.join(root, 'workflows');
@@ -85,6 +86,12 @@ const definition = {
     allow_fact_check_required: false,
     min_items: 4,
     max_items: 13,
+    // 카드에 그릴 행 수 상한. 넘치면 앞에서부터 이만큼만 쓰고 제목·부제의 개수도
+    // 같이 고친다. 본편 회로가 4~7행으로 묶여 있고 그 시기 카드가 데드존을 가장
+    // 잘 지켰기에 7로 맞춘다. 0을 넣으면 상한을 끄고 원본 행 수를 그대로 쓴다.
+    // 후보 11건이 전부 8~13행이므로 max_items를 조이면 후보가 0이 된다 — 그래서
+    // 선별 기준이 아니라 렌더 상한으로 따로 둔다.
+    render_max_items: 7,
   },
 };
 
@@ -643,14 +650,14 @@ function buildReferencePackRuntime(definition) {
     return Array.from(clean(value)).slice(0, maxLength).join('').trim();
   }
 
-  const title = limit(record.title_reworked_ko, 95);
-  const headline = limit(record.card_headline_reworked_ko, 60);
-  if (title.length < 4) throw new Error('재가공 제목이 너무 짧습니다: ' + record.record_id);
+  const rawTitle = limit(record.title_reworked_ko, 95);
+  const rawHeadline = limit(record.card_headline_reworked_ko, 60);
+  if (rawTitle.length < 4) throw new Error('재가공 제목이 너무 짧습니다: ' + record.record_id);
 
   // 재가공 항목은 "1. " 같은 번호가 붙어 오는 경우가 있어 떼고 쓴다. 번호는
   // rank_label_mode가 붙인다.
   const rawItems = Array.isArray(record.card_items_reworked_ko) ? record.card_items_reworked_ko : [];
-  const items = rawItems
+  const allItems = rawItems
     .map((value) => clean(value).replace(/^\s*\d+\s*[.)]\s*/, '').trim())
     .filter(Boolean)
     .map((value, index) => {
@@ -666,7 +673,44 @@ function buildReferencePackRuntime(definition) {
         card_reason: limit(reason, 60),
       };
     });
-  if (items.length < 3) throw new Error('재가공 항목이 3개 미만입니다: ' + record.record_id);
+  if (allItems.length < 3) throw new Error('재가공 항목이 3개 미만입니다: ' + record.record_id);
+
+  // 행 수 상한. 본편 회로는 4~7행으로 묶여 있고(rank_count_max 기본 7), 그 시기 카드는
+  // 글자가 크고 위아래 여백이 남았다. 이 회로는 게이트가 13행까지 허용해서 10행짜리가
+  // 뽑혔고, 안전 상자 1268px에 제목·부제·10행·마무리를 밀어 넣느라 마지막 2행과
+  // 마무리 줄이 하단 밴드로 내려갔다. 같은 프롬프트를 쓰는데 행 수만 달랐다.
+  //
+  // 주의: 이 카드들은 순위표가 아니라 목록이다(rank_label_mode = bullet). 원본 영상의
+  // 순서를 그대로 쓰므로 "뒤쪽 = 덜 중요"가 보장되지 않는다. 뒤에서 자르는 건 중요도
+  // 판단이 아니라 그냥 뒤쪽을 버리는 것이다. 상한을 사용자가 조절하도록 파일로 뺀 이유다.
+  const gate = base.reference_pool?.gate || {};
+  const renderMax = Number(gate.render_max_items || 0);
+  const items = renderMax > 0 && allItems.length > renderMax ? allItems.slice(0, renderMax) : allItems;
+  const droppedItems = allItems.length - items.length;
+
+  // 제목·부제에 개수가 박혀 있다("…예절 10가지", "…기준 10가지"). 항목만 줄이면 제목과
+  // 어긋나므로 숫자를 같이 고친다. 세는 말이 붙은 자리와 문장 끝 숫자만 바꾼다 —
+  // "60 이후", "50대"처럼 개수가 아닌 숫자를 건드리면 안 된다.
+  function retitle(text) {
+    if (!droppedItems) return text;
+    const from = String(allItems.length);
+    const to = String(items.length);
+    return String(text || '')
+      .replace(new RegExp(from + '\\s*(가지|개|곳|줄)', 'g'), to + '$1')
+      .replace(new RegExp('(^|\\s)' + from + '(?=\\s*$)'), '$1' + to);
+  }
+
+  const title = retitle(rawTitle);
+  const headline = retitle(rawHeadline);
+  // 개수를 못 고쳤으면 제목이 실제 행 수와 다른 카드가 나간다. 그건 발행하면 안 된다.
+  if (droppedItems) {
+    const stale = new RegExp(allItems.length + '\\s*(가지|개|곳|줄)');
+    if (stale.test(title) || stale.test(headline)) {
+      throw new Error('항목을 ' + allItems.length + '개에서 ' + items.length
+        + '개로 줄였는데 제목·부제의 개수를 고치지 못했습니다: ' + record.record_id
+        + ' / ' + title + ' / ' + headline);
+    }
+  }
 
   const topicText = (Array.isArray(record.topics) ? record.topics : []).join(' ');
   const lifeWisdomTopic = /인간관계|부부관계|인생교훈|심리|예절|말|관계/.test(topicText);
@@ -719,6 +763,9 @@ function buildReferencePackRuntime(definition) {
         claim_risk: record.claim_risk,
         publish_ready: record.publish_ready === true,
         item_count: items.length,
+        // 몇 개를 버렸는지 남긴다. 사용기록만 보고는 원본이 10행이었다는 걸 알 수 없다.
+        source_item_count: allItems.length,
+        dropped_items: droppedItems,
       },
     },
   }];
@@ -752,28 +799,13 @@ function addHandleToCardFooterRuntime(definition) {
     return value.split(definition.mainClosingLead).join(definition.closingLead);
   }
 
-  // 프롬프트 맨 뒤에 붙이는 여백 지시. 메인 회로의 SHARED_SAFE_ZONE_V1은 프롬프트
-  // 중간에 좌표만 적어두는데, 발행된 카드는 제목을 y 68, 푸터를 y 1892까지 밀어냈다.
-  // 그래서 (1) 맨 끝에 두고 (2) 좌표 대신 "위/아래 띠에는 배경만"이라는 장면 지시로
-  // 다시 말하고 (3) 푸터를 프레임 바닥 막대가 아니라 본문의 마지막 줄로 재정의한다.
-  // 렌더 단계 축소는 쓰지 않으므로, 여백은 이 지시가 지켜지는 만큼만 생긴다.
-  function referenceMarginInstruction() {
-    const box = definition.safeBox;
-    return [
-      'REFERENCE_CARD_MARGIN_V1 — this is the last word on vertical placement and overrides any earlier line it contradicts.',
-      'Every letter of the Korean copy — title, subtitle, all rows, and the closing line — sits between y ' + box.top + ' and y ' + box.bottom + ' of the ' + box.width + 'x' + box.height + ' frame.',
-      'The top ' + box.topInset + ' px (top ' + box.topPercent + ' percent) and the bottom ' + box.bottomInset + ' px (bottom ' + box.bottomPercent + ' percent) are open background: photographed scene, soft blur, plants, wood, cloth, light. Draw no letters, no panel edge, no footer bar, and no divider line in those two strips. Leaving them visibly empty is the point, not a mistake.',
-      'The closing line is the final line of the text block, tucked directly under the last row. It is never a strip along the bottom of the frame.',
-      'The title begins below the top strip, with clear background above its first line. Do not let the title touch the top edge.',
-      'If the copy runs long, tighten row spacing, shrink decoration, or set the title in two lines. Never gain room by pushing the title up or the closing line down into the strips.',
-      'The app interface covers those two strips on a phone, so any Korean text placed there is lost.',
-    ].join(String.fromCharCode(10));
-  }
+  // 여백 지시(SHORTS_MARGIN_V1)는 이 노드가 아니라 install-frame-margin-policy.mjs가
+  // 프롬프트 조립 노드에 심는다. 5개 이미지 생성 회로가 같은 문구를 쓰도록 한 곳으로
+  // 모았다 — 여기서만 붙이던 동안 나머지 4개 회로에는 없었다.
 
   const imagePayload = data.image_payload ? JSON.parse(JSON.stringify(data.image_payload)) : null;
   if (imagePayload?.input?.prompt) {
     imagePayload.input.prompt = withReferenceClosing(withHandle(imagePayload.input.prompt));
-    imagePayload.input.prompt += LF + referenceMarginInstruction();
     imagePayload.input.aspect_ratio = '9:16';
   }
   const config = {
@@ -1200,6 +1232,10 @@ const gatePath = path.join(workRoot, definition.gateConfigFile);
 if (!fs.existsSync(gatePath)) {
   fs.writeFileSync(gatePath, JSON.stringify(definition.defaultGate, null, 2) + '\n', 'utf8');
 }
+
+// 여백 정책은 빌드의 마지막 단계다. 여기서 얹지 않으면 이 빌더를 다시 돌릴 때마다
+// 정책이 벗겨진다.
+applyFrameMarginPolicy(workflow);
 
 const outputPath = path.join(workflowDir, OUTPUT_FILE);
 fs.writeFileSync(outputPath, JSON.stringify(workflow, null, 2) + '\n', 'utf8');

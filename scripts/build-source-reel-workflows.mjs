@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { shortsSafeZonePromptLines } from './lib/safe-zone.mjs';
+import { applyFrameMarginPolicy } from './lib/frame-margin-policy.mjs';
 
 // 원본 릴스 회로의 이미지 프롬프트에는 안전 영역 지시가 아예 없었다. 좌표는
 // scripts/lib/safe-zone.mjs 표에서 받아 쓴다 — 손으로 베껴 쓰면 어긋난다.
@@ -86,6 +87,9 @@ function build(channelId, displayName, topicDir, outputFile, workflowId) {
   connections['Mock Render Result']={main:[[{node:'Complete Source Reel Bundle',type:'main',index:0}]]};
   delete connections['Final Result'];
   const workflow={id:workflowId,name:displayName+' · 원본 릴스',nodes,connections,settings:{executionOrder:'v1'},active:false,versionId:crypto.randomUUID(),meta:{templateCredsSetupCompleted:true},tags:[]};
+  // 여백 정책은 빌드의 마지막 단계다. 여기서 얹지 않으면 이 빌더를 다시 돌릴 때마다
+  // 정책이 벗겨진다.
+  applyFrameMarginPolicy(workflow);
   fs.writeFileSync(path.join(root,'workflows',outputFile),JSON.stringify(workflow,null,2)+'\n','utf8');
 }
 

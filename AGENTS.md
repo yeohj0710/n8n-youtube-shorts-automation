@@ -480,7 +480,51 @@ checkbox column. After a rendered card is logged, the same row is checked
 immediately. The n8n credential name is `Google Sheets account`; the workflow
 must stop before selection when the Sheet read or write fails.
 
-### Dead Zones Are Enforced at Render, Not by the Prompt (2026-07-31)
+### Shrinking Is Banned; Margins Are Bought in the Prompt (2026-08-04)
+
+**This supersedes the render-time enforcement described in the next section.** The
+user has ruled out shrink-and-blur outright — wrongly-shrunk frames have gone up
+more than once, most recently `다이어트 라면 등급표` (execution 256, 2026-08-03,
+`safe_zone_mode: "auto"`, 0.66 scale with a blurred surround). Do not propose it
+again. On a full-bleed 9:16 card that scale is not tunable: 0.5625 is narrower
+than the 0.716 safe box, so height binds first and 0.66 is the geometric floor.
+
+`safe_zone_mode` now defaults to `off` in `render-static-card.mjs` and in every
+circuit's `Prepare Local FFmpeg Render`. Turning it back on is a per-payload,
+per-circuit decision, never a default.
+
+Margins come from two places instead:
+
+- **`SHORTS_MARGIN_V1`** — appended to the end of the image prompt in all five
+  image-generating circuits. It restates the shared box as a scene ("the top
+  230 px and bottom 422 px are open background") and redefines the closing line
+  as the last line of the text block rather than a bar across the frame bottom.
+  That last clause is the one that mattered: the model reliably parked the footer
+  at the frame edge, which is where the mid-prompt `SHARED_SAFE_ZONE_V1`
+  coordinates were losing. Measured on the reference card: top-band violations
+  went away, bottom-band ones did not.
+- **Row count.** With the same prompt, a 7-row card lands inside the box and a
+  10-row card does not — the model buys the extra rows by pushing down, not by
+  shrinking type. The 본편 circuits cap at `rank_count_max` 7 and their 7/6–7/9
+  frames are the best this repo has produced. The reference circuit had no cap
+  (gate `max_items` 13, real records 8–13), so `render_max_items` (default 7) now
+  trims from the front and rewrites the count in the title and subtitle — every
+  such title carries one (`…예절 10가지`). Tightening `max_items` instead would
+  leave zero candidates; all 11 publish-ready records have 8+ rows.
+
+The policy lives in `scripts/lib/frame-margin-policy.mjs` and is applied as the
+LAST step of `simplify-legacy-editorial-flow.mjs` and all three builders. Do not
+apply it from an install script alone: re-running a canonical script would strip
+it, and `verify-research-source-grounding.mjs` §12 fails on exactly that.
+`install-frame-margin-policy.mjs` is a repair tool, not the owner.
+`verify-frame-margin-policy.mjs` pins the circuit counts (7 publishing, 5
+image-generating) so a new circuit cannot quietly skip the policy — which is how
+the margin block ended up in 1 of 5 circuits and the shrink block in 3 of 7.
+
+It still only checks that the wording survived. Whether the model obeyed is
+visible only in the published frames.
+
+### Dead Zones Are Enforced at Render, Not by the Prompt (2026-07-31, superseded)
 
 Every circuit ignored the Shorts dead zones for weeks even though three of them
 carried a detailed `SHARED_SAFE_ZONE_V1` block in the image prompt. The published

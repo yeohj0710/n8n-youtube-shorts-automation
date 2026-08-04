@@ -71,13 +71,18 @@ const [imageBuffer, audioBuffer] = await Promise.all([
 
 await fs.writeFile(audioPath, audioBuffer);
 
-// 데드존(안전 영역) 강제 지점. 모든 회로가 이 스크립트를 거치므로, 여기서
-// 한 번 막으면 이미지 출처(생성 모델이든 완성 카드 폴더든)와 무관하게 지켜진다.
-// 이미지 프롬프트로는 안 된다는 게 이 저장소의 결론이다 — lib/safe-zone.mjs 주석 참고.
+// 데드존(안전 영역) 처리 지점. 모든 회로가 이 스크립트를 거친다.
+//
+// 기본값이 'off'인 이유(2026-08-04): 'auto'는 데드존을 넘긴 프레임을 안전 상자 안으로
+// 축소하고 남는 가장자리를 흐린 배경으로 메운다. 풀블리드 9:16 카드에서는 예외 없이
+// 0.66배로 줄어들어 사방에 띠가 둘리는데(9:16=0.5625가 안전 상자 0.716보다 좁아 세로가
+// 먼저 걸린다), 그렇게 잘못 줄어든 영상이 여러 번 발행돼 사용자가 이 처리를 금지했다.
+// 여백은 생성 프롬프트(SHORTS_MARGIN_V1)와 회로별 행 수 상한으로 확보한다.
+// 축소가 필요한 호출은 payload에 'auto'나 'fit'을 명시해서 켠다.
 const safeZone = await fitCanvasWithSafeZone(imageBuffer, {
   width,
   height,
-  mode: payload.safe_zone_mode || 'auto',
+  mode: payload.safe_zone_mode || 'off',
 });
 await fs.writeFile(cardPath, safeZone.buffer);
 
