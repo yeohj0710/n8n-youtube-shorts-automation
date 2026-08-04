@@ -422,6 +422,67 @@ function verifyImageLifecycle(workflow, testCase) {
       `${testCase.file}: an adopted card must be processed inside the channel folder`,
     );
     assert.ok(!fs.existsSync(strayPath), `${testCase.file}: the adopted card should leave the shared root`);
+
+    // 위 claim이 잡은 회로 잠금을 풀어야 다음 claim이 돈다. 실제 실행에서도 완료 노드가
+    // 잠금을 푸는 유일한 지점이다. 소비까지 시켜서 대기열을 비운다 — 반납하면 이 카드가
+    // 큐에 남아 다음 claim이 무엇을 집을지 흔들린다.
+    executeCodeNodeWithDefinition(workflow, 'Complete Image Drop', definition, {
+      ...adopted,
+      pack: { hook_title: '반납 검증' },
+      youtube: { skipped: false, video_id: 'stray-video', url: 'https://www.youtube.com/watch?v=stray-video' },
+    });
+
+    // 발행이 끝나면 4:5 인스타 쌍둥이도 같이 치운다. 카드뉴스 프롬프트 하나가 두 장을
+    // 만드는데 쇼츠 회로는 9:16만 집으므로, 안 치우면 4:5가 드롭 폴더에 영원히 남는다.
+    // 실제로 발행이 끝난 카드가 남아 있어 "왜 또 스킵되지"로 이어졌다(2026-08-04).
+    const twinShorts = path.join(testRoot, '07_쌍둥이 카드_.png');
+    const twinInstagram = path.join(sharedRoot, '07_쌍둥이 카드.png');
+    // 번호만 같고 이름이 다른 카드는 건드리면 안 된다.
+    const unrelated = path.join(sharedRoot, '07_다른 카드.png');
+    fs.writeFileSync(twinShorts, pngWithSize(1080, 1920));
+    fs.writeFileSync(twinInstagram, pngWithSize(1122, 1402));
+    fs.writeFileSync(unrelated, pngWithSize(1122, 1402));
+
+    const twinClaimed = executeCodeNodeWithDefinition(workflow, 'Claim Next Image', definition, {})[0].json;
+    assert.equal(twinClaimed.original_image_name, '07_쌍둥이 카드_.png', `${testCase.file}: the 9:16 twin should be the one claimed`);
+    const twinCompleted = executeCodeNodeWithDefinition(workflow, 'Complete Image Drop', definition, {
+      ...twinClaimed,
+      pack: { hook_title: '쌍둥이 검증' },
+      youtube: { skipped: false, video_id: 'twin-video', url: 'https://www.youtube.com/watch?v=twin-video' },
+    })[0].json;
+    assert.ok(
+      !fs.existsSync(twinInstagram),
+      `${testCase.file}: the 4:5 twin stayed in the drop folder after its 9:16 published`,
+    );
+    assert.ok(
+      fs.existsSync(path.join(testRoot, '사용완료', '07_쌍둥이 카드.png')),
+      `${testCase.file}: the 4:5 twin was removed but never landed in 사용완료`,
+    );
+    assert.deepEqual(
+      twinCompleted.image_drop.archived_twins?.map((p) => path.basename(p)),
+      ['07_쌍둥이 카드.png'],
+      `${testCase.file}: the archived twin was not recorded`,
+    );
+    assert.ok(
+      fs.existsSync(unrelated),
+      `${testCase.file}: a different card sharing the NN_ number was swept up`,
+    );
+
+    // 업로드가 안 된 실행은 아무것도 소비하지 않는다. 쌍둥이도 그대로 둬야 한다.
+    const keptShorts = path.join(testRoot, '08_보류 카드_.png');
+    const keptInstagram = path.join(testRoot, '08_보류 카드.png');
+    fs.writeFileSync(keptShorts, pngWithSize(1080, 1920));
+    fs.writeFileSync(keptInstagram, pngWithSize(1122, 1402));
+    const keptClaimed = executeCodeNodeWithDefinition(workflow, 'Claim Next Image', definition, {})[0].json;
+    executeCodeNodeWithDefinition(workflow, 'Complete Image Drop', definition, {
+      ...keptClaimed,
+      pack: { hook_title: '보류 검증' },
+      youtube: { skipped: true, reason: 'dry_run' },
+    });
+    assert.ok(
+      fs.existsSync(keptInstagram),
+      `${testCase.file}: a run that published nothing still consumed the 4:5 twin`,
+    );
   } finally {
     fs.rmSync(testRoot, { recursive: true, force: true });
     fs.rmSync(sharedRoot, { recursive: true, force: true });

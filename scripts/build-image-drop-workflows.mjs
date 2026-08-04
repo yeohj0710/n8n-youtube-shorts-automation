@@ -773,11 +773,48 @@ function completeImageDropRuntime(definition) {
     fs.renameSync(data.claimed_path, archivedPath);
   }
 
+  // 카드뉴스 프롬프트 한 개가 4:5(인스타)와 9:16(쇼츠) 두 장을 만든다. 쇼츠 회로는
+  // 비율로 걸러 9:16만 집으므로 4:5 쌍둥이는 아무도 집지 않고 드롭 폴더에 영원히 남는다.
+  // 발행이 끝났는데 카드가 그대로 보여서 "왜 또 스킵되지"로 이어졌다(2026-08-04).
+  // 그래서 소비가 확정된 경우에만 쌍둥이도 같이 치운다.
+  //
+  // 짝은 확장자 앞 밑줄 하나만 다른 같은 이름으로 찾는다. 실제 파일이 그렇게 나온다
+  // (`04_다이어트 라면 등급표_.png` / `04_다이어트 라면 등급표.png`). NN_ 번호로만 맞추면
+  // 번호가 겹치는 다른 카드까지 쓸어가므로 쓰지 않는다.
+  const archivedTwins = [];
+  if (consumeImage) {
+    const claimedName = String(data.original_image_name || (data.claimed_path ? path.basename(data.claimed_path) : ''));
+    const parsed = path.parse(claimedName);
+    const stem = parsed.name.replace(/_+$/, '');
+    if (stem) {
+      const imageExtensions = new Set(['.png', '.jpg', '.jpeg', '.webp']);
+      const searchRoots = [...new Set([cfg.drop_root, definition.fallbackDropRoot].filter(Boolean))];
+      for (const searchRoot of searchRoots) {
+        let entries = [];
+        try { entries = fs.readdirSync(searchRoot, { withFileTypes: true }); } catch (error) { continue; }
+        for (const entry of entries) {
+          if (!entry.isFile()) continue;
+          const candidate = path.parse(entry.name);
+          if (!imageExtensions.has(candidate.ext.toLowerCase())) continue;
+          if (candidate.name.replace(/_+$/, '') !== stem) continue;
+          const from = path.join(searchRoot, entry.name);
+          if (archivedPath && path.resolve(from) === path.resolve(archivedPath)) continue;
+          fs.mkdirSync(targetDirectory, { recursive: true });
+          const to = uniquePath(targetDirectory, entry.name);
+          fs.renameSync(from, to);
+          archivedTwins.push(to);
+        }
+      }
+    }
+  }
+
   const completedAt = new Date().toISOString();
   const record = {
     channel: definition.channelName,
     source_file: data.original_image_name || null,
     archived_path: archivedPath,
+    // 같이 치운 4:5 쌍둥이. 왜 파일이 사라졌는지 기록에서 바로 보이게 남긴다.
+    archived_twins: archivedTwins,
     image_sha256: data.image_sha256 || null,
     title: data.pack?.hook_title || null,
     image_summary: data.vision_analysis?.image_summary || null,
@@ -807,6 +844,7 @@ function completeImageDropRuntime(definition) {
       image_drop: {
         consumed: consumeImage,
         archived_path: archivedPath,
+        archived_twins: archivedTwins,
         workflow_lock_released: workflowLockReleased,
         record,
       },
