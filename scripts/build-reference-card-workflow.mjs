@@ -669,8 +669,8 @@ function buildReferencePackRuntime(definition) {
         rank: index + 1,
         name: limit(name, 60),
         reason: limit(reason || name, 120),
-        card_name: limit(name, 30),
-        card_reason: limit(reason, 60),
+        card_name: limit(name, 40),
+        card_reason: limit(reason, 90),
       };
     });
   if (allItems.length < 3) throw new Error('재가공 항목이 3개 미만입니다: ' + record.record_id);

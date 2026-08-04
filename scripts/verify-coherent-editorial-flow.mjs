@@ -134,7 +134,11 @@ for (const relativePath of workflowFiles) {
   assert.match(build, /ATTENTION_PROMISE_V\d+/, `${relativePath}: truthful attention contract marker missing`);
   assert.match(build, /this may apply to me/i, `${relativePath}: viewer self-relevance test missing`);
   assert.match(build, /concrete condition, situation, action, choice, or observable signal/i, `${relativePath}: concrete hook subject contract missing`);
-  assert.match(build, /subtitle must add the missing condition, contrast, or payoff/i, `${relativePath}: subtitle only repeats the hook title`);
+  // 부제는 카드에 안 찍히고 유튜브 설명에만 들어간다(NO_CARD_SUBTITLE_V1). 그래도
+  // 제목을 바꿔 말하기만 하는 부제는 여전히 쓸모가 없으므로 규약은 남겨 둔다.
+  assert.match(build, /subtitle is NOT drawn on the card/i, `${relativePath}: writer prompt still treats subtitle as card copy`);
+  assert.match(build, /adds the missing condition or payoff rather than paraphrasing hook_title/i, `${relativePath}: subtitle only repeats the hook title`);
+  assert.match(build, /LENGTH_IS_A_CEILING_V1/, `${relativePath}: the anti-compression rule is missing from the writer prompt`);
   // The channel owner raised the aggression ceiling on 2026-07-21: urgency,
   // stakes, and imperatives are now encouraged. What remains prohibited is the
   // honesty floor — fabricated numbers, fake insiders, and disease scares.
