@@ -387,7 +387,7 @@ Fix:
 $env:N8N_RESTRICT_FILE_ACCESS_TO = "$DefaultFilesFolder;$RenderFolder;$Root;$CardDropFolder"
 ```
 
-Then restart n8n. `scripts\start-n8n.ps1` already sets `$CardDropFolder` to the 40_카드뉴스_이미지 path.
+Then restart n8n. `scripts\start-n8n.ps1` already sets `$CardDropFolder` to the 카드뉴스_이미지 path.
 
 ### 하루건강약사 image drop folder is on Google Drive (2026-07-22)
 
@@ -396,9 +396,9 @@ Then restart n8n. `scripts\start-n8n.ps1` already sets `$CardDropFolder` to the 
 Both channels feed from the same card-news pipeline as of 2026-07-30, split by a
 channel folder under 40:
 
-- 하루건강약사: `…\40_카드뉴스_이미지\하루건강약사`
-- 건강장수비결: `…\40_카드뉴스_이미지\건강장수비결`
-- Captions for both: `…\50_캡션` (flat, matched by the `NN_` number)
+- 하루건강약사: `…\카드뉴스_이미지\하루건강약사`
+- 건강장수비결: `…\카드뉴스_이미지\건강장수비결`
+- Captions for both: `…\캡션` (flat, matched by the `NN_` number)
 
 The split is not cosmetic. Both circuits pick a random file from their drop root,
 so pointing them at one shared folder publishes 하루건강약사 cards to 건강장수비결
@@ -599,7 +599,7 @@ takes the same fix — both image-drop circuits now set
 `Claim Next Image`'s config.
 
 건강장수비결 got the change too. Both image-drop circuits claim from the same
-card-news pipeline (`40_카드뉴스_이미지`) with `selectShortsByAspect`, so the
+card-news pipeline (`카드뉴스_이미지`) with `selectShortsByAspect`, so the
 defect and the reasoning are identical; fixing only the channel that happened to
 publish first would have left a live trap.
 
@@ -619,7 +619,7 @@ the chain fall back to `auto`, which the check catches.
 The 하루건강약사 image-drop circuit used to send the finished card to GPT-5.2
 vision and have it write the title, description, and tags from what it could
 read in the picture. That is backwards: the text already exists. The card-news
-pipeline wrote `50_캡션\NN_제목.caption.txt` from the curated material JSON, and
+pipeline wrote `캡션\NN_제목.caption.txt` from the curated material JSON, and
 the card image is a rendering of that same text. Reverse-engineering it costs a
 call and loses content — the vision prompt says to omit unreadable text rather
 than guess, so any item the model misreads is silently dropped from a list the
@@ -654,7 +654,7 @@ The 260-character pinned-comment guidance above applies to the generation path's
 reviewer; the prepared/caption builders do not truncate. Change the main
 workflow's copy first, then mirror it here.
 
-Both channels read captions from the same `50_캡션` folder — the pipeline numbers
+Both channels read captions from the same `캡션` folder — the pipeline numbers
 materials in one global sequence (`01B_시작 프롬프트 - 건강장수비결 MD 생성.md`
 produces 건강장수비결 material alongside haru's), so a number identifies a card
 regardless of channel. The closing line is the per-channel part: haru posts the
@@ -707,7 +707,7 @@ Cause:
 
 Windows PowerShell 5 reads a BOM-less UTF-8 `.ps1` as ANSI (CP949 here), which
 mangles Korean literals. This bit hard on 2026-07-30: `start-n8n.ps1` hardcoded
-`$CardDropFolder = "G:\내 드라이브\...\40_카드뉴스_이미지"`, so
+`$CardDropFolder = "G:\내 드라이브\...\카드뉴스_이미지"`, so
 `N8N_RESTRICT_FILE_ACCESS_TO` got `G:\???쒐...` and the `Read Claimed Image`
 node failed with `Access to the file is not allowed` — while listing the
 mangled path in its own "Allowed paths" message, which is the tell. Note that

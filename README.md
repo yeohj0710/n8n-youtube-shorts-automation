@@ -99,7 +99,10 @@ Daily 21:00 scheduling is wired but disabled until explicitly activated. The sch
 Copy-Item config/source-pipeline.example.json config/source-pipeline.json
 ```
 
-아래 설명에서는 원본 영상 작업 공간을 `G:\owned-media\shorts`로 가정합니다.
+아래 설명에서는 원본 영상 작업 공간을 `G:\owned-media\shorts`로 가정합니다. 실제 경로는
+`config\source-pipeline.json`에 있고, 지금은
+`G:\내 드라이브\영상 편집\AI 크리에이터\영상 데이터\etc\원본릴스_수집` 아래입니다
+(2026-08-04 정리로 `링크큐`·`작업`·`실패`로 이름이 바뀌었습니다).
 
 작업 방식:
 
