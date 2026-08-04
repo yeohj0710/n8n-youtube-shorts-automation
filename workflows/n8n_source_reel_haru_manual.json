@@ -3,7 +3,7 @@
   "name": "하루건강약사 · 원본 릴스",
   "nodes": [
     {
-      "id": "a5c91a13-1f2d-4b2a-ae33-8985c3f4c6d0",
+      "id": "fe61b4ea-31a0-4109-ace7-b313e24dc075",
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -14,7 +14,7 @@
       "parameters": {}
     },
     {
-      "id": "6fb24505-5591-424b-aa7f-6215184f1222",
+      "id": "586b719a-5b59-4b2c-91fe-3fe3136ee8c2",
       "name": "Load Source Reel Bundle",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -786,7 +786,7 @@
       ]
     },
     {
-      "id": "68c8f6ea-6103-439c-b0bf-83206b202c1f",
+      "id": "8922ad9a-8933-4d1b-ad81-58ac74e8efa4",
       "name": "Complete Source Reel Bundle",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1305,7 +1305,7 @@
     "executionOrder": "v1"
   },
   "active": false,
-  "versionId": "8b63f6f0-1e92-457d-96dc-5c70e7610aa5",
+  "versionId": "f3db0c72-eb97-48d6-a04d-1dfe85bc110d",
   "meta": {
     "templateCredsSetupCompleted": true
   },

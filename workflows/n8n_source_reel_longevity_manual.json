@@ -3,7 +3,7 @@
   "name": "건강장수비결 · 원본 릴스",
   "nodes": [
     {
-      "id": "f877a283-7b0a-442d-896a-7c06866a24c3",
+      "id": "dd4bd650-4ed3-4840-93f8-0bbdc4f2a6dd",
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -14,7 +14,7 @@
       "parameters": {}
     },
     {
-      "id": "75dd592b-b2bd-404c-b192-9edda1820d52",
+      "id": "0f7c528c-ceee-4794-a6a8-f84c6703cd34",
       "name": "Load Source Reel Bundle",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -786,7 +786,7 @@
       ]
     },
     {
-      "id": "36567d11-1765-4048-97a5-ad8d95e1706a",
+      "id": "e3c82d0d-a17f-4d1e-a76c-480ba98c52b5",
       "name": "Complete Source Reel Bundle",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1305,7 +1305,7 @@
     "executionOrder": "v1"
   },
   "active": false,
-  "versionId": "2c48827c-0a0c-43fb-a543-775467c4b142",
+  "versionId": "ff75d9de-bb58-440d-b581-5296fa8a2d33",
   "meta": {
     "templateCredsSetupCompleted": true
   },
