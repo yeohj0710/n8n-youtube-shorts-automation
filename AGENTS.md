@@ -42,6 +42,25 @@ Latest known workflow:
 - Keep internal medical safety checks for cure/guarantee/dosage/prescription-avoidance claims. Remove only the user-visible disclaimer padding.
 - Pinned/top-level YouTube comment is the pack's `pinned_comment`: a short useful summary of that exact video ending with the channel's calm subscribe line, under 260 Korean characters, never a viewer question. (The old rule of posting the fixed string `좋아요와 구독 한 번씩 부탁드립니다.` was replaced by summary-style comments; the upload node posts `pinned_comment` verbatim.)
 
+## Where the Copy Rules Have to Live (2026-08-04)
+
+The editorial rules below only bite where copy is generated. Only the two 본편
+circuits write their own copy and call the quality gate; the other five ship text
+written somewhere else and change nothing. So every rule has to be installed twice —
+once in the writer contract, once in whatever document governs the other source.
+
+| Circuit | Copy comes from | Rules live in |
+| --- | --- | --- |
+| 본편 x2 | the writer AI | writer contract + shared quality gate |
+| 레퍼런스 카드 | the user's `*_reworked_ko` sheet columns | `레퍼런스 카드\README.txt` |
+| 완성 이미지 x2 | card-news caption files | Drive `영상 데이터\AGENTS.md` §4-1 |
+| 원본 릴스 x2 | the bundle's `content-brief.json` | Drive `etc\원본릴스_수집\시작 프롬프트 - 링크 데이터 준비.md` + `schemas\source-content-brief.schema.json` |
+
+The schema is the one that actually enforces: it capped `reason` at 42 characters,
+which is why source-reel copy read as telegrams no matter what the prompt said.
+Raised to 90 with `name` 40 and `title` 60 to match the rest of the repo. A prompt
+that asks for a full sentence while the schema rejects one is a prompt that loses.
+
 ## Card Copy Rules
 
 These are entertaining shorts for Korean adults over 50. Fun and useful is the whole bar. Do not turn them into clinical education.
