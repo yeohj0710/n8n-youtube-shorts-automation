@@ -310,6 +310,8 @@ function claimNextImageRuntime(definition) {
           use_live_bgm: !dryRun,
           use_live_render: !dryRun,
           allow_youtube_upload: !dryRun,
+          // 유튜브 제목만 후킹으로 다시 쓰는 단계. 드라이런에서는 LLM을 부르지 않는다.
+          use_live_hook_rewrite: !dryRun,
           youtube_privacy_status: 'public',
           youtube_category_id: '27',
           region_code: 'KR',
@@ -586,6 +588,135 @@ function buildPackFromCardCopyRuntime(definition) {
         styleWeight: 0.9,
         weirdnessConstraint: 0.1,
       },
+    },
+  }];
+}
+
+// 유튜브 제목만 후킹으로 다시 쓴다. 카드 그림은 건드리지 않는다.
+//
+// 왜 필요한가: 이 회로는 캡션 파일의 첫 줄을 제목으로 그대로 쓴다. 카드뉴스 캡션의
+// 제목은 분류 라벨이라("다이어트 라면 등급표") 유튜브에서 아무도 안 누른다. 본편 회로는
+// AI가 ATTENTION_PROMISE_V2/HOOK_PATTERNS 규칙으로 제목을 쓰고 품질 게이트까지 태우는데,
+// 이 회로에는 그 단계가 통째로 없었다(2026-08-04 사용자 지적).
+//
+// 왜 pack.hook_title을 안 바꾸나: 그 값이 중복 업로드 가드의 매칭 키이고 발행 기록에도
+// 남는다. 실행마다 AI가 다른 제목을 내면 같은 카드를 다시 돌렸을 때 "이미 올림"을 못 잡는다.
+// 그래서 유튜브에 올릴 제목만 pack.youtube_title로 따로 둔다.
+function buildHookTitleRequestRuntime(definition) {
+  const data = $input.first().json;
+  const pack = data.pack || {};
+  const rows = (pack.rank_items || []).map((item) => {
+    const name = String(item.card_name || item.name || '').trim();
+    const reason = String(item.card_reason || item.reason || '').trim();
+    return reason ? name + ' - ' + reason : name;
+  }).filter(Boolean);
+
+  const prompt = [
+    'You retitle one finished Korean YouTube Shorts card for the channel "' + definition.channelName + '".',
+    'Channel purpose: ' + definition.channelPurpose + '.',
+    '',
+    // 본편 회로의 규칙을 그대로 받아 쓴다. 빌드 시점에 메인 워크플로우에서 뽑아 넣으므로
+    // 두 회로의 후킹 기준이 갈라질 수 없다.
+    definition.hookRules,
+    '',
+    'The card image is already made and will NOT change. You are writing only the YouTube title.',
+    'Rewrite the working title below into one Korean title a person would actually click.',
+    'Hard limits: 12 to 45 Korean characters, one line, no hashtag, no emoji, no quotation marks, no bracket.',
+    'Use only facts present in the working title and the rows. Never invent a number, percentage, product, authority, or outcome.',
+    'If the rows carry a number the title can honestly use, prefer it. If not, do not add one.',
+    'Return one JSON object only, no markdown: {"youtube_title":"..."}',
+    '',
+    'WORKING TITLE: ' + String(pack.hook_title || ''),
+    'SUBTITLE: ' + String(pack.subtitle || ''),
+    'ROWS:',
+    ...rows.map((row) => '- ' + row),
+  ].join('\n');
+
+  return [{
+    json: {
+      ...data,
+      hook_title_request: {
+        model: 'gpt-5-2',
+        messages: [{ role: 'user', content: prompt }],
+      },
+    },
+  }];
+}
+
+function parseHookTitleRuntime(definition) {
+  const base = $('Build Hook Title Request').first().json;
+  const pack = base.pack || {};
+  const original = String(pack.hook_title || '').trim();
+
+  function fallback(reason) {
+    return [{
+      json: {
+        ...base,
+        pack: { ...pack, youtube_title: original },
+        hook_title_rewrite: { applied: false, reason, original },
+      },
+    }];
+  }
+
+  const response = $input.first().json || {};
+  // KIE가 본문을 text/plain으로 돌려주면 n8n이 파싱하지 않고 문자열로 넘긴다.
+  // Parse Vision Copy가 이미 같은 함정을 밟았으므로 같은 방식으로 푼다.
+  let payload = response;
+  if (typeof payload.data === 'string') {
+    try { payload = JSON.parse(payload.data); } catch (error) { return fallback('response_not_json'); }
+  }
+  const content = payload.choices?.[0]?.message?.content;
+  if (!content) return fallback('no_choices');
+
+  let parsed = null;
+  try {
+    const text = String(content).replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
+    parsed = JSON.parse(text);
+  } catch (error) { return fallback('content_not_json'); }
+
+  const candidate = String(parsed?.youtube_title || '').replace(/\s+/g, ' ').trim();
+  if (!candidate) return fallback('empty_title');
+
+  // 아래 검사는 전부 "지어내지 않았는가"를 본다. 문체는 모델에 맡기고, 되돌릴 수 없는
+  // 실수(없는 숫자, 해시태그, 길이 초과)만 기계적으로 막는다.
+  const length = Array.from(candidate).length;
+  if (length < 12 || length > 45) return fallback('length_' + length);
+  if (/[#\n"'\[\]{}]/.test(candidate)) return fallback('forbidden_character');
+
+  // 원문에 없는 숫자를 넣으면 통계를 지어낸 것이다. 원문·부제·행에 있는 숫자만 허용하되,
+  // 항목 개수와 순위 번호는 카드에 실제로 보이는 숫자이므로 같이 허용한다
+  // ("…7가지"는 이 채널의 기본 제목 꼴이다).
+  const items = pack.rank_items || [];
+  const sourceText = [original, pack.subtitle || '', ...items.map((item) => (
+    [item.card_name, item.name, item.card_reason, item.reason].filter(Boolean).join(' ')
+  ))].join(' ');
+  const sourceNumbers = new Set((sourceText.match(/\d+/g) || []));
+  sourceNumbers.add(String(items.length));
+  for (const item of items) if (item.rank) sourceNumbers.add(String(item.rank));
+  for (const number of (candidate.match(/\d+/g) || [])) {
+    if (!sourceNumbers.has(number)) return fallback('invented_number_' + number);
+  }
+
+  // 설명과 고정 댓글의 첫 제목 줄도 같이 맞춘다. 셋이 다른 제목을 말하면 이상하다.
+  const swapLeadingTitle = (text) => {
+    const value = String(text || '');
+    if (!original || !value.startsWith(original)) return value;
+    return candidate + value.slice(original.length);
+  };
+  const pinned = String(pack.pinned_comment || '');
+  const pinnedLines = pinned.split('\n');
+  if (pinnedLines[1] && pinnedLines[1].trim() === original) pinnedLines[1] = candidate;
+
+  return [{
+    json: {
+      ...base,
+      pack: {
+        ...pack,
+        youtube_title: candidate,
+        description: swapLeadingTitle(pack.description),
+        pinned_comment: pinnedLines.join('\n'),
+      },
+      hook_title_rewrite: { applied: true, original, rewritten: candidate },
     },
   }];
 }
@@ -872,12 +1003,32 @@ function createNode(workflowId, name, type, typeVersion, position, parameters, e
   };
 }
 
+// 본편 회로의 제목 후킹 규칙을 그대로 꺼내 온다. 복사해 두면 한쪽만 고쳐져 두 회로의
+// 제목 기준이 갈라진다 — 이 저장소가 마진 표에서 이미 겪은 실패다.
+function readHookRules(source) {
+  const node = source.nodes.find((candidate) => candidate.name === 'Build Viral Rank Pack Request');
+  if (!node) throw new Error('Canonical workflow has no Build Viral Rank Pack Request node');
+  const code = node.parameters?.jsCode || '';
+  const start = code.indexOf('ATTENTION_PROMISE_V2:');
+  if (start < 0) throw new Error('Canonical writer prompt no longer carries ATTENTION_PROMISE_V2');
+  let end = -1;
+  for (let index = start; index < code.length; index += 1) {
+    if (code[index] === '\\') { index += 1; continue; }
+    if (code[index] === '"') { end = index; break; }
+  }
+  if (end < 0) throw new Error('Could not find the end of the ATTENTION_PROMISE_V2 literal');
+  const rules = code.slice(start, end);
+  if (!rules.includes('HOOK_PATTERNS:')) throw new Error('Extracted rules lost HOOK_PATTERNS');
+  return rules;
+}
+
 function buildWorkflow(channel) {
   const source = readCanonicalWorkflow(channel.sourceWorkflowId);
   const definition = {
     key: channel.key,
     channelName: channel.channelName,
     channelPurpose: channel.channelPurpose,
+    hookRules: readHookRules(source),
     dropRoot: channel.dropRoot,
     selectShortsByAspect: channel.selectShortsByAspect === true,
     captionRoot: channel.captionRoot || null,
@@ -986,6 +1137,31 @@ function buildWorkflow(channel) {
     createNode(channel.workflowId, 'Parse Vision Copy', 'n8n-nodes-base.code', 2, [1920, 320], {
       jsCode: codeFor(parseVisionCopyRuntime, definition),
     }),
+    // 제목 후킹 재작성. 두 경로(캡션·비전)가 여기서 만나 유튜브 제목만 다시 쓴다.
+    createNode(channel.workflowId, 'Use Hook Rewrite?', 'n8n-nodes-base.if', 1, [2000, 300], {
+      conditions: {
+        boolean: [{ value1: '={{$json.config.use_live_hook_rewrite === true}}', value2: true }],
+      },
+    }),
+    createNode(channel.workflowId, 'Build Hook Title Request', 'n8n-nodes-base.code', 2, [2000, 460], {
+      jsCode: codeFor(buildHookTitleRequestRuntime, definition),
+    }),
+    // 제목 하나 때문에 발행을 막지 않는다. 호출이 실패하면 원래 제목으로 간다.
+    createNode(channel.workflowId, 'Rewrite Hook Title', 'n8n-nodes-base.httpRequest', 4.2, [2000, 620], {
+      method: 'POST',
+      url: 'https://api.kie.ai/gpt-5-2/v1/chat/completions',
+      authentication: 'genericCredentialType',
+      genericAuthType: 'httpHeaderAuth',
+      sendHeaders: true,
+      headerParameters: { parameters: [{ name: 'Content-Type', value: 'application/json' }] },
+      sendBody: true,
+      specifyBody: 'json',
+      jsonBody: '={{ JSON.stringify($json.hook_title_request) }}',
+      options: {},
+    }, { credentials: KIE_CREDENTIAL, retryOnFail: true, maxTries: 2, waitBetweenTries: 5000, onError: 'continueRegularOutput' }),
+    createNode(channel.workflowId, 'Parse Hook Title', 'n8n-nodes-base.code', 2, [2000, 780], {
+      jsCode: codeFor(parseHookTitleRuntime, definition),
+    }),
   ];
 
   for (const nodeName of clonedNodeNames) {
@@ -997,6 +1173,16 @@ function buildWorkflow(channel) {
     if (nodeName === 'Post Top-Level Comment') {
       node.continueOnFail = true;
       node.onError = 'continueRegularOutput';
+    }
+    // 유튜브에 올릴 제목은 후킹으로 다시 쓴 쪽을 쓴다. pack.hook_title은 캡션 원문
+    // 그대로 남겨야 한다 — 중복 업로드 가드와 발행 기록이 그 값으로 매칭한다.
+    // 재작성이 꺼져 있거나 실패하면 youtube_title이 원문과 같으므로 결과는 동일하다.
+    if (nodeName === 'YouTube Upload Public') {
+      const stale = '={{$json.pack.hook_title}}';
+      if (node.parameters?.title !== stale) {
+        throw new Error(`${nodeName}: title expression changed upstream; re-check the hook-title override`);
+      }
+      node.parameters.title = '={{$json.pack.youtube_title || $json.pack.hook_title}}';
     }
     nodes.push(node);
   }
@@ -1021,7 +1207,7 @@ function buildWorkflow(channel) {
     connect('Load Card Copy', 'Card Copy Found?');
     connect('Card Copy Found?', 'Build Pack From Card Copy', 0);
     connect('Card Copy Found?', 'Read Claimed Image', 1);
-    connect('Build Pack From Card Copy', 'Use Live BGM?');
+    connect('Build Pack From Card Copy', 'Use Hook Rewrite?');
   } else {
     connect('Claim Next Image', 'Read Claimed Image');
   }
@@ -1029,7 +1215,12 @@ function buildWorkflow(channel) {
   connect('Upload Image for Vision', 'Build Vision Copy Request');
   connect('Build Vision Copy Request', 'Analyze Image with GPT-5.2');
   connect('Analyze Image with GPT-5.2', 'Parse Vision Copy');
-  connect('Parse Vision Copy', 'Use Live BGM?');
+  connect('Parse Vision Copy', 'Use Hook Rewrite?');
+  connect('Use Hook Rewrite?', 'Build Hook Title Request', 0);
+  connect('Use Hook Rewrite?', 'Use Live BGM?', 1);
+  connect('Build Hook Title Request', 'Rewrite Hook Title');
+  connect('Rewrite Hook Title', 'Parse Hook Title');
+  connect('Parse Hook Title', 'Use Live BGM?');
   connect('Use Live BGM?', 'KIE Create BGM Task', 0);
   connect('Use Live BGM?', 'Mock BGM Result', 1);
   connect('KIE Create BGM Task', 'Normalize BGM Task');

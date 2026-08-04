@@ -106,7 +106,7 @@ function executeParseNode(workflow, fixture) {
   return run(input, dollar)[0].json;
 }
 
-function executeCodeNodeWithDefinition(workflow, nodeName, definition, inputJson) {
+function executeCodeNodeWithDefinition(workflow, nodeName, definition, inputJson, lookups = null) {
   const original = byName(workflow, nodeName).parameters.jsCode;
   // 픽스처는 dropRoot·captionRoot만 바꾸고 나머지(BGM 풀 등)는 실제 빌드된 값을
   // 그대로 써야 한다. 통째로 교체하면 테스트가 진짜 설정을 검사하지 않는다.
@@ -118,14 +118,99 @@ function executeCodeNodeWithDefinition(workflow, nodeName, definition, inputJson
     `const channelDefinition = ${JSON.stringify(merged)};`,
   );
   const run = new Function('require', '$input', '$', code);
-  return run(require, { first: () => ({ json: inputJson }) }, () => {
-    throw new Error(`${nodeName}: unexpected cross-node lookup in behavior test`);
+  return run(require, { first: () => ({ json: inputJson }) }, (name) => {
+    // 노드가 앞 노드를 참조하면 그 값을 픽스처로 넘겨야 한다. 안 넘겼는데 참조하면
+    // 조용히 undefined를 주지 말고 멈춘다 — 그래야 테스트가 진짜 계약을 검사한다.
+    if (lookups && Object.prototype.hasOwnProperty.call(lookups, name)) {
+      return { first: () => ({ json: lookups[name] }) };
+    }
+    throw new Error(`${nodeName}: unexpected cross-node lookup in behavior test: ${name}`);
   });
 }
 
 // 캡션 문안 경로. 이미지에서 글자를 역산하지 않고 카드뉴스 캡션 원문을 쓴다.
 // 여기서 지키는 계약: 원문 항목이 하나도 안 빠지고, 고정 댓글이 260자 이내로
 // 채널 마무리 줄로 끝나고, 캡션이 없으면 vision 경로로 폴백한다.
+// 유튜브 제목 후킹 재작성. 여기서 지키는 계약: 카드 원문(pack.hook_title)은 그대로 두고
+// youtube_title만 바뀐다, 없는 숫자를 넣으면 거부한다, 호출이 실패하면 원문으로 발행한다.
+function verifyHookTitleRewrite(workflow, testCase) {
+  const channelKey = testCase.id === 'haruImageDropShorts01' ? 'haru' : 'longevity';
+  const definition = { key: channelKey, channelName: testCase.channelName, channelPurpose: 'fixture' };
+
+  const pack = {
+    hook_title: '다이어트 라면 등급표',
+    subtitle: '살찌는 기준은 정제 탄수화물 + 지방 조합',
+    rank_items: [
+      { rank: 1, card_name: '신라면 건면', card_reason: '기름에 안 튀겨요' },
+      { rank: 2, card_name: '짜파게티', card_reason: '지방이 많아요' },
+    ],
+    description: '다이어트 라면 등급표\n\n신라면 건면 - 기름에 안 튀겨요',
+    pinned_comment: '오늘 영상 핵심 정리\n다이어트 라면 등급표\n\n신라면 건면',
+  };
+  const base = { pack, config: { use_live_hook_rewrite: true } };
+
+  // 요청 프롬프트가 본편의 후킹 규칙과 카드 행을 실제로 싣는가.
+  const request = executeCodeNodeWithDefinition(workflow, 'Build Hook Title Request', definition, base)[0].json;
+  const prompt = request.hook_title_request.messages[0].content;
+  assert.match(prompt, /HOOK_PATTERNS:/, `${testCase.file}: writer hook rules were not carried into the retitle prompt`);
+  assert.match(prompt, /ATTENTION_PROMISE_V2:/, `${testCase.file}: retitle prompt lost the attention contract`);
+  assert.match(prompt, /신라면 건면 - 기름에 안 튀겨요/, `${testCase.file}: the card rows were not supplied to the retitler`);
+  assert.match(prompt, /WORKING TITLE: 다이어트 라면 등급표/, `${testCase.file}: the working title was not supplied`);
+
+  const respond = (content) => executeCodeNodeWithDefinition(
+    workflow,
+    'Parse Hook Title',
+    definition,
+    { choices: [{ message: { content } }] },
+    { 'Build Hook Title Request': request },
+  )[0].json;
+
+  const good = respond('{"youtube_title":"라면 끊기 전에 이것부터 바꿔 보세요"}');
+  assert.equal(good.pack.youtube_title, '라면 끊기 전에 이것부터 바꿔 보세요');
+  assert.equal(good.pack.hook_title, '다이어트 라면 등급표', `${testCase.file}: hook_title must stay put — the duplicate guard matches on it`);
+  assert.ok(good.pack.description.startsWith('라면 끊기 전에'), `${testCase.file}: the description kept the old title`);
+  assert.equal(good.pack.pinned_comment.split('\n')[1], '라면 끊기 전에 이것부터 바꿔 보세요', `${testCase.file}: the pinned comment kept the old title`);
+  assert.equal(good.hook_title_rewrite.applied, true);
+
+  // 원문에 없는 숫자는 지어낸 통계다. 거부하고 원문으로 간다.
+  const invented = respond('{"youtube_title":"라면 먹고 87퍼센트가 후회하는 이유 정리"}');
+  assert.equal(invented.pack.youtube_title, '다이어트 라면 등급표', `${testCase.file}: an invented number was published`);
+  assert.match(invented.hook_title_rewrite.reason, /invented_number_87/);
+
+  // 원문에 있는 숫자는 써도 된다.
+  const kept = respond('{"youtube_title":"라면 고르기 전에 확인할 기준 1가지만"}');
+  assert.equal(kept.pack.youtube_title, '라면 고르기 전에 확인할 기준 1가지만', `${testCase.file}: a number present in the source was rejected`);
+
+  for (const [label, content] of [
+    ['too short', '{"youtube_title":"라면 등급"}'],
+    ['hashtag', '{"youtube_title":"#다이어트 라면 이렇게 고르세요 정리"}'],
+    ['not json', 'sorry, I cannot do that'],
+  ]) {
+    const rejected = respond(content);
+    assert.equal(rejected.pack.youtube_title, '다이어트 라면 등급표', `${testCase.file}: ${label} response was published`);
+    assert.equal(rejected.hook_title_rewrite.applied, false);
+  }
+
+  // 호출 자체가 죽어도 발행은 계속된다. 제목 하나 때문에 런을 버리지 않는다.
+  const httpNode = byName(workflow, 'Rewrite Hook Title');
+  assert.equal(httpNode.onError, 'continueRegularOutput', `${testCase.file}: a failed retitle call would kill the run`);
+  const dead = respond('');
+  assert.equal(dead.pack.youtube_title, '다이어트 라면 등급표');
+
+  // 업로드 노드가 다시 쓴 제목을 실제로 쓰는가.
+  assert.equal(
+    byName(workflow, 'YouTube Upload Public').parameters.title,
+    '={{$json.pack.youtube_title || $json.pack.hook_title}}',
+    `${testCase.file}: the upload node still sends the un-hooked title`,
+  );
+  // 드라이런은 LLM을 부르지 않는다.
+  assert.deepEqual(
+    outgoing(workflow, 'Use Hook Rewrite?'),
+    ['Build Hook Title Request', 'Use Live BGM?'],
+    `${testCase.file}: the retitle bypass is not wired`,
+  );
+}
+
 function verifyCardCopyPath(workflow, testCase) {
   // 하루건강약사는 인스타에도 올려 '팔로우', 건강장수비결은 유튜브 전용이라 '구독'.
   const channelKey = testCase.id === 'haruImageDropShorts01' ? 'haru' : 'longevity';
@@ -155,8 +240,8 @@ function verifyCardCopyPath(workflow, testCase) {
   );
   assert.deepEqual(
     connections['Build Pack From Card Copy'].main[0].map((c) => c.node),
-    ['Use Live BGM?'],
-    `${testCase.file}: caption pack must rejoin the BGM stage`,
+    ['Use Hook Rewrite?'],
+    `${testCase.file}: caption pack must reach the retitle stage before BGM`,
   );
 
   const definition = {
@@ -522,7 +607,9 @@ for (const testCase of cases) {
     assert.ok(reached.has(node.name), `${workflow.id}: unreachable node ${node.name}`);
   }
   assert.deepEqual(outgoing(workflow, 'Manual Trigger'), ['Claim Next Image']);
-  assert.ok(outgoing(workflow, 'Parse Vision Copy').includes('Use Live BGM?'));
+  // 두 경로 모두 제목 재작성 단계를 거쳐 BGM으로 간다.
+  assert.ok(outgoing(workflow, 'Parse Vision Copy').includes('Use Hook Rewrite?'));
+  assert.ok(outgoing(workflow, 'Parse Hook Title').includes('Use Live BGM?'));
   assert.ok(outgoing(workflow, 'Attach Comment Result').includes('Complete Image Drop'));
   assert.ok(outgoing(workflow, 'Skip YouTube Upload').includes('Complete Image Drop'));
 
@@ -553,7 +640,8 @@ for (const testCase of cases) {
   assert.equal(youtube.credentials?.youTubeOAuth2Api?.id, testCase.youtubeCredentialId);
   assert.equal(youtube.credentials?.youTubeOAuth2Api?.name, testCase.youtubeCredentialName);
   assert.equal(youtube.parameters.options.privacyStatus, '={{$json.config.youtube_privacy_status || "public"}}');
-  assert.equal(youtube.parameters.title, '={{$json.pack.hook_title}}');
+  // 후킹으로 다시 쓴 제목을 우선 쓰되, 재작성이 꺼졌거나 실패하면 캡션 원문으로 떨어진다.
+  assert.equal(youtube.parameters.title, '={{$json.pack.youtube_title || $json.pack.hook_title}}');
   assert.equal(youtube.parameters.options.description, '={{$json.pack.description}}');
 
   const comment = byName(workflow, 'Post Top-Level Comment');
@@ -608,6 +696,7 @@ for (const testCase of cases) {
   verifyFullFrameRenderPolicy(workflow, testCase);
   verifyBgmParityWithMainWorkflow(workflow, testCase);
   if (testCase.captionRoot) verifyCardCopyPath(workflow, testCase);
+  verifyHookTitleRewrite(workflow, testCase);
 }
 
 console.log(JSON.stringify({
@@ -622,6 +711,7 @@ console.log(JSON.stringify({
     'vision_copy_parsing',
     'image_claim_and_archive',
     'card_copy_from_caption',
+    'hook_title_rewrite',
     'full_frame_render_policy',
     'bgm_parity_with_main_workflow',
     'medical_claim_block',
