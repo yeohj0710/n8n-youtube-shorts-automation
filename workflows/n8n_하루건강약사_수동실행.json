@@ -1,6 +1,6 @@
 {
   "id": "mxrYb3maJS31gEYC",
-  "name": "하루건강약사 - n8n 유튜브 쇼츠 자동화",
+  "name": "하루건강약사 · 본편 (소재큐)",
   "nodes": [
     {
       "parameters": {
@@ -1297,7 +1297,7 @@
           "__rl": true,
           "value": "sharedContentQualityGate01",
           "mode": "list",
-          "cachedResultName": "Shared Content Quality Gate - 사실성·설명 품질 검수"
+          "cachedResultName": "[공용] 품질 검수 — 본편 2개가 호출"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",

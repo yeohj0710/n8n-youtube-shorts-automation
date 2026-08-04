@@ -1,6 +1,6 @@
 {
   "id": "sharedContentQualityGate01",
-  "name": "Shared Content Quality Gate - 사실성·설명 품질 검수",
+  "name": "[공용] 품질 검수 — 본편 2개가 호출",
   "active": true,
   "nodes": [
     {

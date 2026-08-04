@@ -85,7 +85,7 @@ function build(channelId, displayName, topicDir, outputFile, workflowId) {
   connections['Skip YouTube Upload']={main:[[{node:'Complete Source Reel Bundle',type:'main',index:0}]]};
   connections['Mock Render Result']={main:[[{node:'Complete Source Reel Bundle',type:'main',index:0}]]};
   delete connections['Final Result'];
-  const workflow={id:workflowId,name:displayName+' - 원본 릴스 기반 쇼츠',nodes,connections,settings:{executionOrder:'v1'},active:false,versionId:crypto.randomUUID(),meta:{templateCredsSetupCompleted:true},tags:[]};
+  const workflow={id:workflowId,name:displayName+' · 원본 릴스',nodes,connections,settings:{executionOrder:'v1'},active:false,versionId:crypto.randomUUID(),meta:{templateCredsSetupCompleted:true},tags:[]};
   fs.writeFileSync(path.join(root,'workflows',outputFile),JSON.stringify(workflow,null,2)+'\n','utf8');
 }
 

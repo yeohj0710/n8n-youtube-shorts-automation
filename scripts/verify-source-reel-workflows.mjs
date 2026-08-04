@@ -88,7 +88,7 @@ if (new Set(ids).size !== 2) throw new Error('workflow IDs are not unique');
 
 const db = new sqlite3.Database('.n8n/database.sqlite');
 const rows = await new Promise((resolve, reject) => db.all(
-  `SELECT id,name,nodes,connections FROM workflow_entity WHERE name LIKE '%원본 릴스 기반 쇼츠' ORDER BY name`,
+  `SELECT id,name,nodes,connections FROM workflow_entity WHERE name LIKE '%원본 릴스' ORDER BY name`,
   (error, value) => error ? reject(error) : resolve(value),
 ));
 db.close();

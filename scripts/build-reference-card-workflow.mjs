@@ -18,7 +18,9 @@ const workflowDir = path.join(root, 'workflows');
 
 const SOURCE_WORKFLOW_ID = 'mxrYb3maJS31gEYC';
 const WORKFLOW_ID = 'haruReferenceCardShorts01';
-const WORKFLOW_NAME = '하루건강약사 - 레퍼런스 카드 쇼츠';
+// 이름 규칙(2026-08-04): `채널 · 소재 출처`. 목록에서 뒤가 전부 "쇼츠"로 끝나
+// 구분이 안 된다는 지적에 따라 반복어(n8n·쇼츠·기반)를 떼고 출처만 남긴다.
+const WORKFLOW_NAME = '하루건강약사 · 레퍼런스 카드';
 const OUTPUT_FILE = 'n8n_reference_card_haru_manual.json';
 
 const KIE_CREDENTIAL = { httpHeaderAuth: { id: 'MV5JVbdiJSoVx9O8', name: 'Header Auth account' } };

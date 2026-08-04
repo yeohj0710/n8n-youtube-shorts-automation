@@ -1,6 +1,6 @@
 {
   "id": "baekse100Life01",
-  "name": "건강장수비결 - n8n 장수 건강 쇼츠 자동화",
+  "name": "건강장수비결 · 본편 (소재큐)",
   "nodes": [
     {
       "parameters": {
@@ -1298,7 +1298,7 @@
           "__rl": true,
           "value": "sharedContentQualityGate01",
           "mode": "list",
-          "cachedResultName": "Shared Content Quality Gate - 사실성·설명 품질 검수"
+          "cachedResultName": "[공용] 품질 검수 — 본편 2개가 호출"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",

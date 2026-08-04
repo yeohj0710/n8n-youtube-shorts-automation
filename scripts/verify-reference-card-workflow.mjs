@@ -27,7 +27,7 @@ const SHEETS_CREDENTIAL_ID = 'haruSheetsOAuth1';
 const UPLOAD_COMPLETE_COLUMN = '업로드 완료';
 
 assert.equal(workflow.id, 'haruReferenceCardShorts01');
-assert.equal(workflow.name, '하루건강약사 - 레퍼런스 카드 쇼츠');
+assert.equal(workflow.name, '하루건강약사 · 레퍼런스 카드');
 assert.equal(workflow.active, false, 'workflow must import inactive');
 
 // 노드 id 중복은 임포트 때 다른 워크플로우를 덮어쓸 수 있다.

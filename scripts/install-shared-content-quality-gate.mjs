@@ -6,7 +6,9 @@ import sqlite3 from 'sqlite3';
 const root = 'C:/dev/n8n-youtube-shorts-automation';
 const dbPath = path.join(root, '.n8n', 'database.sqlite');
 const sharedId = 'sharedContentQualityGate01';
-const sharedName = 'Shared Content Quality Gate - 사실성·설명 품질 검수';
+// 이 회로만 독립 실행이 아니라 본편 2개가 Execute Workflow로 부르는 하위 워크플로우다.
+// 목록에서 섞이지 않게 [공용] 접두사를 달고, 호출자를 이름에 적어 둔다.
+const sharedName = '[공용] 품질 검수 — 본편 2개가 호출';
 const parentIds = ['mxrYb3maJS31gEYC', 'baekse100Life01'];
 const projectId = 'aEvRqZD8wENZ1iRJ';
 const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\..+/, '');

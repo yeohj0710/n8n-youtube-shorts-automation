@@ -84,6 +84,12 @@ for (const file of workflowFiles) {
   for (const match of allCode.matchAll(/scripts\/([\w-]+)\.mjs/g)) {
     if (!allowedScripts.has(match[1])) fail(`${file}: references unapproved local script scripts/${match[1]}.mjs`);
   }
+  for (const match of allCode.matchAll(/local_render_script\s*(?::|=)[^\n]{0,300}?scripts\/([\w-]+)\.mjs/g)) {
+    if (match[1] !== 'render-static-card') fail(`${file}: assigns local_render_script to scripts/${match[1]}.mjs`);
+  }
+  for (const match of renderCode.matchAll(/scripts\/([\w-]+)\.mjs/g)) {
+    if (match[1] !== 'render-static-card') fail(`${file}: Local FFmpeg Render executes scripts/${match[1]}.mjs`);
+  }
 
   const generatesImage = nodes.some((node) => node.name === 'KIE Create Image Task');
   circuits.push({ file, id: workflow.id, name: workflow.name, generatesImage, allCode });

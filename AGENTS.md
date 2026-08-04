@@ -17,7 +17,7 @@ GitHub repo:
 Latest known workflow:
 
 - ID: `mxrYb3maJS31gEYC`
-- Name: `하루건강약사 - n8n 유튜브 쇼츠 자동화`
+- Name: `하루건강약사 · 본편 (소재큐)`
 - Export: `C:\dev\n8n-youtube-shorts-automation\workflows\n8n_하루건강약사_수동실행.json`
 - Current shape: full-card GPT image + BGM + local ffmpeg render + YouTube public upload
 
@@ -391,7 +391,7 @@ Then restart n8n. `scripts\start-n8n.ps1` already sets `$CardDropFolder` to the 
 
 ### 하루건강약사 image drop folder is on Google Drive (2026-07-22)
 
-`하루건강약사 - 완성 이미지 기반 쇼츠` claims from `G:\내 드라이브\영상 편집\AI 크리에이터\영상 데이터\40_카드뉴스_이미지`, the same folder where the card-news pipeline saves finished cards — so the user drops nothing by hand. That folder holds BOTH aspect ratios. The haru channel definition sets `selectShortsByAspect: true`: `Claim Next Image` reads each candidate's pixel size from the file header (PNG/JPEG/WebP, no external deps — n8n Code nodes only get builtins) and takes only files with width/height < 0.7 (9:16 = 0.5625, 4:5 = 0.80). **Filenames don't matter for haru anymore** — the user found per-file naming tedious (2026-07-30). Marker names are still respected as overrides when present: `/(4x5|4:5|인스타)/i` always excludes, `/(9x16|9:16|유튜브|쇼츠)/i` includes without sniffing. A file whose dimensions can't be parsed is excluded (safe default: never publish an unknown). The pre-aspect history: a marker-less 4:5 slipped through the exclude-only filter and would have been published, which led to a require-marker phase, which lost to naming fatigue.
+`하루건강약사 · 완성 이미지` claims from `G:\내 드라이브\영상 편집\AI 크리에이터\영상 데이터\40_카드뉴스_이미지`, the same folder where the card-news pipeline saves finished cards — so the user drops nothing by hand. That folder holds BOTH aspect ratios. The haru channel definition sets `selectShortsByAspect: true`: `Claim Next Image` reads each candidate's pixel size from the file header (PNG/JPEG/WebP, no external deps — n8n Code nodes only get builtins) and takes only files with width/height < 0.7 (9:16 = 0.5625, 4:5 = 0.80). **Filenames don't matter for haru anymore** — the user found per-file naming tedious (2026-07-30). Marker names are still respected as overrides when present: `/(4x5|4:5|인스타)/i` always excludes, `/(9x16|9:16|유튜브|쇼츠)/i` includes without sniffing. A file whose dimensions can't be parsed is excluded (safe default: never publish an unknown). The pre-aspect history: a marker-less 4:5 slipped through the exclude-only filter and would have been published, which led to a require-marker phase, which lost to naming fatigue.
 
 Both channels feed from the same card-news pipeline as of 2026-07-30, split by a
 channel folder under 40:
@@ -416,7 +416,7 @@ Two gotchas when re-importing: run `scripts\import-workflow.ps1` (it sets `N8N_U
 
 ### Reference-Card Circuit: 2,000 Prepared Cards, 11 Publishable (2026-07-30)
 
-`하루건강약사 - 레퍼런스 카드 쇼츠` (`haruReferenceCardShorts01`) picks one unused
+`하루건강약사 · 레퍼런스 카드` (`haruReferenceCardShorts01`) picks one unused
 record from `research\single-screen-references\videos.jsonl` and ships the user's
 own `*_reworked_ko` copy verbatim — no LLM rewrite of the text. The image, BGM,
 render and upload nodes are **clones** of the main workflow, so quality matches
@@ -537,7 +537,7 @@ normalization, BGM parsing, and finally reaching the render payload.
 
 ### Finished Cards Must Not Be Refit (2026-08-03)
 
-`하루건강약사 - 완성 이미지 기반 쇼츠` published `dnIsiR-2Pkg` (다이어트 라면 등급표)
+`하루건강약사 · 완성 이미지` published `dnIsiR-2Pkg` (다이어트 라면 등급표)
 as a card floating at two-thirds size inside a blurred surround. The circuit was
 never given a `safe_zone_mode`, so `Prepare Local FFmpeg Render` fell back to
 `auto`. Running the published source through `fitCanvasWithSafeZone` reproduces
