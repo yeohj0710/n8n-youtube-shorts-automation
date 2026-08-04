@@ -1,5 +1,5 @@
 {
-  "title": "여름에 먼저 상하는 순서 5",
+  "title": "여름에 이 순서로 상해요 5",
   "lane": "food_nutrition_table",
   "notes": "여름에 상하는 순서는 값이나 종류가 아니라 물기와 양념에서 갈린다.",
   "topic_key": "summer_spoilage_order",
@@ -7,8 +7,8 @@
     "channel_editorial_profile": "haru_health_literacy",
     "channel_content_pillar": "nutrition_food_choices",
     "topic_key": "summer_spoilage_order",
-    "hook_title": "여름에 먼저 상하는 순서 5",
-    "subtitle": "물기와 양념이 많은 순서예요",
+    "hook_title": "여름에 이 순서로 상해요 5",
+    "subtitle": "물기가 많고 양념이 묻은 것부터 쉬어요",
     "visual_profile": "market_receipt",
     "visual_mood_hint": "여름 부엌 조리대에 놓인 자른 수박과 반찬통, 창밖의 뜨거운 햇빛과 서늘한 실내가 대비되는 장면, 크림색과 시원한 청록 팔레트, 물기 맺힌 유리 질감",
     "rank_items": [
@@ -24,28 +24,28 @@
         "name": "무쳐 놓은 나물 반찬",
         "card_name": "무쳐 놓은 나물 반찬",
         "reason": "양념이 묻은 나물은 상온에서 반나절이면 시큼해져요",
-        "card_reason": "양념 묻은 나물은 반나절이면 시큼해져요"
+        "card_reason": "양념 묻은 나물은 상온에서 반나절이면 시큼해져요"
       },
       {
         "rank": 3,
         "name": "한 번 끓인 국과 찌개",
         "card_name": "한 번 끓인 국과 찌개",
-        "reason": "끓였다고 안심하고 상온에 두면 그날 저녁에 쉬어요",
+        "reason": "한 번 끓였다고 안심하고 상온에 두면 그날 저녁에 쉬어요",
         "card_reason": "끓였어도 상온에 두면 그날 저녁에 쉬어요"
       },
       {
         "rank": 4,
         "name": "뚜껑 딴 우유와 두유",
         "card_name": "뚜껑 딴 우유와 두유",
-        "reason": "뚜껑을 딴 뒤로는 냉장고 문 칸 온도로도 버티기 어려워요",
-        "card_reason": "뚜껑 딴 뒤로는 문 칸 온도로도 못 버텨요"
+        "reason": "냉장고 문 칸은 여닫을 때마다 온도가 올라서 뚜껑 딴 우유는 못 버텨요",
+        "card_reason": "냉장고 문 칸은 온도가 높아서 딴 우유는 못 버텨요"
       },
       {
         "rank": 5,
         "name": "지어 놓은 밥",
         "card_name": "지어 놓은 밥",
-        "reason": "밥은 물기가 적어 제일 늦게 상하지만 하루면 냄새가 나요",
-        "card_reason": "제일 늦게 상해도 하루 지나면 냄새가 나요"
+        "reason": "밥은 물기가 적어 제일 늦게 상하지만 하루가 지나면 냄새가 나요",
+        "card_reason": "밥은 제일 늦게 상해도 하루 지나면 냄새가 나요"
       }
     ],
     "video_script": "여름엔 상하는 순서가 정해져 있어요.",
