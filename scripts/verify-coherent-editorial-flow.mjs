@@ -2,6 +2,13 @@
 import fs from 'node:fs';
 import sqlite3 from 'sqlite3';
 import { createRequire } from 'node:module';
+import { safeBoxFor } from './lib/safe-zone.mjs';
+
+// 좌표는 마진 표에서 받는다. 숫자를 박아두면 표를 고칠 때마다 검사가 먼저 깨진다.
+const SHARED_BOX = safeBoxFor(1080, 1920, '9:16');
+// UI 밴드 문구. 왼쪽은 여백을 두지 않으므로 오른쪽·상단·하단만 확인한다.
+const SHARED_BANDS_FRAGMENT = new RegExp(`${SHARED_BOX.rightInset} px on the right, ${SHARED_BOX.topInset} px on top, and ${SHARED_BOX.bottomInset} px at the bottom`);
+const SHARED_BOX_FRAGMENT = new RegExp(`x ${SHARED_BOX.left}-${SHARED_BOX.right} px and y ${SHARED_BOX.top}-${SHARED_BOX.bottom} px`);
 
 const root = 'C:/dev/n8n-youtube-shorts-automation';
 const workflowFiles = [
@@ -238,8 +245,8 @@ for (const relativePath of workflowFiles) {
   assert.match(final, /bgm_profile_id/, `${relativePath}: completed upload does not persist its BGM profile`);
   // Keep the prompt aligned with the repository's preview/enforcement tools:
   // 9:16 critical-content margins are top 12%, bottom 22%, left 5%, right 11%.
-  assert.match(prepare, /x 54-961 px and y 230-1498 px/, `${relativePath}: shared 9:16 critical-content box missing`);
-  assert.match(prepare, /54 px left.*119 px right.*230 px top.*422 px bottom/s, `${relativePath}: shared 9:16 UI exclusion bands missing or wrong depth`);
+  assert.match(prepare, SHARED_BOX_FRAGMENT, `${relativePath}: shared 9:16 critical-content box missing`);
+  assert.match(prepare, SHARED_BANDS_FRAGMENT, `${relativePath}: shared 9:16 UI exclusion bands missing or wrong depth`);
   assert.match(prepare, /VERTICAL_FILL_V2/, `${relativePath}: bottom-fill contract missing, cards will compress upward or clip again`);
   assert.match(prepare, /BAND_BACKGROUND_V1/, `${relativePath}: reserved bands would render as blank strips without the background-continuation contract`);
   assert.match(prepare, /GLYPH_INTEGRITY_V1/, `${relativePath}: minimum glyph size contract missing, small Korean text renders broken`);
@@ -418,8 +425,8 @@ for (const relativePath of workflowFiles) {
   assert.equal(prepared.bgm_payload.grabLyrics, undefined, `${relativePath}: obsolete grabLyrics flag remains`);
   assert.equal(prepared.bgm_payload.soundTempo, undefined, `${relativePath}: runtime forced tempo`);
   assert.equal(prepared.bgm_payload.soundKey, undefined, `${relativePath}: runtime forced key`);
-  assert.match(prepared.image_payload.input.prompt, /x 54-961 px and y 230-1498 px/, `${relativePath}: runtime image prompt lost the shared 9:16 critical-content box`);
-  assert.match(prepared.image_payload.input.prompt, /54 px left, 119 px right, 230 px top, and 422 px bottom/i, `${relativePath}: runtime image prompt lost the shared 9:16 UI reserve bands`);
+  assert.match(prepared.image_payload.input.prompt, SHARED_BOX_FRAGMENT, `${relativePath}: runtime image prompt lost the shared 9:16 critical-content box`);
+  assert.match(prepared.image_payload.input.prompt, SHARED_BANDS_FRAGMENT, `${relativePath}: runtime image prompt lost the shared 9:16 UI reserve bands`);
   assert.match(prepared.image_payload.input.prompt, /VERTICAL_FILL_V2/, `${relativePath}: runtime image prompt lost the bottom-fill contract`);
   assert.match(prepared.image_payload.input.prompt, /BAND_BACKGROUND_V1/, `${relativePath}: runtime image prompt lost the band background continuation`);
   assert.match(prepared.image_payload.input.prompt, /GLYPH_INTEGRITY_V1/, `${relativePath}: runtime image prompt lost the glyph-size floor`);

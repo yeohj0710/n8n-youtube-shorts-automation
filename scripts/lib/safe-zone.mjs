@@ -13,9 +13,14 @@
 import sharp from 'sharp';
 
 // 캔버스 가장자리에서 띄울 비율.
+//
+// 왼쪽이 0인 이유(2026-08-04 사용자 지시): 쇼츠·릴스 UI는 왼쪽 가장자리를 덮지 않는다.
+// 오른쪽에는 좋아요·댓글·공유 아이콘 세로열이, 아래에는 계정명·캡션·음원이, 위에는
+// 카메라·검색이 올라오지만 왼쪽에는 아무것도 없다. 5%를 버리던 건 근거 없는 대칭이었고,
+// 가로 폭이 아쉬운 카드에서 그만큼 손해였다. 좌우를 비대칭으로 두는 게 요점이다.
 export const SAFE_ZONE_MARGINS = {
-  '4:5': { top: 0.08, bottom: 0.12, left: 0.05, right: 0.12 },
-  '9:16': { top: 0.12, bottom: 0.22, left: 0.05, right: 0.11 },
+  '4:5': { top: 0.08, bottom: 0.12, left: 0, right: 0.12 },
+  '9:16': { top: 0.12, bottom: 0.22, left: 0, right: 0.11 },
 };
 
 export const SUPPORTED_IMAGE_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.webp']);
@@ -62,7 +67,7 @@ export function shortsSafeZonePromptLines(width = 1080, height = 1920) {
   return [
     `MANDATORY SHORTS SAFE LAYOUT for ${width}x${height}: make the information poster visually dominant without placing any supplied copy under the Shorts interface.`,
     `SHARED_SAFE_ZONE_V1: keep every critical element inside the critical-content box x ${box.left}-${box.right} px and y ${box.top}-${box.bottom} px. These coordinates match the repository preview-card-safe-zone, enforce-card-safe-zone, and derive-shorts-card tools for 9:16 output.`,
-    `Reserve ${box.leftInset} px left, ${box.rightInset} px right, ${box.topInset} px top, and ${box.bottomInset} px bottom for feed UI, captions, controls, and crop tolerance. Keep all supplied text — including the footer and handle — plus rank numbers, faces, logos, and key objects clear of the top, right, and bottom UI bands.`,
+    `Reserve ${box.rightInset} px on the right, ${box.topInset} px on top, and ${box.bottomInset} px at the bottom for feed UI, captions, controls, and crop tolerance.${box.leftInset > 0 ? ` Reserve ${box.leftInset} px on the left.` : ' The LEFT edge carries no interface: content may run all the way to x 0, and leaving a matching left margin only wastes width. The usable area is deliberately asymmetric — wider on the left than on the right.'} Keep all supplied text — including the footer and handle — plus rank numbers, faces, logos, and key objects clear of the top, right, and bottom UI bands.`,
     'BAND_BACKGROUND_V1: the reserved bands are exclusion zones for critical content, not empty voids. The card background — its color, texture, pattern, and soft decorative elements — may reach every frame edge, so the frame never shows a blank strip. Only supplied text, faces, logos, and key subject objects stay inside the critical-content box.',
     `VERTICAL_FILL_V2: distribute the title, rows, and footer across the critical-content box from y ${box.top} to y ${box.bottom}. Start the title near the top of that box. Keep the last row above the footer with a visible gap, and keep the footer bottom at or above y ${box.bottom}. When vertical space remains, spend it on taller rows and wider row spacing. When space is tight, cut decoration and secondary copy, never the Korean type size or safe margins.`,
     'TITLE_ZONE_CAP_V1: the title plus subtitle zone takes at most one third of the footprint height, and about one quarter is the target. Set the title in at most 3 lines, preferably 2. A published frame spent nearly half the card on a five-line title and starved the ranked rows; that is a failure. Leftover vertical space always goes to the ranked rows, never to enlarging the title further.',

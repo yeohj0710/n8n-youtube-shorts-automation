@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { safeBoxFor } from './lib/safe-zone.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const require = createRequire(import.meta.url);
@@ -382,7 +383,14 @@ try {
     'the margin instruction must be the last thing the model reads',
   );
   assert.match(handled.image_payload.input.prompt, /Create one finished vertical 9:16/i, 'prompt must request a full-height 9:16 source');
-  assert.match(handled.image_payload.input.prompt, /x 54-961 px and y 230-1498 px/, 'critical text still needs the shared UI-safe coordinates');
+  // 좌표는 lib/safe-zone.mjs 표에서 받는다. 여기 숫자를 박아두면 표를 고칠 때마다
+  // 이 검사가 먼저 깨진다(왼쪽 여백을 0으로 내릴 때 실제로 그랬다).
+  const sharedBox = safeBoxFor(1080, 1920, '9:16');
+  assert.match(
+    handled.image_payload.input.prompt,
+    new RegExp(`x ${sharedBox.left}-${sharedBox.right} px and y ${sharedBox.top}-${sharedBox.bottom} px`),
+    'critical text still needs the shared UI-safe coordinates',
+  );
   assert.doesNotMatch(handled.image_payload.input.prompt, /REFERENCE_CARD_4X5_SOURCE_V1|finished vertical 4:5/i, 'obsolete 4:5 source-card contract remains');
   assert.equal(handled.config?.reference_card_frame_mode, 'full_frame_9x16', 'reference full-frame policy marker missing');
   assert.equal(handled.config?.safe_zone_mode, 'off', 'reference cards must bypass post-render shrinking');
