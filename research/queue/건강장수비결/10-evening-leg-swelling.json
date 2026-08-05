@@ -1,0 +1,55 @@
+{
+  "title": "저녁 다리 붓기, 병원 갈 붓기는 따로 있어요 5",
+  "lane": "body_signal_selfcheck",
+  "notes": "저녁 붓기는 흔하지만, 눌러 보면 생활 붓기와 병원 갈 붓기를 가를 수 있다.",
+  "topic_key": "evening_leg_swelling",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "chronic_risk_signals",
+    "topic_key": "evening_leg_swelling",
+    "hook_title": "저녁 다리 붓기, 병원 갈 붓기는 따로 있어요 5",
+    "subtitle": "정강이를 눌러 보면 절반은 갈 수 있어요",
+    "visual_profile": "clinic_checklist",
+    "visual_mood_hint": "저녁 거실 소파에 앉아 정강이를 손가락으로 눌러 보는 모습, 발밑에 쿠션, 차분한 남색과 살구색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "정강이를 꾹 눌러 봐요",
+        "card_name": "정강이를 꾹 눌러 봐요",
+        "reason": "손가락으로 정강이를 눌렀다 뗐을 때 자국이 한참 남으면 물이 찬 붓기예요, 금방 돌아오면 살이에요",
+        "card_reason": "누른 자국이 한참 남으면 물이 찬 붓기예요, 금방 돌아오면 살이에요"
+      },
+      {
+        "rank": 2,
+        "name": "종일 앉아 있던 날의 저녁 붓기",
+        "card_name": "종일 앉아 있던 날의 저녁 붓기",
+        "reason": "오래 앉아 있으면 다리 피가 위로 못 올라와서 저녁에 붓는 건 자연스러워요, 다리를 심장보다 높여 두면 빠져요",
+        "card_reason": "오래 앉은 날 저녁 붓기는 흔해요, 다리를 높여 두면 빠져요"
+      },
+      {
+        "rank": 3,
+        "name": "한쪽만 붓고 아프면 바로",
+        "card_name": "한쪽만 붓고 아프면 바로",
+        "reason": "한쪽 다리만 갑자기 붓고 아프면 핏줄이 막혔을 수 있어요, 하루 이틀 기다리지 말고 병원부터 가요",
+        "card_reason": "핏줄이 막혔을 수 있어요, 기다리지 말고 병원부터 가요"
+      },
+      {
+        "rank": 4,
+        "name": "아침까지 안 빠지는 붓기",
+        "card_name": "아침까지 안 빠지는 붓기",
+        "reason": "자고 일어나도 그대로면 생활 탓이 아니에요, 콩팥이나 심장 쪽을 봐야 하니 진료를 받아요",
+        "card_reason": "자고 나도 그대로면 생활 탓이 아니라서 진료가 필요해요"
+      },
+      {
+        "rank": 5,
+        "name": "짠 저녁 먹은 다음 날 아침",
+        "card_name": "짠 저녁 먹은 다음 날 아침",
+        "reason": "짜게 먹은 다음 날은 얼굴까지 부어요, 국물 반 그릇만 줄여도 다음 날 아침이 달라요",
+        "card_reason": "짜게 먹은 다음 날은 얼굴까지 부어요, 국물 반 그릇부터 줄여요"
+      }
+    ],
+    "video_script": "붓기는 눌러 보면 절반은 알 수 있어요.",
+    "tags": ["건강정보", "시니어건강", "몸신호"],
+    "bgm_prompt": "bright calm piano with soft strings, caring evening check mood"
+  }
+}

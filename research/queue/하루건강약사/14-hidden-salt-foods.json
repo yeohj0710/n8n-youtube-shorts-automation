@@ -1,0 +1,55 @@
+{
+  "title": "짠맛이 안 나는데 소금 많은 음식 5",
+  "lane": "food_nutrition_table",
+  "notes": "국물만 줄여서는 소금이 안 준다. 짠맛이 가려진 음식이 따로 있다.",
+  "topic_key": "hidden_salt_foods",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "nutrition_food_choices",
+    "topic_key": "hidden_salt_foods",
+    "hook_title": "짠맛이 안 나는데 소금 많은 음식 5",
+    "subtitle": "국물만 줄여서는 소금이 안 줄어요",
+    "visual_profile": "market_receipt",
+    "visual_mood_hint": "장바구니에서 꺼낸 식빵, 국수, 어묵, 치즈, 시리얼이 나무 식탁에 놓인 장면, 따뜻한 오후 빛, 베이지와 주황 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "식빵",
+        "card_name": "식빵",
+        "reason": "빵 반죽에는 소금이 꽤 들어가는데 단맛과 고소한 맛에 가려서 짠 줄 모르고 먹어요",
+        "card_reason": "반죽에 소금이 꽤 들어가는데 단맛에 가려서 모르고 먹어요"
+      },
+      {
+        "rank": 2,
+        "name": "국수와 칼국수 면",
+        "card_name": "국수·칼국수 면",
+        "reason": "면은 반죽할 때부터 소금으로 치대요, 국물 탓만 했는데 면 자체가 짠 편이에요",
+        "card_reason": "면은 소금으로 치대서 뽑아요, 국물 탓만 할 게 아니에요"
+      },
+      {
+        "rank": 3,
+        "name": "어묵과 맛살",
+        "card_name": "어묵과 맛살",
+        "reason": "생선살을 뭉치려면 소금이 필요해서 슴슴해 보여도 짠 편이에요, 끓는 물에 한 번 데치면 좀 빠져요",
+        "card_reason": "생선살을 뭉치는 데 소금이 들어가요, 데치면 좀 빠져요"
+      },
+      {
+        "rank": 4,
+        "name": "치즈",
+        "card_name": "치즈",
+        "reason": "우유로 만들지만 굳히고 보관하는 과정에 소금이 들어가서 짠 음식으로 쳐야 해요",
+        "card_reason": "우유로 만들어도 굳히고 보관하는 데 소금이 들어가요"
+      },
+      {
+        "rank": 5,
+        "name": "아침 시리얼",
+        "card_name": "아침 시리얼",
+        "reason": "단 과자인 줄 알지만 소금도 같이 들어 있어요, 뒷면에서 나트륨 줄을 한번 봐요",
+        "card_reason": "단맛 뒤에 소금이 같이 들어 있어요, 뒷면을 한번 봐요"
+      }
+    ],
+    "video_script": "짠맛이 안 나는 소금이 더 무서워요.",
+    "tags": ["건강정보", "시니어건강", "식품상식"],
+    "bgm_prompt": "bright playful piano and light strings, cheerful market stroll mood"
+  }
+}

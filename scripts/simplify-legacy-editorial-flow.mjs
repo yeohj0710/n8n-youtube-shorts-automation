@@ -12,6 +12,12 @@ function footerSafeZoneLine(box) {
   return `SUBSCRIBE_FOOTER_V2: render the supplied Korean footer subscribe line exactly once, as one compact footer block inside the critical-content box below the last row. Use at most two centered lines, keep its bottom edge at or above y ${box.bottom}, and never place any part of it in the bottom UI band. Keep it smaller than card_reason text and quieter in color so it reads as a gentle sign-off, not a banner. Copy it verbatim; never invent a different subscribe or follow request.`;
 }
 
+// 건강장수비결은 카드에 CTA를 찍지 않는다(2026-08-05 사용자 지시). 지시문이 아예
+// 없으면 모델이 빈 하단을 채우려고 구독 문구를 지어내는 일이 있어, 금지를 명시한다.
+function noFooterSafeZoneLine() {
+  return 'NO_FOOTER_V1: this card has no footer, subscribe, or follow line of any kind. The last ranked row is the final text on the card; keep everything below it as background only. Never invent a subscribe, follow, handle, or closing request, even if the space looks empty.';
+}
+
 const root = 'C:/dev/n8n-youtube-shorts-automation';
 const dbPath = path.join(root, '.n8n', 'database.sqlite');
 const targets = [
@@ -1071,7 +1077,7 @@ const eligibleContentLanes = contentLanes.filter((lane) => channelAllowedLaneIds
   return code;
 }
 
-function patchPrepare(code) {
+function patchPrepare(code, target) {
   if (code.includes('if (queuedSpecForPack) {')) {
     code = replaceBetween(
       code,
@@ -1282,7 +1288,11 @@ const bgm_payload = {
   // 숫자를 손으로 쓰면 렌더 단계의 강제 좌표와 조용히 어긋난다.
   const safeZoneBlock = `${shortsSafeZoneInstructionSource({
     joiner: 'LF',
-    extraLines: [footerSafeZoneLine(SAFE_ZONE_BOX)],
+    extraLines: [
+      target.profile.id === 'haru_health_literacy'
+        ? footerSafeZoneLine(SAFE_ZONE_BOX)
+        : noFooterSafeZoneLine(),
+    ],
   })}
 
 const posterReadabilityInstruction = [
@@ -1350,26 +1360,29 @@ const posterReadabilityInstruction = [
   // SUBSCRIBE_FOOTER_V2 copy: a small value-first subscribe line protected by
   // the shared Shorts safe area. It names what the viewer gets every day and frames the
   // subscription as the way not to miss tomorrow's — never a bare demand.
+  // 건강장수비결은 카드에 CTA를 찍지 않는다(2026-08-05): 문구 상수도, FOOTER 줄도
+  // 아예 넣지 않는다. 빈 문자열로 두면 프롬프트에 "FOOTER: " 꼬리가 남아 모델이
+  // 알아서 채우는 사고가 나기 때문에 줄 자체를 지운다.
   // Strip any previous injection first so re-runs stay idempotent.
   code = code.replace(/\/\/ subscribe_footer_copy_v1\n[\s\S]*?\n\/\/ subscribe_footer_copy_end\n/g, '');
-  code = replaceRequired(
-    code,
-    'const visibleText = [',
-    `// subscribe_footer_copy_v1
-const subscribeCta = cfg.channel_editorial_profile === 'haru_health_literacy'
-  ? '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요'
-  : '건강하게 나이 드는 습관을 매일 하나씩 전해 드려요. 구독해 두시면 놓치지 않고 받아보실 수 있어요';
+  code = code.replace(/  'FOOTER SUBSCRIBE LINE[^\n]*\n/g, '');
+  if (target.profile.id === 'haru_health_literacy') {
+    code = replaceRequired(
+      code,
+      'const visibleText = [',
+      `// subscribe_footer_copy_v1
+const subscribeCta = '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요';
 // subscribe_footer_copy_end
 const visibleText = [`,
-    'prepare: subscribe footer copy',
-  );
-  code = code.replace(/  'FOOTER SUBSCRIBE LINE[^\n]*\n/g, '');
-  code = replaceRequired(
-    code,
-    "  imageRows,\n].filter(Boolean).join(LF);",
-    "  imageRows,\n  'FOOTER SUBSCRIBE LINE, small, safe-area footer only: ' + subscribeCta,\n].filter(Boolean).join(LF);",
-    'prepare: subscribe footer in visible text',
-  );
+      'prepare: subscribe footer copy',
+    );
+    code = replaceRequired(
+      code,
+      "  imageRows,\n].filter(Boolean).join(LF);",
+      "  imageRows,\n  'FOOTER SUBSCRIBE LINE, small, safe-area footer only: ' + subscribeCta,\n].filter(Boolean).join(LF);",
+      'prepare: subscribe footer in visible text',
+    );
+  }
   // NO_CARD_SUBTITLE_V1 (2026-08-04 사용자 지시): 카드에 부제를 찍지 않는다.
   // 제목 바로 밑의 부제는 제목을 바꿔 말하는 데 그치는 경우가 많았고, 그 한 줄이
   // 차지하던 세로 공간이 정작 필요한 행 설명을 짧게 눌렀다. 부제 필드는 그대로 두고
@@ -1606,7 +1619,7 @@ function patchWorkflow(workflow, target) {
   load.parameters.jsCode = patchLoadConfig(load.parameters.jsCode, target);
   build.parameters.jsCode = patchBuild(build.parameters.jsCode, target);
   parse.parameters.jsCode = patchParse(parse.parameters.jsCode);
-  prepare.parameters.jsCode = patchPrepare(prepare.parameters.jsCode);
+  prepare.parameters.jsCode = patchPrepare(prepare.parameters.jsCode, target);
   mock.parameters.jsCode = patchPreparedCardPackPassthrough(patchFallbackTone(mock.parameters.jsCode), target);
   final.parameters.jsCode = patchFinalResultConsumeGate(patchFinalResult(final.parameters.jsCode, target), target);
   const attach = workflow.nodes.find((node) => node.name === 'Attach Downloaded MP4');

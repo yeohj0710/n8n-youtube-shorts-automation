@@ -22,9 +22,23 @@ function normalized(value) {
   return JSON.parse(text);
 }
 
+// 카드 하단 CTA는 채널 소유다(2026-08-05): 하루건강약사만 팔로우 푸터를 찍고
+// 건강장수비결은 카드에 CTA를 넣지 않는다. 푸터 관련 조각만 걷어내고 나머지는
+// 그대로 비교해서, 이 차이 뒤에 다른 드리프트가 숨지 못하게 한다.
+function stripChannelFooter(code) {
+  return String(code)
+    .replace(/\/\/ subscribe_footer_copy_v1\n[\s\S]*?\n\/\/ subscribe_footer_copy_end\n/g, '')
+    .replace(/^.*'FOOTER SUBSCRIBE LINE[^\n]*\n/gm, '')
+    .replace(/^.*SUBSCRIBE_FOOTER_V2[^\n]*$/gm, 'CHANNEL_FOOTER_CONTRACT')
+    .replace(/^.*NO_FOOTER_V1[^\n]*$/gm, 'CHANNEL_FOOTER_CONTRACT');
+}
+
 function comparableNode(node) {
   const copy = structuredClone(node);
   for (const key of ['id', 'position', 'credentials', 'webhookId']) delete copy[key];
+  if (copy.name === 'Prepare Image and BGM Payloads' && copy.parameters?.jsCode) {
+    copy.parameters.jsCode = stripChannelFooter(copy.parameters.jsCode);
+  }
   return normalized(copy);
 }
 

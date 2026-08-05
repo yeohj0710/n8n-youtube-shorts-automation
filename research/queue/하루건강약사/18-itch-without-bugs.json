@@ -1,0 +1,55 @@
+{
+  "title": "벌레 없는데 자꾸 가렵다면 샤워부터 봐요 5",
+  "lane": "body_signal_selfcheck",
+  "notes": "나이 들며 생기는 마른 가려움의 흔한 원인은 씻는 습관에 있다.",
+  "topic_key": "itch_without_bugs",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "skin_vitality",
+    "topic_key": "itch_without_bugs",
+    "hook_title": "벌레 없는데 자꾸 가렵다면 샤워부터 봐요 5",
+    "subtitle": "긁기 전에 물 온도부터 낮추는 게 순서예요",
+    "visual_profile": "sleep_night",
+    "visual_mood_hint": "저녁 욕실 앞 김 서린 거울과 수건, 보습제 통이 선반에 놓인 장면, 차분한 남색과 크림색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "뜨거운 물로 오래 씻는 습관",
+        "card_name": "뜨거운 물로 오래 씻는 습관",
+        "reason": "뜨거운 물은 피부 기름막을 벗겨 가는데 나이 들수록 그 막을 다시 만드는 힘이 약해서 더 가려워요",
+        "card_reason": "뜨거운 물이 피부 기름막을 벗겨 가요, 미지근하게 짧게 씻어요"
+      },
+      {
+        "rank": 2,
+        "name": "때밀이 수건",
+        "card_name": "때밀이 수건",
+        "reason": "때를 밀수록 가려움을 막아 주던 겉껍질까지 같이 밀려 나가서 며칠 뒤 더 가려워요",
+        "card_reason": "가려움을 막던 겉껍질까지 밀려 나가서 며칠 뒤 더 가려워요"
+      },
+      {
+        "rank": 3,
+        "name": "다 마른 뒤에 바르는 보습제",
+        "card_name": "다 마른 뒤에 바르는 보습제",
+        "reason": "보습제는 물기가 살짝 남았을 때 발라야 그 물기를 잡아 둬요, 다 마른 뒤엔 절반만 일해요",
+        "card_reason": "물기가 살짝 남았을 때 발라야 물기를 피부에 가둬요"
+      },
+      {
+        "rank": 4,
+        "name": "헹굼이 모자란 이불 빨래",
+        "card_name": "헹굼이 모자란 이불 빨래",
+        "reason": "세제가 덜 헹궈진 이불은 밤새 살에 닿아요, 밤에만 가렵다면 헹굼을 한 번 더 돌려 봐요",
+        "card_reason": "밤에만 가렵다면 이불 세제 탓일 수 있어요, 헹굼을 한 번 더 해요"
+      },
+      {
+        "rank": 5,
+        "name": "에어컨 바람 밑 낮잠",
+        "card_name": "에어컨 바람 밑 낮잠",
+        "reason": "에어컨은 방 공기와 함께 피부 물기도 걷어 가요, 여름 가려움은 건조 탓인 경우가 많아요",
+        "card_reason": "에어컨이 피부 물기까지 걷어 가서 여름에도 살이 말라요"
+      }
+    ],
+    "video_script": "가려움은 긁는 게 아니라 씻는 법부터 고쳐요.",
+    "tags": ["건강정보", "시니어건강", "피부관리"],
+    "bgm_prompt": "soft bright piano with warm strings, calm evening care mood, gently uplifting"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "title": "약 먹을 때 같이 마시면 안 되는 것 5",
+  "lane": "daily_health_lifestyle",
+  "notes": "약을 무엇으로 넘기느냐에 따라 약효가 세지거나 깎인다. 물이 제일 안전하다.",
+  "topic_key": "pill_wrong_drinks",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "medicine_literacy",
+    "topic_key": "pill_wrong_drinks",
+    "hook_title": "약 먹을 때 같이 마시면 안 되는 것 5",
+    "subtitle": "약은 맹물 한 컵으로 넘기는 게 제일 안전해요",
+    "visual_profile": "clinic_checklist",
+    "visual_mood_hint": "식탁 위에 물 한 컵과 약봉지, 그 옆에 주스잔과 커피잔이 살짝 밀려나 있는 장면, 맑은 아침 빛, 크림색과 파란색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "자몽주스",
+        "card_name": "자몽주스",
+        "reason": "자몽 성분이 약 분해를 막아서 혈압약이나 고지혈증약이 몸에 너무 오래 남아요",
+        "card_reason": "자몽 성분이 약 분해를 막아서 혈압약 약효가 너무 세져요"
+      },
+      {
+        "rank": 2,
+        "name": "우유",
+        "card_name": "우유",
+        "reason": "변비약 겉 코팅은 장까지 가서 녹아야 하는데 우유가 위에서 미리 녹여 속이 쓰려요",
+        "card_reason": "변비약 코팅을 위에서 미리 녹여 버려서 장에 닿기 전에 속이 쓰려요"
+      },
+      {
+        "rank": 3,
+        "name": "커피",
+        "card_name": "커피",
+        "reason": "종합감기약에는 카페인이 이미 들어 있어서 커피가 겹치면 가슴이 두근거려요",
+        "card_reason": "종합감기약에 든 카페인과 겹쳐서 가슴이 두근거리고 잠이 달아나요"
+      },
+      {
+        "rank": 4,
+        "name": "진한 녹차와 홍차",
+        "card_name": "진한 녹차·홍차",
+        "reason": "차의 떫은 성분이 철분제를 붙잡아서 마신 만큼 몸에 못 들어가요",
+        "card_reason": "떫은 성분이 철분제를 붙잡아서 먹으나 마나가 돼요"
+      },
+      {
+        "rank": 5,
+        "name": "술",
+        "card_name": "술",
+        "reason": "술 마신 날 진통제까지 들어가면 위장과 간이 한꺼번에 짐을 져요",
+        "card_reason": "술 마신 날 진통제가 들어가면 위장과 간이 한꺼번에 짐을 져요"
+      }
+    ],
+    "video_script": "약은 맹물로 넘기는 게 제일 안전해요.",
+    "tags": ["건강정보", "시니어건강", "약상식"],
+    "bgm_prompt": "bright tidy piano with soft bells, clean and reassuring pharmacy mood"
+  }
+}

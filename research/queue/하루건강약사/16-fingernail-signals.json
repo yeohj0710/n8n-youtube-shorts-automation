@@ -1,0 +1,55 @@
+{
+  "title": "손톱 하얀 점은 칼슘 부족이 아니에요 5",
+  "lane": "body_signal_selfcheck",
+  "notes": "손톱에 관한 흔한 오해를 바로잡고, 진짜 봐야 할 모양을 알려 준다.",
+  "topic_key": "fingernail_signals",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "body_signals",
+    "topic_key": "fingernail_signals",
+    "hook_title": "손톱 하얀 점은 칼슘 부족이 아니에요 5",
+    "subtitle": "손톱은 지나간 몇 달의 건강 기록이에요",
+    "visual_profile": "wellness_dashboard",
+    "visual_mood_hint": "밝은 창가에서 손톱을 살펴보는 손, 옆에 돋보기, 깨끗한 흰 배경과 살구색 팔레트, 부드러운 아침 빛",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "하얀 점은 부딪힌 자국",
+        "card_name": "하얀 점은 부딪힌 자국",
+        "reason": "칼슘이 모자라서가 아니라 손톱 뿌리를 살짝 부딪힌 자국이 자라 나온 게 대부분이에요",
+        "card_reason": "칼슘 문제가 아니라 손톱 뿌리를 부딪힌 자국이 자라 나온 거예요"
+      },
+      {
+        "rank": 2,
+        "name": "세로 줄무늬는 나이 따라",
+        "card_name": "세로 줄무늬는 나이 따라",
+        "reason": "세로로 가늘게 서는 줄은 피부 주름처럼 나이 들며 생기는 무늬라 걱정할 일이 아니에요",
+        "card_reason": "피부 주름처럼 나이 들며 생기는 무늬라 병이 아니에요"
+      },
+      {
+        "rank": 3,
+        "name": "가로로 팬 골은 아팠던 흔적",
+        "card_name": "가로로 팬 골은 아팠던 흔적",
+        "reason": "몸살이나 수술로 몸이 크게 힘들면 손톱이 잠깐 덜 자라요, 그때 팬 골이 몇 달 뒤에 올라와요",
+        "card_reason": "크게 아팠던 시기에 손톱이 덜 자란 자국이 몇 달 뒤 올라온 거예요"
+      },
+      {
+        "rank": 4,
+        "name": "숟가락처럼 오목하면 철분",
+        "card_name": "숟가락처럼 오목하면 철분",
+        "reason": "손톱 가운데가 숟가락처럼 파이면 빈혈과 같이 오는 모양이라 철분 상태를 봐야 해요",
+        "card_reason": "가운데가 파이는 모양은 빈혈과 같이 와요, 철분부터 봐요"
+      },
+      {
+        "rank": 5,
+        "name": "두꺼워지고 부서지면 무좀",
+        "card_name": "두꺼워지고 부서지면 무좀",
+        "reason": "무좀은 발톱에만 오는 게 아니에요, 손톱이 두꺼워지고 부스러지면 약국 말고 병원에서 확인해요",
+        "card_reason": "무좀은 손톱에도 와요, 두꺼워지고 부스러지면 확인이 필요해요"
+      }
+    ],
+    "video_script": "손톱은 몇 달 전 건강까지 기록해요.",
+    "tags": ["건강정보", "시니어건강", "몸신호"],
+    "bgm_prompt": "bright curious piano with soft strings, gentle discovery mood"
+  }
+}

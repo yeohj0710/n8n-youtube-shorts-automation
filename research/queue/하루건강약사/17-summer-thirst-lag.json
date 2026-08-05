@@ -1,0 +1,55 @@
+{
+  "title": "나이 들수록 목마름이 늦게 와요, 여름 물 부족 신호 5",
+  "lane": "body_signal_selfcheck",
+  "notes": "나이 들면 갈증 감각이 무뎌진다. 목마름 대신 봐야 할 신호를 알려 준다.",
+  "topic_key": "summer_thirst_lag",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "body_signals",
+    "topic_key": "summer_thirst_lag",
+    "hook_title": "나이 들수록 목마름이 늦게 와요, 여름 물 부족 신호 5",
+    "subtitle": "여름엔 목이 안 말라도 시간 맞춰 마셔야 해요",
+    "visual_profile": "morning_light",
+    "visual_mood_hint": "햇빛 드는 마루에 물주전자와 유리컵, 선풍기가 도는 여름 낮 풍경, 시원한 하늘색과 흰색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "목마름 감각부터 무뎌져요",
+        "card_name": "목마름 감각부터 무뎌져요",
+        "reason": "나이 들면 몸에 물이 모자라도 갈증을 늦게 느껴요, 목이 말라야 마시는 습관이면 여름엔 늘 모자라요",
+        "card_reason": "몸에 물이 모자라도 갈증이 늦게 와요, 목마름만 믿으면 안 돼요"
+      },
+      {
+        "rank": 2,
+        "name": "낮 소변 색이 진해져요",
+        "card_name": "낮 소변 색이 진해져요",
+        "reason": "아침 첫 소변은 원래 진하니까 낮 소변으로 봐야 맞아요, 보리차색보다 진하면 물이 모자란 거예요",
+        "card_reason": "아침 말고 낮 소변으로 봐요, 보리차색보다 진하면 모자란 거예요"
+      },
+      {
+        "rank": 3,
+        "name": "일어설 때 어질해요",
+        "card_name": "일어설 때 어질해요",
+        "reason": "몸에 물이 줄면 핏줄 속도 줄어서 앉았다 일어날 때 핑 돌아요, 더운 날은 그늘보다 물이 먼저예요",
+        "card_reason": "몸에 물이 줄면 앉았다 일어날 때 핑 돌아요"
+      },
+      {
+        "rank": 4,
+        "name": "입이 마르고 침이 끈적해요",
+        "card_name": "입이 마르고 침이 끈적해요",
+        "reason": "침이 줄어 끈적해지고 틀니가 헛도는 날은 입 문제가 아니라 물 부족 신호이기도 해요",
+        "card_reason": "침이 끈적해지고 틀니가 헛도는 날은 물 부족 신호이기도 해요"
+      },
+      {
+        "rank": 5,
+        "name": "커피와 맥주는 물이 아니에요",
+        "card_name": "커피와 맥주는 물이 아니에요",
+        "reason": "커피와 술은 마신 만큼 소변으로 도로 내보내서 물 마신 셈을 치면 안 돼요",
+        "card_reason": "마신 만큼 소변으로 도로 나가서 물 마신 셈이 안 돼요"
+      }
+    ],
+    "video_script": "여름 물은 목마르기 전에 마셔요.",
+    "tags": ["건강정보", "시니어건강", "여름건강"],
+    "bgm_prompt": "sunny light piano with gentle guitar, refreshing summer morning mood"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "title": "싱거운 맛도 보름이면 입에 붙어요 5",
+  "lane": "food_nutrition_table",
+  "notes": "혀는 보름이면 새 간에 적응한다. 참는 게 아니라 갈아타는 방법.",
+  "topic_key": "salt_taste_reset_two_weeks",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "cardiometabolic",
+    "topic_key": "salt_taste_reset_two_weeks",
+    "hook_title": "싱거운 맛도 보름이면 입에 붙어요 5",
+    "subtitle": "소금 줄이기는 참기가 아니라 갈아타기예요",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "아침 식탁에 맑은 국과 나물 반찬, 옆으로 밀어 둔 소금통과 간장 종지, 밝은 흰색과 초록 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "혀는 보름이면 적응해요",
+        "card_name": "혀는 보름이면 적응해요",
+        "reason": "싱겁게 먹기 시작하면 처음 사흘이 제일 힘들고 보름쯤 지나면 예전 국이 오히려 짜게 느껴져요",
+        "card_reason": "처음 사흘이 고비예요, 보름 지나면 예전 국이 짜게 느껴져요"
+      },
+      {
+        "rank": 2,
+        "name": "소금 말고 국물을 줄여요",
+        "card_name": "소금 말고 국물을 줄여요",
+        "reason": "간을 줄이면 맛이 없어서 오래 못 가요, 간은 그대로 두고 국물을 남기고 건더기 위주로 먹는 게 지키기 쉬워요",
+        "card_reason": "간은 그대로, 국물만 남기고 건더기를 먹는 쪽이 오래가요"
+      },
+      {
+        "rank": 3,
+        "name": "식탁에서 소금통을 치워요",
+        "card_name": "식탁에서 소금통을 치워요",
+        "reason": "소금통과 간장 종지가 손 닿는 자리에 있으면 습관처럼 쳐요, 자리만 옮겨도 손이 덜 가요",
+        "card_reason": "손 닿는 자리에 있으니 치는 거예요, 자리만 옮겨도 줄어요"
+      },
+      {
+        "rank": 4,
+        "name": "짠맛 자리를 신맛과 향으로",
+        "card_name": "짠맛 자리를 신맛과 향으로",
+        "reason": "심심한 맛은 식초와 레몬, 후추, 참기름이 채워 줘요, 나물 무칠 때 간장 대신 식초를 한 술 넣어 봐요",
+        "card_reason": "식초·레몬·후추·참기름이 심심한 맛을 채워 줘요"
+      },
+      {
+        "rank": 5,
+        "name": "반찬 하나 바꾸는 게 제일 빨라요",
+        "card_name": "반찬 하나 바꾸는 게 제일 빨라요",
+        "reason": "햄과 라면, 어묵에 든 소금이 국만큼 많아요, 가공식품 하나를 빼는 게 국 참는 것보다 쉬워요",
+        "card_reason": "햄·라면·어묵에 든 소금이 국만큼 많아요, 하나만 빼도 커요"
+      }
+    ],
+    "video_script": "소금 줄이기는 보름짜리 갈아타기예요.",
+    "tags": ["건강정보", "시니어건강", "혈압관리"],
+    "bgm_prompt": "bright clean piano with light strings, fresh healthy kitchen mood"
+  }
+}

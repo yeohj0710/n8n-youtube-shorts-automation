@@ -1,0 +1,55 @@
+{
+  "title": "손 안 짚고 의자에서 일어나 보세요, 다리 힘 신호 5",
+  "lane": "movement_mobility_longevity",
+  "notes": "다리 힘이 줄면 큰 사고 전에 생활 동작에서 먼저 보인다. 집에서 해 보는 확인법.",
+  "topic_key": "chair_stand_leg_checks",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "strength_walking",
+    "topic_key": "chair_stand_leg_checks",
+    "hook_title": "손 안 짚고 의자에서 일어나 보세요, 다리 힘 신호 5",
+    "subtitle": "운동을 시작하기 전에 지금 힘부터 재 봐요",
+    "visual_profile": "wellness_dashboard",
+    "visual_mood_hint": "밝은 거실에서 식탁 의자에서 일어나는 모습, 옆에 지팡이 대신 창밖 산책로가 보이는 장면, 초록과 크림색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "손 안 짚고 의자에서 일어나기",
+        "card_name": "손 안 짚고 의자에서 일어나기",
+        "reason": "팔걸이를 안 잡고 한 번에 일어나면 아직 든든한 거예요, 손부터 나가면 허벅지 힘이 줄고 있는 거예요",
+        "card_reason": "손부터 짚게 바뀌었다면 허벅지 힘이 줄고 있다는 신호예요"
+      },
+      {
+        "rank": 2,
+        "name": "양치하며 한 발로 서 보기",
+        "card_name": "양치하며 한 발로 서 보기",
+        "reason": "양치하는 동안 한 발을 살짝 들어 봐요, 자꾸 바닥에 발이 닿으면 균형부터 무너지는 중이에요",
+        "card_reason": "든 발이 자꾸 바닥에 닿으면 균형부터 무너지는 중이에요"
+      },
+      {
+        "rank": 3,
+        "name": "초록불에 마음이 급해질 때",
+        "card_name": "초록불에 마음이 급해질 때",
+        "reason": "예전엔 여유 있던 건널목이 빠듯해졌다면 걸음 속도와 보폭이 줄었다는 뜻이에요",
+        "card_reason": "건널목이 빠듯해졌다면 걸음과 보폭이 줄었다는 뜻이에요"
+      },
+      {
+        "rank": 4,
+        "name": "양말을 앉아서 신게 될 때",
+        "card_name": "양말을 앉아서 신게 될 때",
+        "reason": "서서 신던 양말을 어느새 앉아서 신고 있다면 균형과 다리 힘이 함께 준 거예요",
+        "card_reason": "서서 신던 양말을 앉아 신기 시작한 때가 바로 신호예요"
+      },
+      {
+        "rank": 5,
+        "name": "내리막이 무서워질 때",
+        "card_name": "내리막이 무서워질 때",
+        "reason": "오르막보다 내리막이 무서워지면 몸을 받쳐 주는 허벅지 앞 근육부터 줄고 있는 거예요",
+        "card_reason": "내리막 무서움은 몸을 받치는 허벅지 앞 근육이 준 신호예요"
+      }
+    ],
+    "video_script": "다리 힘은 사고 전에 미리 신호를 줘요.",
+    "tags": ["건강정보", "시니어건강", "근력"],
+    "bgm_prompt": "bright hopeful piano and light guitar, encouraging daily practice mood"
+  }
+}

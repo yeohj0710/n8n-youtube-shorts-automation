@@ -1,0 +1,55 @@
+{
+  "title": "점심 커피가 밤까지 남는 사람이 있어요 5",
+  "lane": "sleep_energy_recovery",
+  "notes": "카페인이 몸에서 빠지는 속도는 나이 들수록 느려진다. 끊지 말고 시간을 당기라는 이야기.",
+  "topic_key": "caffeine_lingers_all_day",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "sleep_recovery_science",
+    "topic_key": "caffeine_lingers_all_day",
+    "hook_title": "점심 커피가 밤까지 남는 사람이 있어요 5",
+    "subtitle": "커피를 끊지 말고 마지막 잔 시간만 당겨 봐요",
+    "visual_profile": "sleep_night",
+    "visual_mood_hint": "저녁 창가 탁자에 낮에 마시다 남긴 커피잔과 벽시계, 은은한 남색 밤 분위기, 따뜻한 스탠드 불빛",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "커피 기운은 반나절을 가요",
+        "card_name": "커피 기운은 반나절을 가요",
+        "reason": "카페인이 몸에서 반으로 줄어드는 데만 한나절 가까이 걸려서 점심 커피가 밤에도 남아 있어요",
+        "card_reason": "반으로 줄어드는 데만 한나절이라 점심 커피가 밤에도 남아요"
+      },
+      {
+        "rank": 2,
+        "name": "나이 들수록 더 오래 남아요",
+        "card_name": "나이 들수록 더 오래 남아요",
+        "reason": "몸이 카페인을 치우는 속도가 나이 들수록 느려져요, 같은 양인데 잠이 예전과 다른 이유예요",
+        "card_reason": "몸이 카페인을 치우는 속도가 느려져요, 같은 양인데 잠이 달라져요"
+      },
+      {
+        "rank": 3,
+        "name": "디카페인에도 조금은 있어요",
+        "card_name": "디카페인에도 조금은 있어요",
+        "reason": "카페인을 뺐다고 해도 조금은 남아 있어서 저녁에 여러 잔 마시면 없는 셈이 아니에요",
+        "card_reason": "아주 없는 게 아니라서 저녁에 여러 잔이면 티가 나요"
+      },
+      {
+        "rank": 4,
+        "name": "커피 말고도 숨어 있어요",
+        "card_name": "커피 말고도 숨어 있어요",
+        "reason": "초콜릿과 콜라, 피로 푸는 드링크에도 카페인이 들어 있어서 커피만 줄여서는 모자라요",
+        "card_reason": "초콜릿과 콜라, 피로 푸는 드링크에도 들어 있어요"
+      },
+      {
+        "rank": 5,
+        "name": "마지막 잔을 점심 전으로",
+        "card_name": "마지막 잔을 점심 전으로",
+        "reason": "잠이 얕아졌다면 커피를 끊기보다 마지막 잔을 점심 전으로 당기는 쪽이 지키기 쉬워요",
+        "card_reason": "끊는 것보다 마지막 잔을 당기는 쪽이 지키기 쉬워요"
+      }
+    ],
+    "video_script": "커피는 생각보다 오래 몸에 남아요.",
+    "tags": ["건강정보", "시니어건강", "수면"],
+    "bgm_prompt": "gentle bright piano with quiet strings, calm night wind-down mood, softly cheerful"
+  }
+}

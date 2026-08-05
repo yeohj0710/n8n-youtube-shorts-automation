@@ -1,0 +1,55 @@
+{
+  "title": "따로 먹으면 아까운 음식 궁합 5",
+  "lane": "food_nutrition_table",
+  "notes": "곁들이는 것 하나로 흡수가 달라지는 검증된 조합만 모았다.",
+  "topic_key": "food_pairs_that_help",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "nutrition_food_choices",
+    "topic_key": "food_pairs_that_help",
+    "hook_title": "따로 먹으면 아까운 음식 궁합 5",
+    "subtitle": "한 가지만 곁들여도 몸에 남는 양이 달라져요",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "나무 식탁에 시금치나물과 참기름병, 토마토 볶음, 콩자반과 쌀밥이 짝지어 놓인 장면, 따뜻한 저녁 빛, 초록과 빨강 포인트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "시금치나물엔 참기름",
+        "card_name": "시금치나물엔 참기름",
+        "reason": "나물의 좋은 성분 중엔 기름에 녹아야 몸에 들어오는 것들이 있어서 참기름 한 바퀴가 제 몫을 해요",
+        "card_reason": "나물의 좋은 성분은 기름에 녹아야 몸에 들어와요"
+      },
+      {
+        "rank": 2,
+        "name": "토마토는 익혀서 기름과",
+        "card_name": "토마토는 익혀서 기름과",
+        "reason": "토마토의 빨간 성분은 생으로 먹을 때보다 기름에 살짝 익혔을 때 훨씬 잘 나와요",
+        "card_reason": "빨간 성분은 기름에 살짝 익혀야 훨씬 잘 나와요"
+      },
+      {
+        "rank": 3,
+        "name": "콩자반과 쌀밥",
+        "card_name": "콩자반과 쌀밥",
+        "reason": "콩과 쌀은 서로 모자란 단백질 조각을 채워 줘서 같이 먹으면 고기 한 점 몫을 해요",
+        "card_reason": "콩과 쌀은 서로 모자란 단백질 조각을 채워 줘요"
+      },
+      {
+        "rank": 4,
+        "name": "돼지고기엔 양파",
+        "card_name": "돼지고기엔 양파",
+        "reason": "양파 매운 성분이 돼지고기의 피로 푸는 비타민을 몸에 오래 잡아 둬요",
+        "card_reason": "양파가 돼지고기의 피로 푸는 비타민을 오래 잡아 둬요"
+      },
+      {
+        "rank": 5,
+        "name": "카레엔 후추 한 꼬집",
+        "card_name": "카레엔 후추 한 꼬집",
+        "reason": "카레의 노란 성분은 그냥 먹으면 잘 안 들어오는데 후추가 있으면 흡수가 크게 늘어요",
+        "card_reason": "노란 성분은 후추가 있어야 몸에 제대로 들어와요"
+      }
+    ],
+    "video_script": "같이 먹어야 제값 하는 음식들이 있어요.",
+    "tags": ["건강정보", "시니어건강", "음식궁합"],
+    "bgm_prompt": "warm cheerful acoustic guitar with bright piano, cozy dinner table mood"
+  }
+}

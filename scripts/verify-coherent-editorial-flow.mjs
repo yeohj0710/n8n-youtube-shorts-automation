@@ -254,12 +254,20 @@ for (const relativePath of workflowFiles) {
   assert.match(prepare, /VERTICAL_FILL_V2/, `${relativePath}: bottom-fill contract missing, cards will compress upward or clip again`);
   assert.match(prepare, /BAND_BACKGROUND_V1/, `${relativePath}: reserved bands would render as blank strips without the background-continuation contract`);
   assert.match(prepare, /GLYPH_INTEGRITY_V1/, `${relativePath}: minimum glyph size contract missing, small Korean text renders broken`);
-  assert.match(prepare, /SUBSCRIBE_FOOTER_V2/, `${relativePath}: safe-area subscribe footer contract missing`);
-  assert.match(prepare, /footer.*inside the critical-content box/i, `${relativePath}: footer can still fall under Shorts UI`);
+  // 하루건강약사만 카드에 팔로우 CTA를 찍는다. 건강장수비결은 카드에 CTA를 아예
+  // 넣지 않는다(2026-08-05 사용자 지시) — 문구 상수도, FOOTER 줄도, 계약 지시문도 없어야 한다.
+  const cardHasFooter = expected.profile === 'haru_health_literacy';
+  if (cardHasFooter) {
+    assert.match(prepare, /SUBSCRIBE_FOOTER_V2/, `${relativePath}: safe-area subscribe footer contract missing`);
+    assert.match(prepare, /footer.*inside the critical-content box/i, `${relativePath}: footer can still fall under Shorts UI`);
+    assert.match(prepare, /매일 하나씩 전해 드려요. 팔로우해 두시면/, `${relativePath}: dignified value-first subscribe copy missing`);
+  } else {
+    assert.match(prepare, /NO_FOOTER_V1/, `${relativePath}: no-footer contract missing, model may invent a subscribe line`);
+    assert.doesNotMatch(prepare, /SUBSCRIBE_FOOTER_V2/, `${relativePath}: subscribe footer contract remains on a no-CTA channel`);
+    assert.doesNotMatch(prepare, /FOOTER SUBSCRIBE LINE/, `${relativePath}: footer copy line remains on a no-CTA channel`);
+    assert.doesNotMatch(prepare, /구독해 두시면|팔로우해 두시면/, `${relativePath}: subscribe copy remains on a no-CTA channel`);
+  }
   assert.doesNotMatch(prepare, /may sit under feed UI|bottom band only/i, `${relativePath}: legacy obscured-footer instruction remains`);
-  // 하루건강약사는 카드를 인스타에도 올리므로 '팔로우', 유튜브 전용인 건강장수비결은 '구독'.
-  const closingVerb = expected.profile === 'haru_health_literacy' ? '팔로우해' : '구독해';
-  assert.match(prepare, new RegExp(`매일 하나씩 전해 드려요. ${closingVerb} 두시면`), `${relativePath}: dignified value-first subscribe copy missing`);
   assert.match(prepare, /POSTER_READABILITY_V2/, `${relativePath}: generalized poster readability marker missing`);
   assert.match(prepare, /one primary visual region/i, `${relativePath}: image prompt has no frame-level visual budget`);
   assert.match(prepare, /text-first ranked rows/i, `${relativePath}: ranked rows are not constrained to a readable information hierarchy`);
@@ -434,7 +442,12 @@ for (const relativePath of workflowFiles) {
   assert.match(prepared.image_payload.input.prompt, /VERTICAL_FILL_V2/, `${relativePath}: runtime image prompt lost the bottom-fill contract`);
   assert.match(prepared.image_payload.input.prompt, /BAND_BACKGROUND_V1/, `${relativePath}: runtime image prompt lost the band background continuation`);
   assert.match(prepared.image_payload.input.prompt, /GLYPH_INTEGRITY_V1/, `${relativePath}: runtime image prompt lost the glyph-size floor`);
-  assert.match(prepared.image_payload.input.prompt, new RegExp(`FOOTER SUBSCRIBE LINE.*${closingVerb} 두시면`, 's'), `${relativePath}: runtime image prompt lost the subscribe footer copy`);
+  if (cardHasFooter) {
+    assert.match(prepared.image_payload.input.prompt, /FOOTER SUBSCRIBE LINE.*팔로우해 두시면/s, `${relativePath}: runtime image prompt lost the subscribe footer copy`);
+  } else {
+    assert.match(prepared.image_payload.input.prompt, /NO_FOOTER_V1/, `${relativePath}: runtime image prompt lost the no-footer contract`);
+    assert.doesNotMatch(prepared.image_payload.input.prompt, /FOOTER SUBSCRIBE LINE|구독해 두시면|팔로우해 두시면/, `${relativePath}: runtime image prompt still carries subscribe copy on a no-CTA channel`);
+  }
   assert.doesNotMatch(prepared.image_payload.input.prompt, /may sit under feed UI|bottom band only/i, `${relativePath}: runtime image prompt can still hide the footer under UI`);
   assert.match(prepared.image_payload.input.prompt, /largest practical Korean type/i, `${relativePath}: runtime image prompt lost large-type priority`);
   assert.match(prepared.image_payload.input.prompt, new RegExp(expected.channel), `${relativePath}: runtime image prompt lost the channel identity`);

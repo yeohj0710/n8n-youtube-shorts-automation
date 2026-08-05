@@ -1,0 +1,55 @@
+{
+  "title": "나이 들수록 고기를 더 먹어야 해요 5",
+  "lane": "food_nutrition_table",
+  "notes": "나이 들면 고기를 줄여야 한다는 통념을 뒤집는다. 근육은 먹어야 지킨다.",
+  "topic_key": "protein_more_after_fifty",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "longevity_meals",
+    "topic_key": "protein_more_after_fifty",
+    "hook_title": "나이 들수록 고기를 더 먹어야 해요 5",
+    "subtitle": "근육 지키는 밥상은 젊을 때와 반대예요",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "저녁 식탁에 생선구이, 달걀찜, 두부조림, 살코기 반찬이 고루 놓인 장면, 따뜻한 주황 조명, 나무 식탁 질감",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "같은 양을 먹어도 예전만 못해요",
+        "card_name": "같은 양을 먹어도 예전만 못해요",
+        "reason": "나이 든 몸은 같은 고기를 먹어도 근육 만드는 힘이 떨어져요, 그래서 젊을 때보다 더 챙겨야 본전이에요",
+        "card_reason": "근육 만드는 힘이 떨어져서 젊을 때보다 더 먹어야 본전이에요"
+      },
+      {
+        "rank": 2,
+        "name": "아침상이 제일 비어 있어요",
+        "card_name": "아침상이 제일 비어 있어요",
+        "reason": "밥과 국, 김치로 차린 아침엔 단백질이 거의 없어요, 달걀 하나나 두부 반 모부터 올려 봐요",
+        "card_reason": "밥·국·김치 아침엔 단백질이 거의 없어요, 달걀 하나부터 올려요"
+      },
+      {
+        "rank": 3,
+        "name": "이가 시원찮으면 바꿔서라도",
+        "card_name": "이가 시원찮으면 바꿔서라도",
+        "reason": "씹기 힘들다고 고기를 끊으면 다리 힘이 먼저 빠져요, 두부와 생선, 달걀찜으로 바꿔서라도 채워요",
+        "card_reason": "씹기 힘들면 두부·생선·달걀찜으로 바꿔서라도 채워요"
+      },
+      {
+        "rank": 4,
+        "name": "국물보다 건더기예요",
+        "card_name": "국물보다 건더기예요",
+        "reason": "고기 국물에는 단백질이 얼마 안 녹아 나와요, 국 한 그릇보다 살코기 몇 점이 나아요",
+        "card_reason": "국물엔 단백질이 얼마 안 녹아요, 건더기를 건져 먹어야 해요"
+      },
+      {
+        "rank": 5,
+        "name": "콩과 두유도 한몫해요",
+        "card_name": "콩과 두유도 한몫해요",
+        "reason": "콩자반과 두유도 단백질이라 고기와 번갈아 놓으면 물리지 않고 오래 이어 가요",
+        "card_reason": "콩자반과 두유도 단백질이에요, 고기와 번갈아 놓으면 안 물려요"
+      }
+    ],
+    "video_script": "근육은 예순부터 먹는 게 절반이에요.",
+    "tags": ["건강정보", "시니어건강", "단백질"],
+    "bgm_prompt": "warm bright acoustic guitar and piano, hearty dinner table mood"
+  }
+}
