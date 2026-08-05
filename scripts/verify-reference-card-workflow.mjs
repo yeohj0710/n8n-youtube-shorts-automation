@@ -358,10 +358,18 @@ try {
   const handled = runNode('Add Handle To Card Footer', prepared)[0].json;
   assert.ok(handled.image_payload.input.prompt.includes(HANDLE), 'the card footer lost the channel handle');
   assert.ok(handled.visible_card_text.includes(HANDLE), 'the visible card text lost the channel handle');
+  // 프롬프트에는 핸들이 두 자리에 나온다: 실제로 그릴 푸터 문구 한 번, 그리고
+  // 화이트리스트가 "이 로마자만 예외로 허용한다"고 설명하는 지시문 한 번(2026-08-05).
+  // 중복 방지가 잡아야 하는 건 후자가 아니라 "푸터에 핸들이 두 번 박히는 것"이므로
+  // 그릴 글자가 들어가는 FOOTER 줄만 세어야 한다.
+  const footerLine = handled.image_payload.input.prompt
+    .split('\n')
+    .find((line) => line.startsWith('FOOTER SUBSCRIBE LINE'));
+  assert.ok(footerLine, 'the image prompt lost its FOOTER SUBSCRIBE LINE');
   assert.equal(
-    (handled.image_payload.input.prompt.match(/@haruyaksa/g) || []).length,
+    (footerLine.match(/@haruyaksa/g) || []).length,
     1,
-    'the image prompt must contain the footer handle exactly once',
+    'the footer line must carry the channel handle exactly once',
   );
   assert.equal(
     (handled.visible_card_text.match(/@haruyaksa/g) || []).length,

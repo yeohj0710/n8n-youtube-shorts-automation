@@ -1367,15 +1367,29 @@ const posterReadabilityInstruction = [
   code = code.replace(/\/\/ subscribe_footer_copy_v1\n[\s\S]*?\n\/\/ subscribe_footer_copy_end\n/g, '');
   code = code.replace(/  'FOOTER SUBSCRIBE LINE[^\n]*\n/g, '');
   if (target.profile.id === 'haru_health_literacy') {
+    // 핸들을 붙이는 이유(2026-08-05 사용자 지시): 같은 카드가 유튜브와 인스타에 같이
+    // 올라가는데, 팔로우하라고만 하고 어디를 팔로우하는지는 말하지 않고 있었다.
+    // 레퍼런스 카드 회로는 이미 ' · @haruyaksa'를 붙이고 있어서 그 형태를 맞춘다.
     code = replaceRequired(
       code,
       'const visibleText = [',
       `// subscribe_footer_copy_v1
-const subscribeCta = '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요';
+const subscribeCta = '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요 · @haruyaksa';
 // subscribe_footer_copy_end
 const visibleText = [`,
       'prepare: subscribe footer copy',
     );
+    // 화이트리스트가 로마자를 전면 금지해서 핸들이 지워질 수 있다. 이 한 낱말만 연다.
+    // 정본 스크립트는 몇 번을 돌려도 결과가 같아야 하므로(verify-research-source-grounding),
+    // 이미 열려 있으면 건드리지 않는다.
+    if (!code.includes('exception is the channel handle @haruyaksa')) {
+      code = replaceRequired(
+        code,
+        'No English or Latin-alphabet text at all.',
+        'The one exception is the channel handle @haruyaksa inside the footer line: render those exact letters. No other English or Latin-alphabet text anywhere.',
+        'prepare: handle exception in text whitelist',
+      );
+    }
     code = replaceRequired(
       code,
       "  imageRows,\n].filter(Boolean).join(LF);",
