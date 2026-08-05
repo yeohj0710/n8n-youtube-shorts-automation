@@ -1,5 +1,5 @@
 {
-  "title": "싱겁게 먹는 습관, 보름이면 입에 붙어요 5",
+  "title": "싱겁게 먹는 습관, 보름이면 입에 붙어요 4",
   "lane": "food_nutrition_table",
   "notes": "혀는 보름이면 새 간에 적응한다. 참는 게 아니라 갈아타는 방법.",
   "topic_key": "salt_taste_reset_two_weeks",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "longevity_daily_function",
     "channel_content_pillar": "cardiometabolic",
     "topic_key": "salt_taste_reset_two_weeks",
-    "hook_title": "싱겁게 먹는 습관, 보름이면 입에 붙어요 5",
+    "hook_title": "싱겁게 먹는 습관, 보름이면 입에 붙어요 4",
     "subtitle": "소금 줄이기는 참기가 아니라 바꿔 타기예요",
     "visual_profile": "kitchen_table",
     "visual_mood_hint": "아침 식탁에 맑은 국과 나물 반찬, 옆으로 밀어 둔 소금통과 간장 종지, 밝은 흰색과 초록 팔레트",
@@ -35,13 +35,6 @@
       },
       {
         "rank": 4,
-        "name": "짠맛 자리를 신맛과 향으로 채우세요",
-        "card_name": "짠맛을 신맛과 향으로 채우세요",
-        "reason": "심심한 맛은 식초와 레몬, 후추, 참기름이 채워 줘요. 나물을 무칠 때 간장 대신 식초를 한 술 넣어 보세요",
-        "card_reason": "심심한 맛은 식초와 레몬, 후추, 참기름이 채워 줘요. 나물에 간장 대신 식초를 넣어 보세요"
-      },
-      {
-        "rank": 5,
         "name": "반찬 하나를 바꾸는 편이 빨라요",
         "card_name": "반찬 하나 바꾸는 편이 빨라요",
         "reason": "햄과 라면, 어묵에 든 소금이 국 한 그릇만큼 많아요. 국을 참는 것보다 이런 반찬 하나를 빼는 편이 훨씬 빨라요",

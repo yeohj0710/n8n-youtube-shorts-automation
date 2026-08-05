@@ -1,5 +1,5 @@
 {
-  "title": "여름에 몸에 물이 모자랄 때 나타나는 신호 5",
+  "title": "여름에 몸에 물이 모자랄 때 나타나는 신호 4",
   "lane": "body_signal_selfcheck",
   "notes": "나이 들면 갈증 감각이 무뎌진다. 목마름 대신 봐야 할 신호를 알려 준다.",
   "topic_key": "summer_thirst_lag",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "haru_health_literacy",
     "channel_content_pillar": "body_signals",
     "topic_key": "summer_thirst_lag",
-    "hook_title": "여름에 몸에 물이 모자랄 때 나타나는 신호 5",
+    "hook_title": "여름에 몸에 물이 모자랄 때 나타나는 신호 4",
     "subtitle": "나이가 들면 목이 마르기 전에 이미 모자라요",
     "visual_profile": "morning_light",
     "visual_mood_hint": "햇빛 드는 마루에 물주전자와 유리컵, 선풍기가 도는 여름 낮 풍경, 시원한 하늘색과 흰색 팔레트",
@@ -39,13 +39,6 @@
         "card_name": "입이 마르고 침이 끈적해져요",
         "reason": "침이 줄어들어서 입안이 텁텁하고 틀니가 잇몸에 잘 안 붙어요. 입에 생긴 문제가 아니라 물이 모자란 신호예요",
         "card_reason": "침이 줄어들어서 입안이 텁텁하고 틀니가 잇몸에 잘 안 붙어요. 물이 모자라다는 신호예요"
-      },
-      {
-        "rank": 5,
-        "name": "술은 마신 양보다 더 빠져나가요",
-        "card_name": "술은 마신 양보다 더 빠져나가요",
-        "reason": "맥주 한 잔을 마시면 그보다 더 많은 양이 소변으로 빠져나가요. 술로는 여름에 잃은 물을 채우지 못해요",
-        "card_reason": "맥주 한 잔을 마시면 그보다 더 많은 양이 소변으로 빠져나가요. 술은 물 대신이 안 돼요"
       }
     ],
     "video_script": "여름 물은 목마르기 전에 마셔요.",

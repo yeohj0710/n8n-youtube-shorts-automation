@@ -1,5 +1,5 @@
 {
-  "title": "점심에 마신 커피가 밤잠까지 방해하는 이유 5",
+  "title": "점심에 마신 커피가 밤잠까지 방해하는 이유 4",
   "lane": "sleep_energy_recovery",
   "notes": "카페인이 빠지는 속도는 나이 들수록 느려진다. 끊지 말고 시간을 당기라는 이야기.",
   "topic_key": "caffeine_lingers_all_day",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "haru_health_literacy",
     "channel_content_pillar": "sleep_recovery_science",
     "topic_key": "caffeine_lingers_all_day",
-    "hook_title": "점심에 마신 커피가 밤잠까지 방해하는 이유 5",
+    "hook_title": "점심에 마신 커피가 밤잠까지 방해하는 이유 4",
     "subtitle": "커피를 끊지 말고 마시는 시간만 당겨 보세요",
     "visual_profile": "sleep_night",
     "visual_mood_hint": "저녁 창가 탁자에 낮에 마시다 남긴 커피잔과 벽시계, 은은한 남색 밤 분위기, 따뜻한 스탠드 불빛",
@@ -35,13 +35,6 @@
       },
       {
         "rank": 4,
-        "name": "디카페인도 완전히 없지는 않아요",
-        "card_name": "디카페인도 완전히 없지는 않아요",
-        "reason": "디카페인도 카페인을 완전히 뺀 것은 아니에요. 저녁에 여러 잔을 마시면 잠에 티가 날 만큼 쌓여요",
-        "card_reason": "디카페인도 카페인을 완전히 뺀 것은 아니에요. 저녁에 여러 잔을 마시면 티가 나요"
-      },
-      {
-        "rank": 5,
         "name": "마지막 잔을 점심 전으로 당기기",
         "card_name": "마지막 잔을 점심 전으로 당기기",
         "reason": "커피를 끊는 것보다 마시는 시간을 앞으로 당기는 편이 지키기 쉬워요. 마지막 잔을 점심 전으로 옮겨 보세요",

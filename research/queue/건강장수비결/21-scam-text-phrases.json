@@ -1,5 +1,5 @@
 {
-  "title": "요즘 어르신들이 가장 많이 당하는 문자 사기 5",
+  "title": "요즘 어르신들이 가장 많이 당하는 문자 사기 4",
   "lane": "daily_health_lifestyle",
   "notes": "요즘 문자 사기의 단골 수법. 자식 사칭과 환급금이 대표적이다.",
   "topic_key": "scam_text_phrases",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "longevity_daily_function",
     "channel_content_pillar": "daily_function",
     "topic_key": "scam_text_phrases",
-    "hook_title": "요즘 어르신들이 가장 많이 당하는 문자 사기 5",
+    "hook_title": "요즘 어르신들이 가장 많이 당하는 문자 사기 4",
     "subtitle": "가족은 저장된 번호로만 믿는 게 안전해요",
     "visual_profile": "myth_fact",
     "visual_mood_hint": "식탁 위 휴대폰 화면에 온 문자와 돋보기, 옆에 수첩과 펜, 차분한 남색과 노랑 경고 포인트",
@@ -35,13 +35,6 @@
       },
       {
         "rank": 4,
-        "name": "싼 이자로 바꿔 준다는 문자",
-        "card_name": "싼 이자로 바꿔 준다는 문자",
-        "reason": "은행은 문자로 대출을 권하지도 않고 앱을 깔라고 하지도 않아요. 이자를 낮춰 준다는 문자는 창구나 대표번호로 확인하세요",
-        "card_reason": "은행은 문자로 대출을 권하지도 앱을 깔라고 하지도 않아요. 창구에서 직접 확인하세요"
-      },
-      {
-        "rank": 5,
         "name": "이미 눌렀다면 지급 정지부터",
         "card_name": "이미 눌렀다면 지급 정지부터",
         "reason": "링크를 이미 누르셨다면 은행 대표번호로 지급 정지부터 걸고 경찰에 알리세요. 부끄러워서 숨기는 사이에 손해가 더 커져요",

@@ -1,5 +1,5 @@
 {
-  "title": "손톱만 봐도 알 수 있는 몸의 이상 신호 5",
+  "title": "손톱만 봐도 알 수 있는 몸의 이상 신호 4",
   "lane": "body_signal_selfcheck",
   "notes": "손톱에 관한 흔한 오해를 바로잡고, 진짜 봐야 할 모양을 알려 준다.",
   "topic_key": "fingernail_signals",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "haru_health_literacy",
     "channel_content_pillar": "body_signals",
     "topic_key": "fingernail_signals",
-    "hook_title": "손톱만 봐도 알 수 있는 몸의 이상 신호 5",
+    "hook_title": "손톱만 봐도 알 수 있는 몸의 이상 신호 4",
     "subtitle": "손톱은 지나간 몇 달의 건강 기록이에요",
     "visual_profile": "wellness_dashboard",
     "visual_mood_hint": "밝은 창가에서 손톱을 살펴보는 손, 옆에 돋보기, 깨끗한 흰 배경과 살구색 팔레트, 부드러운 아침 빛",
@@ -28,20 +28,13 @@
       },
       {
         "rank": 3,
-        "name": "가로로 팬 골은 크게 아팠던 흔적",
-        "card_name": "가로로 팬 골은 크게 아팠던 흔적",
-        "reason": "심한 몸살을 앓거나 수술을 받으면 그동안 손톱이 잠깐 덜 자라요. 덜 자란 자리가 몇 달 뒤에 골로 올라와요",
-        "card_reason": "심한 몸살을 앓거나 수술을 받으면 손톱이 잠깐 덜 자라요. 덜 자란 자리가 몇 달 뒤 골로 올라와요"
-      },
-      {
-        "rank": 4,
         "name": "가운데가 숟가락처럼 파이면 철분 부족",
         "card_name": "가운데가 숟가락처럼 파이면 철분 부족",
         "reason": "손톱 가운데가 숟가락처럼 오목하게 파이면 빈혈과 같이 나타나는 모양이에요. 병원에서 철분 수치를 확인해 보세요",
         "card_reason": "손톱 가운데가 오목하게 파이면 빈혈과 같이 나타나는 모양이에요. 병원에서 철분 수치를 보세요"
       },
       {
-        "rank": 5,
+        "rank": 4,
         "name": "두꺼워지고 부스러지면 손톱 무좀",
         "card_name": "두꺼워지고 부스러지면 손톱 무좀",
         "reason": "무좀은 발톱에만 생기지 않아요. 손톱이 두꺼워지면서 부스러진다면 약국 약으로 버티지 마시고 피부과에 가 보세요",

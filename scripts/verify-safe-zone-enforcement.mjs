@@ -106,7 +106,12 @@ if (circuits.length !== 7) fail(`expected 7 publishing circuits, found ${circuit
 const promptLines = shortsSafeZonePromptLines();
 const boxLine = promptLines.find((line) => line.startsWith('SHARED_SAFE_ZONE_V1'));
 const reserveLine = promptLines.find((line) => line.startsWith('Reserve '));
-const refitLine = promptLines.find((line) => line.startsWith('POST_RENDER_REFIT_V1'));
+// POST_RENDER_REFIT_V1은 2026-08-05에 삭제했다(축소가 금지돼 사실이 아닌 경고였음).
+// 그 자리를 CONTENT_PANEL_V1이 받는다 — 좌표 대신 모델이 그리는 테두리를 준다.
+const panelLine = promptLines.find((line) => line.startsWith('CONTENT_PANEL_V1'));
+if (!panelLine) fail('CONTENT_PANEL_V1 line is missing from the shared safe-zone prompt');
+if (!panelLine.includes(`BOTTOM EDGE SITS AT y ${box.bottom}`)) fail('panel line lost its generated bottom coordinate');
+if (promptLines.some((line) => line.includes('POST_RENDER_REFIT_V1'))) fail('the retired refit threat is back in the prompt');
 const coordinateFragment = `x ${box.left}-${box.right} px and y ${box.top}-${box.bottom} px`;
 if (!boxLine.includes(coordinateFragment)) fail('prompt box line lost its generated coordinates');
 
@@ -116,7 +121,7 @@ for (const circuit of generating) {
   for (const [label, fragment] of [
     ['critical-content box', coordinateFragment],
     ['UI reserve bands', reserveLine],
-    ['post-render refit notice', refitLine],
+    ['content panel contract', panelLine],
     ['band background contract', 'BAND_BACKGROUND_V1'],
     ['vertical fill contract', 'VERTICAL_FILL_V2'],
   ]) {
@@ -217,7 +222,7 @@ if (fs.existsSync(dbPath)) {
     const nodes = JSON.parse(row.nodes || '[]');
     const allCode = nodes.map((node) => node.parameters?.jsCode || '').join('\n');
     if (!allCode.includes(coordinateFragment)) fail(`${row.name}: live DB image prompt lost the safe-zone coordinates`);
-    if (!allCode.includes(refitLine)) fail(`${row.name}: live DB image prompt lost the post-render refit notice`);
+    if (!allCode.includes(panelLine)) fail(`${row.name}: live DB image prompt lost the content panel contract`);
     live.push(row.name);
   }
   if (live.length !== generatingIds.size) {

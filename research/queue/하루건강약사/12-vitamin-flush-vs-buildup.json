@@ -1,5 +1,5 @@
 {
-  "title": "영양제 오래 먹기 전에 확인할 것 5",
+  "title": "영양제 오래 먹기 전에 확인할 것 4",
   "lane": "food_nutrition_table",
   "notes": "많이 먹어도 소변으로 나간다는 말은 절반만 맞다. 기름에 녹는 쪽은 몸에 남는다.",
   "topic_key": "vitamin_flush_vs_buildup",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "haru_health_literacy",
     "channel_content_pillar": "supplement_ingredients",
     "topic_key": "vitamin_flush_vs_buildup",
-    "hook_title": "영양제 오래 먹기 전에 확인할 것 5",
+    "hook_title": "영양제 오래 먹기 전에 확인할 것 4",
     "subtitle": "많이 먹어도 괜찮은 성분과 몸에 쌓이는 성분이 달라요",
     "visual_profile": "myth_fact",
     "visual_mood_hint": "물컵에 녹는 알약과 기름방울 속 알약을 반씩 나눠 보여주는 장면, 밝은 노랑과 파랑 대비, 깨끗한 약국 선반 배경",
@@ -35,13 +35,6 @@
       },
       {
         "rank": 4,
-        "name": "아연만 오래 드시면 구리가 부족해져요",
-        "card_name": "아연만 오래 드시면 구리가 부족해져요",
-        "reason": "아연과 구리는 몸으로 들어오는 통로가 같아요. 아연만 오래 많이 드시면 구리가 밀려나서 부족해질 수 있어요",
-        "card_reason": "아연과 구리는 몸으로 들어오는 통로가 같아요. 아연만 오래 드시면 구리가 밀려나요"
-      },
-      {
-        "rank": 5,
         "name": "종합비타민과 겹치는 성분 확인하기",
         "card_name": "종합비타민과 겹치는 성분 확인하기",
         "reason": "종합비타민에 이미 들어 있는 성분을 따로 또 사는 경우가 제일 흔해요. 사기 전에 두 제품 뒷면 성분표를 나란히 놓고 견줘 보세요",

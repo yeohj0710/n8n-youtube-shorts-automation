@@ -1,5 +1,5 @@
 {
-  "title": "고장 안 나도 때 되면 바꿔야 하는 살림살이 5",
+  "title": "고장 안 나도 때 되면 바꿔야 하는 살림살이 4",
   "lane": "household_saving_tricks",
   "notes": "집안 물건은 고장 나서 바꾸는 게 아니라 바꿀 때를 몰라서 계속 쓴다.",
   "topic_key": "household_replacement_intervals",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "longevity_daily_function",
     "channel_content_pillar": "daily_function",
     "topic_key": "household_replacement_intervals",
-    "hook_title": "고장 안 나도 때 되면 바꿔야 하는 살림살이 5",
+    "hook_title": "고장 안 나도 때 되면 바꿔야 하는 살림살이 4",
     "subtitle": "바꿀 때를 몰라서 몇 해씩 그대로 쓰는 것들이에요",
     "visual_profile": "calendar_streak",
     "visual_mood_hint": "욕실 선반과 주방 개수대에 놓인 칫솔과 수세미, 개어 둔 수건이 함께 보이는 정갈한 장면, 크림색과 맑은 민트 팔레트",
@@ -22,27 +22,20 @@
       },
       {
         "rank": 2,
-        "name": "수세미는 한 달",
-        "card_name": "수세미 — 한 달",
-        "reason": "기름때가 밴 수세미는 아무리 헹궈도 안쪽에 냄새가 남아요. 그릇에 그 냄새가 옮으니 한 달에 한 번은 바꾸세요",
-        "card_reason": "기름때가 밴 수세미는 아무리 헹궈도 안쪽에 냄새가 남아요. 한 달에 한 번은 바꾸세요"
-      },
-      {
-        "rank": 3,
         "name": "행주는 하루",
         "card_name": "행주 — 하루",
         "reason": "젖은 채로 걸어 둔 행주는 하루만 지나도 쉰내가 올라와요. 매일 삶거나 새것으로 바꿔 쓰세요",
         "card_reason": "젖은 채로 걸어 둔 행주는 하루만 지나도 쉰내가 올라와요. 매일 삶거나 바꿔 쓰세요"
       },
       {
-        "rank": 4,
+        "rank": 3,
         "name": "베개는 두세 해",
         "card_name": "베개 — 두세 해",
         "reason": "속이 눌려 납작해진 베개를 베면 고개가 꺾인 자세로 밤을 보내요. 아침에 목이 뻐근하다면 바꿀 때예요",
         "card_reason": "속이 눌려 납작해진 베개를 베면 고개가 꺾인 자세로 밤을 보내요. 목이 뻐근하면 바꿀 때예요"
       },
       {
-        "rank": 5,
+        "rank": 4,
         "name": "욕실 슬리퍼는 한 해",
         "card_name": "욕실 슬리퍼 — 한 해",
         "reason": "바닥 무늬가 닳아서 매끈해진 슬리퍼는 젖은 바닥에서 그대로 밀려요. 무늬가 안 보이면 바로 바꾸세요",

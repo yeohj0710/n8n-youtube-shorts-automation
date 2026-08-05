@@ -1,5 +1,5 @@
 {
-  "title": "잘못 붙이면 더 아파지는 파스 사용법 5",
+  "title": "잘못 붙이면 더 아파지는 파스 사용법 4",
   "lane": "daily_health_lifestyle",
   "notes": "찬 파스와 더운 파스는 쓰는 자리가 다르다. 반대로 붙이면 낫는 게 늦어진다.",
   "topic_key": "pain_patch_hot_cold",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "haru_health_literacy",
     "channel_content_pillar": "medicine_literacy",
     "topic_key": "pain_patch_hot_cold",
-    "hook_title": "잘못 붙이면 더 아파지는 파스 사용법 5",
+    "hook_title": "잘못 붙이면 더 아파지는 파스 사용법 4",
     "subtitle": "찬 파스와 더운 파스는 쓰는 자리가 달라요",
     "visual_profile": "myth_fact",
     "visual_mood_hint": "약국 선반 위에 파란 파스와 주황 파스가 나란히 놓인 장면, 발목과 어깨 그림이 옆에 작게, 깨끗한 흰 배경과 파랑·주황 대비",
@@ -35,13 +35,6 @@
       },
       {
         "rank": 4,
-        "name": "파스를 뗀 자리는 햇빛 가리기",
-        "card_name": "파스를 뗀 자리는 햇빛 가리기",
-        "reason": "파스 성분이 남은 피부는 햇빛을 받으면 붉게 부어올라요. 여름에 파스를 뗀 자리는 긴소매나 토시로 가려 주세요",
-        "card_reason": "파스 성분이 남은 피부는 햇빛을 받으면 붉게 부어올라요. 여름에는 긴소매나 토시로 가려 주세요"
-      },
-      {
-        "rank": 5,
         "name": "진통제 먹는 날은 여러 장 붙이지 않기",
         "card_name": "진통제 먹는 날은 여러 장 붙이지 않기",
         "reason": "먹는 진통제와 파스에 같은 성분이 들어 있는 경우가 있어요. 진통제를 드시는 날 여러 장 붙일 거면 약사님께 먼저 여쭤보세요",

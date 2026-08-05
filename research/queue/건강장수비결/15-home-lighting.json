@@ -1,5 +1,5 @@
 {
-  "title": "집만 밝게 해도 넘어질 위험이 줄어드는 자리 5",
+  "title": "집만 밝게 해도 넘어질 위험이 줄어드는 자리 4",
   "lane": "daily_health_lifestyle",
   "notes": "나이 든 눈에는 같은 집이 더 어둡게 보인다. 조명만 바꿔도 낙상이 줄어든다.",
   "topic_key": "home_lighting_aging_eyes",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "longevity_daily_function",
     "channel_content_pillar": "daily_function",
     "topic_key": "home_lighting_aging_eyes",
-    "hook_title": "집만 밝게 해도 넘어질 위험이 줄어드는 자리 5",
+    "hook_title": "집만 밝게 해도 넘어질 위험이 줄어드는 자리 4",
     "subtitle": "눈이 나빠진 게 아니라 집이 어두운 거예요",
     "visual_profile": "magazine_cover",
     "visual_mood_hint": "저녁 거실에 스탠드 둘이 켜진 따뜻한 집 안 풍경, 복도 발밑 무드등, 짙은 남색 창밖과 노란 실내 불빛 대비",
@@ -39,13 +39,6 @@
         "card_name": "현관과 신발장 앞",
         "reason": "현관은 한 발로 서서 신발을 신는 자리예요. 어두우면 중심을 잃고 그대로 옆으로 넘어져요",
         "card_reason": "현관은 한 발로 서서 신발을 신는 자리예요. 어두우면 중심을 잃고 그대로 넘어져요"
-      },
-      {
-        "rank": 5,
-        "name": "잔글씨는 낮에 창가에서",
-        "card_name": "잔글씨는 낮에 창가에서",
-        "reason": "한낮 창가 빛이 스탠드 몇 개보다 밝아요. 약봉지나 설명서 같은 잔글씨는 창가로 들고 가서 보세요",
-        "card_reason": "한낮 창가 빛이 스탠드 몇 개보다 밝아요. 약봉지 같은 잔글씨는 창가로 들고 가서 보세요"
       }
     ],
     "video_script": "집이 밝아지면 걸음부터 당당해져요.",

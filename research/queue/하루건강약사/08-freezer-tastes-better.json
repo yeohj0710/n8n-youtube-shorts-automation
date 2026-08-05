@@ -1,5 +1,5 @@
 {
-  "title": "냉동실에 넣으면 오히려 맛있어지는 음식 5",
+  "title": "냉동실에 넣으면 오히려 맛있어지는 음식 4",
   "lane": "food_nutrition_table",
   "notes": "오래 두려고 넣는 곳인 줄 알지만, 넣었다 꺼내야 제맛이 나는 것도 있다.",
   "topic_key": "freezer_improves_food",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "haru_health_literacy",
     "channel_content_pillar": "nutrition_food_choices",
     "topic_key": "freezer_improves_food",
-    "hook_title": "냉동실에 넣으면 오히려 맛있어지는 음식 5",
+    "hook_title": "냉동실에 넣으면 오히려 맛있어지는 음식 4",
     "subtitle": "냉동실은 오래 두려고만 쓰는 칸이 아니에요",
     "visual_profile": "kitchen_table",
     "visual_mood_hint": "열린 냉동실 서랍 안에 가지런히 담긴 유리통과 종이봉투, 하얀 냉기와 따뜻한 주방 조명이 만나는 장면, 크림색과 맑은 하늘색 팔레트",
@@ -35,13 +35,6 @@
       },
       {
         "rank": 4,
-        "name": "다져 둔 대파와 마늘",
-        "card_name": "다져 둔 대파와 마늘",
-        "reason": "한 번에 다져서 얇게 펴 얼려 두세요. 요리할 때마다 필요한 만큼 숟가락으로 떠서 바로 넣어요",
-        "card_reason": "한 번에 다져서 얇게 펴 얼려 두세요. 요리할 때마다 숟가락으로 떠서 바로 넣어요"
-      },
-      {
-        "rank": 5,
         "name": "국물용 멸치",
         "card_name": "국물용 멸치",
         "reason": "실온에 둔 멸치는 기름이 상해서 국물에 비린내가 올라와요. 냉동실에 두면 그 냄새 없이 국물이 깔끔해요",

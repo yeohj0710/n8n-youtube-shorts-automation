@@ -1,5 +1,5 @@
 {
-  "title": "짜지 않은데 소금이 많이 든 음식 5",
+  "title": "짜지 않은데 소금이 많이 든 음식 4",
   "lane": "food_nutrition_table",
   "notes": "국물만 줄여서는 소금이 안 준다. 짠맛이 가려진 음식이 따로 있다.",
   "topic_key": "hidden_salt_foods",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "haru_health_literacy",
     "channel_content_pillar": "nutrition_food_choices",
     "topic_key": "hidden_salt_foods",
-    "hook_title": "짜지 않은데 소금이 많이 든 음식 5",
+    "hook_title": "짜지 않은데 소금이 많이 든 음식 4",
     "subtitle": "국물만 줄여서는 소금이 줄지 않아요",
     "visual_profile": "market_receipt",
     "visual_mood_hint": "장바구니에서 꺼낸 식빵, 국수, 어묵, 치즈, 시리얼이 나무 식탁에 놓인 장면, 따뜻한 오후 빛, 베이지와 주황 팔레트",
@@ -39,13 +39,6 @@
         "card_name": "치즈",
         "reason": "우유로 만들지만 굳히고 오래 보관하는 과정에서 소금이 들어가요. 한 장만 먹어도 생각보다 많이 들어와요",
         "card_reason": "우유로 만들지만 굳히고 오래 보관하는 과정에서 소금이 들어가요. 한 장만 먹어도 적지 않아요"
-      },
-      {
-        "rank": 5,
-        "name": "아침 시리얼",
-        "card_name": "아침 시리얼",
-        "reason": "단 과자로만 알기 쉬운데 소금도 같이 들어 있어요. 사기 전에 뒷면 영양성분표에서 나트륨 줄을 한번 보세요",
-        "card_reason": "단 과자로만 알기 쉬운데 소금도 같이 들어 있어요. 뒷면 영양성분표에서 나트륨 줄을 보세요"
       }
     ],
     "video_script": "짠맛이 안 나는 소금이 더 무서워요.",

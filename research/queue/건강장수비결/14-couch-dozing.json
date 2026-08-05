@@ -1,5 +1,5 @@
 {
-  "title": "저녁에 소파에서 졸면 밤잠을 망치는 이유 5",
+  "title": "저녁에 소파에서 졸면 밤잠을 망치는 이유 4",
   "lane": "sleep_energy_recovery",
   "notes": "저녁 소파 쪽잠이 밤잠을 망치는 원리와, 조는 대신 할 일.",
   "topic_key": "couch_dozing_night_sleep",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "longevity_daily_function",
     "channel_content_pillar": "sleep_recovery",
     "topic_key": "couch_dozing_night_sleep",
-    "hook_title": "저녁에 소파에서 졸면 밤잠을 망치는 이유 5",
+    "hook_title": "저녁에 소파에서 졸면 밤잠을 망치는 이유 4",
     "subtitle": "밤에 설치는 이유가 저녁 소파에 있어요",
     "visual_profile": "sleep_night",
     "visual_mood_hint": "저녁 거실 소파에 리모컨을 든 채 기대앉은 모습과 켜진 TV 불빛, 짙은 남색과 주황 불빛 대비, 아늑한 분위기",
@@ -28,20 +28,13 @@
       },
       {
         "rank": 3,
-        "name": "저녁 졸음은 낮에 덜 움직였다는 뜻",
-        "card_name": "저녁 졸음은 낮에 덜 움직였다는 뜻",
-        "reason": "저녁부터 졸음이 몰려오는 날은 낮에 몸을 덜 쓴 날이에요. 해가 있을 때 동네 한 바퀴만 돌아도 졸음이 훨씬 늦게 와요",
-        "card_reason": "저녁부터 졸음이 몰려오는 날은 낮에 몸을 덜 쓴 날이에요. 낮에 한 바퀴만 돌아 보세요"
-      },
-      {
-        "rank": 4,
         "name": "졸릴 시간에 차라리 씻으세요",
         "card_name": "졸릴 시간에 차라리 씻으세요",
         "reason": "졸음이 오는 시간에 차라리 따뜻한 물로 씻으세요. 데워진 몸이 식는 동안 밤잠이 훨씬 깊어져요",
         "card_reason": "졸음이 오는 시간에 차라리 따뜻한 물로 씻으세요. 데워진 몸이 식는 동안 잠이 깊어져요"
       },
       {
-        "rank": 5,
+        "rank": 4,
         "name": "정 졸리면 20분 안에 끊으세요",
         "card_name": "정 졸리면 20분 안에 끊으세요",
         "reason": "소파에서 한 시간 넘게 자면 밤잠이 아니라 그날의 첫잠이 돼요. 정 졸리시면 알람을 20분에 맞춰 두고 주무세요",

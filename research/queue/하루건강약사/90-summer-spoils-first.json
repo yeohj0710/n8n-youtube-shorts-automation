@@ -1,5 +1,5 @@
 {
-  "title": "여름에 제일 먼저 상하는 음식 순서 5",
+  "title": "여름에 제일 먼저 상하는 음식 순서 4",
   "lane": "food_nutrition_table",
   "notes": "여름에 상하는 순서는 값이나 종류가 아니라 물기와 양념에서 갈린다.",
   "topic_key": "summer_spoilage_order",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "haru_health_literacy",
     "channel_content_pillar": "nutrition_food_choices",
     "topic_key": "summer_spoilage_order",
-    "hook_title": "여름에 제일 먼저 상하는 음식 순서 5",
+    "hook_title": "여름에 제일 먼저 상하는 음식 순서 4",
     "subtitle": "물기가 많고 양념이 묻은 것부터 쉬어요",
     "visual_profile": "market_receipt",
     "visual_mood_hint": "여름 부엌 조리대에 놓인 자른 수박과 반찬통, 창밖의 뜨거운 햇빛과 서늘한 실내가 대비되는 장면, 크림색과 시원한 청록 팔레트",
@@ -35,13 +35,6 @@
       },
       {
         "rank": 4,
-        "name": "뚜껑을 딴 우유와 두유",
-        "card_name": "뚜껑을 딴 우유와 두유",
-        "reason": "냉장고 문 칸은 여닫을 때마다 온도가 올라가요. 뚜껑을 딴 우유는 문이 아니라 안쪽 선반에 두셔야 오래가요",
-        "card_reason": "냉장고 문 칸은 여닫을 때마다 온도가 올라가요. 딴 우유는 안쪽 선반에 두셔야 오래가요"
-      },
-      {
-        "rank": 5,
         "name": "지어 놓은 밥",
         "card_name": "지어 놓은 밥",
         "reason": "밥은 물기가 적어서 제일 늦게 상해요. 그래도 하루가 지나면 냄새가 올라오니 남은 밥은 얼려 두세요",

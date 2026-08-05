@@ -70,9 +70,17 @@ export function shortsSafeZonePromptLines(width = 1080, height = 1920) {
     `Reserve ${box.rightInset} px on the right, ${box.topInset} px on top, and ${box.bottomInset} px at the bottom for feed UI, captions, controls, and crop tolerance.${box.leftInset > 0 ? ` Reserve ${box.leftInset} px on the left.` : ' The LEFT edge carries no interface: content may run all the way to x 0, and leaving a matching left margin only wastes width. The usable area is deliberately asymmetric — wider on the left than on the right.'} Keep all supplied text — including the footer and handle — plus rank numbers, faces, logos, and key objects clear of the top, right, and bottom UI bands.`,
     'BAND_BACKGROUND_V1: the reserved bands are exclusion zones for critical content, not empty voids. The card background — its color, texture, pattern, and soft decorative elements — may reach every frame edge, so the frame never shows a blank strip. Only supplied text, faces, logos, and key subject objects stay inside the critical-content box.',
     `VERTICAL_FILL_V2: distribute the title, rows, and footer across the critical-content box from y ${box.top} to y ${box.bottom}. Start the title near the top of that box. Keep the last row above the footer with a visible gap, and keep the footer bottom at or above y ${box.bottom}. When vertical space remains, spend it on taller rows and wider row spacing. When space is tight, cut decoration and secondary copy, never the Korean type size or safe margins.`,
+    // CONTENT_PANEL_V1 (2026-08-05): 보이지 않는 좌표는 몇 주째 안 지켜졌다. 실측한
+    // 두 프레임의 유일한 차이는 "모델이 직접 그린 테두리가 있느냐"였다 — 테두리가 있는
+    // 카드는 행이 그 안에서 멈췄고, 사진 위에 글자만 얹은 카드는 아래로 흘렀다.
+    // 좌표를 지키라고 다시 말하는 대신, 지킬 대상을 눈에 보이는 물체로 준다.
+    `CONTENT_PANEL_V1: draw one rounded panel and put every supplied Korean letter inside it. Its top edge sits at or below y ${box.top} and its BOTTOM EDGE SITS AT y ${box.bottom} — the panel stops there and the photographed background continues below it to the frame edge. Treat the panel as a physical container: rows stack inside it and the last row ends above its bottom edge. If the rows do not fit, the panel does not grow; make the rows shorter instead. A card drawn without this panel has no edge to stop at and always spills into the bottom strip.`,
     'TITLE_ZONE_CAP_V1: the title zone takes at most one third of the footprint height, and about one quarter is the target. Set the title in at most 3 lines, preferably 2. There is NO subtitle on this card — do not invent a second line under the title. The space it used to take belongs to the rows. A published frame spent nearly half the card on a five-line title and starved the ranked rows; that is a failure. Leftover vertical space always goes to the ranked rows, never to enlarging the title further.',
     'GLYPH_INTEGRITY_V1: small Korean type renders with broken or malformed strokes, so glyph size is a rendering-safety floor, not a style choice. Keep card_reason text no smaller than about 3 percent of frame height (roughly 55 px) and item names clearly larger. If the copy cannot fit at that size, remove decoration or drop the frame to fewer visual elements; never render Korean text small enough to risk broken glyphs.',
-    `POST_RENDER_REFIT_V1: the renderer measures the finished frame and mechanically shrinks it into the critical-content box when supplied text lands in a UI band, so a frame drawn edge to edge is published smaller than one drawn inside the box. Composing inside x ${box.left}-${box.right} and y ${box.top}-${box.bottom} is the only way to keep full size.`,
+    // POST_RENDER_REFIT_V1은 2026-08-05에 걷어냈다. "넘치면 렌더러가 축소한다"고
+    // 위협하는 줄이었는데, 그 축소는 2026-08-03에 금지됐고 7개 회로 전부
+    // safe_zone_mode: off 다. 일어나지 않는 일을 경고하는 줄이 9,500자 프롬프트
+    // 한복판을 차지하고 있었다.
   ];
 }
 
@@ -102,7 +110,10 @@ export function shortsMarginPromptLines(width = 1080, height = 1920) {
 // shortsSafeZoneInstruction 배열로 갖고 있던 것을 그대로 유지한다.
 export function shortsCardLayoutPromptLines() {
   return [
-    'The critical-content box should feel full and balanced. Make Korean title, item names, and card_reason substantially larger than decorative elements and readable in a small channel-grid thumbnail. Never solve fitting by shrinking all text; simplify decoration and secondary copy first.',
+    // "꽉 찬 느낌이어야 한다"는 줄은 뺐다(2026-08-05). 같은 프롬프트가 위쪽에서는
+    // 띠를 "눈에 띄게 비워 두는 게 요점"이라고 말한다. 채우라는 말과 비우라는 말이
+    // 같이 있으면 넘칠 때 모델이 어느 쪽을 따를지가 복불복이 된다.
+    'Make the Korean title, item names, and card_reason substantially larger than decorative elements and readable in a small channel-grid thumbnail. Never solve fitting by shrinking all text; simplify decoration and secondary copy first. Empty space left inside the panel is fine — it is better than a row pushed past the panel edge.',
     'The title, ranked item names, their supplied card_reason, and the supplied footer are critical. Auxiliary decoration is optional and may be cropped or covered; never shrink critical information to preserve it.',
     'Assume channel grids and previews may crop the outer frame. The main card must keep its useful message intact, but auxiliary copy does not need protection.',
     'Decorative background may extend edge to edge. Do not use full-bleed critical text, right-edge badges, or cropped title letters.',

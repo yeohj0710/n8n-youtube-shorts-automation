@@ -1,5 +1,5 @@
 {
-  "title": "따로 먹으면 손해 보는 음식 궁합 5",
+  "title": "따로 먹으면 손해 보는 음식 궁합 4",
   "lane": "food_nutrition_table",
   "notes": "곁들이는 것 하나로 흡수가 달라지는 조합만 모았다.",
   "topic_key": "food_pairs_that_help",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "haru_health_literacy",
     "channel_content_pillar": "nutrition_food_choices",
     "topic_key": "food_pairs_that_help",
-    "hook_title": "따로 먹으면 손해 보는 음식 궁합 5",
+    "hook_title": "따로 먹으면 손해 보는 음식 궁합 4",
     "subtitle": "한 가지만 곁들여도 몸에 남는 양이 달라져요",
     "visual_profile": "kitchen_table",
     "visual_mood_hint": "나무 식탁에 시금치나물과 참기름병, 토마토 볶음, 콩자반과 쌀밥이 짝지어 놓인 장면, 따뜻한 저녁 빛, 초록과 빨강 포인트",
@@ -39,13 +39,6 @@
         "card_name": "돼지고기에 양파",
         "reason": "돼지고기에는 피로를 푸는 비타민이 많은데 그냥 먹으면 금방 빠져나가요. 양파를 같이 드시면 몸에 훨씬 오래 남아요",
         "card_reason": "돼지고기에는 피로를 푸는 비타민이 많은데 그냥 먹으면 금방 빠져나가요. 양파를 같이 드세요"
-      },
-      {
-        "rank": 5,
-        "name": "카레에 후추 한 꼬집",
-        "card_name": "카레에 후추 한 꼬집",
-        "reason": "카레의 노란 성분은 그냥 드시면 거의 흡수되지 않아요. 후추를 한 꼬집만 넣어도 몸에 들어오는 양이 크게 늘어요",
-        "card_reason": "카레의 노란 성분은 그냥 드시면 거의 흡수되지 않아요. 후추 한 꼬집만 넣어도 크게 늘어요"
       }
     ],
     "video_script": "같이 먹어야 제값 하는 음식이 있어요.",

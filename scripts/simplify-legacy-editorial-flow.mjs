@@ -1321,17 +1321,17 @@ const posterReadabilityInstruction = [
   );
   code = code.replace(
     'Use calm text hierarchy and enough breathing room. Explanation clarity is more important than decorative UI density.',
-    'Use calm text hierarchy and enough breathing room. Mobile readability outranks decoration: use the largest practical Korean type, let the content card occupy nearly the full safe area, and prioritize title, item name, and cause-and-effect sentence. Keep supporting objects compact. Remove secondary decoration whenever it competes for space or resembles information. Decoration must support the topic and never look like extra data.',
+    'Use calm text hierarchy and enough breathing room. Mobile readability outranks decoration: use the largest practical Korean type and prioritize title, item name, and cause-and-effect sentence. Keep every supporting illustration small — one compact cue per row, never a tall tile that pushes the sentence into extra lines. Remove secondary decoration whenever it competes for space or resembles information. Decoration must support the topic and never look like extra data.',
   );
   code = code.replace(
     /Use calm text hierarchy and enough breathing room\. Mobile readability outranks decoration:[^']+Decoration must support the topic and never look like extra data\./g,
-    'Use calm text hierarchy and enough breathing room. Mobile readability outranks decoration: use the largest practical Korean type, let the content card occupy nearly the full safe area, and prioritize title, item name, and cause-and-effect sentence. Keep supporting objects compact. Remove secondary decoration whenever it competes for space or resembles information. Decoration must support the topic and never look like extra data.',
+    'Use calm text hierarchy and enough breathing room. Mobile readability outranks decoration: use the largest practical Korean type and prioritize title, item name, and cause-and-effect sentence. Keep every supporting illustration small — one compact cue per row, never a tall tile that pushes the sentence into extra lines. Remove secondary decoration whenever it competes for space or resembles information. Decoration must support the topic and never look like extra data.',
   );
   if (!code.includes('  posterReadabilityInstruction,')) {
     code = replaceRequired(
       code,
-      "  'Use calm text hierarchy and enough breathing room. Mobile readability outranks decoration: use the largest practical Korean type, let the content card occupy nearly the full safe area, and prioritize title, item name, and cause-and-effect sentence. Keep supporting objects compact. Remove secondary decoration whenever it competes for space or resembles information. Decoration must support the topic and never look like extra data.',",
-      "  posterReadabilityInstruction,\n  'Use calm text hierarchy and enough breathing room. Mobile readability outranks decoration: use the largest practical Korean type, let the content card occupy nearly the full safe area, and prioritize title, item name, and cause-and-effect sentence. Keep supporting objects compact. Remove secondary decoration whenever it competes for space or resembles information. Decoration must support the topic and never look like extra data.',",
+      "  'Use calm text hierarchy and enough breathing room. Mobile readability outranks decoration: use the largest practical Korean type and prioritize title, item name, and cause-and-effect sentence. Keep every supporting illustration small — one compact cue per row, never a tall tile that pushes the sentence into extra lines. Remove secondary decoration whenever it competes for space or resembles information. Decoration must support the topic and never look like extra data.',",
+      "  posterReadabilityInstruction,\n  'Use calm text hierarchy and enough breathing room. Mobile readability outranks decoration: use the largest practical Korean type and prioritize title, item name, and cause-and-effect sentence. Keep every supporting illustration small — one compact cue per row, never a tall tile that pushes the sentence into extra lines. Remove secondary decoration whenever it competes for space or resembles information. Decoration must support the topic and never look like extra data.',",
       'poster readability instruction',
     );
   }

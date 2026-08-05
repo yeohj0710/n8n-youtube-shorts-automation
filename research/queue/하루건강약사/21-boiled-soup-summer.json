@@ -1,5 +1,5 @@
 {
-  "title": "여름에 끓인 국 잘못 두면 배탈 나요 5",
+  "title": "여름에 끓인 국 잘못 두면 배탈 나요 4",
   "lane": "daily_health_lifestyle",
   "notes": "끓였으니 괜찮다는 믿음이 여름 배탈의 주범이다. 식는 시간이 문제다.",
   "topic_key": "boiled_soup_summer_risk",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "haru_health_literacy",
     "channel_content_pillar": "daily_health_choices",
     "topic_key": "boiled_soup_summer_risk",
-    "hook_title": "여름에 끓인 국 잘못 두면 배탈 나요 5",
+    "hook_title": "여름에 끓인 국 잘못 두면 배탈 나요 4",
     "subtitle": "탈이 나는 건 끓인 다음에 벌어지는 일이에요",
     "visual_profile": "kitchen_table",
     "visual_mood_hint": "가스레인지 위 큰 국솥에서 김이 오르는 여름 부엌, 열린 창으로 들어오는 낮 빛, 흰색과 주황 팔레트",
@@ -39,13 +39,6 @@
         "card_name": "데우지 말고 팔팔 끓이기",
         "reason": "김만 오르게 데우는 정도로는 바닥에 있는 균까지 죽지 않아요. 다시 드실 때는 바닥까지 저어 가며 팔팔 끓이세요",
         "card_reason": "김만 오르게 데우는 정도로는 바닥에 있는 균까지 죽지 않아요. 바닥까지 저어 가며 끓이세요"
-      },
-      {
-        "rank": 5,
-        "name": "행주와 수세미부터 삶기",
-        "card_name": "행주와 수세미부터 삶기",
-        "reason": "여름 부엌에서 균이 가장 많은 자리가 행주와 수세미예요. 이틀에 한 번은 삶거나 햇볕에 바짝 말려서 쓰세요",
-        "card_reason": "여름 부엌에서 균이 가장 많은 자리가 행주와 수세미예요. 이틀에 한 번은 삶아서 쓰세요"
       }
     ],
     "video_script": "여름 국은 끓인 다음이 더 중요해요.",

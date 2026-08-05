@@ -1,5 +1,5 @@
 {
-  "title": "밤에 화장실 가다 넘어지지 않는 순서 5",
+  "title": "밤에 화장실 가다 넘어지지 않는 순서 4",
   "lane": "movement_mobility_longevity",
   "notes": "새벽 화장실 길이 집안 낙상의 단골 무대다. 일어나는 순서만 바꿔도 크게 줄어든다.",
   "topic_key": "night_rising_safe_order",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "longevity_daily_function",
     "channel_content_pillar": "joints_balance_falls",
     "topic_key": "night_rising_safe_order",
-    "hook_title": "밤에 화장실 가다 넘어지지 않는 순서 5",
+    "hook_title": "밤에 화장실 가다 넘어지지 않는 순서 4",
     "subtitle": "새벽 낙상은 순서만 지켜도 크게 줄어요",
     "visual_profile": "sleep_night",
     "visual_mood_hint": "새벽 침실에서 침대 끝에 걸터앉아 스탠드를 켜는 모습, 발밑 은은한 무드등, 짙은 남색과 노란 불빛 대비",
@@ -39,13 +39,6 @@
         "card_name": "뒤축 없는 슬리퍼는 신지 않기",
         "reason": "뒤축 없는 슬리퍼는 끌리다가 걸려 넘어지기 쉬워요. 새벽에는 바닥에 미끄럼 방지가 된 양말이 훨씬 안전해요",
         "card_reason": "뒤축 없는 슬리퍼는 끌리다가 걸려 넘어지기 쉬워요. 미끄럼 방지 양말이 훨씬 안전해요"
-      },
-      {
-        "rank": 5,
-        "name": "저녁에 마시는 물과 술은 시간을 당기기",
-        "card_name": "저녁 물과 술은 시간을 당기기",
-        "reason": "잠자리에 들기 두 시간 전부터 물과 술을 줄여 보세요. 새벽에 일어나는 횟수 자체가 줄어들면 넘어질 일도 줄어요",
-        "card_reason": "잠자리에 들기 두 시간 전부터 물과 술을 줄여 보세요. 일어나는 횟수부터 줄어들어요"
       }
     ],
     "video_script": "새벽엔 일어나는 순서가 안전이에요.",

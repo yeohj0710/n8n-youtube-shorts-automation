@@ -1,5 +1,5 @@
 {
-  "title": "나이 들면 경조사, 다 챙기지 않아도 돼요 5",
+  "title": "나이 들면 경조사, 다 챙기지 않아도 돼요 4",
   "lane": "daily_health_lifestyle",
   "notes": "경조사 부담을 덜어 주는 기준. 감정을 대신 말해 주는 소재.",
   "topic_key": "family_event_boundaries",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "longevity_daily_function",
     "channel_content_pillar": "daily_function",
     "topic_key": "family_event_boundaries",
-    "hook_title": "나이 들면 경조사, 다 챙기지 않아도 돼요 5",
+    "hook_title": "나이 들면 경조사, 다 챙기지 않아도 돼요 4",
     "subtitle": "모두 챙기다 지치면 정작 가까운 사람을 놓쳐요",
     "visual_profile": "calendar_streak",
     "visual_mood_hint": "달력에 동그라미 몇 개와 축의금 봉투, 그 옆에 찻잔 두 개가 놓인 차분한 거실 풍경, 베이지와 먹색 팔레트",
@@ -39,13 +39,6 @@
         "card_name": "내 경조사에 오지 않은 집",
         "reason": "내 경조사에는 오지 않은 집에 서운한 마음으로 봉투만 내면 돈도 마음도 손해예요. 안 가셔도 되는 자리예요",
         "card_reason": "서운한 마음으로 봉투만 내면 돈도 마음도 손해예요. 안 가셔도 되는 자리예요"
-      },
-      {
-        "rank": 5,
-        "name": "줄인 돈으로 가까운 사람과 밥 한 끼",
-        "card_name": "줄인 돈으로 가까운 사람과 밥 한 끼",
-        "reason": "의리로 나가던 돈을 줄여서 정말 보고 싶은 사람과 밥 한 끼를 드세요. 자주 만나는 사이가 오래 남아요",
-        "card_reason": "의리로 나가던 돈을 줄여서 보고 싶은 사람과 밥 한 끼를 드세요. 자주 만나는 사이가 오래가요"
       }
     ],
     "video_script": "경조사는 다 챙기는 게 예의가 아니에요.",

@@ -1,5 +1,5 @@
 {
-  "title": "다리 붓기, 병원 가야 하는 경우와 아닌 경우 5",
+  "title": "다리 붓기, 병원 가야 하는 경우와 아닌 경우 4",
   "lane": "body_signal_selfcheck",
   "notes": "저녁 붓기는 흔하지만, 눌러 보면 생활 붓기와 병원 갈 붓기를 가를 수 있다.",
   "topic_key": "evening_leg_swelling",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "longevity_daily_function",
     "channel_content_pillar": "chronic_risk_signals",
     "topic_key": "evening_leg_swelling",
-    "hook_title": "다리 붓기, 병원 가야 하는 경우와 아닌 경우 5",
+    "hook_title": "다리 붓기, 병원 가야 하는 경우와 아닌 경우 4",
     "subtitle": "정강이를 눌러 보면 절반은 가를 수 있어요",
     "visual_profile": "clinic_checklist",
     "visual_mood_hint": "저녁 거실 소파에 앉아 정강이를 손가락으로 눌러 보는 모습, 발밑에 쿠션, 차분한 남색과 살구색 팔레트",
@@ -39,13 +39,6 @@
         "card_name": "아침까지 빠지지 않는 붓기",
         "reason": "자고 일어났는데도 그대로 부어 있어요. 생활 습관 탓이 아니라 콩팥이나 심장 쪽을 확인해 봐야 해요",
         "card_reason": "자고 일어났는데도 그대로 부어 있어요. 생활 탓이 아니라 콩팥과 심장을 봐야 해요"
-      },
-      {
-        "rank": 5,
-        "name": "짜게 먹은 다음 날 아침",
-        "card_name": "짜게 먹은 다음 날 아침",
-        "reason": "얼굴까지 같이 붓는 아침은 전날 저녁에 먹은 국물이 원인일 때가 많아요. 국물을 반 그릇만 줄여 보세요",
-        "card_reason": "얼굴까지 같이 붓는 아침은 전날 저녁 국물이 원인일 때가 많아요. 반 그릇만 줄여 보세요"
       }
     ],
     "video_script": "붓기는 눌러 보면 절반은 알 수 있어요.",

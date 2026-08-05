@@ -1,5 +1,5 @@
 {
-  "title": "어지럼증, 종류에 따라 원인이 전혀 달라요 5",
+  "title": "어지럼증, 종류에 따라 원인이 전혀 달라요 4",
   "lane": "body_signal_selfcheck",
   "notes": "어지럼은 종류마다 원인과 갈 곳이 다르다. 상황별로 가르는 법.",
   "topic_key": "dizziness_type_sorting",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "longevity_daily_function",
     "channel_content_pillar": "chronic_risk_signals",
     "topic_key": "dizziness_type_sorting",
-    "hook_title": "어지럼증, 종류에 따라 원인이 전혀 달라요 5",
+    "hook_title": "어지럼증, 종류에 따라 원인이 전혀 달라요 4",
     "subtitle": "빙글 도는 어지럼과 핑 도는 어지럼은 갈 곳이 달라요",
     "visual_profile": "clinic_checklist",
     "visual_mood_hint": "아침 침실에서 침대에 걸터앉아 이마를 짚은 모습, 창으로 드는 부드러운 빛, 하늘색과 크림색 팔레트",
@@ -39,13 +39,6 @@
         "card_name": "식은땀이 같이 나는 어지럼",
         "reason": "끼니를 거른 채 오래 있으면 당이 떨어지면서 식은땀과 함께 어질해요. 사탕 하나만 드셔도 금방 가라앉아요",
         "card_reason": "끼니를 거른 채 오래 있으면 당이 떨어지면서 식은땀과 함께 어질해요. 사탕 하나면 가라앉아요"
-      },
-      {
-        "rank": 5,
-        "name": "약을 바꾼 뒤부터 생긴 어지럼",
-        "card_name": "약을 바꾼 뒤부터 생긴 어지럼",
-        "reason": "어지럼을 일으키는 약이 생각보다 많아요. 새 약을 드시고부터 시작됐다면 드시는 약 목록을 들고 약사님께 여쭤보세요",
-        "card_reason": "어지럼을 일으키는 약이 생각보다 많아요. 드시는 약 목록을 들고 약사님께 여쭤보세요"
       }
     ],
     "video_script": "어지럼은 종류를 알면 갈 곳이 보여요.",

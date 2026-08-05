@@ -1,5 +1,5 @@
 {
-  "title": "나이 들수록 몸이 가려운 이유와 해결법 5",
+  "title": "나이 들수록 몸이 가려운 이유와 해결법 4",
   "lane": "body_signal_selfcheck",
   "notes": "나이 들며 생기는 마른 가려움의 흔한 원인은 씻는 습관에 있다.",
   "topic_key": "itch_without_bugs",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "haru_health_literacy",
     "channel_content_pillar": "skin_vitality",
     "topic_key": "itch_without_bugs",
-    "hook_title": "나이 들수록 몸이 가려운 이유와 해결법 5",
+    "hook_title": "나이 들수록 몸이 가려운 이유와 해결법 4",
     "subtitle": "벌레가 없는데 가렵다면 씻는 습관부터 보세요",
     "visual_profile": "sleep_night",
     "visual_mood_hint": "저녁 욕실 앞 김 서린 거울과 수건, 보습제 통이 선반에 놓인 장면, 차분한 남색과 크림색 팔레트",
@@ -35,13 +35,6 @@
       },
       {
         "rank": 4,
-        "name": "세제가 덜 헹궈진 이불",
-        "card_name": "세제가 덜 헹궈진 이불",
-        "reason": "이불에 남은 세제가 밤새 살에 닿아서 가려울 수 있어요. 낮에는 괜찮은데 밤에만 가렵다면 헹굼을 한 번 더 돌려 보세요",
-        "card_reason": "이불에 남은 세제가 밤새 살에 닿아서 가려울 수 있어요. 밤에만 가렵다면 헹굼을 한 번 더 하세요"
-      },
-      {
-        "rank": 5,
         "name": "에어컨 바람이 닿는 자리",
         "card_name": "에어컨 바람이 닿는 자리",
         "reason": "에어컨은 방 공기와 함께 피부에 있던 물기까지 걷어 가요. 여름에 생기는 가려움은 건조가 원인일 때가 많아요",

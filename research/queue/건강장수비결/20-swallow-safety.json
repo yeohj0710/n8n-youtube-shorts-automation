@@ -1,5 +1,5 @@
 {
-  "title": "사레가 잦아지면 반드시 바꿔야 하는 식사 습관 5",
+  "title": "사레가 잦아지면 반드시 바꿔야 하는 식사 습관 4",
   "lane": "food_nutrition_table",
   "notes": "사레는 버릇이 아니라 삼킴 근육의 신호다. 국말이 밥이 더 위험하다는 반전.",
   "topic_key": "swallow_safety_meals",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "longevity_daily_function",
     "channel_content_pillar": "longevity_meals",
     "topic_key": "swallow_safety_meals",
-    "hook_title": "사레가 잦아지면 반드시 바꿔야 하는 식사 습관 5",
+    "hook_title": "사레가 잦아지면 반드시 바꿔야 하는 식사 습관 4",
     "subtitle": "사레는 버릇이 아니라 삼키는 힘이 보내는 신호예요",
     "visual_profile": "kitchen_table",
     "visual_mood_hint": "점심 식탁에 국그릇과 밥그릇이 따로 놓이고 물컵이 옆에 있는 장면, 따뜻한 낮 빛, 크림색과 갈색 팔레트",
@@ -39,13 +39,6 @@
         "card_name": "물은 한 모금씩 끊어 드세요",
         "reason": "맹물은 목을 가장 빨리 지나가서 오히려 제일 잘 걸려요. 벌컥벌컥 마시지 마시고 한 모금씩 끊어서 드세요",
         "card_reason": "맹물은 목을 가장 빨리 지나가서 오히려 제일 잘 걸려요. 한 모금씩 끊어서 드세요"
-      },
-      {
-        "rank": 5,
-        "name": "반복되면 검사와 운동이 따로 있어요",
-        "card_name": "반복되면 검사와 운동이 있어요",
-        "reason": "삼키는 힘도 근육이라 나이가 들면 같이 약해져요. 식사 때마다 사레가 든다면 병원에서 검사를 받고 운동법을 배우세요",
-        "card_reason": "삼키는 힘도 근육이라 나이가 들면 같이 약해져요. 병원에서 검사를 받고 운동법을 배우세요"
       }
     ],
     "video_script": "사레는 먹는 법을 바꾸라는 신호예요.",
