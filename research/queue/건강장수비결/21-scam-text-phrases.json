@@ -1,5 +1,5 @@
 {
-  "title": "엄마 폰 깨졌다는 문자, 일단 사기부터 의심해요 5",
+  "title": "요즘 어르신들이 가장 많이 당하는 문자 사기 5",
   "lane": "daily_health_lifestyle",
   "notes": "요즘 문자 사기의 단골 수법. 자식 사칭과 환급금이 대표적이다.",
   "topic_key": "scam_text_phrases",
@@ -7,49 +7,53 @@
     "channel_editorial_profile": "longevity_daily_function",
     "channel_content_pillar": "daily_function",
     "topic_key": "scam_text_phrases",
-    "hook_title": "엄마 폰 깨졌다는 문자, 일단 사기부터 의심해요 5",
+    "hook_title": "요즘 어르신들이 가장 많이 당하는 문자 사기 5",
     "subtitle": "가족은 저장된 번호로만 믿는 게 안전해요",
     "visual_profile": "myth_fact",
     "visual_mood_hint": "식탁 위 휴대폰 화면에 온 문자와 돋보기, 옆에 수첩과 펜, 차분한 남색과 노랑 경고 포인트",
     "rank_items": [
       {
         "rank": 1,
-        "name": "폰 깨졌다며 새 번호라는 문자",
-        "card_name": "폰 깨졌다며 새 번호라는 문자",
-        "reason": "자식 사칭 문자의 단골 시작이에요, 답장하지 말고 저장된 원래 번호로 전화해서 목소리를 확인해요",
-        "card_reason": "답장 말고 저장된 원래 번호로 전화해 목소리부터 확인해요"
+        "name": "폰이 깨졌다며 새 번호라고 하는 문자",
+        "card_name": "폰이 깨졌다는 새 번호 문자",
+        "reason": "자식을 사칭하는 문자의 단골 수법이니 답장 말고 저장된 번호로 전화해 보세요",
+        "card_reason": "자식을 사칭하는 문자의 단골 수법이에요. 저장된 번호로 전화해 보세요"
       },
       {
         "rank": 2,
         "name": "주소가 틀렸다는 택배 문자",
         "card_name": "주소가 틀렸다는 택배 문자",
-        "reason": "택배 회사는 링크로 주소를 다시 받지 않아요, 궁금하면 문자 말고 앱이나 대표번호로 확인해요",
-        "card_reason": "택배 회사는 링크로 주소를 안 받아요, 대표번호로 확인해요"
+        "reason": "택배 회사는 문자 링크로 주소를 다시 받지 않으니 앱이나 대표번호로 확인하세요",
+        "card_reason": "택배 회사는 문자 링크로 주소를 다시 받지 않아요. 대표번호로 확인하세요"
       },
       {
         "rank": 3,
-        "name": "환급금 찾아가라는 문자",
-        "card_name": "환급금 찾아가라는 문자",
-        "reason": "건강보험이든 세금이든 환급금 안내 문자에 누르는 링크를 넣지 않아요, 링크가 있으면 그게 답이에요",
-        "card_reason": "공공기관 환급 안내엔 누르는 링크가 없어요, 있으면 사기예요"
+        "name": "환급금을 찾아가라는 문자",
+        "card_name": "환급금을 찾아가라는 문자",
+        "reason": "건강보험도 세무서도 안내 문자에 누르는 링크를 넣지 않아서 링크가 있으면 사기예요",
+        "card_reason": "건강보험도 세무서도 안내 문자에 링크를 넣지 않아요. 링크가 있으면 사기예요"
       },
       {
         "rank": 4,
         "name": "싼 이자로 바꿔 준다는 문자",
         "card_name": "싼 이자로 바꿔 준다는 문자",
-        "reason": "은행은 문자로 대출을 권하지도, 앱을 깔라고 하지도 않아요, 필요하면 창구나 대표번호로 직접 물어요",
-        "card_reason": "은행은 문자로 대출 권유도 앱 설치도 안 시켜요"
+        "reason": "은행은 문자로 대출을 권하지도, 앱을 깔라고 하지도 않으니 창구에서 직접 물으세요",
+        "card_reason": "은행은 문자로 대출을 권하지도, 앱을 깔라고 하지도 않아요"
       },
       {
         "rank": 5,
-        "name": "이미 눌렀다면 지급 정지 먼저",
-        "card_name": "이미 눌렀다면 지급 정지 먼저",
-        "reason": "링크를 눌렀다면 은행 대표번호로 지급 정지부터 걸고 경찰에 알려요, 부끄러워서 숨기는 게 제일 큰 손해예요",
-        "card_reason": "은행에 지급 정지부터 걸어요, 숨기는 게 제일 큰 손해예요"
+        "name": "이미 눌렀다면 지급 정지부터",
+        "card_name": "이미 눌렀다면 지급 정지부터",
+        "reason": "은행 대표번호로 지급 정지를 걸고 경찰에 알려야 하고, 부끄러워 숨기면 손해가 커져요",
+        "card_reason": "은행 대표번호로 지급 정지를 걸고 경찰에 알리세요. 숨기면 손해가 커져요"
       }
     ],
     "video_script": "요즘 사기는 전화가 아니라 문자로 와요.",
-    "tags": ["시니어생활", "생활안전", "사기예방"],
-    "bgm_prompt": "alert but bright piano with steady strings, confident protective mood"
+    "tags": [
+      "시니어생활",
+      "생활안전",
+      "사기예방"
+    ],
+    "bgm_prompt": "bright steady piano with confident strings, protective and clear mood"
   }
 }

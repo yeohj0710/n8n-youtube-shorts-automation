@@ -388,10 +388,10 @@ function inspectPack(value, researchPack) {
     const cardReason = clean(item?.card_reason);
     if (!clean(item?.name)) issues.push({ rank, code: 'missing_name' });
     if (!cardName) issues.push({ rank, code: 'missing_card_name' });
-    if ([...cardName].length > 30) issues.push({ rank, code: 'card_name_too_long', length: [...cardName].length });
+    if ([...cardName].length > 40) issues.push({ rank, code: 'card_name_too_long', length: [...cardName].length });
     if (!reason) issues.push({ rank, code: 'missing_reason', value: reason });
     if (!cardReason) issues.push({ rank, code: 'missing_card_reason' });
-    if ([...cardReason].length > 60) issues.push({ rank, code: 'card_copy_too_long', length: [...cardReason].length });
+    if ([...cardReason].length > 90) issues.push({ rank, code: 'card_copy_too_long', length: [...cardReason].length });
     if (/^(?:왜|이유|핵심|tip)\\s*[:：]/i.test(cardReason)) issues.push({ rank, code: 'card_label_prefix' });
     if (/[가-힣](?:이|가) .*기$/.test(cardName) && !/(?:없이|같이|높이|많이|깊이) /.test(cardName)) issues.push({ rank, code: 'broken_nominalization', value: cardName });
     const backedNumbers = sourceBackedNumbers(item, researchPack);
@@ -572,10 +572,10 @@ function inspectPack(value, researchPack) {
     const cardReason = clean(item?.card_reason);
     if (!clean(item?.name)) issues.push({ rank, code: 'missing_name' });
     if (!cardName) issues.push({ rank, code: 'missing_card_name' });
-    if ([...cardName].length > 30) issues.push({ rank, code: 'card_name_too_long', length: [...cardName].length });
+    if ([...cardName].length > 40) issues.push({ rank, code: 'card_name_too_long', length: [...cardName].length });
     if (!reason) issues.push({ rank, code: 'missing_reason', value: reason });
     if (!cardReason) issues.push({ rank, code: 'missing_card_reason' });
-    if ([...cardReason].length > 60) issues.push({ rank, code: 'card_copy_too_long', length: [...cardReason].length });
+    if ([...cardReason].length > 90) issues.push({ rank, code: 'card_copy_too_long', length: [...cardReason].length });
     if (/^(?:왜|이유|핵심|tip)\\s*[:：]/i.test(cardReason)) issues.push({ rank, code: 'card_label_prefix' });
     if (/[가-힣](?:이|가) .*기$/.test(cardName) && !/(?:없이|같이|높이|많이|깊이) /.test(cardName)) issues.push({ rank, code: 'broken_nominalization', value: cardName });
     const backedNumbers = sourceBackedNumbers(item, researchPack);

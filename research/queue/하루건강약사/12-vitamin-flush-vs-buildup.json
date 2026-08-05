@@ -1,55 +1,59 @@
 {
-  "title": "남으면 나가는 비타민, 몸에 쌓이는 비타민 5",
+  "title": "영양제 오래 먹기 전에 확인할 것 5",
   "lane": "food_nutrition_table",
-  "notes": "비타민은 많이 먹어도 소변으로 나간다는 말은 절반만 맞다. 기름에 녹는 쪽은 몸에 남는다.",
+  "notes": "많이 먹어도 소변으로 나간다는 말은 절반만 맞다. 기름에 녹는 쪽은 몸에 남는다.",
   "topic_key": "vitamin_flush_vs_buildup",
   "final_pack": {
     "channel_editorial_profile": "haru_health_literacy",
     "channel_content_pillar": "supplement_ingredients",
     "topic_key": "vitamin_flush_vs_buildup",
-    "hook_title": "남으면 나가는 비타민, 몸에 쌓이는 비타민 5",
-    "subtitle": "많이 먹어 탈 나는 쪽은 기름에 녹는 비타민이에요",
+    "hook_title": "영양제 오래 먹기 전에 확인할 것 5",
+    "subtitle": "많이 먹어도 괜찮은 성분과 몸에 쌓이는 성분이 달라요",
     "visual_profile": "myth_fact",
     "visual_mood_hint": "물컵에 녹는 알약과 기름방울 속 알약을 반씩 나눠 보여주는 장면, 밝은 노랑과 파랑 대비, 깨끗한 약국 선반 배경",
     "rank_items": [
       {
         "rank": 1,
-        "name": "비타민C와 B는 물에 녹는 쪽",
-        "card_name": "비타민C·B는 물에 녹는 쪽",
-        "reason": "물에 녹는 비타민은 쓰고 남으면 소변으로 나가요, 대신 빈속에 먹으면 속이 쓰릴 수 있어요",
-        "card_reason": "쓰고 남은 양은 소변으로 나가요, 그래서 매일 챙겨야 해요"
+        "name": "비타민C와 B는 남으면 빠져나가요",
+        "card_name": "비타민C·B는 남으면 빠져나가요",
+        "reason": "물에 녹는 비타민이라 쓰고 남은 양은 소변으로 나가고, 대신 매일 챙겨 먹어야 해요",
+        "card_reason": "물에 녹는 비타민이라 쓰고 남은 양은 소변으로 나가요. 대신 매일 챙겨야 해요"
       },
       {
         "rank": 2,
-        "name": "비타민D·A·E는 기름에 녹는 쪽",
-        "card_name": "비타민D·A·E는 기름에 녹는 쪽",
-        "reason": "기름에 녹는 비타민은 소변으로 못 나가고 몸에 남아서 많이 먹으면 그대로 쌓여요",
-        "card_reason": "소변으로 못 나가고 몸에 남는 쪽이라 많이 먹으면 그대로 쌓여요"
+        "name": "비타민D와 A는 몸에 쌓여요",
+        "card_name": "비타민D·A는 몸에 쌓여요",
+        "reason": "기름에 녹는 비타민이라 소변으로 못 나가고 정해진 양보다 많이 먹으면 그대로 쌓여요",
+        "card_reason": "기름에 녹는 비타민이라 소변으로 못 나가요. 많이 먹으면 그대로 쌓여요"
       },
       {
         "rank": 3,
-        "name": "철분은 내보내는 길이 없어요",
-        "card_name": "철분은 내보내는 길이 없어요",
-        "reason": "몸은 철분을 일부러 버리는 길이 거의 없어서 모자라다는 말을 듣기 전엔 챙겨 먹지 않는 게 나아요",
-        "card_reason": "몸엔 철분을 버리는 길이 거의 없어요, 모자랄 때만 챙길 성분이에요"
+        "name": "철분은 몸이 버리지 못해요",
+        "card_name": "철분은 몸이 버리지 못해요",
+        "reason": "몸에는 남는 철분을 내보내는 길이 거의 없어서 부족하다는 검사 결과가 있을 때만 먹어야 해요",
+        "card_reason": "몸에는 남는 철분을 내보내는 길이 거의 없어요. 부족하다고 나올 때만 드세요"
       },
       {
         "rank": 4,
-        "name": "아연을 오래 많이 먹으면",
-        "card_name": "아연을 오래 많이 먹으면",
-        "reason": "아연을 오래 많이 먹으면 같은 자리로 흡수되는 다른 미네랄이 밀려나요",
-        "card_reason": "같은 문으로 들어오는 다른 미네랄이 밀려나서 오히려 손해예요"
+        "name": "아연을 오래 많이 먹으면 구리가 부족해져요",
+        "card_name": "아연을 많이 먹으면 구리가 부족해져요",
+        "reason": "아연과 구리는 몸에 들어오는 통로가 같아서 아연만 계속 먹으면 구리가 밀려나요",
+        "card_reason": "아연과 구리는 들어오는 통로가 같아서 아연만 계속 먹으면 구리가 밀려나요"
       },
       {
         "rank": 5,
-        "name": "제일 흔한 건 성분 겹침",
-        "card_name": "제일 흔한 건 성분 겹침",
-        "reason": "종합비타민에 이미 든 성분을 단일 영양제로 또 사는 게 제일 흔한 겹침이에요, 뒷면 성분표부터 견줘 봐요",
-        "card_reason": "종합비타민에 든 성분을 단일제로 또 사는 게 제일 흔한 낭비예요"
+        "name": "종합비타민과 겹치는 성분 보기",
+        "card_name": "종합비타민과 겹치는 성분 보기",
+        "reason": "종합비타민에 이미 든 성분을 따로 또 사는 경우가 제일 흔하니 뒷면 성분표를 견줘 보세요",
+        "card_reason": "종합비타민에 든 성분을 따로 또 사는 경우가 제일 흔해요. 뒷면을 견줘 보세요"
       }
     ],
-    "video_script": "비타민도 나가는 쪽과 쌓이는 쪽이 달라요.",
-    "tags": ["건강정보", "시니어건강", "영양제"],
-    "bgm_prompt": "sunny marimba-free light piano, curious and clear explainer mood, uplifting"
+    "video_script": "영양제도 나가는 성분과 쌓이는 성분이 달라요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "영양제"
+    ],
+    "bgm_prompt": "sunny light piano with soft bells, curious and clear explainer mood, uplifting"
   }
 }
