@@ -12,10 +12,11 @@ function footerSafeZoneLine(box) {
   return `SUBSCRIBE_FOOTER_V2: render the supplied Korean footer subscribe line exactly once, as one compact footer block inside the critical-content box below the last row. Use at most two centered lines, keep its bottom edge at or above y ${box.bottom}, and never place any part of it in the bottom UI band. Keep it smaller than card_reason text and quieter in color so it reads as a gentle sign-off, not a banner. Copy it verbatim; never invent a different subscribe or follow request.`;
 }
 
-// 건강장수비결은 카드에 CTA를 찍지 않는다(2026-08-05 사용자 지시). 지시문이 아예
-// 없으면 모델이 빈 하단을 채우려고 구독 문구를 지어내는 일이 있어, 금지를 명시한다.
-function noFooterSafeZoneLine() {
-  return 'NO_FOOTER_V1: this card has no footer, subscribe, or follow line of any kind. The last ranked row is the final text on the card; keep everything below it as background only. Never invent a subscribe, follow, handle, or closing request, even if the space looks empty.';
+// 건강장수비결도 CTA를 찍는다. 다만 핸들과 채널명은 절대 넣지 않는다(2026-08-05
+// 사용자 지시). 이 채널 카드는 건강장수비결 유튜브와 하루건강약사 인스타 양쪽에
+// 올라가므로, 어느 한쪽 이름을 박으면 다른 쪽에서 남의 채널을 홍보하는 꼴이 된다.
+function noHandleFooterSafeZoneLine(box) {
+  return `SUBSCRIBE_FOOTER_V3: render the supplied Korean footer line exactly once, as one compact block inside the critical-content box below the last row. Use at most two centered lines and keep its bottom edge at or above y ${box.bottom}. Keep it smaller than card_reason text and quieter in color. Copy it verbatim. It carries NO channel handle, NO @username, and NO channel name — this card is posted on two different accounts, so naming either one is wrong. Never add a handle the copy does not contain.`;
 }
 
 const root = 'C:/dev/n8n-youtube-shorts-automation';
@@ -1291,7 +1292,7 @@ const bgm_payload = {
     extraLines: [
       target.profile.id === 'haru_health_literacy'
         ? footerSafeZoneLine(SAFE_ZONE_BOX)
-        : noFooterSafeZoneLine(),
+        : noHandleFooterSafeZoneLine(SAFE_ZONE_BOX),
     ],
   })}
 
@@ -1366,6 +1367,25 @@ const posterReadabilityInstruction = [
   // Strip any previous injection first so re-runs stay idempotent.
   code = code.replace(/\/\/ subscribe_footer_copy_v1\n[\s\S]*?\n\/\/ subscribe_footer_copy_end\n/g, '');
   code = code.replace(/  'FOOTER SUBSCRIBE LINE[^\n]*\n/g, '');
+  if (target.profile.id !== 'haru_health_literacy') {
+    // 건강장수비결: CTA는 넣되 핸들·채널명은 빼고 이득만 말한다. 이 카드는 유튜브
+    // 건강장수비결과 인스타 하루건강약사 두 곳에 올라가므로 이름을 박을 수 없다.
+    code = replaceRequired(
+      code,
+      'const visibleText = [',
+      `// subscribe_footer_copy_v1
+const subscribeCta = '오래 건강하게 사는 지혜, 팔로우하면 매일 무료로 챙겨드려요';
+// subscribe_footer_copy_end
+const visibleText = [`,
+      'prepare: subscribe footer copy',
+    );
+    code = replaceRequired(
+      code,
+      "  imageRows,\n].filter(Boolean).join(LF);",
+      "  imageRows,\n  'FOOTER SUBSCRIBE LINE, small, safe-area footer only: ' + subscribeCta,\n].filter(Boolean).join(LF);",
+      'prepare: subscribe footer in visible text',
+    );
+  }
   if (target.profile.id === 'haru_health_literacy') {
     // 핸들을 붙이는 이유(2026-08-05 사용자 지시): 같은 카드가 유튜브와 인스타에 같이
     // 올라가는데, 팔로우하라고만 하고 어디를 팔로우하는지는 말하지 않고 있었다.
@@ -1374,7 +1394,7 @@ const posterReadabilityInstruction = [
       code,
       'const visibleText = [',
       `// subscribe_footer_copy_v1
-const subscribeCta = '몸에 도움 되는 정보를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요 · @haruyaksa';
+const subscribeCta = '약사가 알려주는 건강 정보와 삶의 지혜, 팔로우하면 매일 무료로 챙겨드려요 · @haruyaksa';
 // subscribe_footer_copy_end
 const visibleText = [`,
       'prepare: subscribe footer copy',

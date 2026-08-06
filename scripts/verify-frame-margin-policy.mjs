@@ -11,7 +11,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { shortsMarginPromptLines } from './lib/safe-zone.mjs';
+import { shortsMarginPromptLines, safeBoxFor } from './lib/safe-zone.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const workflowDir = path.join(root, 'workflows');
@@ -73,8 +73,15 @@ assert.equal(generating.length, 5, `expected 5 image-generating circuits, found 
 
 // 문구가 표에서 생성됐는지. 숫자를 손으로 적으면 마진 표를 고쳐도 안 따라온다.
 assert.match(headLine, /^SHORTS_MARGIN_V1/, 'margin block lost its marker');
-assert.match(marginLines[2], /top 230 px \(top 12 percent\).*bottom 422 px \(bottom 22 percent\)/, 'band sizes drifted from the shared table');
-assert.equal(tailLine, 'The app interface covers those two strips on a phone, so any Korean text placed there is lost.');
+const marginBox = safeBoxFor(1080, 1920, '9:16');
+assert.match(
+  marginLines[2],
+  new RegExp(`top ${marginBox.topInset} px \\(top ${Math.round(marginBox.margins.top * 100)} percent\\).*bottom ${marginBox.bottomInset} px \\(bottom ${Math.round(marginBox.margins.bottom * 100)} percent\\)`),
+  'band sizes drifted from the shared table',
+);
+// 하단 밴드가 상단보다 훨씬 깊어야 한다. 계정명·캡션·음원이 아래를 통째로 덮는다.
+assert.ok(marginBox.bottomInset > marginBox.topInset * 2, 'the bottom band must stay far deeper than the top one');
+assert.equal(tailLine, 'The app interface covers those strips on a phone, so any Korean text placed there is lost.');
 
 console.log(JSON.stringify({
   ok: true,

@@ -254,18 +254,24 @@ for (const relativePath of workflowFiles) {
   assert.match(prepare, /VERTICAL_FILL_V2/, `${relativePath}: bottom-fill contract missing, cards will compress upward or clip again`);
   assert.match(prepare, /BAND_BACKGROUND_V1/, `${relativePath}: reserved bands would render as blank strips without the background-continuation contract`);
   assert.match(prepare, /GLYPH_INTEGRITY_V1/, `${relativePath}: minimum glyph size contract missing, small Korean text renders broken`);
-  // 하루건강약사만 카드에 팔로우 CTA를 찍는다. 건강장수비결은 카드에 CTA를 아예
-  // 넣지 않는다(2026-08-05 사용자 지시) — 문구 상수도, FOOTER 줄도, 계약 지시문도 없어야 한다.
-  const cardHasFooter = expected.profile === 'haru_health_literacy';
-  if (cardHasFooter) {
+  // 두 채널 다 카드에 CTA를 찍는다. 갈리는 건 이름을 쓰느냐다(2026-08-05 사용자 지시).
+  // 하루건강약사 카드는 하루건강약사 인스타에만 올라가니 핸들을 박아 팔로우를 받는다.
+  // 건강장수비결 카드는 건강장수비결 유튜브와 하루건강약사 인스타 두 곳에 올라가므로
+  // 어느 이름을 적어도 다른 쪽에서는 남의 채널 홍보가 된다. 그래서 이득만 말하고 이름은 뺀다.
+  const cardNamesItsChannel = expected.profile === 'haru_health_literacy';
+  assert.match(prepare, /footer.*inside the critical-content box/i, `${relativePath}: footer can still fall under Shorts UI`);
+  assert.match(prepare, /FOOTER SUBSCRIBE LINE/, `${relativePath}: card footer line is missing`);
+  if (cardNamesItsChannel) {
     assert.match(prepare, /SUBSCRIBE_FOOTER_V2/, `${relativePath}: safe-area subscribe footer contract missing`);
-    assert.match(prepare, /footer.*inside the critical-content box/i, `${relativePath}: footer can still fall under Shorts UI`);
-    assert.match(prepare, /매일 하나씩 전해 드려요. 팔로우해 두시면/, `${relativePath}: dignified value-first subscribe copy missing`);
+    assert.match(prepare, /팔로우하면 매일 무료로 챙겨드려요 · @haruyaksa/, `${relativePath}: 하루건강약사 footer lost its handle or its reason to follow`);
   } else {
-    assert.match(prepare, /NO_FOOTER_V1/, `${relativePath}: no-footer contract missing, model may invent a subscribe line`);
-    assert.doesNotMatch(prepare, /SUBSCRIBE_FOOTER_V2/, `${relativePath}: subscribe footer contract remains on a no-CTA channel`);
-    assert.doesNotMatch(prepare, /FOOTER SUBSCRIBE LINE/, `${relativePath}: footer copy line remains on a no-CTA channel`);
-    assert.doesNotMatch(prepare, /구독해 두시면|팔로우해 두시면/, `${relativePath}: subscribe copy remains on a no-CTA channel`);
+    assert.match(prepare, /SUBSCRIBE_FOOTER_V3/, `${relativePath}: no-handle footer contract missing`);
+    assert.match(prepare, /오래 건강하게 사는 지혜, 팔로우하면 매일 무료로 챙겨드려요/, `${relativePath}: 건강장수비결 footer copy missing`);
+    assert.doesNotMatch(prepare, /SUBSCRIBE_FOOTER_V2/, `${relativePath}: 하루건강약사 footer contract leaked onto 건강장수비결`);
+    // 이름이 새어 들어가면 두 계정 중 한쪽에서 반드시 틀린 카드가 된다.
+    const cta = prepare.match(/const subscribeCta = '([^']+)'/);
+    assert.ok(cta, `${relativePath}: subscribeCta constant is missing`);
+    assert.doesNotMatch(cta[1], /@|하루건강약사|건강장수비결|haruyaksa/, `${relativePath}: 건강장수비결 footer must not name a channel or handle`);
   }
   assert.doesNotMatch(prepare, /may sit under feed UI|bottom band only/i, `${relativePath}: legacy obscured-footer instruction remains`);
   assert.match(prepare, /POSTER_READABILITY_V2/, `${relativePath}: generalized poster readability marker missing`);
@@ -442,11 +448,15 @@ for (const relativePath of workflowFiles) {
   assert.match(prepared.image_payload.input.prompt, /VERTICAL_FILL_V2/, `${relativePath}: runtime image prompt lost the bottom-fill contract`);
   assert.match(prepared.image_payload.input.prompt, /BAND_BACKGROUND_V1/, `${relativePath}: runtime image prompt lost the band background continuation`);
   assert.match(prepared.image_payload.input.prompt, /GLYPH_INTEGRITY_V1/, `${relativePath}: runtime image prompt lost the glyph-size floor`);
-  if (cardHasFooter) {
-    assert.match(prepared.image_payload.input.prompt, /FOOTER SUBSCRIBE LINE.*팔로우해 두시면/s, `${relativePath}: runtime image prompt lost the subscribe footer copy`);
+  const runtimeFooter = prepared.image_payload.input.prompt
+    .split('\n')
+    .find((line) => line.startsWith('FOOTER SUBSCRIBE LINE'));
+  assert.ok(runtimeFooter, `${relativePath}: runtime image prompt lost its FOOTER SUBSCRIBE LINE`);
+  if (cardNamesItsChannel) {
+    assert.match(runtimeFooter, /@haruyaksa/, `${relativePath}: runtime footer lost the channel handle`);
   } else {
-    assert.match(prepared.image_payload.input.prompt, /NO_FOOTER_V1/, `${relativePath}: runtime image prompt lost the no-footer contract`);
-    assert.doesNotMatch(prepared.image_payload.input.prompt, /FOOTER SUBSCRIBE LINE|구독해 두시면|팔로우해 두시면/, `${relativePath}: runtime image prompt still carries subscribe copy on a no-CTA channel`);
+    assert.match(prepared.image_payload.input.prompt, /SUBSCRIBE_FOOTER_V3/, `${relativePath}: runtime image prompt lost the no-handle footer contract`);
+    assert.doesNotMatch(runtimeFooter, /@|하루건강약사|건강장수비결|haruyaksa/, `${relativePath}: 건강장수비결 runtime footer must not name a channel`);
   }
   assert.doesNotMatch(prepared.image_payload.input.prompt, /may sit under feed UI|bottom band only/i, `${relativePath}: runtime image prompt can still hide the footer under UI`);
   assert.match(prepared.image_payload.input.prompt, /largest practical Korean type/i, `${relativePath}: runtime image prompt lost large-type priority`);

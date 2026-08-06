@@ -28,10 +28,15 @@ const fail = (message) => { throw new Error(message); };
 // ---------------------------------------------------------------------------
 // 왼쪽은 0이다. 쇼츠·릴스 UI가 왼쪽 가장자리를 덮지 않으므로 여백을 두지 않는다
 // (2026-08-04 사용자 지시). 오른쪽 아이콘 열, 상단 카메라·검색, 하단 캡션만 피한다.
+// 2026-08-05: 상단을 12%에서 8%로 줄이고 오른쪽을 11%에서 10%로 좁혔다. 하단선
+// y 1498은 그대로다 — 거기가 계정명·캡션·음원이 덮는 자리라 유일하게 못 건드린다.
 const box = safeBoxFor(1080, 1920, '9:16');
-if (box.left !== 0 || box.top !== 230 || box.right !== 961 || box.bottom !== 1498) {
+if (box.left !== 0 || box.top !== 154 || box.right !== 972 || box.bottom !== 1498) {
   fail(`9:16 safe box drifted: ${JSON.stringify(box)}`);
 }
+// 하단 밴드는 어떤 개편에서도 줄이면 안 된다. 위쪽에서 여유를 만들어야 한다.
+if (box.bottomInset < 422) fail(`bottom UI band shrank to ${box.bottomInset} px; it must stay at 422 px or deeper`);
+if (box.topInset >= box.bottomInset / 2) fail('top band is no longer clearly shallower than the bottom band');
 if (detectAspect(1080, 1920) !== '9:16' || detectAspect(1122, 1402) !== '4:5') {
   fail('aspect detection broken');
 }

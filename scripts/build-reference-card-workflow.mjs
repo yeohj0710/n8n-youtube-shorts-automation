@@ -39,9 +39,13 @@ const INSTAGRAM_AUTOMATION_SCRIPT = 'G:/내 드라이브/영상 편집/AI 크리
 // 건강뿐 아니라 관계·인생 주제가 섞여 있는데, 메인 회로에서 물려받은 '몸에 도움 되는
 // 정보'는 채널 프로필만 보고 붙어서 관계 주제 카드에도 그대로 찍혔다(2026-08-03 발행분).
 // 주제로 문구를 갈라도 카드 이미지 쪽은 갈라지지 않으므로, 양쪽 다 덮는 한 줄로 통일한다.
-const REFERENCE_CLOSING_LEAD = '삶에 도움 되는 지혜를 매일 하나씩 전해 드려요';
-const REFERENCE_CLOSING_FOLLOW = '팔로우해 두시면 놓치지 않고 받아보실 수 있어요';
-const MAIN_CLOSING_LEAD = '몸에 도움 되는 정보를 매일 하나씩 전해 드려요';
+// 2026-08-05: 덮어쓰기를 유지할 이유가 사라졌다. 본편 푸터가 '몸에 도움 되는 정보'
+// 하나만 말하던 시절에는 관계·인생 주제 카드에 안 맞아서 이 회로만 따로 갈아끼웠는데,
+// 새 문구가 '건강 정보와 삶의 지혜'로 둘 다 덮고 핸들까지 달고 나온다. 그래서 두 상수를
+// 같은 값으로 두고 치환은 항등으로 남긴다 — 본편 문구가 또 바뀌면 아래 가드가 먼저 깨진다.
+const REFERENCE_CLOSING_LEAD = '약사가 알려주는 건강 정보와 삶의 지혜, 팔로우하면 매일 무료로 챙겨드려요';
+const REFERENCE_CLOSING_FOLLOW = '@haruyaksa';
+const MAIN_CLOSING_LEAD = REFERENCE_CLOSING_LEAD;
 
 // 데드존 좌표는 손으로 쓰지 않는다. 이 저장소는 마진 표를 lib/safe-zone.mjs 한 곳에만
 // 두기로 했고, 과거에 표가 복제돼 한쪽만 고쳐지는 사고가 있었다. n8n Code 노드는
@@ -819,8 +823,9 @@ function addHandleToCardFooterRuntime(definition) {
     throw new Error('이미지 프롬프트에 채널 핸들을 넣지 못했습니다. 메인 회로의 FOOTER SUBSCRIBE LINE 문구가 바뀌었는지 확인하세요.');
   }
   // 문구가 살아남았는지 본다. 메인 회로가 푸터 문구를 바꾸면 조용히 옛말이 나가는 대신
-  // 여기서 멈춘다.
-  if (imagePayload?.input?.prompt && imagePayload.input.prompt.includes(definition.mainClosingLead)) {
+  // 여기서 멈춘다. 단 두 문구가 같으면(덮어쓸 이유가 없어진 상태) 남아 있는 게 정상이다.
+  const overridesMainClosing = definition.mainClosingLead !== definition.closingLead;
+  if (overridesMainClosing && imagePayload?.input?.prompt && imagePayload.input.prompt.includes(definition.mainClosingLead)) {
     throw new Error('카드 푸터에 메인 회로 문구가 남았습니다: ' + definition.mainClosingLead);
   }
   if (imagePayload?.input?.prompt && !imagePayload.input.prompt.includes(definition.closingLead)) {

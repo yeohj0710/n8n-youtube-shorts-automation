@@ -30,7 +30,7 @@ function stripChannelFooter(code) {
     .replace(/\/\/ subscribe_footer_copy_v1\n[\s\S]*?\n\/\/ subscribe_footer_copy_end\n/g, '')
     .replace(/^.*'FOOTER SUBSCRIBE LINE[^\n]*\n/gm, '')
     .replace(/^.*SUBSCRIBE_FOOTER_V2[^\n]*$/gm, 'CHANNEL_FOOTER_CONTRACT')
-    .replace(/^.*NO_FOOTER_V1[^\n]*$/gm, 'CHANNEL_FOOTER_CONTRACT')
+    .replace(/^.*SUBSCRIBE_FOOTER_V3[^\n]*$/gm, 'CHANNEL_FOOTER_CONTRACT')
     // 하루건강약사만 카드에 핸들을 찍으므로 화이트리스트에 로마자 예외가 하나 열려
     // 있다(2026-08-05). 푸터와 같은 이유로 채널 소유이며, 이 조각만 접고 나머지는
     // 그대로 비교해서 다른 드리프트가 뒤에 숨지 못하게 한다.

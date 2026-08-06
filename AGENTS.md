@@ -464,20 +464,41 @@ inside a blurred surround (measured, not estimated), and the user has ruled that
 out: wrongly-shrunk frames have gone up before. So this one circuit keeps
 `safe_zone_mode: off` and buys its margins with `REFERENCE_CARD_MARGIN_V1`, a
 short block `Add Handle To Card Footer` appends to the **end** of the prompt.
-It restates the shared box as a scene ("the top 230 px and bottom 422 px are open
+It restates the shared box as a scene ("the top 154 px and bottom 422 px are open
 background") and, most importantly, redefines the closing line as the last line of
 the text block rather than a bar across the bottom of the frame — that is where
 the mid-prompt `SHARED_SAFE_ZONE_V1` coordinates were losing. Nothing verifies the
 model obeyed; `verify-reference-card-workflow.mjs` only checks the block survived
 and is last. Judge it by looking at the rendered frames.
 
-The closing line is also one line for every topic here: `삶에 도움 되는 지혜를 매일
-하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.` The main circuit
-builds the card footer from `channel_editorial_profile` alone, so it stamped
-`몸에 도움 되는 정보` on relationship-topic cards; the description could branch on
-topic but the image could not, which put the card and its caption at odds.
-`Add Handle To Card Footer` rewrites the inherited line and throws if the main
-circuit's wording drifts out from under it.
+The closing line no longer needs rewriting here (2026-08-05). The main circuit's
+footer used to say only `몸에 도움 되는 정보`, which read wrong on a relationship
+card, so this circuit swapped in its own line. The new wording — `약사가 알려주는
+건강 정보와 삶의 지혜, 팔로우하면 매일 무료로 챙겨드려요 · @haruyaksa` — covers both
+subjects and already carries the handle, so `MAIN_CLOSING_LEAD` and
+`REFERENCE_CLOSING_LEAD` are the same string and the swap is an identity.
+`Add Handle To Card Footer` still runs and still throws when the main circuit's
+wording drifts out from under it; it just has nothing to replace right now.
+
+## Who May Name a Channel on the Card (2026-08-05)
+
+Both channels print a footer CTA. What differs is whether it may name anyone.
+
+| Circuit | Footer | Handle |
+| --- | --- | --- |
+| 하루건강약사 (본편·레퍼런스 카드) | 팔로우 유도 | **`@haruyaksa` required** |
+| 건강장수비결 (본편) | 팔로우 유도 | **forbidden — no handle, no channel name** |
+| 완성 이미지 x2 | inherited from the card-news pipeline | same rule, enforced there |
+| 원본 릴스 x2 | none by design | — |
+
+건강장수비결 cards go up on the 건강장수비결 YouTube channel *and* on the
+하루건강약사 Instagram account. Printing either name means advertising the wrong
+account on one of the two, so that footer sells the benefit and names nobody.
+`verify-coherent-editorial-flow.mjs` reads the `subscribeCta` constant and fails
+if a handle, an `@`, or either channel name appears in it. The card text
+whitelist bans Latin letters outright, so 하루건강약사 opens one narrow exception
+for `@haruyaksa` and nothing else — `verify-legacy-workflow-parity.mjs` treats
+that exception as channel-owned, the same way it treats the footer itself.
 
 The number that matters: all 2,000 rows carry reworked copy, but the dataset's own
 QA marks only **11** as `publish_ready`. `claim_risk` is `high` on 1,945 and
@@ -519,7 +540,7 @@ Margins come from two places instead:
 
 - **`SHORTS_MARGIN_V1`** — appended to the end of the image prompt in all five
   image-generating circuits. It restates the shared box as a scene ("the top
-  230 px and bottom 422 px are open background") and redefines the closing line
+  154 px and bottom 422 px are open background") and redefines the closing line
   as the last line of the text block rather than a bar across the frame bottom.
   That last clause is the one that mattered: the model reliably parked the footer
   at the frame edge, which is where the mid-prompt `SHARED_SAFE_ZONE_V1`
@@ -560,7 +581,7 @@ the text was there the whole time.
 The enforcement now lives in `scripts\render-static-card.mjs`, which every
 publishing circuit already routes through. It calls `fitCanvasWithSafeZone`
 from `scripts\lib\safe-zone.mjs`: if the frame's content reaches into a band,
-the whole frame is scaled into the critical-content box (x 54-961, y 230-1498
+the whole frame is scaled into the critical-content box (x 0-972, y 154-1498
 for 1080x1920) and the edges are filled with a strongly blurred, dimmed,
 zoomed copy of the same art, so no blank strip appears. The render result
 reports `safe_zone.applied / reason / scale / card`, visible in the n8n

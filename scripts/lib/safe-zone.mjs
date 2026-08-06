@@ -18,9 +18,14 @@ import sharp from 'sharp';
 // 오른쪽에는 좋아요·댓글·공유 아이콘 세로열이, 아래에는 계정명·캡션·음원이, 위에는
 // 카메라·검색이 올라오지만 왼쪽에는 아무것도 없다. 5%를 버리던 건 근거 없는 대칭이었고,
 // 가로 폭이 아쉬운 카드에서 그만큼 손해였다. 좌우를 비대칭으로 두는 게 요점이다.
+// 9:16 상단을 12%에서 8%로 줄인 이유(2026-08-05 사용자 지시): 위쪽 UI는 카메라·검색
+// 아이콘뿐이라 12%는 과했다. 발행된 프레임을 보면 상단은 늘 여유가 남는데 하단은
+// 늘 넘쳤다. 상단에서 76px을 돌려받아 콘텐츠 전체를 위로 올리고, 그만큼 하단 22%를
+// 지킬 여유를 만든다. 하단선(y 1498)은 그대로다 — 거기가 계정명·캡션·음원이 덮는 자리다.
+// 오른쪽은 11%에서 10%로. 아이콘 세로열이 실제로 먹는 폭이 그 정도다.
 export const SAFE_ZONE_MARGINS = {
   '4:5': { top: 0.08, bottom: 0.12, left: 0, right: 0.12 },
-  '9:16': { top: 0.12, bottom: 0.22, left: 0, right: 0.11 },
+  '9:16': { top: 0.08, bottom: 0.22, left: 0, right: 0.10 },
 };
 
 export const SUPPORTED_IMAGE_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.webp']);
@@ -80,7 +85,13 @@ export function shortsSafeZonePromptLines(width = 1080, height = 1920) {
     `CONTENT_PANEL_V1: draw one rounded panel and put every supplied Korean letter inside it. ITS TOP EDGE SITS AT y ${box.top} AND ITS BOTTOM EDGE SITS AT y ${box.bottom}. Both numbers are fixed: do not float the panel lower to make room for a bigger photograph above it, and do not stretch it past y ${box.bottom}. The photographed background shows only in the ${box.topInset} px above the panel and the ${box.bottomInset} px below it. Treat the panel as a physical container: rows stack inside it and the last row ends above its bottom edge. If the rows do not fit, the panel does not move; make the rows shorter instead.`,
     `PANEL_RIGHT_EDGE_V1: the panel's right edge sits at x ${box.right}, and the title obeys it like every other line. A title that runs to the frame edge loses its last character behind the Shorts button column. Break the title into another line before letting it cross x ${box.right}.`,
     'TITLE_ZONE_CAP_V1: the title zone takes at most one third of the footprint height, and about one quarter is the target. Set the title in at most 3 lines, preferably 2. There is NO subtitle on this card — do not invent a second line under the title. The space it used to take belongs to the rows. A published frame spent nearly half the card on a five-line title and starved the ranked rows; that is a failure. Leftover vertical space always goes to the ranked rows, never to enlarging the title further.',
-    'GLYPH_INTEGRITY_V1: small Korean type renders with broken or malformed strokes, so glyph size is a rendering-safety floor, not a style choice. Keep card_reason text no smaller than about 3 percent of frame height (roughly 55 px) and item names clearly larger. If the copy cannot fit at that size, remove decoration or drop the frame to fewer visual elements; never render Korean text small enough to risk broken glyphs.',
+    // 2026-08-05 실측: 발행된 프레임의 card_reason이 29~30px이었다. 하한이 55px인데
+    // 절반으로 뭉갠 것이다. 모델은 하한을 지키느니 글자를 줄이는 쪽을 고른다. 그래서
+    // 하한을 숫자로 다시 말하는 대신 "무엇을 먼저 버려야 하는가"를 순서로 준다.
+    `GLYPH_INTEGRITY_V1: Korean type below about 3 percent of frame height renders with broken strokes, and at this card's viewing size anything under ${Math.round(height * 0.026)} px is unreadable in a feed. Set card_reason at ${Math.round(height * 0.028)} px or larger and item names at ${Math.round(height * 0.036)} px or larger. THESE ARE FLOORS, NOT TARGETS — go bigger whenever the box allows. If the copy will not fit at those sizes, cut in this order: decoration first, then the illustration, then row spacing. Shrinking the Korean type is the last resort and never below the floor; a frame with unreadable rows has failed even when every rule above is satisfied.`,
+    // 일러스트 열이 폭의 30%를 먹으면 같은 문장이 2줄에서 3줄로 늘어나고, 그만큼
+    // 글자를 줄여야 들어간다. 실측한 카드가 정확히 그 상태였다(텍스트 폭 610px).
+    `ILLUSTRATION_BUDGET_V1: any per-row picture, icon, or product cutout is a small marker, not a column. Keep it under ${Math.round(width * 0.13)} px wide so the Korean sentence gets at least ${Math.round(width * 0.78)} px of line width. A wide picture column forces the sentence onto an extra line and the extra line forces the type smaller — the row text always outranks the row picture.`,
     // POST_RENDER_REFIT_V1은 2026-08-05에 걷어냈다. "넘치면 렌더러가 축소한다"고
     // 위협하는 줄이었는데, 그 축소는 2026-08-03에 금지됐고 7개 회로 전부
     // safe_zone_mode: off 다. 일어나지 않는 일을 경고하는 줄이 9,500자 프롬프트
@@ -104,9 +115,13 @@ export function shortsMarginPromptLines(width = 1080, height = 1920) {
     `Every letter of the Korean copy — title, all rows, and the closing line — sits between y ${box.top} and y ${box.bottom} of the ${width}x${height} frame.`,
     `The top ${box.topInset} px (top ${topPercent} percent) and the bottom ${box.bottomInset} px (bottom ${bottomPercent} percent) are open background: photographed scene, soft blur, plants, wood, cloth, light. Draw no letters, no panel edge, no footer bar, and no divider line in those two strips. Leaving them visibly empty is the point, not a mistake.`,
     'The closing line is the final line of the text block, tucked directly under the last row. It is never a strip along the bottom of the frame.',
-    'The title begins below the top strip, with clear background above its first line. Do not let the title touch the top edge.',
-    'If the copy runs long, tighten row spacing, shrink decoration, or set the title in two lines. Never gain room by pushing the title up or the closing line down into the strips.',
-    'The app interface covers those two strips on a phone, so any Korean text placed there is lost.',
+    // 두 띠는 같은 무게가 아니다(2026-08-05 사용자 지시). 위는 카메라·검색 아이콘뿐이라
+    // 조금 넘어도 글자가 읽히지만, 아래는 계정명·캡션·음원이 통째로 덮어서 완전히 사라진다.
+    // 그래서 남는 여유는 늘 위로 보내고, 아래는 한 글자도 못 넘게 한다.
+    `THE TWO STRIPS ARE NOT EQUAL. The bottom ${box.bottomInset} px is the strict one: account name, caption, and audio title cover it completely and anything there is gone. The top ${box.topInset} px only carries small camera and search icons. So push the whole text block UP: start the title right at y ${box.top} with only a thin breathing gap, and let any leftover space fall at the bottom, above the strip. Never the other way around.`,
+    'If the copy runs long, tighten row spacing, shrink decoration, or set the title in two lines. Never gain room by pushing the closing line down into the bottom strip.',
+    `The right ${box.rightInset} px carries the like, comment, and share buttons. It is narrower than the bottom strip but it is still real: a title or a row that runs to x ${width} loses its last characters behind those buttons. Keep every line clear of x ${box.right}.`,
+    'The app interface covers those strips on a phone, so any Korean text placed there is lost.',
   ];
 }
 

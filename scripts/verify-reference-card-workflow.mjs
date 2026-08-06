@@ -19,7 +19,7 @@ const HANDLE = '@haruyaksa';
 // 이 회로는 건강과 관계·인생 주제를 섞어 고른다. 카드 이미지의 푸터는 메인 회로가
 // 채널 프로필만 보고 찍기 때문에 주제별로 가를 수 없어서, 카드·설명·고정 댓글이
 // 전부 같은 한 줄을 쓴다.
-const CLOSING = '삶에 도움 되는 지혜를 매일 하나씩 전해 드려요. 팔로우해 두시면 놓치지 않고 받아보실 수 있어요.';
+const CLOSING = '약사가 알려주는 건강 정보와 삶의 지혜, 팔로우하면 매일 무료로 챙겨드려요. @haruyaksa.';
 const MAIN_CLOSING_LEAD = '몸에 도움 되는 정보를 매일 하나씩 전해 드려요';
 const SPREADSHEET_ID = '1K6gT9TY_WHuxB3SHEx5VyJK2JunQWJRdkdV4ecNu_fc';
 const SHEET_ID = 159350994;
