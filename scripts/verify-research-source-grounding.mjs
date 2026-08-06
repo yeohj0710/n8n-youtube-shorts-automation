@@ -142,7 +142,7 @@ const groundedPack = {
       name: '밥부터 먼저 뜨기',
       card_name: '밥부터 먼저 뜨기',
       reason: '같은 밥상이어도 밥을 먼저 먹으면 식후 혈당이 가장 가파르게 올라요',
-      card_reason: '밥부터 먹으면 식후에 확 올라요',
+      card_reason: '밥부터 먹으면 확 올라요',
     },
     {
       rank: 2,
@@ -151,7 +151,7 @@ const groundedPack = {
       name: '채소 반찬 먼저 먹기',
       card_name: '채소 반찬 먼저',
       reason: '나물이나 김치부터 먼저 먹고 밥을 나중에 먹으면 식후 혈당이 훨씬 완만하게 올라요',
-      card_reason: '반찬부터 먹으면 훨씬 천천히 올라요',
+      card_reason: '반찬부터 먹으면 천천히 올라요',
     },
     {
       rank: 3,
@@ -169,7 +169,7 @@ const groundedPack = {
       name: '반찬 먹고 잠깐 뒤에 밥',
       card_name: '잠깐 뒤에 밥',
       reason: '반찬을 먼저 먹고 조금 있다가 밥을 뜨는 방식으로 시험했고 그 조건에서 차이가 나왔어요',
-      card_reason: '반찬 먹고 조금 있다 밥을 떠요',
+      card_reason: '반찬 먹고 밥을 떠요',
     },
     {
       rank: 5,
@@ -178,7 +178,7 @@ const groundedPack = {
       name: '순서 바꾸기를 어렵게 여기기',
       card_name: '어렵다는 생각',
       reason: '넉 달 동안 실제로 해 본 사람들 대부분이 어렵지 않았다고 답했고 채소와 단백질을 오히려 더 먹게 됐어요',
-      card_reason: '해 본 사람 대부분 어렵지 않대요',
+      card_reason: '해 본 사람은 안 어렵대요',
     },
   ],
   video_script: '같은 밥상도 순서만 바꾸면 식후가 달라져요.',
@@ -235,7 +235,7 @@ assert.equal(ungroundedResult.content_quality_review.pass, true, 'source linkage
 // 3. Numbers the cited fact does not contain must be blocked.
 // ---------------------------------------------------------------------------
 const inventedNumber = structuredClone(groundedPack);
-inventedNumber.rank_items[2].card_reason = '밥을 20분 미루면 훨씬 덜 올라요';
+inventedNumber.rank_items[2].card_reason = '밥을 20분 미루면 덜 올라요';
 const inventedNumberResult = runGate(deterministicCode, { pack: inventedNumber, config: groundedConfig, research_source_pack: researchPack })[0].json;
 assert.equal(inventedNumberResult.content_quality_review.pass, false, 'a number absent from the cited fact must block');
 assert.ok(inventedNumberResult.content_quality_review.issues.some((issue) => issue.code === 'fabricated_beyond_source' && issue.rank === 3));
@@ -250,7 +250,7 @@ assert.ok(inventedPercentageResult.content_quality_review.issues.some((issue) =>
 // 3b. Clinical wording must never reach the card, even when the source supports it.
 // ---------------------------------------------------------------------------
 const clinicalCopyPack = structuredClone(groundedPack);
-clinicalCopyPack.rank_items[0].card_reason = '종아리 둘레가 34cm 미만이면 선별 기준이에요';
+clinicalCopyPack.rank_items[0].card_reason = '종아리가 34cm 미만이면 선별 기준이에요';
 const clinicalCopyResult = runGate(deterministicCode, { pack: clinicalCopyPack, config: groundedConfig, research_source_pack: researchPack })[0].json;
 assert.equal(clinicalCopyResult.content_quality_review.pass, false, 'a clinical measurement in visible copy must block');
 assert.ok(clinicalCopyResult.content_quality_review.issues.some((issue) => issue.code === 'clinical_unit_in_visible_copy'));
@@ -269,7 +269,7 @@ assert.ok(clinicalTitleResult.content_quality_review.issues.some((issue) => issu
 
 // Everyday numbers stay allowed.
 const everydayNumberPack = structuredClone(groundedPack);
-everydayNumberPack.rank_items[3].card_reason = '반찬 먹고 10분 뒤에 밥을 떠요';
+everydayNumberPack.rank_items[3].card_reason = '10분 뒤에 밥을 떠요';
 const everydayNumberResult = runGate(deterministicCode, { pack: everydayNumberPack, config: groundedConfig, research_source_pack: researchPack })[0].json;
 assert.equal(
   everydayNumberResult.content_quality_review.pass,

@@ -15,30 +15,30 @@
       {
         "rank": 1,
         "name": "시금치나물에 참기름",
-        "card_name": "시금치나물에 참기름",
+        "card_name": "시금치에 참기름",
         "reason": "시금치에 든 비타민은 기름에 녹아야 몸으로 들어와요. 나물을 무칠 때 참기름을 한 바퀴 둘러야 제값을 해요",
-        "card_reason": "시금치에 든 비타민은 기름에 녹아야 몸으로 들어와요. 무칠 때 참기름을 한 바퀴 둘러 주세요"
+        "card_reason": "기름에 녹아야 몸에 들어와요"
       },
       {
         "rank": 2,
         "name": "토마토는 기름에 볶아서",
-        "card_name": "토마토는 기름에 볶아서",
+        "card_name": "토마토는 볶아서",
         "reason": "토마토의 붉은 성분은 생으로 먹을 때보다 기름에 살짝 볶았을 때 훨씬 많이 나와요. 계란과 함께 볶아 드셔도 좋아요",
-        "card_reason": "토마토의 붉은 성분은 생으로 먹을 때보다 기름에 살짝 볶았을 때 훨씬 많이 나와요"
+        "card_reason": "볶으면 훨씬 많이 나와요"
       },
       {
         "rank": 3,
         "name": "콩자반과 쌀밥",
         "card_name": "콩자반과 쌀밥",
         "reason": "쌀에 부족한 성분은 콩에 있고, 콩에 부족한 성분은 쌀에 있어요. 밥에 콩자반을 곁들이면 고기 없이도 단백질이 채워져요",
-        "card_reason": "쌀에 부족한 성분은 콩에 있고, 콩에 부족한 성분은 쌀에 있어요. 같이 드시면 서로 채워 줘요"
+        "card_reason": "서로 부족한 걸 채워 줘요"
       },
       {
         "rank": 4,
         "name": "돼지고기에 양파",
         "card_name": "돼지고기에 양파",
         "reason": "돼지고기에는 피로를 푸는 비타민이 많은데 그냥 먹으면 금방 빠져나가요. 양파를 같이 드시면 몸에 훨씬 오래 남아요",
-        "card_reason": "돼지고기에는 피로를 푸는 비타민이 많은데 그냥 먹으면 금방 빠져나가요. 양파를 같이 드세요"
+        "card_reason": "양파가 비타민을 붙잡아 줘요"
       }
     ],
     "video_script": "같이 먹어야 제값 하는 음식이 있어요.",
@@ -47,6 +47,7 @@
       "시니어건강",
       "음식궁합"
     ],
-    "bgm_prompt": "warm cheerful acoustic guitar with bright piano, cozy dinner table mood"
+    "bgm_prompt": "warm cheerful acoustic guitar with bright piano, cozy dinner table mood",
+    "rank_count": 4
   }
 }

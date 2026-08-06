@@ -30,11 +30,11 @@ function runCode(code, json, extras = {}) {
 const goodPack = {
   hook_title: '잠이 자주 깨는 원인을 줄이는 습관',
   rank_items: [
-    { rank: 1, name: '저녁의 밝은 빛 줄이기', card_name: '저녁 빛 낮추기', reason: '밝은 빛은 몸의 밤 신호를 늦춰 잠들기 어렵게 해요', card_reason: '밝은 빛은 몸의 밤 신호를 늦춰요' },
-    { rank: 2, name: '늦은 카페인 확인하기', card_name: '늦은 카페인 피하기', reason: '카페인은 졸림 신호를 막아 잠이 얕아질 수 있어요', card_reason: '카페인은 졸림 신호를 막을 수 있어요' },
-    { rank: 3, name: '코골이와 숨 멎음 살피기', card_name: '숨 멎는 코골이 확인', reason: '숨이 반복해 막히면 산소가 떨어져 자주 깰 수 있어요', card_reason: '숨이 막히면 잠이 반복해서 끊겨요' },
-    { rank: 4, name: '자기 전 술 줄이기', card_name: '자기 전 술 줄이기', reason: '술은 잠들기는 쉽게 해도 뒤쪽 수면을 얕게 만들어 새벽에 깨기 쉬워요', card_reason: '술은 새벽 잠을 얕게 만들어요' },
-    { rank: 5, name: '침실 온도 낮추기', card_name: '침실 온도 낮추기', reason: '몸속 온도가 떨어져야 잠이 깊어지는데 방이 더우면 그 과정이 늦어져요', card_reason: '방이 더우면 깊은 잠이 늦어져요' },
+    { rank: 1, name: '저녁의 밝은 빛 줄이기', card_name: '저녁 빛 낮추기', reason: '밝은 빛은 몸의 밤 신호를 늦춰 잠들기 어렵게 해요', card_reason: '밝은 빛이 밤 신호를 늦춰요' },
+    { rank: 2, name: '늦은 카페인 확인하기', card_name: '늦은 카페인 피하기', reason: '카페인은 졸림 신호를 막아 잠이 얕아질 수 있어요', card_reason: '카페인이 졸림을 막아요' },
+    { rank: 3, name: '코골이와 숨 멎음 살피기', card_name: '숨 멎는 코골이 확인', reason: '숨이 반복해 막히면 산소가 떨어져 자주 깰 수 있어요', card_reason: '숨이 막히면 잠이 끊겨요' },
+    { rank: 4, name: '자기 전 술 줄이기', card_name: '자기 전 술 줄이기', reason: '술은 잠들기는 쉽게 해도 뒤쪽 수면을 얕게 만들어 새벽에 깨기 쉬워요', card_reason: '술은 새벽 잠을 얕게 해요' },
+    { rank: 5, name: '침실 온도 낮추기', card_name: '침실 온도 낮추기', reason: '몸속 온도가 떨어져야 잠이 깊어지는데 방이 더우면 그 과정이 늦어져요', card_reason: '방이 더우면 잠이 늦어져요' },
   ],
   video_script: '검증용 스크립트',
   description: '잠이 자주 깨는 원인을 몸의 신호와 함께 설명해요.',
@@ -394,7 +394,7 @@ assert.equal(shallowHealthResult.content_quality_review.pass, false, 'housekeepi
 assert.ok(shallowHealthResult.content_quality_review.issues.some((issue) => issue.code === 'insufficient_health_depth'));
 
 const formalTonePack = structuredClone(goodPack);
-formalTonePack.rank_items[0].card_reason = '밝은 빛은 몸의 밤 신호를 늦춥니다';
+formalTonePack.rank_items[0].card_reason = '밝은 빛이 밤 신호를 늦춥니다';
 const formalToneResult = runCode(deterministicCode, { pack: formalTonePack })[0].json;
 assert.equal(formalToneResult.content_quality_review.pass, false, '합니다체 visible copy must block and regenerate');
 assert.ok(formalToneResult.content_quality_review.issues.some((issue) => issue.code === 'channel_tone_mismatch'));

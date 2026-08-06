@@ -15,30 +15,30 @@
       {
         "rank": 1,
         "name": "목이 마르다는 느낌부터 늦게 와요",
-        "card_name": "목이 마르다는 느낌부터 늦게 와요",
+        "card_name": "갈증이 늦게 와요",
         "reason": "나이가 들면 몸에 물이 모자라도 갈증을 느끼는 감각이 무뎌져요. 목이 마를 때까지 기다렸다 마시면 이미 늦어요",
-        "card_reason": "나이가 들면 몸에 물이 모자라도 갈증을 늦게 느껴요. 목이 마를 때까지 기다렸다 마시면 늦어요"
+        "card_reason": "마를 때 마시면 이미 늦어요"
       },
       {
         "rank": 2,
         "name": "낮에 본 소변 색이 진해져요",
-        "card_name": "낮에 본 소변 색이 진해져요",
+        "card_name": "낮 소변이 진해요",
         "reason": "아침에 처음 본 소변은 원래 진하니까 낮에 본 소변으로 봐야 맞아요. 보리차보다 색이 진한 날은 물이 부족한 거예요",
-        "card_reason": "아침 첫 소변은 원래 진하니까 낮 소변으로 봐요. 보리차보다 색이 진한 날은 물이 부족한 거예요"
+        "card_reason": "보리차보다 진하면 부족해요"
       },
       {
         "rank": 3,
         "name": "앉았다 일어설 때 어지러워요",
-        "card_name": "앉았다 일어설 때 어지러워요",
+        "card_name": "일어설 때 어지러워요",
         "reason": "몸에 물이 줄어든 만큼 핏속에 도는 양도 같이 줄어들어요. 앉았다가 일어설 때 눈앞이 핑 도는 일이 잦아져요",
-        "card_reason": "몸에 물이 줄어든 만큼 핏속에 도는 양도 같이 줄어요. 일어설 때 눈앞이 핑 도는 일이 잦아져요"
+        "card_reason": "핏속에 도는 양이 줄었어요"
       },
       {
         "rank": 4,
         "name": "입이 마르고 침이 끈적해져요",
-        "card_name": "입이 마르고 침이 끈적해져요",
+        "card_name": "입이 마르고 끈적",
         "reason": "침이 줄어들어서 입안이 텁텁하고 틀니가 잇몸에 잘 안 붙어요. 입에 생긴 문제가 아니라 물이 모자란 신호예요",
-        "card_reason": "침이 줄어들어서 입안이 텁텁하고 틀니가 잇몸에 잘 안 붙어요. 물이 모자라다는 신호예요"
+        "card_reason": "침이 줄어든 신호예요"
       }
     ],
     "video_script": "여름 물은 목마르기 전에 마셔요.",
@@ -47,6 +47,7 @@
       "시니어건강",
       "여름건강"
     ],
-    "bgm_prompt": "sunny light piano with gentle guitar, refreshing summer morning mood"
+    "bgm_prompt": "sunny light piano with gentle guitar, refreshing summer morning mood",
+    "rank_count": 4
   }
 }

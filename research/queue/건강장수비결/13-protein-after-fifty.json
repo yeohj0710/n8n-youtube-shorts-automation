@@ -15,30 +15,30 @@
       {
         "rank": 1,
         "name": "같은 양을 먹어도 예전만큼 안 붙어요",
-        "card_name": "같은 양을 먹어도 예전만 못해요",
+        "card_name": "같은 양은 모자라요",
         "reason": "나이 든 몸은 같은 고기를 먹어도 근육으로 바꾸는 힘이 떨어져요. 젊을 때와 같은 양으로는 오히려 모자라요",
-        "card_reason": "나이 든 몸은 같은 고기를 먹어도 근육으로 바꾸는 힘이 떨어져요. 예전 양으로는 모자라요"
+        "card_reason": "근육으로 바꾸는 힘이 줄어요"
       },
       {
         "rank": 2,
         "name": "아침상에 단백질이 가장 비어 있어요",
-        "card_name": "아침상이 가장 비어 있어요",
+        "card_name": "아침상이 비어요",
         "reason": "밥과 국, 김치로만 차린 아침에는 단백질이 거의 들어 있지 않아요. 달걀 하나나 두부 반 모부터 올려 보세요",
-        "card_reason": "밥과 국, 김치로만 차린 아침에는 단백질이 거의 없어요. 달걀 하나부터 올려 보세요"
+        "card_reason": "달걀 하나부터 올려 보세요"
       },
       {
         "rank": 3,
         "name": "씹기 힘들면 종류를 바꾸세요",
-        "card_name": "씹기 힘들면 종류를 바꾸세요",
+        "card_name": "씹기 힘들 때",
         "reason": "씹기 힘들다고 고기를 아예 끊으면 다리 힘부터 빠져요. 두부와 생선, 달걀찜처럼 부드러운 것으로 바꿔서라도 채우세요",
-        "card_reason": "고기를 아예 끊으면 다리 힘부터 빠져요. 두부와 생선, 달걀찜으로 바꿔서라도 채우세요"
+        "card_reason": "두부와 생선으로 채우세요"
       },
       {
         "rank": 4,
         "name": "국물보다 건더기를 드세요",
-        "card_name": "국물보다 건더기를 드세요",
+        "card_name": "국물보다 건더기",
         "reason": "고기 국물에는 단백질이 얼마 녹아 나오지 않아요. 국 한 그릇을 다 드시는 것보다 건더기 살코기 몇 점이 나아요",
-        "card_reason": "고기 국물에는 단백질이 얼마 녹아 나오지 않아요. 국물보다 건더기 살코기가 나아요"
+        "card_reason": "국물에는 거의 안 녹아요"
       }
     ],
     "video_script": "근육은 예순부터 먹는 게 절반이에요.",
@@ -47,6 +47,7 @@
       "시니어건강",
       "단백질"
     ],
-    "bgm_prompt": "warm bright acoustic guitar and piano, hearty dinner table mood"
+    "bgm_prompt": "warm bright acoustic guitar and piano, hearty dinner table mood",
+    "rank_count": 4
   }
 }

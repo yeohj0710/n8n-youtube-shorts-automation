@@ -70,7 +70,9 @@ These are entertaining shorts for Korean adults over 50. Fun and useful is the w
 - **Every row must carry a takeaway — the "나도 알지" test.** Read each row as a 55-year-old and ask whether they would say "그건 나도 알지". If every row fails to teach something — a surprising cause, a nameable trick, a specific place/time/function — the topic ships nothing and must be killed, not padded. The published 장롱 위 물건 카드 (의자는 흔들려서 위험해요, 어두우면 헛짚어요) failed exactly this way: five rows of common sense, zero takeaways. The AI reviewer now judges prepared packs too (COMMON_KNOWLEDGE_V1), and a rejected prepared pack STOPS the run with PREPARED_PACK_REJECTED rather than being regenerated — so a takeaway-free topic wastes a run and jams the queue until fixed. Apply the test at writing time anyway. Good takeaways from this repo: 얼린 두부는 고기처럼 쫄깃해진다, 빨래 냄새는 세탁조 탓, 은행 점심시간엔 창구가 준다.
 - **Prepared packs leave `description`/`pinned_comment` empty.** The Build node's prepared-pack normalizer fills both from the rank items BEFORE the quality gate — the description gets the full 1위-N위 list, and the pinned comment gets the ranked summary ending with the subscribe CTA — so the AI reviewer audits the real copy. Supplying a hand-written one-liner in the pack SUPPRESSES that builder and ships a summary-free description; and building only at the Prepare stage is too late, because the reviewer rejects an empty pinned_comment (this actually stopped a run).
 - **Prepared-pack titles must hook, not label.** The generation path enforces `ATTENTION_PROMISE_V2`/`HOOK_PATTERNS`, but a prepared pack renders its `hook_title` verbatim with no reviewer — so writing a descriptive label there ships a weak title unchecked. Use the channel's proven shapes (belief reversal, loss frame, minimal-condition gain `~만 해도`, insider reveal, head-to-head, moment trigger) and only promise what the items actually deliver. `양말 신을 때 몸이 알려주는 것 5` is a filing label; `양말 신는 몇 초 동안 다 드러나는 몸의 신호 5` is the same list written as a hook.
-- **Clarity outranks brevity, and the ceilings went up (2026-08-04).** `card_name` may run to 40 characters and `card_reason` to 90. They are ceilings, not targets. Never trim a line until the subject, the object, or the consequence disappears — a sentence the reader has to decode has failed at any length. A `card_reason` must make sense read alone, without its `card_name` and without the title. Queued copy written under the old 30/60 caps read as compressed telegrams (넓은 손잡이 — of what?; 어두운 계단은 넘어지는 값이 더 커요) and had to be rewritten.
+- **One row prints one line: `card_name` 12 characters, `card_reason` 16 (2026-08-06).** These are hard limits the card imposes, and they replaced the 40/90 ceilings after a published card was measured. At the readable type size the description column holds about 17 Korean characters per line, so a 50-character sentence wraps three times; the model paid for that by shrinking the type to 30 px ink height, roughly half its floor. Rows dropped from 5 to 4 at the same time. Sixteen characters is one plainly spoken sentence — `솔이 눕기 시작하면 바꿔요` — and it is not two facts, so pick the single most useful point, usually the cue that it is time to act.
+- **Never buy those characters by breaking the sentence.** The 12/16 limits do not license the compressed telegrams the 30/60 caps produced (넓은 손잡이 — of what?; 여러장은 상의하세요). Keep every particle and the ending. If a point cannot be said plainly in 16 characters, choose a different point. A `card_reason` must still make sense read alone, without its `card_name` and without the title.
+- **Shortening rows makes sentence shape collapse.** Short Korean gravitates to `~면`, and the gate rejects a pack when one construction covers 80% of the ranks (`monotonous_sentence_shape`). Two test fixtures started failing on exactly this the moment their sentences were trimmed. Mix plain statements, cause (`~어서`), and contrast into every list.
 - **No subtitle on the card (2026-08-04).** The image prompt no longer carries a `SUBTITLE:` line in any circuit. Subtitles mostly restated the title, and the line they occupied squeezed the rows that carry the actual content. `pack.subtitle` still exists and still feeds the YouTube description, so the writer keeps producing one — it just is not drawn. The rule lives in `simplify-legacy-editorial-flow.mjs` (NO_CARD_SUBTITLE_V1) and in the shared layout lines in `lib/safe-zone.mjs`, which now tell the model not to invent a second line under the title.
 - **card_name takes the grammatical form of its role — never force ~하기 on everything.** An action or mistake reads naturally as ~하기 (다리 꼬고 재기). A signal or phenomenon is a 관형형 noun phrase (한참 안 없어지는 양말 자국); a check-list item may use ~는지 (한쪽 귀만 나빠진 건 아닌지); an object is the bare noun. Nominalizing a full clause with its subject attached — 자국이 오래 남기, 주변이 시끄럽기 — is broken Korean, and the gate now blocks it deterministically (`broken_nominalization`). A published sock-signals card shipped five of these before the check existed.
 - **No demonstratives standing in for the thing.** `그것`, `이때`, `이렇게`, `그때 그 도장`, `그 물건` — name the actual thing instead. A bare comparative with nothing to compare to (`오를 때보다 내려올 때가 커요`) is the same defect: say what is bigger.
@@ -84,7 +86,7 @@ These are entertaining shorts for Korean adults over 50. Fun and useful is the w
   - *One sentence shape all the way down.* The if-then 조건절 is the usual culprit. Mix in 대조 (`~는데`, `~지만`), plain statements, cause (`~어서`), and endings like `~거든요` / `~잖아요`. The shared gate enforces this: `monotonous_sentence_shape` fires when one marked construction covers 80% or more of the ranks. Plain statements are exempt — they are the neutral default and repeat harmlessly.
   - *Stacked passives.* Prefer an active verb where Korean has one.
   To check a queue quickly, count how many `card_reason` lines contain `면 `. Above roughly a third of the list and it will read translated.
-- Items default to 5, with 4 to 7 allowed. If only three hold up, change the topic rather than padding. Never split one fact across two ranks, and never add a meta item about attitude (`어렵다는 생각`).
+- Items are 4 (2026-08-06, down from a default of 5). The vertical budget is the reason: the content box is 1344 px, four one-line rows plus a three-line title plus the footer need about 1082 px, and the model reliably spends the remaining ~260 px on a decorative photo band whether or not it is asked to. A fifth row pushes the total past the box and the type shrinks again. If only three points hold up, change the topic rather than padding. Never split one fact across two ranks, and never add a meta item about attitude (`어렵다는 생각`).
 - Visible copy uses 해요체. `합니다`/`습니다` endings trip `channel_tone_mismatch` in the shared gate.
 - Contract markers live in the canonical scripts: `PLAIN_MEANING_V1` and `NO_FIGURATIVE_COPY_V1` in both `install-shared-content-quality-gate.mjs` (reviewer rules L2/L3) and `simplify-legacy-editorial-flow.mjs` (writer prompt). Edit them there, then run install before simplify.
 
@@ -575,6 +577,41 @@ reconciles `사용기록.jsonl` into the Sheet's dedicated `AU` (`업로드 완�
 checkbox column. After a rendered card is logged, the same row is checked
 immediately. The n8n credential name is `Google Sheets account`; the workflow
 must stop before selection when the Sheet read or write fails.
+
+### The Model Does Not Honour Pixel Coordinates — Buy Room With Content (2026-08-06)
+
+A published card was measured against the coordinates the prompt had pinned. The
+prompt said the panel's top edge sits at y 154 and its bottom edge at y 1498.
+Measured on `renders/health_1785984525680_51e97c.png` (execution 278, confirmed to
+have run the new prompt):
+
+| | asked | measured |
+| --- | --- | --- |
+| panel top | 154 | 326 |
+| panel bottom | 1498 | 1703 |
+| footer CTA baseline | above 1498 | 1631, inside the bottom band |
+| `card_reason` ink height | 54 px floor | 30–32 px |
+| item name ink height | 69 px floor | 60–62 px |
+
+The panel's **height** came out at 1377 px against the 1344 px asked for, so the
+model read the two coordinates as "a box roughly this tall, centred" and slid the
+whole thing down about 180 px to make room for a photograph. That is what image
+models do with absolute positions; three rounds of prompt rewording moved none of
+these numbers.
+
+So stop spending rounds on wording. The lever that works is arithmetic: give the
+model more room than it wants to take. It reliably spends ~377 px on decorative
+photo bands, so the content has to fit in roughly 1000 px of the 1344 px box. That
+is what forced 4 rows and the 12/16 character limits in the Card Copy Rules above.
+
+If a future round still comes back too small, the remaining options are fewer rows
+or compositing the Korean text ourselves with sharp/SVG over a text-free generated
+background. The user chose content reduction on 2026-08-06; compositing was offered
+and declined, so raise it again only with fresh measurements.
+
+Measure, do not eyeball. Detect the panel by counting panel-coloured pixels per row
+across the full width — sampling a single centre column breaks on glyphs, and a
+plain brightness threshold picks up the background photograph.
 
 ### Shrinking Is Banned; Margins Are Bought in the Prompt (2026-08-04)
 

@@ -15,30 +15,30 @@
       {
         "rank": 1,
         "name": "돌아누울 때 천장이 도는 어지럼",
-        "card_name": "돌아누울 때 천장이 도는 어지럼",
+        "card_name": "천장이 도는 어지럼",
         "reason": "누웠다 돌아누울 때마다 천장이 도는 것은 귓속에서 균형을 잡아 주는 돌이 제자리를 벗어난 경우가 많아요",
-        "card_reason": "누웠다 돌아누울 때 천장이 도는 것은 귓속 균형을 잡는 돌이 제자리를 벗어난 경우가 많아요"
+        "card_reason": "귓속 돌이 벗어난 거예요"
       },
       {
         "rank": 2,
         "name": "일어설 때 눈앞이 캄캄해지는 어지럼",
-        "card_name": "일어설 때 눈앞이 캄캄한 어지럼",
+        "card_name": "눈앞이 캄캄할 때",
         "reason": "앉았다 일어설 때 눈앞이 캄캄해지는 것은 핏줄이 미처 못 따라와서 생겨요. 아침과 더운 날에 특히 심해져요",
-        "card_reason": "일어설 때 눈앞이 캄캄해지는 것은 핏줄이 미처 못 따라와서 생겨요. 더운 날에 심해져요"
+        "card_reason": "핏줄이 못 따라와서 그래요"
       },
       {
         "rank": 3,
         "name": "걸을 때 몸이 흔들리는 어지럼",
-        "card_name": "걸을 때 몸이 흔들리는 어지럼",
+        "card_name": "몸이 흔들릴 때",
         "reason": "빙글 돌지는 않는데 걸을 때 몸이 흔들리고 발 디딤이 미덥지 않다면 귀가 아니라 균형 감각 쪽 문제예요",
-        "card_reason": "빙글 돌지는 않는데 걸을 때 흔들리고 발 디딤이 미덥지 않다면 균형 감각 쪽 문제예요"
+        "card_reason": "균형 감각 쪽 문제예요"
       },
       {
         "rank": 4,
         "name": "식은땀이 같이 나는 어지럼",
-        "card_name": "식은땀이 같이 나는 어지럼",
+        "card_name": "식은땀이 날 때",
         "reason": "끼니를 거른 채 오래 있으면 당이 떨어지면서 식은땀과 함께 어질해요. 사탕 하나만 드셔도 금방 가라앉아요",
-        "card_reason": "끼니를 거른 채 오래 있으면 당이 떨어지면서 식은땀과 함께 어질해요. 사탕 하나면 가라앉아요"
+        "card_reason": "당이 떨어진 거예요"
       }
     ],
     "video_script": "어지럼은 종류를 알면 갈 곳이 보여요.",
@@ -47,6 +47,7 @@
       "시니어건강",
       "몸신호"
     ],
-    "bgm_prompt": "calm bright piano with reassuring strings, clear morning clinic mood"
+    "bgm_prompt": "calm bright piano with reassuring strings, clear morning clinic mood",
+    "rank_count": 4
   }
 }

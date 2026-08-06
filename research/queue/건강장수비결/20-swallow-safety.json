@@ -15,30 +15,30 @@
       {
         "rank": 1,
         "name": "국에 만 밥이 오히려 위험해요",
-        "card_name": "국에 만 밥이 오히려 위험해요",
+        "card_name": "국에 만 밥",
         "reason": "국에 만 밥은 넘기기 쉬워 보여도 국물과 밥알이 입안에서 따로 놀아요. 국물만 먼저 숨 쉬는 길로 넘어가기 쉬워요",
-        "card_reason": "국에 만 밥은 국물과 밥알이 입안에서 따로 놀아요. 국물만 먼저 숨 쉬는 길로 넘어가요"
+        "card_reason": "국물만 먼저 넘어가요"
       },
       {
         "rank": 2,
         "name": "말하면서 먹지 마세요",
-        "card_name": "말하면서 먹지 마세요",
+        "card_name": "말하면서 먹기",
         "reason": "말을 하는 동안에는 숨 쉬는 길이 열려 있어요. 입에 든 것을 다 넘기고 나서 말씀하시는 것만으로도 사레가 크게 줄어요",
-        "card_reason": "말을 하는 동안에는 숨 쉬는 길이 열려 있어요. 다 넘기고 나서 말씀하세요"
+        "card_reason": "숨 쉬는 길이 열려 있어요"
       },
       {
         "rank": 3,
         "name": "고개를 살짝 숙이고 삼키세요",
-        "card_name": "고개를 살짝 숙이고 삼키세요",
+        "card_name": "턱을 당기고 삼키기",
         "reason": "턱을 살짝 당기고 삼키면 숨 쉬는 길이 닫혀서 안전해요. 고개를 뒤로 젖히고 털어 넣는 물약이 가장 위험해요",
-        "card_reason": "턱을 살짝 당기고 삼키면 숨 쉬는 길이 닫혀서 안전해요. 고개를 젖히고 마시면 위험해요"
+        "card_reason": "숨 쉬는 길이 닫혀서 안전해요"
       },
       {
         "rank": 4,
         "name": "물은 한 모금씩 끊어 드세요",
-        "card_name": "물은 한 모금씩 끊어 드세요",
+        "card_name": "물은 끊어서",
         "reason": "맹물은 목을 가장 빨리 지나가서 오히려 제일 잘 걸려요. 벌컥벌컥 마시지 마시고 한 모금씩 끊어서 드세요",
-        "card_reason": "맹물은 목을 가장 빨리 지나가서 오히려 제일 잘 걸려요. 한 모금씩 끊어서 드세요"
+        "card_reason": "맹물이 제일 잘 걸려요"
       }
     ],
     "video_script": "사레는 먹는 법을 바꾸라는 신호예요.",
@@ -47,6 +47,7 @@
       "시니어건강",
       "식사법"
     ],
-    "bgm_prompt": "gentle warm piano with bright guitar, safe mealtime mood"
+    "bgm_prompt": "gentle warm piano with bright guitar, safe mealtime mood",
+    "rank_count": 4
   }
 }

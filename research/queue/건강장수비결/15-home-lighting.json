@@ -15,30 +15,30 @@
       {
         "rank": 1,
         "name": "거실은 등 하나 말고 둘",
-        "card_name": "거실은 등 하나 말고 둘",
+        "card_name": "거실 등은 둘",
         "reason": "나이 든 눈에는 같은 등 아래에서도 빛이 예전만큼 들어오지 않아요. 아껴 두던 보조등까지 같이 켜 두세요",
-        "card_reason": "나이 든 눈에는 같은 등 아래에서도 빛이 예전만큼 안 들어와요. 보조등까지 같이 켜 두세요"
+        "card_reason": "나이 들면 빛이 덜 들어와요"
       },
       {
         "rank": 2,
         "name": "밤 화장실 길에는 발밑 등",
-        "card_name": "밤 화장실 길에는 발밑 등",
+        "card_name": "발밑 등",
         "reason": "복도에 큰 등을 켜면 잠이 달아나 버려요. 콘센트에 꽂아 두는 낮은 등이 밤 화장실 길에는 딱 맞아요",
-        "card_reason": "복도에 큰 등을 켜면 잠이 달아나요. 콘센트에 꽂아 두는 낮은 등이 딱 맞아요"
+        "card_reason": "큰 등을 켜면 잠이 달아나요"
       },
       {
         "rank": 3,
         "name": "계단은 위아래 어디서든 켜지게",
-        "card_name": "계단은 위아래 어디서든 켜지게",
+        "card_name": "계단 위아래 스위치",
         "reason": "어두운 채로 내려가는 계단이 집에서 가장 위험한 자리예요. 위아래 어디서든 켜지는지 오늘 한번 확인해 보세요",
-        "card_reason": "어두운 채로 내려가는 계단이 집에서 가장 위험해요. 위아래 스위치를 오늘 확인해 보세요"
+        "card_reason": "가장 위험한 자리예요"
       },
       {
         "rank": 4,
         "name": "현관과 신발장 앞",
-        "card_name": "현관과 신발장 앞",
+        "card_name": "현관 신발장 앞",
         "reason": "현관은 한 발로 서서 신발을 신는 자리예요. 어두우면 중심을 잃고 그대로 옆으로 넘어져요",
-        "card_reason": "현관은 한 발로 서서 신발을 신는 자리예요. 어두우면 중심을 잃고 그대로 넘어져요"
+        "card_reason": "한 발로 서다 중심을 잃어요"
       }
     ],
     "video_script": "집이 밝아지면 걸음부터 당당해져요.",
@@ -47,6 +47,7 @@
       "시니어건강",
       "생활환경"
     ],
-    "bgm_prompt": "warm bright piano with soft guitar, homely golden hour mood"
+    "bgm_prompt": "warm bright piano with soft guitar, homely golden hour mood",
+    "rank_count": 4
   }
 }
