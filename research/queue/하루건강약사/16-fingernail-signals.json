@@ -1,5 +1,5 @@
 {
-  "title": "손톱만 봐도 알 수 있는 몸의 이상 신호 4",
+  "title": "손톱에 이거 생겼을 때, 걱정할 것과 아닌 것 4",
   "lane": "body_signal_selfcheck",
   "notes": "손톱에 관한 흔한 오해를 바로잡고, 진짜 봐야 할 모양을 알려 준다.",
   "topic_key": "fingernail_signals",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "haru_health_literacy",
     "channel_content_pillar": "body_signals",
     "topic_key": "fingernail_signals",
-    "hook_title": "손톱만 봐도 알 수 있는 몸의 이상 신호 4",
+    "hook_title": "손톱에 이거 생겼을 때, 걱정할 것과 아닌 것 4",
     "subtitle": "손톱은 지나간 몇 달의 건강 기록이에요",
     "visual_profile": "wellness_dashboard",
     "visual_mood_hint": "밝은 창가에서 손톱을 살펴보는 손, 옆에 돋보기, 깨끗한 흰 배경과 살구색 팔레트, 부드러운 아침 빛",
@@ -17,28 +17,28 @@
         "name": "하얀 점은 칼슘 부족이 아니에요",
         "card_name": "하얀 점",
         "reason": "칼슘이 모자라서 생기는 게 아니에요. 손톱 뿌리를 어딘가에 살짝 부딪힌 자국이 몇 달에 걸쳐 자라 나온 거예요",
-        "card_reason": "칼슘 부족이 아니라 부딪힌 자국이에요"
+        "card_reason": "칼슘이 모자라서가 아니라 뿌리를 부딪힌 자국이 자란 거예요"
       },
       {
         "rank": 2,
         "name": "세로로 선 줄무늬는 나이 탓이에요",
-        "card_name": "세로 줄무늬",
+        "card_name": "세로로 선 줄무늬",
         "reason": "피부에 주름이 생기는 것처럼 손톱에도 나이가 들면서 자연스럽게 생기는 무늬예요. 병이 아니니 그냥 두셔도 돼요",
-        "card_reason": "주름처럼 나이 들면서 생기는 무늬예요"
+        "card_reason": "피부에 주름이 생기듯 나이 들며 생기니 그냥 두셔도 돼요"
       },
       {
         "rank": 3,
         "name": "가운데가 숟가락처럼 파이면 철분 부족",
-        "card_name": "숟가락처럼 파임",
+        "card_name": "숟가락처럼 파인 손톱",
         "reason": "손톱 가운데가 숟가락처럼 오목하게 파이면 빈혈과 같이 나타나는 모양이에요. 병원에서 철분 수치를 확인해 보세요",
-        "card_reason": "빈혈과 같이 오니 철분 수치를 확인해요"
+        "card_reason": "빈혈과 같이 나타나는 모양이라 병원에서 철분 수치를 보세요"
       },
       {
         "rank": 4,
         "name": "두꺼워지고 부스러지면 손톱 무좀",
-        "card_name": "두껍고 부스러짐",
+        "card_name": "두꺼워지고 부스러짐",
         "reason": "무좀은 발톱에만 생기지 않아요. 손톱이 두꺼워지면서 부스러진다면 약국 약으로 버티지 마시고 피부과에 가 보세요",
-        "card_reason": "손톱 무좀일 수 있어 피부과에 가 봐요"
+        "card_reason": "손톱에도 무좀이 생기니 피부과에서 한 번 보시는 게 좋아요"
       }
     ],
     "video_script": "손톱은 몇 달 전 건강까지 기록해요.",

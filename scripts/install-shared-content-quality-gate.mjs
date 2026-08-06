@@ -144,10 +144,10 @@ function inspectPack(value, researchPack) {
     const cardReason = clean(item?.card_reason);
     if (!name) issues.push({ rank, code: 'missing_name', message: 'Item name is missing.' });
     if (!cardName) issues.push({ rank, code: 'missing_card_name', message: 'Short image item name is missing.' });
-    if ([...cardName].length > 12) issues.push({ rank, code: 'card_name_too_long', message: 'Short image item name exceeds 12 characters.', length: [...cardName].length });
+    if ([...cardName].length > 14) issues.push({ rank, code: 'card_name_too_long', message: 'Short image item name exceeds 14 characters.', length: [...cardName].length });
     if (!reason) issues.push({ rank, code: 'missing_reason', message: 'Item reason is missing.', value: reason });
     if (!cardReason) issues.push({ rank, code: 'missing_card_reason', message: 'Mobile card sentence is missing.' });
-    if ([...cardReason].length > 28) issues.push({ rank, code: 'card_copy_too_long', message: 'Mobile card sentence exceeds 28 characters.', length: [...cardReason].length });
+    if ([...cardReason].length > 38) issues.push({ rank, code: 'card_copy_too_long', message: 'Mobile card sentence exceeds 38 characters.', length: [...cardReason].length });
     if (/^(?:왜|이유|핵심|tip)\\s*[:：]/i.test(cardReason)) issues.push({ rank, code: 'card_label_prefix', message: 'Mobile card sentence must not start with a repeated label.' });
     if (/[가-힣](?:이|가) .*기$/.test(cardName) && !/(?:없이|같이|높이|많이|깊이) /.test(cardName)) issues.push({ rank, code: 'broken_nominalization', message: 'A full clause with its own subject cannot be nominalized with ~기 (자국이 오래 남기 is broken Korean); use a noun phrase or ~는지 instead.', value: cardName });
     const backedNumbers = sourceBackedNumbers(item, researchPack);
@@ -388,10 +388,10 @@ function inspectPack(value, researchPack) {
     const cardReason = clean(item?.card_reason);
     if (!clean(item?.name)) issues.push({ rank, code: 'missing_name' });
     if (!cardName) issues.push({ rank, code: 'missing_card_name' });
-    if ([...cardName].length > 12) issues.push({ rank, code: 'card_name_too_long', length: [...cardName].length });
+    if ([...cardName].length > 14) issues.push({ rank, code: 'card_name_too_long', length: [...cardName].length });
     if (!reason) issues.push({ rank, code: 'missing_reason', value: reason });
     if (!cardReason) issues.push({ rank, code: 'missing_card_reason' });
-    if ([...cardReason].length > 28) issues.push({ rank, code: 'card_copy_too_long', length: [...cardReason].length });
+    if ([...cardReason].length > 38) issues.push({ rank, code: 'card_copy_too_long', length: [...cardReason].length });
     if (/^(?:왜|이유|핵심|tip)\\s*[:：]/i.test(cardReason)) issues.push({ rank, code: 'card_label_prefix' });
     if (/[가-힣](?:이|가) .*기$/.test(cardName) && !/(?:없이|같이|높이|많이|깊이) /.test(cardName)) issues.push({ rank, code: 'broken_nominalization', value: cardName });
     const backedNumbers = sourceBackedNumbers(item, researchPack);
@@ -572,10 +572,10 @@ function inspectPack(value, researchPack) {
     const cardReason = clean(item?.card_reason);
     if (!clean(item?.name)) issues.push({ rank, code: 'missing_name' });
     if (!cardName) issues.push({ rank, code: 'missing_card_name' });
-    if ([...cardName].length > 12) issues.push({ rank, code: 'card_name_too_long', length: [...cardName].length });
+    if ([...cardName].length > 14) issues.push({ rank, code: 'card_name_too_long', length: [...cardName].length });
     if (!reason) issues.push({ rank, code: 'missing_reason', value: reason });
     if (!cardReason) issues.push({ rank, code: 'missing_card_reason' });
-    if ([...cardReason].length > 28) issues.push({ rank, code: 'card_copy_too_long', length: [...cardReason].length });
+    if ([...cardReason].length > 38) issues.push({ rank, code: 'card_copy_too_long', length: [...cardReason].length });
     if (/^(?:왜|이유|핵심|tip)\\s*[:：]/i.test(cardReason)) issues.push({ rank, code: 'card_label_prefix' });
     if (/[가-힣](?:이|가) .*기$/.test(cardName) && !/(?:없이|같이|높이|많이|깊이) /.test(cardName)) issues.push({ rank, code: 'broken_nominalization', value: cardName });
     const backedNumbers = sourceBackedNumbers(item, researchPack);
@@ -1127,7 +1127,7 @@ const qualityInstruction = [
   'Choose a title promise that every item directly fulfills. Remove topic drift, unrelated items, reversed causality, missing causal steps, and claims with uncertain support.',
   'Every replacement item must provide direct medical relevance through an established physiological, clinical, nutritional, medication-literacy, symptom-interpretation, or injury-prevention principle. Housekeeping, organizing, convenience, motivation, comfort, and generic self-care alone are insufficient.',
   'Each replacement item must contain a credible body mechanism or clinically relevant signal plus a decision-useful condition, practical action, or meaningful boundary. Each reason must make the relevant cause and practical result understandable on first read. Do not merely lengthen sentences or add filler; replace an item when its mechanism does not fit.',
-  'Write all viewer-facing explanatory copy in natural Korean 해요체, never 합니다체. card_name is a common everyday Korean label of at most 12 characters. card_reason is ONE complete 해요체 sentence of 18 to 28 characters counted with spaces, printed in at most two lines at full readable size. Both edges are real published failures: past 28 the type shrank to 30 px and could not be read; under 18 the sentence dropped its subject or consequence and could not be understood (자국이 남으면 물이 찼어요 names no place to press). Carry exactly one point with its subject and its consequence or action, keep every particle and the ending, and if the point cannot be said plainly inside the band, choose a different point. Avoid obscure object words and unexplained jargon.',
+  'Write all viewer-facing explanatory copy in natural Korean 해요체, never 합니다체. card_name is a common everyday Korean label of at most 14 characters. card_reason is ONE complete 해요체 sentence of 24 to 38 characters counted with spaces, printed in at most two lines. Both edges are real published failures: past 38 the type collapsed to 30 px; under 24 the sentence became a riddle (눈이 담는 양은 한 방울보다 적어요 states a fact and never says what to do). Name the condition, what happens, and what it means for the reader. Explicit and slightly long beats short and unclear. Also check direction: if the title promises mistakes, every card_name must BE a mistake, not the correct method; if it promises a method, every card_name must be an action. A card that mixes the two, or whose rows point the opposite way from its title, is rejected as title_row_mismatch. Avoid obscure object words and unexplained jargon.',
   'PLAIN_MEANING_V1: Clarity outranks brevity. Never compress a line to the point where a first-time reader cannot tell what it refers to. If the shorter wording loses the subject, the object, or what actually happens, use the longer wording and spend the characters. A card_reason must be understandable on its own without reading card_name first: name the thing it is about instead of relying on "그것", "이때", "이렇게", or a bare comparative with nothing to compare to. Reject copy that is short but vague; short is only a virtue when the meaning survives intact.',
   'NO_FIGURATIVE_COPY_V1: State things directly. No metaphor, no simile, no analogy, no poetic or roundabout phrasing, no rhetorical framing that makes the reader infer the point. Say the actual object, the actual action, and the actual consequence in plain words. Reject copy that gestures at the idea rather than saying it.',
   clearKoreanCopyRetryInstruction,
@@ -1151,7 +1151,7 @@ const medicalInstruction = [
   'Use neutral lifestyle-safe wording. Do not mention cure, treatment, guaranteed prevention, detox, miracle, doctor authority, hospital avoidance, prescription changes, or dosage.',
   'Each replacement item must still contain a decision-useful condition, observable sign, credible mechanism, practical action, or meaningful boundary. Do not invent exact minutes, repetitions, percentages, thresholds, or measurements.',
   'Keep direct medical relevance: explain an established body mechanism, clinically relevant signal, nutrition or medication-literacy principle, or injury-prevention principle rather than generic organizing or comfort advice.',
-  'Write all viewer-facing explanatory copy in natural Korean 해요체, never 합니다체. card_name is a common everyday Korean label of at most 12 characters. card_reason is ONE complete 해요체 sentence of 18 to 28 characters counted with spaces, printed in at most two lines at full readable size. Both edges are real published failures: past 28 the type shrank to 30 px and could not be read; under 18 the sentence dropped its subject or consequence and could not be understood (자국이 남으면 물이 찼어요 names no place to press). Carry exactly one point with its subject and its consequence or action, keep every particle and the ending, and if the point cannot be said plainly inside the band, choose a different point.',
+  'Write all viewer-facing explanatory copy in natural Korean 해요체, never 합니다체. card_name is a common everyday Korean label of at most 14 characters. card_reason is ONE complete 해요체 sentence of 24 to 38 characters counted with spaces, printed in at most two lines. Both edges are real published failures: past 38 the type collapsed to 30 px; under 24 the sentence became a riddle (눈이 담는 양은 한 방울보다 적어요 states a fact and never says what to do). Name the condition, what happens, and what it means for the reader. Explicit and slightly long beats short and unclear. Also check direction: if the title promises mistakes, every card_name must BE a mistake, not the correct method; if it promises a method, every card_name must be an action. A card that mixes the two, or whose rows point the opposite way from its title, is rejected as title_row_mismatch.',
   'PLAIN_MEANING_V1: Clarity outranks brevity. Never compress a line until a first-time reader cannot tell what it refers to. A card_reason must stand on its own without card_name: name the thing instead of leaning on "그것", "이때", "이렇게", or a comparative with nothing to compare to. Short but vague is a defect, not a virtue.',
   'NO_FIGURATIVE_COPY_V1: State things directly. No metaphor, simile, analogy, or roundabout phrasing that makes the reader infer the point. Say the actual object, the actual action, and the actual consequence in plain words.',
   clearKoreanCopyRetryInstruction,

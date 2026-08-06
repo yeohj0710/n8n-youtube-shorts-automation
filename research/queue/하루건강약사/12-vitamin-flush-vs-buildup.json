@@ -1,5 +1,5 @@
 {
-  "title": "영양제 오래 먹기 전에 확인할 것 4",
+  "title": "영양제, 매일 먹어도 되는 것과 안 되는 것 4",
   "lane": "food_nutrition_table",
   "notes": "많이 먹어도 소변으로 나간다는 말은 절반만 맞다. 기름에 녹는 쪽은 몸에 남는다.",
   "topic_key": "vitamin_flush_vs_buildup",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "haru_health_literacy",
     "channel_content_pillar": "supplement_ingredients",
     "topic_key": "vitamin_flush_vs_buildup",
-    "hook_title": "영양제 오래 먹기 전에 확인할 것 4",
+    "hook_title": "영양제, 매일 먹어도 되는 것과 안 되는 것 4",
     "subtitle": "많이 먹어도 괜찮은 성분과 몸에 쌓이는 성분이 달라요",
     "visual_profile": "myth_fact",
     "visual_mood_hint": "물컵에 녹는 알약과 기름방울 속 알약을 반씩 나눠 보여주는 장면, 밝은 노랑과 파랑 대비, 깨끗한 약국 선반 배경",
@@ -17,28 +17,28 @@
         "name": "비타민C와 비타민B는 남으면 빠져나가요",
         "card_name": "비타민C와 B",
         "reason": "물에 녹는 종류라 쓰고 남은 양이 소변으로 빠져나가요. 몸에 쌓이지는 않지만 그만큼 매일 챙겨 드셔야 해요",
-        "card_reason": "물에 녹는 종류라 남으면 소변으로 나가요"
+        "card_reason": "물에 녹아서 남는 양은 소변으로 빠지니 매일 챙겨 드셔야 해요"
       },
       {
         "rank": 2,
         "name": "비타민D와 비타민A는 몸에 쌓여요",
         "card_name": "비타민D와 A",
         "reason": "기름에 녹는 종류라 소변으로 나가지 못해요. 정해진 양보다 많이 드시면 몸에 그대로 쌓여서 탈이 나요",
-        "card_reason": "기름에 녹는 종류라 많이 먹으면 쌓여요"
+        "card_reason": "기름에 녹아서 소변으로 안 나가니 정해진 양만 드셔야 해요"
       },
       {
         "rank": 3,
         "name": "철분은 몸이 내보내지 못해요",
         "card_name": "철분",
         "reason": "몸에는 남는 철분을 밖으로 내보내는 길이 거의 없어요. 피 검사에서 부족하다고 나왔을 때만 드시는 편이 안전해요",
-        "card_reason": "남는 철분은 몸 밖으로 못 내보내요"
+        "card_reason": "몸이 남는 철분을 내보내지 못하니 피 검사에서 부족할 때만 드세요"
       },
       {
         "rank": 4,
         "name": "종합비타민과 겹치는 성분 확인하기",
-        "card_name": "종합비타민 겹침",
+        "card_name": "종합비타민과 겹칠 때",
         "reason": "종합비타민에 이미 들어 있는 성분을 따로 또 사는 경우가 제일 흔해요. 사기 전에 두 제품 뒷면 성분표를 나란히 놓고 견줘 보세요",
-        "card_reason": "이미 든 성분을 또 사는 경우가 제일 많아요"
+        "card_reason": "이미 든 성분을 또 사는 일이 흔하니 뒷면 성분표를 견줘 보세요"
       }
     ],
     "video_script": "영양제도 나가는 성분과 쌓이는 성분이 달라요.",

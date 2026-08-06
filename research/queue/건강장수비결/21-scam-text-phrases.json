@@ -1,5 +1,5 @@
 {
-  "title": "요즘 어르신들이 가장 많이 당하는 문자 사기 4",
+  "title": "문자 사기, 이 네 가지만 알면 안 당해요",
   "lane": "daily_health_lifestyle",
   "notes": "요즘 문자 사기의 단골 수법. 자식 사칭과 환급금이 대표적이다.",
   "topic_key": "scam_text_phrases",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "longevity_daily_function",
     "channel_content_pillar": "daily_function",
     "topic_key": "scam_text_phrases",
-    "hook_title": "요즘 어르신들이 가장 많이 당하는 문자 사기 4",
+    "hook_title": "문자 사기, 이 네 가지만 알면 안 당해요",
     "subtitle": "가족은 저장된 번호로만 믿는 게 안전해요",
     "visual_profile": "myth_fact",
     "visual_mood_hint": "식탁 위 휴대폰 화면에 온 문자와 돋보기, 옆에 수첩과 펜, 차분한 남색과 노랑 경고 포인트",
@@ -15,30 +15,30 @@
       {
         "rank": 1,
         "name": "폰이 깨졌다며 새 번호라는 문자",
-        "card_name": "새 번호라는 문자",
+        "card_name": "폰 깨져서 새 번호래요",
         "reason": "자식을 사칭하는 문자가 시작되는 단골 수법이에요. 그 번호로 답장하지 마시고 원래 저장돼 있던 번호로 전화해 목소리를 확인하세요",
-        "card_reason": "답장 말고 저장된 번호로 전화해 확인해요"
+        "card_reason": "자식을 사칭하는 단골 수법이니 저장된 번호로 전화해 확인하세요"
       },
       {
         "rank": 2,
         "name": "주소가 틀렸다는 택배 문자",
-        "card_name": "주소 틀렸다는 택배",
+        "card_name": "주소가 틀렸다는 택배",
         "reason": "택배 회사는 문자에 넣은 링크로 주소를 다시 받지 않아요. 궁금하시면 문자 말고 택배사 앱이나 대표번호로 확인하세요",
-        "card_reason": "택배 회사는 링크로 주소를 다시 안 받아요"
+        "card_reason": "택배 회사는 문자 링크로 주소를 다시 받지 않아요"
       },
       {
         "rank": 3,
         "name": "환급금을 찾아가라는 문자",
-        "card_name": "환급금 문자",
+        "card_name": "환급금 찾아가라는 문자",
         "reason": "건강보험공단도 세무서도 안내 문자에 누르는 링크를 넣지 않아요. 링크가 붙어 있다면 사기라고 보셔도 돼요",
-        "card_reason": "공단과 세무서는 문자에 링크를 안 넣어요"
+        "card_reason": "공단도 세무서도 안내 문자에 링크를 넣지 않으니 링크는 사기예요"
       },
       {
         "rank": 4,
         "name": "이미 눌렀다면 지급 정지부터",
-        "card_name": "이미 눌렀다면",
+        "card_name": "이미 눌렀을 때",
         "reason": "링크를 이미 누르셨다면 은행 대표번호로 지급 정지부터 걸고 경찰에 알리세요. 부끄러워서 숨기는 사이에 손해가 더 커져요",
-        "card_reason": "은행에 지급 정지부터 걸고 경찰에 알려요"
+        "card_reason": "은행 대표번호로 지급 정지부터 걸고 경찰에 알리셔야 해요"
       }
     ],
     "video_script": "요즘 사기는 전화가 아니라 문자로 와요.",

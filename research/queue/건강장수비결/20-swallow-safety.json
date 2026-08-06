@@ -1,5 +1,5 @@
 {
-  "title": "사레가 잦아지면 반드시 바꿔야 하는 식사 습관 4",
+  "title": "사레가 잦아지면 바꿔야 할 식사 습관 4",
   "lane": "food_nutrition_table",
   "notes": "사레는 버릇이 아니라 삼킴 근육의 신호다. 국말이 밥이 더 위험하다는 반전.",
   "topic_key": "swallow_safety_meals",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "longevity_daily_function",
     "channel_content_pillar": "longevity_meals",
     "topic_key": "swallow_safety_meals",
-    "hook_title": "사레가 잦아지면 반드시 바꿔야 하는 식사 습관 4",
+    "hook_title": "사레가 잦아지면 바꿔야 할 식사 습관 4",
     "subtitle": "사레는 버릇이 아니라 삼키는 힘이 보내는 신호예요",
     "visual_profile": "kitchen_table",
     "visual_mood_hint": "점심 식탁에 국그릇과 밥그릇이 따로 놓이고 물컵이 옆에 있는 장면, 따뜻한 낮 빛, 크림색과 갈색 팔레트",
@@ -15,30 +15,30 @@
       {
         "rank": 1,
         "name": "국에 만 밥이 오히려 위험해요",
-        "card_name": "국에 만 밥",
+        "card_name": "국에 밥 말아 먹기",
         "reason": "국에 만 밥은 넘기기 쉬워 보여도 국물과 밥알이 입안에서 따로 놀아요. 국물만 먼저 숨 쉬는 길로 넘어가기 쉬워요",
-        "card_reason": "국물과 밥알이 따로 놀아 사레가 잘 들려요"
+        "card_reason": "국물과 밥알이 입안에서 따로 놀아 국물만 먼저 넘어가요"
       },
       {
         "rank": 2,
         "name": "말하면서 먹지 마세요",
         "card_name": "말하면서 먹기",
         "reason": "말을 하는 동안에는 숨 쉬는 길이 열려 있어요. 입에 든 것을 다 넘기고 나서 말씀하시는 것만으로도 사레가 크게 줄어요",
-        "card_reason": "말하는 동안은 숨 쉬는 길이 열려 있어요"
+        "card_reason": "말하는 동안은 숨 쉬는 길이 열려 있으니 다 넘기고 말씀하세요"
       },
       {
         "rank": 3,
         "name": "고개를 살짝 숙이고 삼키세요",
-        "card_name": "턱을 당기고 삼키기",
+        "card_name": "고개 젖히고 마시기",
         "reason": "턱을 살짝 당기고 삼키면 숨 쉬는 길이 닫혀서 안전해요. 고개를 뒤로 젖히고 털어 넣는 물약이 가장 위험해요",
-        "card_reason": "숨 쉬는 길이 닫혀서 사레가 안 들려요"
+        "card_reason": "턱을 살짝 당기고 삼켜야 숨 쉬는 길이 닫혀서 안전해요"
       },
       {
         "rank": 4,
         "name": "물은 한 모금씩 끊어 드세요",
-        "card_name": "물은 끊어서",
+        "card_name": "물을 한 번에 들이켜기",
         "reason": "맹물은 목을 가장 빨리 지나가서 오히려 제일 잘 걸려요. 벌컥벌컥 마시지 마시고 한 모금씩 끊어서 드세요",
-        "card_reason": "맹물이 목을 제일 빨리 지나가 잘 걸려요"
+        "card_reason": "맹물이 목을 제일 빨리 지나가니 한 모금씩 끊어 드세요"
       }
     ],
     "video_script": "사레는 먹는 법을 바꾸라는 신호예요.",
