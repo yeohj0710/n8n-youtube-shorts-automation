@@ -33,7 +33,7 @@ Latest known workflow:
 - Do not add TTS, Veo, or Creatomate back into this workflow. User wants static ranked-card Shorts: one full 9:16 GPT image + BGM + local ffmpeg MP4.
 - Do not overlay text in local ffmpeg. GPT image generation must render the final Korean title and ranked list inside the image itself.
 - Ranked cards must show `1위` at the top, then `2위`, `3위`, etc. Do not sort `7위` first.
-- BGM must target Korean ages 50-60: warm, calm, premium health-program mood, slow around 76 BPM, no vocals, no EDM, no heavy drums.
+- BGM must target Korean ages 50-60: warm, calm, premium health-program mood, no vocals, no EDM, no heavy drums. The mood, instrument list and major key are settled — the user calls them the best part and they are not open for tuning. See "BGM: Vary the Playing, Never the Mood" below before touching anything musical.
 - Image prompt must push premium modern infographic quality: crisp Korean typography, sharp edges, high contrast, no blur, no retro/cheap clipart look.
 - Default video duration is 5 seconds. Keep this short-card workflow around 4-5 seconds unless the user explicitly asks longer.
 - Default YouTube upload privacy is public. Existing private videos are a public-publishing action; get explicit confirmation before changing old videos to public.
@@ -347,7 +347,8 @@ Usually a secondary error. Check `KIE Create BGM Task` first. If it returns `422
 
 Fix:
 
-- Keep `Prepare Image and BGM Payloads` BGM prompt under 500 characters. Current cap is 480.
+- The 500-character limit belongs to simple mode's `prompt` field. These circuits send `customMode: true` with a `style` field, whose V5_5 limit is 1000. The shared cap is `BGM_STYLE_MAX_CHARS` (900) in `scripts/lib/bgm-variation.mjs`; `verify-bgm-contracts.mjs` computes the longest possible profile+arrangement string every run and fails if it would exceed that cap.
+- Never re-introduce a per-circuit `.slice(...)` on the style string. The 완성 이미지 circuits sliced at 480 while the assembled string was 636, so the percussion ban and the minor-key ban were cut off before Suno ever saw them, and the verifier passed anyway because it only checked that the sentences existed in the code (2026-08-06).
 - Keep `Normalize BGM Task` guard: if BGM create response has HTTP/API error or no `taskId`, throw immediately instead of polling.
 - Do not diagnose this as a retry wait problem until create response has a real `taskId`.
 
@@ -479,6 +480,58 @@ subjects and already carries the handle, so `MAIN_CLOSING_LEAD` and
 `REFERENCE_CLOSING_LEAD` are the same string and the swap is an identity.
 `Add Handle To Card Footer` still runs and still throws when the main circuit's
 wording drifts out from under it; it just has nothing to replace right now.
+
+## BGM: Vary the Playing, Never the Mood (2026-08-06)
+
+The user reported that the music across circuits was too similar, sometimes
+literally the same track, while insisting the style, mood, instrumentation and
+major key are the best part of the output and must not be touched. Four separate
+causes were found by measurement, not by reading prompts.
+
+**1. Every video played seconds 0–5 of its track.** Published videos are exactly
+5.000 s and `render-static-card.mjs` fed ffmpeg `-stream_loop -1 -i bgm.mp3 -t 5`,
+which always starts at zero. The 20 most recent renders used tracks of 103 s,
+108 s, 113 s and 124 s — all different pieces — but viewers only ever heard the
+intro, and bright acoustic piano intros are interchangeable. The melody that
+distinguishes one Suno track from another arrives around 10–30 s.
+`scripts/lib/bgm-window.mjs` now picks a start point per render, skipping the
+intro and the tail, with a short fade in and out. If ffprobe cannot read the
+duration it returns offset 0, i.e. exactly the old behaviour — this change
+cannot make anything worse. Guarded by `verify-bgm-audio-window.mjs`.
+
+**2. 19% of runs used one identical fallback file.** Six of the last 31
+executions ended on `assets/fallback-bgm.mp3`, and every failure message read
+`state=FIRST_SUCCESS` or `state=TEXT_SUCCESS` — the track was still generating.
+The budget was 30 s + 90 s. `BGM_RETRY_WAIT_SECONDS` is now 240. Hard API
+failures still short-circuit to the fallback immediately, so this does not add
+waiting to genuinely failed jobs.
+
+**3. Three circuits had drifted apart.** 본편 had six profiles with a cooldown,
+완성 이미지 had the same six but truncated the assembled string at 480 chars, and
+원본 릴스 had one hardcoded string with no instrument whitelist, no percussion ban
+and no minor-key ban at all. `scripts/lib/bgm-variation.mjs` is now the single
+source; all three builders import it and no circuit keeps a private copy.
+
+**4. Six profiles was never six songs.** About 85% of every style string was the
+same shared safety text, and `weirdnessConstraint: 0.1` told Suno not to vary.
+Arrangement axes now sit on top of the untouched profiles: tempo, texture,
+register, melodic motion and harmonic colour — 768 combinations × 6 profiles =
+4,608 distinct instructions. Every option stays inside the existing instrument
+list and stays in a major key. `weirdnessConstraint` is 0.32; `styleWeight`
+stays at 0.9 because that is what holds the mood in place.
+
+Rules when touching any of this:
+
+- Mood, instrument whitelist, and major key are settled. Change the arrangement
+  axes, not `BGM_PROFILE_POOL` or `BGM_CONSTRAINT_LINES`.
+- If the mood ever drifts, lower `BGM_WEIRDNESS` first. It is the only knob that
+  loosens Suno's adherence, and it is the one change here whose musical effect
+  has not been confirmed against a real render.
+- Do not add an axis the viewer cannot hear. The intro-shape axis was dropped
+  because the render now skips the intro outright.
+- `verify-bgm-contracts.mjs` computes the longest possible style string and the
+  arrangement picker's real spread on every run. Adding axes is safe; the
+  verifier fails before anything can silently truncate.
 
 ## Who May Name a Channel on the Card (2026-08-05)
 

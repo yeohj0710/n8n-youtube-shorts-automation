@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import sqlite3 from 'sqlite3';
+import { BGM_CONSTRAINT_LINES, BGM_PROFILE_POOL, BGM_RETRY_WAIT_SECONDS } from './lib/bgm-variation.mjs';
 
 const files = ['workflows/n8n_source_reel_haru_manual.json', 'workflows/n8n_source_reel_longevity_manual.json'];
 const forbidden = ['Fetch Health RSS', 'Build Viral Rank Pack Request', 'KIE Claude Generate Pack', 'Shared Content Quality Gate'];
@@ -41,9 +42,19 @@ for (const file of files) {
   const loadCode = workflow.nodes.find((node) => node.name === 'Load Source Reel Bundle').parameters.jsCode;
   if (image.credentials?.httpHeaderAuth?.id !== expected.kie) throw new Error(`${file}: KIE credential changed`);
   if (createBgm?.parameters?.url !== 'https://api.kie.ai/api/v1/generate') throw new Error(`${file}: BGM is not using the music-generation endpoint`);
-  for (const contract of ['customMode:true','instrumental:true','style:','title:','negativeTags:','Bright cheerful warm optimistic','humming','wordless vocals']) {
+  for (const contract of ['customMode:true','instrumental:true','style:','title:','negativeTags:','humming','wordless vocals']) {
     if (!loadCode.includes(contract)) throw new Error(`${file}: BGM contract missing ${contract}`);
   }
+  // 2026-08-06 이전 이 회로는 모든 영상에 문자열 하나를 보냈고, 그 문자열에는 악기
+  // 화이트리스트도 타악기 금지도 단조 금지도 없었다. 이제 본편과 같은 표를 쓴다.
+  for (const line of BGM_CONSTRAINT_LINES) {
+    if (!loadCode.includes(line)) throw new Error(`${file}: shared BGM safety line missing -> ${line.slice(0, 48)}...`);
+  }
+  for (const profile of BGM_PROFILE_POOL) {
+    if (!loadCode.includes(profile.id)) throw new Error(`${file}: BGM profile pool is missing ${profile.id}`);
+  }
+  if (!loadCode.includes('bgmArrangementFor(')) throw new Error(`${file}: every video would get the same arrangement again`);
+  if (loadCode.includes("title:'Bright happy instrumental'")) throw new Error(`${file}: the single hardcoded BGM title is back`);
   const expectedYoutube = file.includes('longevity') ? expected.youtube.longevity : expected.youtube.haru;
   if (youtube.credentials?.youTubeOAuth2Api?.id !== expectedYoutube) throw new Error(`${file}: wrong channel YouTube credential`);
   if (comment.credentials?.youTubeOAuth2Api?.id !== expectedYoutube) throw new Error(`${file}: wrong channel comment credential`);
@@ -59,7 +70,7 @@ for (const file of files) {
   for (const key of configRefs) if (!loadCode.includes(`${key}:`)) throw new Error(`${file}: downstream config reference not supplied: ${key}`);
   if (!loadCode.includes('allow_youtube_upload:incoming.allow_youtube_upload===undefined?true')) throw new Error(`${file}: upload does not default on`);
   if (!loadCode.includes("youtube_privacy_status:incoming.youtube_privacy_status||'public'")) throw new Error(`${file}: privacy does not default public`);
-  for (const key of ['poll_interval_seconds:30','bgm_retry_wait_seconds:90','image_task_retry_wait_seconds:30','image_poll_timeout_seconds:1800','image_poll_max_attempts:60']) {
+  for (const key of ['poll_interval_seconds:30',`bgm_retry_wait_seconds:${BGM_RETRY_WAIT_SECONDS}`,'image_task_retry_wait_seconds:30','image_poll_timeout_seconds:1800','image_poll_max_attempts:60']) {
     if (!loadCode.includes(key)) throw new Error(`${file}: required downstream config missing: ${key}`);
   }
   const parseFinal = workflow.nodes.find((node) => node.name === 'Parse Image Result Final');

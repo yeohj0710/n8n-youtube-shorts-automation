@@ -2,6 +2,17 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { applyFrameMarginPolicy } from './lib/frame-margin-policy.mjs';
+import {
+  BGM_PROFILE_POOL,
+  BGM_CONSTRAINT_LINES,
+  BGM_NEGATIVE_TAGS,
+  BGM_SAFETY_ENVELOPE,
+  BGM_STYLE_MAX_CHARS,
+  BGM_STYLE_WEIGHT,
+  BGM_WEIRDNESS,
+  BGM_RETRY_WAIT_SECONDS,
+  bgmArrangementSource,
+} from './lib/bgm-variation.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const workflowDir = path.join(root, 'workflows');
@@ -13,27 +24,9 @@ const KIE_CREDENTIAL = {
   },
 };
 
-// 메인 워크플로우(`n8n_하루건강약사_수동실행.json`)의 `Prepare Image and BGM Payloads`와
-// 글자 하나까지 같아야 한다. image_drop 쪽이 짧은 금지 목록을 쓰다가 허밍·무가사 보컬이
-// 섞인 BGM이 나왔다(2026-07-30 사용자 지적). verify-image-drop-workflows.mjs가 두
-// 회로의 이 문장들이 일치하는지 검사하므로, 고칠 때는 메인 쪽 원본을 먼저 고친다.
-const BGM_PROFILE_POOL = [
-  { id: 'intimate_felt_piano', sound_family: 'piano_solo', title: '햇살 펠트 피아노', prompt: 'Bright friendly felt piano solo, buoyant rounded melody, sunny and gently cheerful.' },
-  { id: 'hopeful_acoustic_piano', sound_family: 'piano_solo', title: '희망찬 어쿠스틱 피아노', prompt: 'Uplifting acoustic piano solo, flowing major-key melody, warm, light, and optimistic.' },
-  { id: 'grounded_nylon_guitar', sound_family: 'guitar_solo', title: '밝은 나일론 기타', prompt: 'Sunny nylon acoustic guitar solo, lively fingerstyle phrases, friendly and contented.' },
-  { id: 'reassuring_piano_strings', sound_family: 'piano_strings', title: '기분 좋은 피아노와 현악', prompt: 'Cheerful acoustic piano with soft bowed strings, reassuring, graceful, and positive.' },
-  { id: 'daylight_guitar_piano', sound_family: 'guitar_piano', title: '햇살 기타와 피아노', prompt: 'Happy nylon acoustic guitar with bright piano, warm daylight mood and easy movement.' },
-  { id: 'restorative_strings_piano', sound_family: 'piano_strings', title: '산뜻한 현악과 피아노', prompt: 'Light joyful bowed strings with gentle piano, spacious, fresh, and quietly celebratory.' },
-];
-const BGM_CONSTRAINT_LINES = [
-  'Bright, cheerful, warm, optimistic major-key instrumental background music, gently lively at about 92-106 BPM.',
-  'No voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh/aah, vocal chops, or wordless vocals.',
-  'Allowed instruments only: felt piano, gentle acoustic piano, nylon acoustic guitar, soft bowed strings.',
-  'No synth, pad, ambient wash, breathy texture, percussion, drums, brushes, marimba, mallets, electronic or fusion sounds.',
-  'No dark, sad, melancholic, ominous, tense, sleepy, or minor-key mood.',
-];
-const BGM_NEGATIVE_TAGS = 'voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh, aah, vocal chops, wordless vocals, spoken words, whispering, breathing, dark, sad, melancholic, ominous, tense, sleepy, minor key';
-const BGM_SAFETY_ENVELOPE = 'bright_acoustic_zero_voice_v3';
+// BGM 지시는 scripts/lib/bgm-variation.mjs 한 곳에서만 정한다. 예전에는 이 파일이
+// 자기 사본을 들고 있었고, image_drop 쪽 금지 목록이 짧아 허밍·무가사 보컬이 섞인
+// BGM이 나온 적이 있다(2026-07-30 사용자 지적). 사본을 없애 그 사고를 원천 차단한다.
 
 const channels = [
   {
@@ -318,7 +311,10 @@ function claimNextImageRuntime(definition) {
           duration_seconds: 5,
           kie_bgm_model: 'V5_5',
           poll_interval_seconds: 30,
-          bgm_retry_wait_seconds: 90,
+          // BGM_POLL_BUDGET_V1: 30초+90초로는 곡이 다 안 만들어져 폴백 음원으로
+          // 떨어지는 일이 잦았다(2026-08-06 실측 31건 중 6건). 그 6편은 음악이
+          // 비슷한 게 아니라 같은 파일이었다.
+          bgm_retry_wait_seconds: definition.bgmRetryWaitSeconds,
           local_render_dir: 'C:/dev/n8n-youtube-shorts-automation/renders',
           local_render_script: 'C:/dev/n8n-youtube-shorts-automation/scripts/render-static-card.mjs',
           ffmpeg_path: 'C:/Users/hjyeo/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe',
@@ -546,11 +542,16 @@ function buildPackFromCardCopyRuntime(definition) {
   const bgmPool = definition.bgmProfiles;
   const bgmIndex = Number.parseInt(String(base.image_sha256 || '0').slice(0, 8), 16) % bgmPool.length;
   const bgmVariation = bgmPool[Number.isFinite(bgmIndex) ? bgmIndex : 0];
-  const bgmPrompt = [
-    'Profile ' + bgmVariation.id + ': ' + bgmVariation.prompt,
-    ...definition.bgmConstraints,
-  ].join(' ').replace(/\s+/g, ' ').trim().slice(0, 480);
-  const bgmProfile = { ...bgmVariation, safety_envelope: definition.bgmSafetyEnvelope };
+  // 프로필(악기·분위기)은 그대로 두고 연주 방식만 카드마다 흔든다.
+  const bgmArrangement = bgmArrangementFor('bgm_arrangement|' + bgmVariation.id + '|' + String(base.image_sha256 || '') + '|' + title);
+  // 자를 일이 생기면 편곡 줄부터 버린다. 2026-08-06 이전에는 480자에서 통째로 잘려
+  // 타악기 금지와 단조 금지 문장이 Suno에 아예 전달되지 않았다(실측 636자).
+  const bgmSafetyText = definition.bgmConstraints.join(' ');
+  const bgmPromptFull = ['Profile ' + bgmVariation.id + ': ' + bgmVariation.prompt, bgmArrangement.line, bgmSafetyText].join(' ').replace(/\s+/g, ' ').trim();
+  const bgmPrompt = bgmPromptFull.length <= definition.bgmStyleMaxChars
+    ? bgmPromptFull
+    : ['Profile ' + bgmVariation.id + ': ' + bgmVariation.prompt, bgmSafetyText].join(' ').replace(/\s+/g, ' ').trim().slice(0, definition.bgmStyleMaxChars);
+  const bgmProfile = { ...bgmVariation, arrangement: bgmArrangement.chosen, safety_envelope: definition.bgmSafetyEnvelope };
 
   return [{
     json: {
@@ -583,10 +584,10 @@ function buildPackFromCardCopyRuntime(definition) {
         customMode: true,
         instrumental: true,
         style: bgmPrompt,
-        title: ('Bright instrumental - ' + bgmVariation.title).slice(0, 80),
+        title: ('Bright instrumental - ' + bgmVariation.title + ' ' + String(bgmArrangement.chosen.tempo || '').replace('about ', '')).slice(0, 80),
         negativeTags: definition.bgmNegativeTags,
-        styleWeight: 0.9,
-        weirdnessConstraint: 0.1,
+        styleWeight: definition.bgmStyleWeight,
+        weirdnessConstraint: definition.bgmWeirdness,
       },
     },
   }];
@@ -806,11 +807,16 @@ function parseVisionCopyRuntime(definition) {
   const bgmPool = definition.bgmProfiles;
   const bgmIndex = Number.parseInt(String(base.image_sha256 || '0').slice(0, 8), 16) % bgmPool.length;
   const bgmVariation = bgmPool[Number.isFinite(bgmIndex) ? bgmIndex : 0];
-  const bgmPrompt = [
-    'Profile ' + bgmVariation.id + ': ' + bgmVariation.prompt,
-    ...definition.bgmConstraints,
-  ].join(' ').replace(/\s+/g, ' ').trim().slice(0, 480);
-  const bgmProfile = { ...bgmVariation, safety_envelope: definition.bgmSafetyEnvelope };
+  // 프로필(악기·분위기)은 그대로 두고 연주 방식만 카드마다 흔든다.
+  const bgmArrangement = bgmArrangementFor('bgm_arrangement|' + bgmVariation.id + '|' + String(base.image_sha256 || '') + '|' + title);
+  // 자를 일이 생기면 편곡 줄부터 버린다. 2026-08-06 이전에는 480자에서 통째로 잘려
+  // 타악기 금지와 단조 금지 문장이 Suno에 아예 전달되지 않았다(실측 636자).
+  const bgmSafetyText = definition.bgmConstraints.join(' ');
+  const bgmPromptFull = ['Profile ' + bgmVariation.id + ': ' + bgmVariation.prompt, bgmArrangement.line, bgmSafetyText].join(' ').replace(/\s+/g, ' ').trim();
+  const bgmPrompt = bgmPromptFull.length <= definition.bgmStyleMaxChars
+    ? bgmPromptFull
+    : ['Profile ' + bgmVariation.id + ': ' + bgmVariation.prompt, bgmSafetyText].join(' ').replace(/\s+/g, ' ').trim().slice(0, definition.bgmStyleMaxChars);
+  const bgmProfile = { ...bgmVariation, arrangement: bgmArrangement.chosen, safety_envelope: definition.bgmSafetyEnvelope };
 
   const pack = {
     hook_title: title,
@@ -845,10 +851,10 @@ function parseVisionCopyRuntime(definition) {
         customMode: true,
         instrumental: true,
         style: bgmPrompt,
-        title: ('Bright instrumental - ' + bgmVariation.title).slice(0, 80),
+        title: ('Bright instrumental - ' + bgmVariation.title + ' ' + String(bgmArrangement.chosen.tempo || '').replace('about ', '')).slice(0, 80),
         negativeTags: definition.bgmNegativeTags,
-        styleWeight: 0.9,
-        weirdnessConstraint: 0.1,
+        styleWeight: definition.bgmStyleWeight,
+        weirdnessConstraint: definition.bgmWeirdness,
       },
     },
   }];
@@ -984,9 +990,12 @@ function completeImageDropRuntime(definition) {
 }
 
 function codeFor(runtime, definition) {
+  const body = runtime.toString();
   return [
     `const channelDefinition = ${JSON.stringify(definition)};`,
-    runtime.toString(),
+    // 편곡 축 선택기는 코드로 박아 넣는다. definition은 JSON이라 함수를 못 싣는다.
+    ...(body.includes('bgmArrangementFor(') ? [bgmArrangementSource()] : []),
+    body,
     `return ${runtime.name}(channelDefinition);`,
   ].join('\n\n');
 }
@@ -1037,6 +1046,10 @@ function buildWorkflow(channel) {
     bgmConstraints: BGM_CONSTRAINT_LINES,
     bgmNegativeTags: BGM_NEGATIVE_TAGS,
     bgmSafetyEnvelope: BGM_SAFETY_ENVELOPE,
+    bgmStyleMaxChars: BGM_STYLE_MAX_CHARS,
+    bgmStyleWeight: BGM_STYLE_WEIGHT,
+    bgmWeirdness: BGM_WEIRDNESS,
+    bgmRetryWaitSeconds: BGM_RETRY_WAIT_SECONDS,
   };
   const positions = {
     'Use Live BGM?': [2160, 300],

@@ -4,6 +4,17 @@ import { randomUUID } from 'node:crypto';
 import sqlite3 from 'sqlite3';
 import { safeBoxFor, shortsSafeZoneInstructionSource } from './lib/safe-zone.mjs';
 import { applyFrameMarginPolicy } from './lib/frame-margin-policy.mjs';
+import {
+  BGM_PROFILE_POOL,
+  BGM_CONSTRAINT_LINES,
+  BGM_NEGATIVE_TAGS,
+  BGM_SAFETY_ENVELOPE,
+  BGM_STYLE_MAX_CHARS,
+  BGM_STYLE_WEIGHT,
+  BGM_WEIRDNESS,
+  BGM_RETRY_WAIT_SECONDS,
+  bgmArrangementSource,
+} from './lib/bgm-variation.mjs';
 
 const SAFE_ZONE_BOX = safeBoxFor(1080, 1920, '9:16');
 
@@ -1207,14 +1218,8 @@ function buildUniversalCommentCta() {
     : '50대 이후 시청자를 위한 차분하고 신뢰할 수 있는 건강교육 채널.');
 const rawBgmWriterDirection = String(pack.bgm_prompt || '').replace(/\\s+/g, ' ').trim();
 const bgmWriterDirection = rawBgmWriterDirection || 'warm calm acoustic instrumental for this health topic';
-const bgmProfilePool = [
-  { id: 'intimate_felt_piano', sound_family: 'piano_solo', title: '햇살 펠트 피아노', prompt: 'Bright friendly felt piano solo, buoyant rounded melody, sunny and gently cheerful.' },
-  { id: 'hopeful_acoustic_piano', sound_family: 'piano_solo', title: '희망찬 어쿠스틱 피아노', prompt: 'Uplifting acoustic piano solo, flowing major-key melody, warm, light, and optimistic.' },
-  { id: 'grounded_nylon_guitar', sound_family: 'guitar_solo', title: '밝은 나일론 기타', prompt: 'Sunny nylon acoustic guitar solo, lively fingerstyle phrases, friendly and contented.' },
-  { id: 'reassuring_piano_strings', sound_family: 'piano_strings', title: '기분 좋은 피아노와 현악', prompt: 'Cheerful acoustic piano with soft bowed strings, reassuring, graceful, and positive.' },
-  { id: 'daylight_guitar_piano', sound_family: 'guitar_piano', title: '햇살 기타와 피아노', prompt: 'Happy nylon acoustic guitar with bright piano, warm daylight mood and easy movement.' },
-  { id: 'restorative_strings_piano', sound_family: 'piano_strings', title: '산뜻한 현악과 피아노', prompt: 'Light joyful bowed strings with gentle piano, spacious, fresh, and quietly celebratory.' },
-];
+const bgmProfilePool = ${JSON.stringify(BGM_PROFILE_POOL, null, 0)};
+${bgmArrangementSource()}
 const requestedBgmProfile = findById(bgmProfilePool, cfg.bgm_profile_override);
 const recentBgmProfileIds = (Array.isArray(cfg.recent_bgm_profiles) ? cfg.recent_bgm_profiles : []).slice(0, 2);
 const recentBgmProfiles = new Set(recentBgmProfileIds);
@@ -1229,25 +1234,29 @@ const bgmVariation = requestedBgmProfile || pick(
   selectableBgmProfiles,
   'bgm_variation|' + (pack.content_lane || data.selected_content_lane?.id || 'general') + '|' + bgmWriterDirection,
 );
-const bgmStyle = limitPrompt([
-  'Profile ' + bgmVariation.id + ': ' + bgmVariation.prompt,
-  'Bright, cheerful, warm, optimistic major-key instrumental background music, gently lively at about 92-106 BPM.',
-  'No voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh/aah, vocal chops, or wordless vocals.',
-  'Allowed instruments only: felt piano, gentle acoustic piano, nylon acoustic guitar, soft bowed strings.',
-  'No synth, pad, ambient wash, breathy texture, percussion, drums, brushes, marimba, mallets, electronic or fusion sounds.',
-  'No dark, sad, melancholic, ominous, tense, sleepy, or minor-key mood.',
-].join(' '), 900);
-const bgmNegativeTags = 'voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh, aah, vocal chops, wordless vocals, spoken words, whispering, breathing, dark, sad, melancholic, ominous, tense, sleepy, minor key';
-const bgmProfile = { ...bgmVariation, writer_direction: bgmWriterDirection, safety_envelope: 'bright_acoustic_zero_voice_v3' };
+// BGM_ARRANGEMENT_V1: 프로필(악기·분위기)은 그대로 두고 연주 방식만 곡마다 흔든다.
+// 프로필 6종만으로는 지시문의 85%가 매번 같아서 같은 곡이 반복해 나왔다.
+const bgmArrangement = bgmArrangementFor(
+  'bgm_arrangement|' + bgmVariation.id + '|' + (pack.hook_title || '') + '|' + bgmWriterDirection,
+);
+// 안전 문장이 뒤에 오되, 길이 제한에 걸리면 편곡 줄부터 버린다. 완성 이미지 회로에서
+// 480자 컷 때문에 타악기 금지와 단조 금지가 통째로 잘려 나간 적이 있다(2026-08-06).
+const bgmSafetyLines = ${JSON.stringify(BGM_CONSTRAINT_LINES, null, 0)};
+const bgmStyleFull = ['Profile ' + bgmVariation.id + ': ' + bgmVariation.prompt, bgmArrangement.line, bgmSafetyLines.join(' ')].join(' ').replace(/\\s+/g, ' ').trim();
+const bgmStyle = bgmStyleFull.length <= ${BGM_STYLE_MAX_CHARS}
+  ? bgmStyleFull
+  : limitPrompt(['Profile ' + bgmVariation.id + ': ' + bgmVariation.prompt, bgmSafetyLines.join(' ')].join(' '), ${BGM_STYLE_MAX_CHARS});
+const bgmNegativeTags = ${JSON.stringify(BGM_NEGATIVE_TAGS)};
+const bgmProfile = { ...bgmVariation, arrangement: bgmArrangement.chosen, writer_direction: bgmWriterDirection, safety_envelope: '${BGM_SAFETY_ENVELOPE}' };
 const bgm_payload = {
   model: cfg.kie_bgm_model,
   customMode: true,
   instrumental: true,
   style: bgmStyle,
-  title: limitPrompt('Bright instrumental - ' + bgmVariation.title, 80),
+  title: limitPrompt('Bright instrumental - ' + bgmVariation.title + ' ' + String(bgmArrangement.chosen.tempo || '').replace('about ', ''), 80),
   negativeTags: bgmNegativeTags,
-  styleWeight: 0.9,
-  weirdnessConstraint: 0.1,
+  styleWeight: ${BGM_STYLE_WEIGHT},
+  weirdnessConstraint: ${BGM_WEIRDNESS},
 };
 
 `;
@@ -1640,6 +1649,28 @@ function patchRetryContracts(code, target) {
   );
 }
 
+// BGM_CLIP_CHOICE_V1: Suno는 한 번 생성에 클립을 두 개 준다. 예전에는 늘 긴 쪽을
+// 골랐는데, 발행 영상이 5초라 길이 우위는 아무 의미가 없었고 대신 선택이 고정돼
+// 다양성만 절반으로 줄었다. 영상보다 넉넉히 긴 후보 중에서 작업 id로 고른다.
+// 같은 작업이면 같은 클립이 나오므로 재현성은 그대로다.
+function patchBgmClipChoice(code, label) {
+  if (code.includes('BGM_CLIP_CHOICE_V1')) return code;
+  const anchor = 'const best = [...candidates].sort((left, right) => durationFor(right) - durationFor(left))[0] || null;';
+  if (!code.includes(anchor)) throw new Error(`${label}: BGM clip selection anchor missing`);
+  const replacement = `// BGM_CLIP_CHOICE_V1: 길이로 고르지 않고 시드로 고른다. 자세한 이유는 빌더 주석에 있다.
+const clipSeedText = String(base.bgm_task_id || base.render_id || base.pack?.hook_title || '');
+let clipSeed = 2166136261;
+for (let seedIndex = 0; seedIndex < clipSeedText.length; seedIndex += 1) {
+  clipSeed ^= clipSeedText.charCodeAt(seedIndex);
+  clipSeed = Math.imul(clipSeed, 16777619);
+}
+const clipDurationSeconds = Number(base.config?.duration_seconds || 5);
+const viableClips = candidates.filter((item) => durationFor(item) >= clipDurationSeconds + 4);
+const clipPool = viableClips.length ? viableClips : candidates;
+const best = clipPool.length ? clipPool[(clipSeed >>> 0) % clipPool.length] : null;`;
+  return code.replace(anchor, replacement);
+}
+
 function patchWorkflow(workflow, target) {
   const load = workflow.nodes.find((node) => node.name === 'Load Config');
   const build = workflow.nodes.find((node) => node.name === 'Build Viral Rank Pack Request');
@@ -1667,6 +1698,18 @@ function patchWorkflow(workflow, target) {
   // workflow uses record-info polling. The default sink accepts the required
   // POST with HTTP 200; callers can override it with their own public HTTPS URL.
   createBgm.parameters.jsonBody = "={{ JSON.stringify({ ...$json.bgm_payload, callBackUrl: $json.config?.kie_bgm_callback_url || 'https://httpbin.org/status/200' }) }}";
+  // BGM_POLL_BUDGET_V1: 30초 + 90초로는 2분짜리 곡이 제때 안 끝난다. 실행 31건 중
+  // 6건이 state=FIRST_SUCCESS/TEXT_SUCCESS인 채로 폴백 음원에 떨어졌고, 그 6편은
+  // 서로 음악이 비슷한 게 아니라 같은 파일이었다(2026-08-06). 노드 이름은 그대로
+  // 두되(이름을 바꾸면 연결과 검사 목록이 전부 깨진다) 기다리는 값만 늘린다.
+  const bgmRetryWait = workflow.nodes.find((node) => node.name === 'Wait BGM Retry 90s');
+  if (!bgmRetryWait) throw new Error(`${target.id}: BGM retry wait node missing`);
+  bgmRetryWait.parameters.amount = `={{$json.config.bgm_retry_wait_seconds || ${BGM_RETRY_WAIT_SECONDS}}}`;
+  for (const nodeName of ['Parse BGM Result', 'Parse BGM Result Final']) {
+    const node = workflow.nodes.find((entry) => entry.name === nodeName);
+    if (!node) throw new Error(`${target.id}: ${nodeName} missing`);
+    node.parameters.jsCode = patchBgmClipChoice(node.parameters.jsCode, `${target.id} ${nodeName}`);
+  }
   if (!mock.parameters.jsCode.includes('channel_editorial_profile: data.config?.channel_editorial_profile')) {
     mock.parameters.jsCode = mock.parameters.jsCode.replace(
       "    content_lane: lockedSource.lane || 'source_grounded',",

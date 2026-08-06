@@ -3,6 +3,16 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { shortsSafeZonePromptLines } from './lib/safe-zone.mjs';
 import { applyFrameMarginPolicy } from './lib/frame-margin-policy.mjs';
+import {
+  BGM_PROFILE_POOL,
+  BGM_CONSTRAINT_LINES,
+  BGM_NEGATIVE_TAGS,
+  BGM_STYLE_MAX_CHARS,
+  BGM_STYLE_WEIGHT,
+  BGM_WEIRDNESS,
+  BGM_RETRY_WAIT_SECONDS,
+  bgmArrangementSource,
+} from './lib/bgm-variation.mjs';
 
 // 원본 릴스 회로의 이미지 프롬프트에는 안전 영역 지시가 아예 없었다. 좌표는
 // scripts/lib/safe-zone.mjs 표에서 받아 쓴다 — 손으로 베껴 쓰면 어긋난다.
@@ -25,6 +35,9 @@ const keep = [
 
 function loadCode(channelId, topicDir, displayName) {
   return `const fs=require('fs'); const path=require('path');
+${bgmArrangementSource()}
+const BGM_PROFILE_POOL=${JSON.stringify(BGM_PROFILE_POOL)};
+const BGM_SAFETY_TEXT=${JSON.stringify(BGM_CONSTRAINT_LINES.join(' '))};
 const incoming=$input.first()?.json||{}; const topicDir=${JSON.stringify(topicDir)}; const channelId=${JSON.stringify(channelId)};
 const bundleRoot='C:/dev/n8n-youtube-shorts-automation/data/source-reel-bundles';
 const staleClaimMs=12*60*60*1000;
@@ -48,8 +61,18 @@ const imagePrompt=['Create one original 1080x1920 Korean Shorts visual for ${dis
 const description=[title,subtitle,'',...ranks.map(x=>x.rank+'위 '+x.name+' - '+x.reason),'',source.canonical_url||source.source_url||''].join('\\n');
 const pinnedComment=['오늘 영상 핵심: '+title,'',...ranks.map(x=>x.rank+'번 '+x.name),'','이 중 가장 먼저 확인해보고 싶은 항목은 몇 번인가요? 댓글로 번호를 남겨주세요.','개인 상태에 따라 적용이 달라질 수 있으니 제품 설명서와 전문가 안내를 우선해 주세요.'].join('\\n');
 const claimLock=path.join(selected.bundle,'.render-claim.lock');let claimHandle;try{claimHandle=fs.openSync(claimLock,'wx');fs.writeFileSync(claimHandle,JSON.stringify({channel_id:channelId,source_id:source.source_id,claimed_at:new Date().toISOString()}));fs.closeSync(claimHandle);}catch(error){if(claimHandle!==undefined)try{fs.closeSync(claimHandle);}catch{}throw new Error(error?.code==='EEXIST'?'Source bundle is already claimed: '+source.source_id:'Unable to claim source bundle: '+error.message);} selected.manifest.status='render_claimed'; selected.manifest.render_claimed_at=new Date().toISOString(); try{fs.writeFileSync(selected.mf,JSON.stringify(selected.manifest,null,2)+'\\n','utf8');}catch(error){try{fs.unlinkSync(claimLock);}catch{}throw error;}
-const config={use_live_image:true,use_live_bgm:true,use_live_render:true,allow_youtube_upload:incoming.allow_youtube_upload===undefined?true:Boolean(incoming.allow_youtube_upload),youtube_privacy_status:incoming.youtube_privacy_status||'public',kie_image_model:incoming.kie_image_model||'gpt-image-2-text-to-image',kie_bgm_model:'V5_5',duration_seconds:Number(incoming.duration_seconds||5),local_render_dir:'C:/dev/n8n-youtube-shorts-automation/renders/source-reels',local_render_script:'C:/dev/n8n-youtube-shorts-automation/scripts/render-static-card.mjs',ffmpeg_path:'C:/Users/hjyeo/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe',node_path:'C:/Program Files/nodejs/node.exe',poll_interval_seconds:30,bgm_retry_wait_seconds:90,image_poll_interval_seconds:30,image_retry_wait_seconds:30,image_task_retry_wait_seconds:30,image_poll_timeout_seconds:1800,image_poll_max_attempts:60,image_task_max_retries:2,youtube_category_id:'27',region_code:'KR'};
-return [{json:{config,source_bundle:{channel_id:channelId,topic_md:selected.file,bundle_dir:selected.bundle,manifest_path:selected.mf,claim_lock:claimLock,source_id:source.source_id,representative_frame:frame},pack:{hook_title:title,subtitle,rank_items:ranks,tags:[...new Set([...(brief.tags||[]),'${displayName}','건강정보','쇼츠'])],description,pinned_comment:pinnedComment},image_payload:{model:config.kie_image_model,input:{prompt:imagePrompt,aspect_ratio:'9:16'}},bgm_payload:{model:config.kie_bgm_model,customMode:true,instrumental:true,style:'Bright cheerful warm optimistic major-key instrumental background music. Sunny acoustic piano and nylon guitar, gently lively, friendly and happy. No voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh/aah, vocal chops, or wordless vocals.',title:'Bright happy instrumental',negativeTags:'voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh, aah, vocal chops, wordless vocals, spoken words, whispering, breathing, dark, sad, melancholic, ominous, tense, sleepy, minor key',styleWeight:0.9,weirdnessConstraint:0.1}}}];`;
+const config={use_live_image:true,use_live_bgm:true,use_live_render:true,allow_youtube_upload:incoming.allow_youtube_upload===undefined?true:Boolean(incoming.allow_youtube_upload),youtube_privacy_status:incoming.youtube_privacy_status||'public',kie_image_model:incoming.kie_image_model||'gpt-image-2-text-to-image',kie_bgm_model:'V5_5',duration_seconds:Number(incoming.duration_seconds||5),local_render_dir:'C:/dev/n8n-youtube-shorts-automation/renders/source-reels',local_render_script:'C:/dev/n8n-youtube-shorts-automation/scripts/render-static-card.mjs',ffmpeg_path:'C:/Users/hjyeo/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe',node_path:'C:/Program Files/nodejs/node.exe',poll_interval_seconds:30,bgm_retry_wait_seconds:${BGM_RETRY_WAIT_SECONDS},image_poll_interval_seconds:30,image_retry_wait_seconds:30,image_task_retry_wait_seconds:30,image_poll_timeout_seconds:1800,image_poll_max_attempts:60,image_task_max_retries:2,youtube_category_id:'27',region_code:'KR'};
+// BGM_ARRANGEMENT_V1: 이 회로는 원래 모든 영상에 똑같은 문자열 하나를 보냈다. 게다가
+// 그 문자열에는 악기 화이트리스트도, 타악기 금지도, 단조 금지도 없었다(2026-08-06).
+// 이제 본편과 같은 프로필 6종과 편곡 축을 쓴다. 분위기·악기·장조는 그대로다.
+const bgmSeedText='bgm|'+channelId+'|'+(source.source_id||'')+'|'+title;
+let bgmHash=2166136261;
+for(let bgmIndex=0;bgmIndex<bgmSeedText.length;bgmIndex+=1){bgmHash^=bgmSeedText.charCodeAt(bgmIndex);bgmHash=Math.imul(bgmHash,16777619);}
+const bgmVariation=BGM_PROFILE_POOL[(bgmHash>>>0)%BGM_PROFILE_POOL.length];
+const bgmArrangement=bgmArrangementFor(bgmSeedText);
+const bgmStyleFull=['Profile '+bgmVariation.id+': '+bgmVariation.prompt,bgmArrangement.line,BGM_SAFETY_TEXT].join(' ').replace(/\\s+/g,' ').trim();
+const bgmStyle=bgmStyleFull.length<=${BGM_STYLE_MAX_CHARS}?bgmStyleFull:['Profile '+bgmVariation.id+': '+bgmVariation.prompt,BGM_SAFETY_TEXT].join(' ').replace(/\\s+/g,' ').trim().slice(0,${BGM_STYLE_MAX_CHARS});
+return [{json:{config,source_bundle:{channel_id:channelId,topic_md:selected.file,bundle_dir:selected.bundle,manifest_path:selected.mf,claim_lock:claimLock,source_id:source.source_id,representative_frame:frame},pack:{hook_title:title,subtitle,rank_items:ranks,tags:[...new Set([...(brief.tags||[]),'${displayName}','건강정보','쇼츠'])],description,pinned_comment:pinnedComment},image_payload:{model:config.kie_image_model,input:{prompt:imagePrompt,aspect_ratio:'9:16'}},bgm_payload:{model:config.kie_bgm_model,customMode:true,instrumental:true,style:bgmStyle,title:('Bright instrumental - '+bgmVariation.title+' '+String(bgmArrangement.chosen.tempo||'').replace('about ','')).slice(0,80),negativeTags:${JSON.stringify(BGM_NEGATIVE_TAGS)},styleWeight:${BGM_STYLE_WEIGHT},weirdnessConstraint:${BGM_WEIRDNESS}},bgm_profile:{...bgmVariation,arrangement:bgmArrangement.chosen,safety_envelope:'bright_acoustic_zero_voice_v3'}}}];`;
 }
 
 const finalCode = `const fs=require('fs'); const path=require('path'); const data=$input.first().json; const sb=data.source_bundle||{}; let finalStatus=data.youtube?.url?'uploaded':'rendered'; try{if(sb.manifest_path&&fs.existsSync(sb.manifest_path)){const m=JSON.parse(fs.readFileSync(sb.manifest_path,'utf8')); m.status=finalStatus; m.upload_stage=data.youtube?.url?'complete':null; m.rendered_output=data.output_path||data.rendered_video_url||null; m.youtube_url=data.youtube?.url||m.youtube_url||null; m.youtube_video_id=data.youtube?.video_id||m.youtube_video_id||null; m.updated_at=new Date().toISOString(); fs.writeFileSync(sb.manifest_path,JSON.stringify(m,null,2)+'\\n','utf8'); if(sb.topic_md&&fs.existsSync(sb.topic_md)){const used=path.join(path.dirname(sb.topic_md),'사용완료');fs.mkdirSync(used,{recursive:true});const target=path.join(used,path.basename(sb.topic_md));if(!fs.existsSync(target))fs.renameSync(sb.topic_md,target);}}}finally{if(sb.claim_lock){try{fs.unlinkSync(sb.claim_lock);}catch(error){if(error?.code!=='ENOENT')throw error;}}} return [{json:{ok:true,status:finalStatus,channel_id:sb.channel_id,source_id:sb.source_id,output_path:data.output_path||null,youtube:data.youtube||{skipped:true},comment:data.comment||{created:false}}}];`;

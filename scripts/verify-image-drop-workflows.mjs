@@ -2,6 +2,13 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
+import {
+  BGM_CONSTRAINT_LINES,
+  BGM_PROFILE_POOL,
+  BGM_ARRANGEMENT_AXES,
+  BGM_STYLE_MAX_CHARS,
+  composeBgmStyle,
+} from './lib/bgm-variation.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const workflowDir = path.join(root, 'workflows');
@@ -411,16 +418,30 @@ function verifyBgmParityWithMainWorkflow(workflow, testCase) {
   assert.ok(mainFile, 'main workflow mxrYb3maJS31gEYC not found; BGM parity cannot be checked');
 
   const mainCode = mainFile.workflow.nodes.find((n) => n.name === 'Prepare Image and BGM Payloads').parameters.jsCode;
-  const requiredLines = [
-    'Bright, cheerful, warm, optimistic major-key instrumental background music, gently lively at about 92-106 BPM.',
-    'No voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh/aah, vocal chops, or wordless vocals.',
-    'Allowed instruments only: felt piano, gentle acoustic piano, nylon acoustic guitar, soft bowed strings.',
-    'No synth, pad, ambient wash, breathy texture, percussion, drums, brushes, marimba, mallets, electronic or fusion sounds.',
-    'No dark, sad, melancholic, ominous, tense, sleepy, or minor-key mood.',
-  ];
+  const requiredLines = BGM_CONSTRAINT_LINES;
   for (const line of requiredLines) {
-    assert.ok(mainCode.includes(line), `main workflow no longer carries the BGM line "${line}" — update requiredLines here first`);
+    assert.ok(mainCode.includes(line), `main workflow no longer carries the BGM line "${line}" — fix scripts/lib/bgm-variation.mjs first`);
   }
+
+  // 문장이 코드에 있는지만 보면 안 된다. 이 회로는 완성된 프롬프트를 480자에서 잘랐고,
+  // 그 바람에 타악기 금지와 단조 금지 문장이 Suno에 아예 전달되지 않은 채 몇 주를
+  // 통과했다(2026-08-06 실측 636자). 그래서 실제로 나가는 문자열 길이를 여기서 잰다.
+  const worstProfile = [...BGM_PROFILE_POOL].sort((left, right) => right.prompt.length - left.prompt.length)[0];
+  const longestArrangement = Object.values(BGM_ARRANGEMENT_AXES)
+    .map((options) => [...options].sort((left, right) => right.length - left.length)[0])
+    .join('; ');
+  const worstCaseStyle = composeBgmStyle({
+    profileId: worstProfile.id,
+    profilePrompt: worstProfile.prompt,
+    arrangementLine: `Arrangement for this piece: ${longestArrangement}.`,
+  });
+  for (const line of requiredLines) {
+    assert.ok(
+      worstCaseStyle.includes(line),
+      `the longest possible BGM style drops the safety line "${line.slice(0, 40)}..." before it reaches Suno`,
+    );
+  }
+  assert.ok(worstCaseStyle.length <= BGM_STYLE_MAX_CHARS, `worst-case BGM style is ${worstCaseStyle.length} chars, over the ${BGM_STYLE_MAX_CHARS} cap`);
 
   const copyNodes = ['Parse Vision Copy', ...(testCase.captionRoot ? ['Build Pack From Card Copy'] : [])];
   for (const nodeName of copyNodes) {

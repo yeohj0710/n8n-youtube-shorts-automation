@@ -41,7 +41,8 @@ try {
   const result = fn({ first: () => ({ json: { pack: failedPack, config: { rank_count: 7, kie_image_model: 'gpt-image-2-text-to-image', kie_bgm_model: 'V5_5', variation_seed: 'simulate' } } }) });
   const json = result[0].json;
   const prompt = json.image_payload.input.prompt;
-  const bgmPrompt = json.bgm_payload.prompt;
+  // KIE 뮤직 페이로드의 필드 이름은 style이다. prompt를 읽던 옛 코드는 undefined를 봤다.
+  const bgmPrompt = json.bgm_payload.style;
   console.log(JSON.stringify({
     title: json.pack.hook_title,
     descriptionTitle: json.pack.description.split('\n')[0],
