@@ -595,6 +595,18 @@ Rules when touching any of this:
 
 - Mood, instrument whitelist, and major key are settled. Change the arrangement
   axes, not `BGM_PROFILE_POOL` or `BGM_CONSTRAINT_LINES`.
+- **No word in the positive prompt may name a voice.** The real cause of the
+  2026-08-06 vocal leak was an arrangement axis reading `two voices trade short
+  call-and-response phrases`. In music a voice is a part; a text-to-music model
+  reads it as a person singing, and since it contradicted the ban sentence the
+  model resolved the conflict by adding vocals — one card in four. Say instrument,
+  line, or phrase. `verify-bgm-contracts.mjs` scans every profile and axis for
+  voice/vocal/sing/choir/hum/chant and fails on a hit.
+- **Keep the ban short in `style`; the list belongs in `negativeTags`.** Eleven
+  vocal nouns spelled out in the style text is itself a prompt for vocals — a
+  music model leaks negations and reads the nouns as material. `style` now states
+  once that the piece is purely instrumental; the specific words live in the field
+  designed to negate them.
 - **`BGM_WEIRDNESS` stays at 0.1. Never raise it.** Raising it to 0.32 for
   diversity on 2026-08-06 put humming and human voice into published BGM within
   hours — the failure the user has banned repeatedly. `instrumental: true`, the

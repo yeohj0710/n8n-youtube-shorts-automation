@@ -121,10 +121,29 @@ assert.ok(BGM_STYLE_MAX_CHARS <= 1000, 'KIE rejects a style field longer than 10
 
 // 사람 목소리 금지는 안전 문장 '맨 앞'이어야 한다. 길이 제한에 걸리면 뒤에서부터
 // 잘리므로, 맨 앞에 있는 한 어떤 조합에서도 사라지지 않는다.
-assert.match(BGM_CONSTRAINT_LINES[0], /ZERO HUMAN VOICE/, 'the human-voice ban must be the first safety line so truncation can never drop it');
+assert.match(BGM_CONSTRAINT_LINES[0], /purely instrumental/i, 'the instrumental-only statement must be the first safety line so truncation can never drop it');
+assert.match(BGM_CONSTRAINT_LINES[0], /no human voice/i, 'the first safety line no longer says there is no human voice');
+// 구체적 금지어는 negativeTags가 진다. style에 길게 나열하면 오히려 소재로 읽힌다.
 for (const word of ['humming', 'wordless vocals', 'a cappella', 'vocalise']) {
-  assert.ok(BGM_CONSTRAINT_LINES[0].includes(word), `the voice ban lost "${word}"`);
   assert.ok(BGM_NEGATIVE_TAGS.includes(word.split(' ')[0]), `negative tags lost "${word}"`);
+}
+
+// ★ 2026-08-06, 사람 목소리가 다시 섞인 진짜 원인.
+// 편곡 축에 'two voices trade short call-and-response phrases'가 있었다. 음악에서
+// voice는 성부지만 텍스트→음악 모델은 사람 목소리로 읽는다. 금지문과 정면으로
+// 모순되는 지시라, 4장에 1장 꼴로 보컬이 섞여 나왔다.
+// 긍정 지시문(프로필·편곡 축)에는 노래로 읽힐 단어가 하나도 없어야 한다.
+// 이 정규식은 반드시 편집 도구로 직접 쓴다. bash heredoc이나 node -e 로 쓰면 단어 경계
+// 이스케이프가 백스페이스 문자(0x08)로 바뀌어 들어가고, 그러면 아무것도 매치하지 않는
+// 채로 검사가 계속 초록이 된다. 2026-08-06에 실제로 그렇게 무력화된 가드를 통과시켰다.
+const VOCAL_WORDS = /\b(voice|voices|vocal|vocals|sing|singing|sung|choir|chant|hum|humming|cappella|vocalise|scat|lyric|lyrics)\b/i;
+for (const profile of BGM_PROFILE_POOL) {
+  assert.doesNotMatch(profile.prompt, VOCAL_WORDS, `profile ${profile.id} names something the model will sing: "${profile.prompt}"`);
+}
+for (const [axis, options] of Object.entries(BGM_ARRANGEMENT_AXES)) {
+  for (const option of options) {
+    assert.doesNotMatch(option, VOCAL_WORDS, `arrangement axis "${axis}" names something the model will sing: "${option}" — say instrument, line or phrase instead of voice`);
+  }
 }
 assert.equal(BGM_WEIRDNESS, 0.1, 'weirdness must stay at the value that shipped voice-free BGM for weeks');
 

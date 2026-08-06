@@ -24,8 +24,13 @@ export const BGM_PROFILE_POOL = [
 
 // 안전 문장. 순서가 곧 우선순위다. 길이 제한에 걸리면 뒤에서부터 사라지므로
 // 사람 목소리 금지를 맨 앞에 둔다.
+//
+// 금지 목록을 style에 길게 나열하지 않는다(2026-08-06). 보컬 명사를 11개 늘어놓았더니
+// 오히려 목소리가 섞여 나왔다. 텍스트→음악 모델은 style의 부정문을 흘리는 일이 잦고,
+// 나열된 단어 자체를 소재로 읽는다. 구체적 금지어는 negativeTags가 지는 필드다.
+// 여기서는 "악기만 연주하는 곡"이라고 단정적으로 한 번만 말한다.
 export const BGM_CONSTRAINT_LINES = [
-  'ZERO HUMAN VOICE: no singing, humming, la-la, ooh/aah, vocalise, scat, choir, chant, a cappella, backing vocals, vocal chops, wordless vocals, or speech. Instruments only, start to finish.',
+  'This is a purely instrumental piece played on acoustic instruments. There is no human voice anywhere in it, from the first second to the last.',
   'Allowed instruments only: felt piano, gentle acoustic piano, nylon acoustic guitar, soft bowed strings.',
   'No synth, pad, ambient wash, breathy texture, percussion, drums, brushes, marimba, mallets, electronic or fusion sounds.',
   'No dark, sad, melancholic, ominous, tense, sleepy, or minor-key mood.',
@@ -95,7 +100,10 @@ export const BGM_ARRANGEMENT_AXES = {
   motion: [
     'the melody moves mostly stepwise between neighbouring notes',
     'phrases rise gently and settle downward at the end',
-    'two voices trade short call-and-response phrases',
+    // 'two voices trade short call-and-response phrases'는 쓰지 않는다. 음악에서
+    // voice는 성부지만 텍스트→음악 모델은 사람 목소리로 읽어, 4장에 1장 꼴로 보컬이
+    // 섞여 나왔다(2026-08-06). 긍정 지시문에는 노래로 읽힐 단어를 절대 넣지 않는다.
+    'a short phrase is answered by a lower one',
     'a short two-note motif repeats and grows',
   ],
   color: [

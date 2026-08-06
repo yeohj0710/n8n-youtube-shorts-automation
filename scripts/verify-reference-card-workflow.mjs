@@ -429,8 +429,9 @@ try {
   // 2026-08-06에 보컬 금지를 더 촘촘하게 늘리자 이 줄만 실패했다. 공유 표의 첫 줄이
   // 그대로 실려 나가는지, 핵심 금지어가 살아 있는지를 본다.
   assert.ok(handled.bgm_payload.style.includes(BGM_CONSTRAINT_LINES[0]), 'BGM style lost the shared human-voice ban line');
+  // 구체적 금지어는 negativeTags가 진다. style에 나열하면 모델이 소재로 읽는다(2026-08-06).
   for (const word of ['humming', 'wordless vocals', 'vocal chops']) {
-    assert.ok(handled.bgm_payload.style.includes(word), `BGM style lost the "${word}" ban`);
+    assert.ok(handled.bgm_payload.negativeTags.includes(word), `BGM negative tags lost the "${word}" ban`);
   }
   assert.match(handled.bgm_payload.style, /bright|cheerful|happy|joyful|sunny|uplifting/i, 'BGM lost the bright and happy direction');
   assert.match(handled.bgm_payload.negativeTags, /humming/i, 'BGM negative tags lost the humming ban');
