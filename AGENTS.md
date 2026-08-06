@@ -61,6 +61,44 @@ which is why source-reel copy read as telegrams no matter what the prompt said.
 Raised to 90 with `name` 40 and `title` 60 to match the rest of the repo. A prompt
 that asks for a full sentence while the schema rejects one is a prompt that loses.
 
+## Check the Value That Leaves, Not the Rule in the Code (2026-08-06)
+
+The same defect shipped three times in one day, and every time `npm test` was
+green. The verifiers asserted that a rule existed in the source; nothing measured
+what actually reached the external API.
+
+| What happened | Why the test passed |
+| --- | --- |
+| 완성 이미지 circuits sliced the BGM prompt at 480 chars, dropping the percussion and minor-key bans | the sentences were still in the code |
+| `negativeTags` grew to 293 chars and KIE answered 422, halting every run | nothing measured the outgoing field |
+| the rendered card set 30 px type against a 54 px floor | the floor was present in the prompt |
+
+**Rule: when a limit belongs to something outside this repo — an API field, a
+rendered frame, a published card — the check has to measure the artifact, not the
+instruction.** `verify-bgm-payload-limits.mjs` is the pattern: it reads the live
+DB, builds each circuit's real `bgm_payload`, and measures every field against the
+provider's limits. Copy that shape for the next external contract instead of adding
+another "the string is present" assertion.
+
+Two corollaries this repo has already paid for:
+
+- **Assert the shared constant, not a copy of its text.** Three verifiers broke at
+  once when the voice ban was reworded, because each had pasted the sentence. They
+  were testing the wording, not the guarantee. Import the constant and check
+  `includes(SHARED[0])`.
+- **Read the live DB, not `workflows/*.json`.** The JSON is what a builder last
+  wrote; the DB is what n8n will execute. They drift whenever a builder writes the
+  file but not the row, and that drift has shipped before.
+
+### External limits in force
+
+| Provider / surface | Field | Limit | Over the limit |
+| --- | --- | --- | --- |
+| KIE music (V5_5) | `style` | 1000 chars | rejected |
+| KIE music (V5_5) | `negativeTags` | 200 chars | **422, whole request fails** |
+| KIE music (V5_5) | `title` | 80 chars | rejected |
+| Shorts frame | content box | y 154–1498, x 0–972 | app UI covers the copy |
+
 ## Card Copy Rules
 
 These are entertaining shorts for Korean adults over 50. Fun and useful is the whole bar. Do not turn them into clinical education.
