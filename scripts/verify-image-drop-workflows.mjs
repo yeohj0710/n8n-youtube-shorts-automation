@@ -698,7 +698,10 @@ for (const testCase of cases) {
   assert.equal(parsed.bgm_payload.instrumental, true);
   assert.ok(parsed.bgm_payload.style.length <= 1000);
   assert.match(parsed.bgm_payload.style, /Bright, cheerful, warm, optimistic major-key/i);
-  assert.match(parsed.bgm_payload.style, /No voice, vocals.*humming.*wordless vocals/i);
+  // 금지 문장을 통째로 베끼면 문구를 보강할 때마다 깨진다. 공유 표의 첫 줄이 실려
+  // 나가는지로 본다(그 줄이 사람 목소리 금지이고, 잘려도 안 사라지는 맨 앞자리다).
+  assert.ok(parsed.bgm_payload.style.includes(BGM_CONSTRAINT_LINES[0]), 'BGM style lost the shared human-voice ban line');
+  assert.ok(parsed.bgm_payload.weirdnessConstraint <= 0.15, `image-drop weirdness ${parsed.bgm_payload.weirdnessConstraint} is high enough to let vocals through`);
   assert.ok(parsed.bgm_payload.title.length <= 80);
   assert.match(parsed.bgm_payload.negativeTags, /voice.*humming.*wordless vocals/i);
   assert.equal(parsed.bgm_payload.prompt, undefined);

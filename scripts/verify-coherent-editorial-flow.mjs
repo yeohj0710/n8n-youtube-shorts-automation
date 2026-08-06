@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import sqlite3 from 'sqlite3';
 import { createRequire } from 'node:module';
 import { safeBoxFor } from './lib/safe-zone.mjs';
+import { BGM_CONSTRAINT_LINES } from './lib/bgm-variation.mjs';
 
 // 좌표는 마진 표에서 받는다. 숫자를 박아두면 표를 고칠 때마다 검사가 먼저 깨진다.
 const SHARED_BOX = safeBoxFor(1080, 1920, '9:16');
@@ -429,7 +430,10 @@ for (const relativePath of workflowFiles) {
   assert.doesNotMatch(hostilePrepared.bgm_payload.style, /saxophone|brass|flute/i, `${relativePath}: writer-supplied unsafe instrument leaked into runtime style`);
   assert.match(prepared.bgm_payload.style, new RegExp(`^Profile ${prepared.diversity.bgm_profile.id}:`, 'i'), `${relativePath}: distinct profile direction is not first in the KIE style`);
   assert.match(prepared.bgm_payload.style, /Bright, cheerful, warm, optimistic major-key/i, `${relativePath}: bright and happy BGM direction missing`);
-  assert.match(prepared.bgm_payload.style, /No voice, vocals.*humming.*ooh\/aah.*wordless vocals/i, `${relativePath}: zero-voice safety envelope missing`);
+  // 금지 문장을 통째로 베끼면 문구를 보강할 때마다 여기가 깨진다(2026-08-06에 실제로
+  // 세 검사가 동시에 깨졌다). 공유 표의 첫 줄이 그대로 실려 나가는지로 본다.
+  assert.ok(prepared.bgm_payload.style.includes(BGM_CONSTRAINT_LINES[0]), `${relativePath}: zero-voice safety envelope missing`);
+  assert.ok(prepared.bgm_payload.weirdnessConstraint <= 0.15, `${relativePath}: weirdness ${prepared.bgm_payload.weirdnessConstraint} is high enough to let vocals through`);
   assert.match(prepared.bgm_payload.style, /Allowed instruments only:.*felt piano.*gentle acoustic piano.*nylon acoustic guitar.*soft bowed strings/i, `${relativePath}: acoustic allowlist missing`);
   assert.match(prepared.bgm_payload.style, /No synth, pad, ambient wash, breathy texture, percussion, drums, brushes, marimba, mallets/i, `${relativePath}: voice-like and rhythmic timbre guard missing`);
   assert.ok(prepared.bgm_payload.style.includes(prepared.diversity.bgm_profile.prompt), `${relativePath}: profile-specific sound direction was truncated`);

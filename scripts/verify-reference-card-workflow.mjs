@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { safeBoxFor } from './lib/safe-zone.mjs';
+import { BGM_CONSTRAINT_LINES } from './lib/bgm-variation.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const require = createRequire(import.meta.url);
@@ -424,9 +425,16 @@ try {
   assert.equal(byName('KIE Create BGM Task').parameters.url, 'https://api.kie.ai/api/v1/generate');
   assert.equal(handled.bgm_payload.customMode, true, 'BGM must use custom music mode');
   assert.equal(handled.bgm_payload.instrumental, true, 'BGM must force instrumental-only output');
-  assert.match(handled.bgm_payload.style, /ooh\/aah, vocal chops, or wordless vocals/, 'BGM style lost the humming ban');
+  // 금지 문장을 통째로 베껴 비교하면 문구를 보강할 때마다 여기가 깨진다. 실제로
+  // 2026-08-06에 보컬 금지를 더 촘촘하게 늘리자 이 줄만 실패했다. 공유 표의 첫 줄이
+  // 그대로 실려 나가는지, 핵심 금지어가 살아 있는지를 본다.
+  assert.ok(handled.bgm_payload.style.includes(BGM_CONSTRAINT_LINES[0]), 'BGM style lost the shared human-voice ban line');
+  for (const word of ['humming', 'wordless vocals', 'vocal chops']) {
+    assert.ok(handled.bgm_payload.style.includes(word), `BGM style lost the "${word}" ban`);
+  }
   assert.match(handled.bgm_payload.style, /bright|cheerful|happy|joyful|sunny|uplifting/i, 'BGM lost the bright and happy direction');
   assert.match(handled.bgm_payload.negativeTags, /humming/i, 'BGM negative tags lost the humming ban');
+  assert.ok(handled.bgm_payload.weirdnessConstraint <= 0.15, `reference card weirdness ${handled.bgm_payload.weirdnessConstraint} is high enough to let vocals through`);
 
   const wisdomReference = sourceRecords.find((record) => (
     record.publish_ready === true

@@ -557,9 +557,18 @@ Rules when touching any of this:
 
 - Mood, instrument whitelist, and major key are settled. Change the arrangement
   axes, not `BGM_PROFILE_POOL` or `BGM_CONSTRAINT_LINES`.
-- If the mood ever drifts, lower `BGM_WEIRDNESS` first. It is the only knob that
-  loosens Suno's adherence, and it is the one change here whose musical effect
-  has not been confirmed against a real render.
+- **`BGM_WEIRDNESS` stays at 0.1. Never raise it.** Raising it to 0.32 for
+  diversity on 2026-08-06 put humming and human voice into published BGM within
+  hours — the failure the user has banned repeatedly. `instrumental: true`, the
+  negative tags and the ban sentence were all in place and none of them held once
+  weirdness was loosened. Diversity comes from the playback window and the 768
+  arrangement combinations instead; neither can produce a voice. If tracks feel
+  samey, add an arrangement axis. `verify-bgm-contracts.mjs` fails above 0.15 and
+  asserts the exact value in the shared table.
+- The human-voice ban is `BGM_CONSTRAINT_LINES[0]` — first, so truncation can
+  never drop it. Verifiers assert that shared constant rather than a copied
+  sentence: three of them broke at once when the ban was reworded, which is a
+  sign the assertion was testing the wording instead of the guarantee.
 - Do not add an axis the viewer cannot hear. The intro-shape axis was dropped
   because the render now skips the intro outright.
 - `verify-bgm-contracts.mjs` computes the longest possible style string and the

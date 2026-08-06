@@ -4,10 +4,12 @@ import path from 'node:path';
 import {
   BGM_PROFILE_POOL,
   BGM_CONSTRAINT_LINES,
+  BGM_NEGATIVE_TAGS,
   BGM_ARRANGEMENT_AXES,
   BGM_STYLE_MAX_CHARS,
   BGM_STYLE_WEIGHT,
   BGM_WEIRDNESS,
+  BGM_WEIRDNESS_CEILING,
   BGM_RETRY_WAIT_SECONDS,
   bgmArrangementCombinationCount,
   bgmArrangementSource,
@@ -71,10 +73,16 @@ for (const { name, workflow } of workflows) {
       builder.code.includes(`weirdnessConstraint: ${BGM_WEIRDNESS}`) || builder.code.includes(`weirdnessConstraint:${BGM_WEIRDNESS}`) || builder.code.includes('weirdnessConstraint: definition.bgmWeirdness'),
       `${label}: weirdness knob drifted from the shared table`,
     );
-    assert.ok(
-      !/weirdnessConstraint\s*:\s*0\.1\b/.test(builder.code),
-      `${label}: weirdness is back at 0.1, which is effectively "do not vary"`,
-    );
+    // 2026-08-06: 다양성을 늘리겠다고 0.32로 올렸더니 사람 목소리와 허밍이 섞여 나왔다.
+    // instrumental:true 와 금지 태그가 다 붙어 있어도 weirdness를 풀면 Suno가 넘어선다.
+    // 사용자가 반복해서 금지한 사고다. 다양성은 재생 구간과 편곡 축에서만 가져온다.
+    const weirdnessUsed = builder.code.match(/weirdnessConstraint\s*:\s*([0-9.]+)/);
+    if (weirdnessUsed) {
+      assert.ok(
+        Number(weirdnessUsed[1]) <= BGM_WEIRDNESS_CEILING,
+        `${label}: weirdness ${weirdnessUsed[1]} is above ${BGM_WEIRDNESS_CEILING} — that is how humming got into published BGM on 2026-08-06`,
+      );
+    }
   }
 
   // 폴링 예산. 30초+90초로는 곡이 다 안 만들어져 폴백 음원(모든 영상 동일 파일)으로
@@ -109,6 +117,15 @@ assert.ok(
   `the longest profile+arrangement combination is ${worstCaseLength} chars, over the ${BGM_STYLE_MAX_CHARS} cap — those combinations would silently lose their arrangement`,
 );
 assert.ok(BGM_STYLE_MAX_CHARS <= 1000, 'KIE rejects a style field longer than 1000 characters');
+
+// 사람 목소리 금지는 안전 문장 '맨 앞'이어야 한다. 길이 제한에 걸리면 뒤에서부터
+// 잘리므로, 맨 앞에 있는 한 어떤 조합에서도 사라지지 않는다.
+assert.match(BGM_CONSTRAINT_LINES[0], /ZERO HUMAN VOICE/, 'the human-voice ban must be the first safety line so truncation can never drop it');
+for (const word of ['humming', 'wordless vocals', 'a cappella', 'vocalise']) {
+  assert.ok(BGM_CONSTRAINT_LINES[0].includes(word), `the voice ban lost "${word}"`);
+  assert.ok(BGM_NEGATIVE_TAGS.includes(word.split(' ')[0]), `negative tags lost "${word}"`);
+}
+assert.equal(BGM_WEIRDNESS, 0.1, 'weirdness must stay at the value that shipped voice-free BGM for weeks');
 
 // 조합이 9216개라도 고르는 쪽이 뭉치면 소용없다. 실제로 회로에 박히는 코드를 그대로
 // 돌려서 흩어지는지 센다. FNV 하위 비트를 그냥 쓰던 초안은 100개 중 53개만 달랐다.

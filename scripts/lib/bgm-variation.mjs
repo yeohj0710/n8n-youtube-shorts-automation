@@ -25,33 +25,41 @@ export const BGM_PROFILE_POOL = [
 // 안전 문장. 순서가 곧 우선순위다. 길이 제한에 걸리면 뒤에서부터 사라지므로
 // 사람 목소리 금지를 맨 앞에 둔다.
 export const BGM_CONSTRAINT_LINES = [
-  'No voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh/aah, vocal chops, or wordless vocals.',
+  'ZERO HUMAN VOICE: no singing, humming, la-la, ooh/aah, vocalise, scat, choir, chant, a cappella, backing vocals, vocal chops, wordless vocals, or speech. Instruments only, start to finish.',
   'Allowed instruments only: felt piano, gentle acoustic piano, nylon acoustic guitar, soft bowed strings.',
   'No synth, pad, ambient wash, breathy texture, percussion, drums, brushes, marimba, mallets, electronic or fusion sounds.',
   'No dark, sad, melancholic, ominous, tense, sleepy, or minor-key mood.',
   'Bright, cheerful, warm, optimistic major-key instrumental background music, gently lively.',
 ];
 
-export const BGM_NEGATIVE_TAGS = 'voice, vocals, singing, lyrics, speech, humming, choir, chant, ooh, aah, vocal chops, wordless vocals, spoken words, whispering, breathing, dark, sad, melancholic, ominous, tense, sleepy, minor key';
+export const BGM_NEGATIVE_TAGS = 'voice, vocals, singing, lyrics, speech, humming, hum, choir, chant, ooh, aah, la la, vocalise, scat, a cappella, backing vocals, harmonies, vocal chops, wordless vocals, vocal pad, voice-like synth, spoken words, whispering, breathing, dark, sad, melancholic, ominous, tense, sleepy, minor key';
 export const BGM_SAFETY_ENVELOPE = 'bright_acoustic_zero_voice_v3';
 
 // KIE(Suno)의 style 필드 상한은 1000자다. 본편은 900, 완성 이미지 회로는 480을 썼고
 // 480짜리는 조용히 잘려 나갔다. 이제 한 값으로 맞춘다.
 //
-// 900인 이유: 이 저장소가 실제로 통과시켜 본 최대치가 본편의 900이다. 가장 긴 프로필과
-// 가장 긴 편곡 조합을 합쳐도 이 안에 들어오게 축을 짰다. verify-bgm-contracts.mjs가
-// 최악값을 매번 계산해 확인하므로, 축을 늘리다 넘치면 검사가 먼저 막는다.
+// 1000인 이유: V5_5 style 필드의 실제 상한이다. 처음엔 900으로 뒀는데, 보컬 금지
+// 문장을 촘촘하게 늘리자 최악 조합이 1016자가 되면서 그 조합들만 편곡 줄을 잃게 됐다
+// (검사가 잡았다). 안전 문장이 우선이므로 상한을 올리고 문장을 다듬어 맞췄다.
+// verify-bgm-contracts.mjs가 최악값을 매번 계산하니, 넘치면 검사가 먼저 막는다.
 //
 // 참고: AGENTS.md의 "500자 제한"은 심플 모드 prompt 필드 이야기다. 이 회로들은
 // customMode로 style을 보내고, V5_5의 style 상한은 1000자다.
-export const BGM_STYLE_MAX_CHARS = 900;
+export const BGM_STYLE_MAX_CHARS = 1000;
 
 // 곡을 얼마나 지시대로 뽑을지(styleWeight)와 얼마나 벗어나게 둘지(weirdnessConstraint).
-// styleWeight는 그대로 0.9로 둔다. 이게 분위기·악기를 붙잡는 값이다.
-// weirdness는 0.1이었다. 사실상 "변주하지 마라"라서 같은 지시에 같은 곡이 나왔다.
-// 0.32로 올려 편곡만 흔든다. 분위기가 흔들리면 이 숫자부터 내리면 된다.
+//
+// weirdness는 0.1에서 절대 올리지 않는다. 2026-08-06에 다양성을 늘리겠다고 0.32로
+// 올렸다가 **사람 목소리와 허밍이 섞인 BGM이 나왔다**. instrumental: true 와 금지
+// 태그가 다 붙어 있어도, weirdness를 풀면 Suno가 그 제약을 넘어선다. 사용자가 여러 번
+// 금지한 사고를 내가 직접 재발시킨 값이다.
+//
+// 다양성은 이 값이 아니라 다른 데서 나온다 — 재생 구간 무작위화(lib/bgm-window.mjs)와
+// 편곡 축 768가지 조합. 둘 다 보컬 위험이 0이다. 곡이 비슷하다고 느껴지면 축을 늘리지
+// 이 숫자를 건드리지 마라. verify-bgm-contracts.mjs가 0.15를 넘으면 실패시킨다.
 export const BGM_STYLE_WEIGHT = 0.9;
-export const BGM_WEIRDNESS = 0.32;
+export const BGM_WEIRDNESS = 0.1;
+export const BGM_WEIRDNESS_CEILING = 0.15;
 
 // BGM 폴링 예산. 30초 뒤 한 번, 그 뒤 이만큼 기다렸다 한 번 더 본다.
 //
