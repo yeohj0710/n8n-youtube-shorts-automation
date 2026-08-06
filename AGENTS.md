@@ -65,12 +65,42 @@ that asks for a full sentence while the schema rejects one is a prompt that lose
 
 These are entertaining shorts for Korean adults over 50. Fun and useful is the whole bar. Do not turn them into clinical education.
 
+### New-Pack Staging Checklist (2026-08-06)
+
+Queued packs went through four user-visible rewrites in a single day because
+these checks ran after publishing instead of before staging. Run them on every
+new pack, in this order. The bullets after this section hold the detail and the
+history behind each one.
+
+1. **One point per row.** `card_reason` = the condition + what happens + what it
+   means for the reader, as ONE complete 해요체 sentence of 24–38 characters
+   counted with spaces (prints in at most two lines). Too long and the type
+   collapses; too short and the subject or consequence silently drops out.
+   When a point will not fit, pick a different point — never compress this one.
+2. **Standalone read.** Cover the title and the long `reason`; `card_name` +
+   `card_reason` alone must make sense to someone who just scrolled in.
+3. **Direction.** A title promising mistakes means every `card_name` IS a
+   mistake; a title promising a method means every `card_name` is an action.
+   When they disagree, fix the title — the rows carry the information.
+4. **Read aloud** as two 60-year-olds at a kitchen table. Swap any word that
+   only lives in print (기한→날짜), no metaphor, no 이거/그것 pointing, no
+   ~게 되다, and vary the endings so `~면` stays under half the rows.
+5. **`npm test`.** `verify-queued-packs-pass-gate.mjs` runs every queued pack
+   through the live deterministic gate, so a length/shape/nominalization
+   violation is caught before it burns a paid run. The gate cannot judge
+   direction or tone — steps 2–4 stay human.
+
+**Anti-overfit note:** the example sentences across this file are diagnoses of
+past failures, not templates. Do not clone their wording, their topics, or their
+sentence rhythm into new packs — an archive of yesterday's fixes makes a bad
+style guide when copied verbatim. Write from the topic, then run the checks.
+
 - **Do not go looking for research.** Studies, papers, and public-health pages are not where topics come from. Write from ordinary life. Evidence is optional in the stockpile: `scripts\build-research-stockpile.mjs` accepts a pack with no `sources`/`facts`, and `verify-research-stockpile.mjs` only checks citations when a pack actually carries them.
 - **Do not narrow the subject range.** The channel is the whole life of an adult over 50, not "be careful at home." Rotate across appliances and manuals, groceries and cooking, money and bank errands, hospital and pharmacy visits, family and relationships, clothing, phones, cars, season and home. If two queued topics sit in the same corner, the range has collapsed — that is the failure mode to watch for.
 - **Every row must carry a takeaway — the "나도 알지" test.** Read each row as a 55-year-old and ask whether they would say "그건 나도 알지". If every row fails to teach something — a surprising cause, a nameable trick, a specific place/time/function — the topic ships nothing and must be killed, not padded. The published 장롱 위 물건 카드 (의자는 흔들려서 위험해요, 어두우면 헛짚어요) failed exactly this way: five rows of common sense, zero takeaways. The AI reviewer now judges prepared packs too (COMMON_KNOWLEDGE_V1), and a rejected prepared pack STOPS the run with PREPARED_PACK_REJECTED rather than being regenerated — so a takeaway-free topic wastes a run and jams the queue until fixed. Apply the test at writing time anyway. Good takeaways from this repo: 얼린 두부는 고기처럼 쫄깃해진다, 빨래 냄새는 세탁조 탓, 은행 점심시간엔 창구가 준다.
 - **Prepared packs leave `description`/`pinned_comment` empty.** The Build node's prepared-pack normalizer fills both from the rank items BEFORE the quality gate — the description gets the full 1위-N위 list, and the pinned comment gets the ranked summary ending with the subscribe CTA — so the AI reviewer audits the real copy. Supplying a hand-written one-liner in the pack SUPPRESSES that builder and ships a summary-free description; and building only at the Prepare stage is too late, because the reviewer rejects an empty pinned_comment (this actually stopped a run).
 - **Prepared-pack titles must hook, not label.** The generation path enforces `ATTENTION_PROMISE_V2`/`HOOK_PATTERNS`, but a prepared pack renders its `hook_title` verbatim with no reviewer — so writing a descriptive label there ships a weak title unchecked. Use the channel's proven shapes (belief reversal, loss frame, minimal-condition gain `~만 해도`, insider reveal, head-to-head, moment trigger) and only promise what the items actually deliver. `양말 신을 때 몸이 알려주는 것 5` is a filing label; `양말 신는 몇 초 동안 다 드러나는 몸의 신호 5` is the same list written as a hook.
-- **Row copy lives in a band: `card_name` ≤ 14 characters, `card_reason` 24–38, printed in at most two lines (2026-08-06, third revision).** Both edges of the band are published failures. 50–90 character sentences wrapped three times and crushed the type to 30 px. Then the 16-character cap over-corrected: the sentences lost their subject and context and the user could not tell what they meant (`자국이 남으면 물이 찼어요` — press what, where?). The 18–28 band still shipped riddles: `눈이 담는 양은 한 방울보다 적어요` states a fact and never says what to do about it. 24–38 characters names the condition, what happens, and what it means — `눈이 담는 양은 한 방울보다 적어서 두 번째는 볼로 흘러내려요` — and the measured type holds at 46 px across two lines. Explicit and slightly long beats short and unclear; that is a standing instruction, not a preference. Rows stay at 4 (writer default 4, max 5).
+- **Row copy lives in a band: `card_name` ≤ 14 characters, `card_reason` 24–38, printed in at most two lines (2026-08-06).** Both edges of the band are published failures. 50–90 character sentences wrapped three times and crushed the type to 30 px. Then the 16-character cap over-corrected: the sentences lost their subject and context and the user could not tell what they meant (`자국이 남으면 물이 찼어요` — press what, where?). The 18–28 band still shipped riddles: `눈이 담는 양은 한 방울보다 적어요` states a fact and never says what to do about it. 24–38 characters names the condition, what happens, and what it means — `눈이 담는 양은 한 방울보다 적어서 두 번째는 볼로 흘러내려요` — and the measured type holds at 46 px across two lines. Explicit and slightly long beats short and unclear; that is a standing instruction, not a preference. Rows stay at 4 (writer default 4, max 5).
 - **The title and the rows must point the same direction (`TITLE_ROW_MATCH_V1`, 2026-08-06).** Two published cards broke this. `잘못 붙이면 더 아파지는 파스 사용법 4` promised mistakes and then listed `막 삔 발목 — 찬 파스로 식혀요`, which is the correct method, so the reader could not tell whether the row was a warning or an instruction. `따로 먹으면 손해 보는 음식 궁합 4` framed loss in the title and delivered `이 조합이 좋아요` in the rows. If the title promises mistakes, every `card_name` must BE a mistake; if it promises a method, every `card_name` must be an action. Mixing two warnings and two instructions in one list is the same defect. When they disagree, rewrite the title to match the rows — the rows carry the information.
 - **Never buy those characters by breaking the sentence.** The band does not license compressed telegrams (넓은 손잡이 — of what?; 여러장은 상의하세요). Keep every particle and the ending. If a point cannot be said plainly inside 28 characters, choose a different point. A `card_reason` must still make sense read alone, without its `card_name` and without the title. Under 18 characters, assume the subject or the consequence has silently dropped out and put it back.
 - **Shortening rows makes sentence shape collapse.** Short Korean gravitates to `~면`, and the gate rejects a pack when one construction covers 80% of the ranks (`monotonous_sentence_shape`). Two test fixtures started failing on exactly this the moment their sentences were trimmed. Mix plain statements, cause (`~어서`), and contrast into every list.
