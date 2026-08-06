@@ -578,6 +578,28 @@ checkbox column. After a rendered card is logged, the same row is checked
 immediately. The n8n credential name is `Google Sheets account`; the workflow
 must stop before selection when the Sheet read or write fails.
 
+### Cutting Copy Emptied the Card — Row Objects Are Now Required (2026-08-06)
+
+The 12/16 character limits worked: the first card built under them had one line per
+row, large readable type, and a footer that finally cleared most of the way out of
+the bottom band. The user's verdict was still no — "그림도 없고 너무 글자만 있고
+덩그러니", the pendulum had swung to the opposite extreme.
+
+Two prompt rules caused it together. `ILLUSTRATION_BUDGET_V1` called any row picture
+"a small marker, not a column", and `GLYPH_INTEGRITY_V1` listed the illustration
+second in the cut order when copy would not fit. Between them the model read
+pictures as the first thing to sacrifice, so it drew none. With 2–5 character item
+names like 우유 and 술, the outer half of every row was then blank.
+
+`ROW_ICON_V1` replaces the budget rule and requires one object per row at 11–17% of
+frame width, on the side opposite the rank badge. The cut order now ends at
+shrinking those objects rather than deleting them, and `PANEL_FILL_V1` tells the
+model to spread the rows across the panel instead of leaving a blank band above the
+footer.
+
+The lesson for the next round: a limit that only says what to remove will be obeyed
+all the way to zero. State what must remain.
+
 ### The Model Does Not Honour Pixel Coordinates — Buy Room With Content (2026-08-06)
 
 A published card was measured against the coordinates the prompt had pinned. The
