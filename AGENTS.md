@@ -565,6 +565,13 @@ Rules when touching any of this:
   arrangement combinations instead; neither can produce a voice. If tracks feel
   samey, add an arrangement axis. `verify-bgm-contracts.mjs` fails above 0.15 and
   asserts the exact value in the shared table.
+- **KIE field limits are separate budgets, and going over is a 422, not a trim.**
+  `style` 1000 chars, `negativeTags` 200, `title` 80. Widening the vocal ban on
+  2026-08-06 pushed `negativeTags` to 293 and every run died at Normalize BGM Task
+  with `The length of music negativeStyle cannot exceed 200 characters`. Detailed
+  bans belong in `style`; `negativeTags` carries key tokens only, voice first.
+  `verify-bgm-contracts.mjs` measures both the shared constant and whatever string
+  each circuit actually inlines.
 - The human-voice ban is `BGM_CONSTRAINT_LINES[0]` — first, so truncation can
   never drop it. Verifiers assert that shared constant rather than a copied
   sentence: three of them broke at once when the ban was reworded, which is a

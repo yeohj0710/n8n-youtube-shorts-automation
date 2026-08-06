@@ -5,6 +5,7 @@ import {
   BGM_PROFILE_POOL,
   BGM_CONSTRAINT_LINES,
   BGM_NEGATIVE_TAGS,
+  BGM_NEGATIVE_TAGS_MAX_CHARS,
   BGM_ARRANGEMENT_AXES,
   BGM_STYLE_MAX_CHARS,
   BGM_STYLE_WEIGHT,
@@ -126,6 +127,26 @@ for (const word of ['humming', 'wordless vocals', 'a cappella', 'vocalise']) {
   assert.ok(BGM_NEGATIVE_TAGS.includes(word.split(' ')[0]), `negative tags lost "${word}"`);
 }
 assert.equal(BGM_WEIRDNESS, 0.1, 'weirdness must stay at the value that shipped voice-free BGM for weeks');
+
+// KIE는 긴 negativeTags를 자르지 않고 422로 거절한다. 2026-08-06에 금지어를 늘리다
+// 293자가 되어 회로가 통째로 멈췄다("The length of music negativeStyle cannot exceed
+// 200 characters"). 길이는 style(1000자)과 별개 예산이다.
+assert.ok(
+  BGM_NEGATIVE_TAGS.length <= BGM_NEGATIVE_TAGS_MAX_CHARS,
+  `negativeTags is ${BGM_NEGATIVE_TAGS.length} chars; KIE rejects the whole request above ${BGM_NEGATIVE_TAGS_MAX_CHARS}`,
+);
+// 회로에 실제로 박힌 문자열도 잰다. 공유 표만 통과하고 회로가 옛 값을 들고 있으면
+// 검사가 초록인 채로 실행이 죽는다.
+for (const { name, workflow } of workflows) {
+  for (const node of workflow.nodes) {
+    for (const match of String(node.parameters?.jsCode || '').matchAll(/negativeTags\s*:\s*'([^']*)'/g)) {
+      assert.ok(
+        match[1].length <= BGM_NEGATIVE_TAGS_MAX_CHARS,
+        `${name} ${node.name}: inlined negativeTags is ${match[1].length} chars, over KIE's ${BGM_NEGATIVE_TAGS_MAX_CHARS} limit`,
+      );
+    }
+  }
+}
 
 // 조합이 9216개라도 고르는 쪽이 뭉치면 소용없다. 실제로 회로에 박히는 코드를 그대로
 // 돌려서 흩어지는지 센다. FNV 하위 비트를 그냥 쓰던 초안은 100개 중 53개만 달랐다.

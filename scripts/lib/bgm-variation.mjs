@@ -32,7 +32,11 @@ export const BGM_CONSTRAINT_LINES = [
   'Bright, cheerful, warm, optimistic major-key instrumental background music, gently lively.',
 ];
 
-export const BGM_NEGATIVE_TAGS = 'voice, vocals, singing, lyrics, speech, humming, hum, choir, chant, ooh, aah, la la, vocalise, scat, a cappella, backing vocals, harmonies, vocal chops, wordless vocals, vocal pad, voice-like synth, spoken words, whispering, breathing, dark, sad, melancholic, ominous, tense, sleepy, minor key';
+// KIE는 negativeTags(=negativeStyle)를 200자로 자른 게 아니라 **422로 거절한다**.
+// 2026-08-06에 보컬 금지어를 늘리다 293자가 되어 회로가 통째로 멈췄다. 상세한 금지는
+// style 문장이 지고, 여기에는 핵심 토큰만 남긴다. 순서는 사람 목소리 먼저, 분위기 나중.
+export const BGM_NEGATIVE_TAGS_MAX_CHARS = 200;
+export const BGM_NEGATIVE_TAGS = 'voice, vocals, singing, humming, choir, chant, ooh, aah, vocalise, scat, a cappella, wordless vocals, vocal chops, speech, lyrics, dark, sad, melancholic, tense, sleepy, minor key';
 export const BGM_SAFETY_ENVELOPE = 'bright_acoustic_zero_voice_v3';
 
 // KIE(Suno)의 style 필드 상한은 1000자다. 본편은 900, 완성 이미지 회로는 480을 썼고
