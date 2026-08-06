@@ -418,7 +418,7 @@ assert.equal(eightItemResult.content_quality_review.pass, false, 'more than seve
 
 for (const parent of parents) {
   const build = codeOf(readWorkflow(parent.file), 'Build Viral Rank Pack Request');
-  assert.match(build, /Default to 5 items/, `${parent.id}: writer is not told to default to five items`);
+  assert.match(build, /Default to 4 items/, `${parent.id}: writer is not told to default to four items`);
   assert.match(build, /Aim for 5 ranked items/, `${parent.id}: research contract does not target five items`);
   assert.match(build, /ATTENTION_PROMISE_V\d+/, `${parent.id}: proven-hook contract missing`);
   assert.match(build, /HOOK_PATTERNS/, `${parent.id}: channel-proven title shapes are not supplied`);
