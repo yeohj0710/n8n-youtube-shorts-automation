@@ -1,0 +1,53 @@
+{
+  "title": "위급할 때 나를 지키는 휴대폰 설정 4",
+  "lane": "daily_health_lifestyle",
+  "notes": "사용자 제안 '응급번호' 갈래를 '위급 대비 폰 설정'으로. 기능은 기종마다 이름이 달라 위치는 두루뭉술하게, 기능 실존만 확실한 것(긴급 SOS, 의료정보, 위치 공유, 재난문자).",
+  "topic_key": "phone_emergency_setup",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "phone_emergency_setup",
+    "hook_title": "위급할 때 나를 지키는 휴대폰 설정 4",
+    "subtitle": "쓰러진 다음엔 못 켜요, 오늘 미리 켜 두세요",
+    "visual_profile": "wellness_dashboard",
+    "visual_mood_hint": "거실 탁자 위 휴대폰 화면과 돋보기 안경, 밝은 하늘색과 흰색 팔레트, 든든하고 정돈된 분위기",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "전원 버튼 다섯 번 긴급 신고",
+        "card_name": "전원 버튼 다섯 번",
+        "reason": "요즘 휴대폰은 전원 버튼을 빠르게 다섯 번 누르면 정해 둔 곳으로 구조 요청이 가는 기능이 있어요. 설정에서 긴급 SOS를 미리 켜 둬야 그때 작동해요",
+        "card_reason": "빠르게 다섯 번 누르면 구조 요청이 나가게 켜 두세요"
+      },
+      {
+        "rank": 2,
+        "name": "잠금화면 의료정보 적어 두기",
+        "card_name": "잠금화면 의료정보",
+        "reason": "설정에서 의료정보를 찾아 지병과 먹는 약, 보호자 번호를 적어 두세요. 내가 말을 못 하는 상황에서 구조하는 분이 그 화면을 봐요",
+        "card_reason": "쓰러졌을 때 구조하는 분이 지병과 보호자 번호를 봐요"
+      },
+      {
+        "rank": 3,
+        "name": "가족과 위치 공유 켜기",
+        "card_name": "가족과 위치 공유",
+        "reason": "지도 앱에서 가족과 위치 공유를 켜 두면 연락이 끊겨도 가족이 내 위치를 바로 확인할 수 있어요. 혼자 산에 가시는 분은 특히요",
+        "card_reason": "연락이 끊겨도 가족이 내가 어디 있는지 바로 확인해요"
+      },
+      {
+        "rank": 4,
+        "name": "꺼 둔 재난문자 다시 켜기",
+        "card_name": "꺼 둔 재난문자 켜기",
+        "reason": "재난문자가 시끄럽다고 꺼 둔 분이 많아요. 큰비나 지진처럼 정말 위급한 소식을 놓칠 수 있으니 다시 켜 두세요",
+        "card_reason": "시끄럽다고 꺼 두면 정작 큰일 났을 때 소식을 놓쳐요"
+      }
+    ],
+    "video_script": "오늘 5분이 그날의 골든타임이에요.",
+    "tags": [
+      "생활정보",
+      "시니어생활",
+      "생활안전"
+    ],
+    "bgm_prompt": "clear optimistic piano with gentle guitar, prepared and secure mood",
+    "rank_count": 4
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "title": "층간소음, 싸우지 않고 잡는 순서 4",
+  "lane": "daily_health_lifestyle",
+  "notes": "사용자 제안 '층간소음 중재' 갈래. 이웃사이센터 1661-2642는 환경부 실존 창구(상담·방문 측정 무료). 직접 대면 자제가 표준 안내.",
+  "topic_key": "floor_noise_resolution_steps",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "floor_noise_resolution_steps",
+    "hook_title": "층간소음, 싸우지 않고 잡는 순서 4",
+    "subtitle": "감정 상하기 전에 쓰는 공식 창구가 있어요",
+    "visual_profile": "myth_fact",
+    "visual_mood_hint": "저녁 거실 소파와 천장을 올려다보는 시선, 탁자 위 수첩과 전화기, 차분한 남색과 크림색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "말은 관리사무소를 거치기",
+        "card_name": "관리사무소에 먼저 부탁",
+        "reason": "쫓아 올라가 초인종을 누르면 감정 싸움이 되기 쉽고 시비가 커져요. 윗집에 전할 말은 관리사무소나 경비실을 거치는 게 안전해요",
+        "card_reason": "직접 올라가면 싸움만 나니 말은 관리사무소를 거치세요"
+      },
+      {
+        "rank": 2,
+        "name": "날짜와 시간을 적어 두기",
+        "card_name": "날짜와 시간 적어 두기",
+        "reason": "언제, 어떤 소리가, 얼마나 오래 났는지 수첩에 적어 두세요. 기록이 쌓여야 상담을 받든 조정을 넣든 말이 통해요",
+        "card_reason": "언제 어떤 소리가 났는지 적어 둬야 나중에 말이 통해요"
+      },
+      {
+        "rank": 3,
+        "name": "이웃사이센터에 상담하기",
+        "card_name": "이웃사이센터 상담",
+        "reason": "환경부 층간소음 이웃사이센터 1661-2642에 전화하면 상담해 주고, 필요하면 집에 와서 소음을 재 줘요. 돈이 들지 않아요",
+        "card_reason": "1661-2642로 전화하면 나라에서 상담과 소음 측정을 해 줘요"
+      },
+      {
+        "rank": 4,
+        "name": "그래도 안 되면 조정 신청하기",
+        "card_name": "안 되면 조정 신청",
+        "reason": "상담으로도 계속되면 지자체나 분쟁조정위원회에 조정을 신청할 수 있어요. 그동안 적어 둔 기록이 그대로 근거가 돼요",
+        "card_reason": "그래도 계속되면 지자체 분쟁조정을 신청할 수 있어요"
+      }
+    ],
+    "video_script": "천장 두드리는 건 답이 아니에요.",
+    "tags": [
+      "생활정보",
+      "시니어생활",
+      "이웃문제"
+    ],
+    "bgm_prompt": "soft patient piano with warm strings, steady problem-solving mood",
+    "rank_count": 4
+  }
+}

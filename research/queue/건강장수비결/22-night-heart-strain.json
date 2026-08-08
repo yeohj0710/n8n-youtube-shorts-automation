@@ -1,0 +1,53 @@
+{
+  "title": "심장이 밤새 고생하는 자기 전 습관 4",
+  "lane": "sleep_energy_recovery",
+  "notes": "사용자 제안 '자다가 돌연사하는 습관' 갈래를 공포 대신 '밤새 심장 부담' 프레임으로 완화. 근거 확실한 것만: 술, 수면무호흡, 니코틴, 탈수.",
+  "topic_key": "night_heart_strain_habits",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "sleep_recovery",
+    "topic_key": "night_heart_strain_habits",
+    "hook_title": "심장이 밤새 고생하는 자기 전 습관 4",
+    "subtitle": "심장은 밤에 쉬어야 오래 가요",
+    "visual_profile": "sleep_night",
+    "visual_mood_hint": "은은한 스탠드 불빛이 켜진 침실 머리맡, 물컵과 자명종, 짙은 남색과 따뜻한 노랑 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "술기운으로 잠들기",
+        "card_name": "술기운으로 잠들기",
+        "reason": "술기운으로 잠들면 잠은 들어도 심장은 밤새 평소보다 빨리 뛰어요. 자다가 가슴이 두근거려 깨기도 해요. 잠들기 서너 시간 전에는 잔을 내려놓으세요",
+        "card_reason": "잠든 뒤에도 심장이 빨리 뛰어서 밤새 쉬지 못해요"
+      },
+      {
+        "rank": 2,
+        "name": "숨이 멎었다 몰아쉬는 코골이 방치",
+        "card_name": "모른 척하는 심한 코골이",
+        "reason": "옆에서 볼 때 숨이 멎었다가 몰아쉬는 코골이는 병원에서 봐야 할 코골이예요. 그냥 두면 밤마다 심장과 혈압에 부담이 쌓여요",
+        "card_reason": "자다가 숨이 멎을 때마다 심장에 큰 부담이 걸려요"
+      },
+      {
+        "rank": 3,
+        "name": "자기 전 담배 한 대",
+        "card_name": "자기 전 담배 한 대",
+        "reason": "담배의 니코틴은 잠을 얕게 만들고 심장을 빨리 뛰게 해요. 하루 마지막 한 대가 밤새 심장이 쉴 시간을 뺏어요",
+        "card_reason": "담배 성분이 심장을 빨리 뛰게 해서 잠든 몸이 못 쉬어요"
+      },
+      {
+        "rank": 4,
+        "name": "열대야에 물 없이 버티며 자기",
+        "card_name": "물 없이 열대야 버티기",
+        "reason": "열대야에는 자는 동안에도 땀으로 물이 많이 빠져요. 몸에 물이 모자라면 심장이 더 힘들게 피를 돌려야 해요. 자기 전에 물 한두 모금이라도 마시고 주무세요",
+        "card_reason": "밤새 땀으로 물이 빠지면 심장이 더 힘들게 피를 돌려요"
+      }
+    ],
+    "video_script": "심장도 밤에는 퇴근해야 해요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "수면습관"
+    ],
+    "bgm_prompt": "gentle warm piano with soft strings, quiet restful night mood",
+    "rank_count": 4
+  }
+}

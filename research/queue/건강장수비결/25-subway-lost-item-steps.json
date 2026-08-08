@@ -1,0 +1,53 @@
+{
+  "title": "지하철에 물건 두고 내렸을 때 순서 4",
+  "lane": "daily_health_lifestyle",
+  "notes": "사용자 제안 '지하철 버스 분실물' 갈래. 로스트112(경찰청 유실물 포털)와 종착역 수거, 노선별 유실물센터는 실존 절차.",
+  "topic_key": "subway_lost_item_steps",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "subway_lost_item_steps",
+    "hook_title": "지하철에 물건 두고 내렸을 때 순서 4",
+    "subtitle": "허둥대지 않아도 순서만 알면 찾을 수 있어요",
+    "visual_profile": "calendar_streak",
+    "visual_mood_hint": "지하철 승강장 의자와 안내판, 손에 든 가방과 휴대폰, 차분한 남색과 노랑 포인트, 침착한 분위기",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "내린 시간과 탄 칸 기억하기",
+        "card_name": "시간과 탄 칸 기억하기",
+        "reason": "내린 역과 시간, 앞에서 몇 번째 칸이었는지를 먼저 적어 두세요. 이 세 가지만 있으면 어느 열차인지 찾아낼 수 있어요",
+        "card_reason": "내린 시간과 몇 번째 칸인지 알면 찾을 확률이 확 올라요"
+      },
+      {
+        "rank": 2,
+        "name": "역무실에 바로 알리기",
+        "card_name": "역무실에 바로 알리기",
+        "reason": "바로 역무실이나 고객센터에 알리면 열차 번호를 확인해서 끝 역에서 직원이 대신 거둬 둬요. 시간이 지날수록 어려워지니 이게 제일 급해요",
+        "card_reason": "바로 알리면 열차 끝 역에서 직원이 대신 찾아 둬요"
+      },
+      {
+        "rank": 3,
+        "name": "로스트112에서 검색하기",
+        "card_name": "로스트112 검색",
+        "reason": "주운 물건이 접수되면 경찰 유실물 사이트 로스트112에 사진과 함께 올라와요. 집에서 물건 이름으로 검색해 볼 수 있어요",
+        "card_reason": "경찰 유실물 사이트 로스트112에 사진과 함께 올라와요"
+      },
+      {
+        "rank": 4,
+        "name": "유실물센터 찾아가기",
+        "card_name": "유실물센터 방문",
+        "reason": "며칠이 지난 물건은 노선별 유실물센터로 모여요. 신분증을 들고 찾아가면 돌려받을 수 있어요",
+        "card_reason": "며칠 지났으면 노선별 유실물센터에 모아 두니 찾아가세요"
+      }
+    ],
+    "video_script": "잃어버린 그 순간이 제일 중요해요.",
+    "tags": [
+      "생활정보",
+      "시니어생활",
+      "생활안전"
+    ],
+    "bgm_prompt": "calm steady piano with light guitar, composed helpful mood",
+    "rank_count": 4
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "title": "몰라서 더 내는 병원비 약값 4",
+  "lane": "money_smart_living",
+  "notes": "사용자 제안 '돈 없을 때 응급실' 갈래. 야간·휴일 가산 30%와 응급의료관리료는 실제 제도. 급한 병은 바로 가라는 전제를 잃지 않기.",
+  "topic_key": "night_weekend_medical_fees",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_choices",
+    "topic_key": "night_weekend_medical_fees",
+    "hook_title": "몰라서 더 내는 병원비 약값 4",
+    "subtitle": "같은 진료인데 언제 가느냐로 값이 달라져요",
+    "visual_profile": "market_receipt",
+    "visual_mood_hint": "식탁 위 병원 영수증과 약봉지, 돋보기와 가계부, 차분한 남색과 크림색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "저녁 6시 넘어 간 병원",
+        "card_name": "저녁 6시 넘어 간 병원",
+        "reason": "평일 저녁 6시가 지나면 병원 진찰료에 밤 시간 웃돈이 붙어요. 미룰 수 있는 진료라면 낮에 가시는 게 그만큼 싸요",
+        "card_reason": "평일도 저녁 6시가 지나면 진찰료에 밤 웃돈이 붙어요"
+      },
+      {
+        "rank": 2,
+        "name": "토요일과 공휴일 진료",
+        "card_name": "토요일 공휴일 진료",
+        "reason": "토요일과 공휴일 진료도 평일 낮보다 비싸요. 급한 병은 당연히 바로 가야 하지만, 정기 진료 날짜는 평일 낮으로 잡는 게 이득이에요",
+        "card_reason": "쉬는 날 진료는 평일 낮보다 비싸니 급한 일만 가세요"
+      },
+      {
+        "rank": 3,
+        "name": "급하지 않은데 간 응급실",
+        "card_name": "급하지 않은 응급실행",
+        "reason": "응급이 아니라고 판정되면 응급실 관리료 몇만 원을 건강보험 없이 다 내야 해요. 밤에 문 연 병원과 약국은 129에 전화하면 알려 줘요",
+        "card_reason": "응급이 아니면 응급실 관리료 몇만 원을 다 내 돈으로 내요"
+      },
+      {
+        "rank": 4,
+        "name": "밤과 휴일에 지은 약",
+        "card_name": "밤에 지은 약",
+        "reason": "약국도 저녁 6시가 넘거나 휴일이면 조제료가 더 붙어 같은 약이 비싸져요. 정기적으로 드시는 약은 낮에 미리 지어 두세요",
+        "card_reason": "약국도 밤이나 휴일에는 조제료가 더 붙어 약값이 비싸요"
+      }
+    ],
+    "video_script": "같은 약인데 밤에는 더 비싸요.",
+    "tags": [
+      "건강정보",
+      "생활정보",
+      "병원비"
+    ],
+    "bgm_prompt": "bright tidy piano with plucked guitar, sensible and thrifty daytime mood",
+    "rank_count": 4
+  }
+}

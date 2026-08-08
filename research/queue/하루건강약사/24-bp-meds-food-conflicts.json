@@ -1,0 +1,53 @@
+{
+  "title": "혈압약 드시면 꼭 피해야 하는 음식 4",
+  "lane": "food_nutrition_table",
+  "notes": "사용자 제안 '피해야 하는 과일 야채' 갈래. 근거 확실한 상호작용만: 자몽, 고칼륨 과일, 감초, 나트륨.",
+  "topic_key": "bp_meds_food_conflicts",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "medicine_literacy",
+    "topic_key": "bp_meds_food_conflicts",
+    "hook_title": "혈압약 드시면 꼭 피해야 하는 음식 4",
+    "subtitle": "약은 챙겨 드시는데 음식이 약효를 흔들어요",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "아침 식탁 위 약봉지와 물컵, 옆에 과일 접시와 국그릇, 따뜻한 크림색과 주황 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "자몽과 자몽주스",
+        "card_name": "자몽과 자몽주스",
+        "reason": "자몽은 몇몇 혈압약과 고지혈증약을 몸이 분해하지 못하게 막아요. 그러면 약효가 지나치게 세져서 어지럽거나 혈압이 뚝 떨어질 수 있어요. 내 약이 해당되는지 약국에 물어보세요",
+        "card_reason": "일부 혈압약을 몸이 분해하지 못하게 막아 약효가 세져요"
+      },
+      {
+        "rank": 2,
+        "name": "바나나처럼 칼륨 많은 과일",
+        "card_name": "바나나 같은 칼륨 과일",
+        "reason": "혈압약 중에는 칼륨을 몸 밖으로 못 내보내게 하는 종류가 있어요. 이런 약과 바나나, 오렌지처럼 칼륨 많은 과일을 매일 많이 드시면 칼륨이 쌓여 심장이 불규칙하게 뛸 수 있어요",
+        "card_reason": "일부 혈압약과 만나면 몸에 칼륨이 쌓여 심장이 위험해요"
+      },
+      {
+        "rank": 3,
+        "name": "감초가 든 차와 건강즙",
+        "card_name": "감초 든 차와 한방차",
+        "reason": "감초는 몸에 물과 소금기를 붙잡아 혈압을 끌어올려요. 한방차나 건강즙에 감초가 든 경우가 많으니 뒷면 원재료를 한 번 보고 드세요",
+        "card_reason": "감초가 혈압을 끌어올려 약 먹는 보람이 없어져요"
+      },
+      {
+        "rank": 4,
+        "name": "국물까지 비우는 찌개와 탕",
+        "card_name": "찌개와 짠 국물",
+        "reason": "약을 챙겨 드셔도 국물까지 다 드시면 소금기가 혈압을 도로 올려요. 국과 찌개는 건더기 위주로 드시고 국물은 남기세요",
+        "card_reason": "소금기가 혈압을 도로 올려서 약 먹는 효과를 지워요"
+      }
+    ],
+    "video_script": "약보다 밥상이 문제인 날이 있어요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "약과음식"
+    ],
+    "bgm_prompt": "warm homely piano with soft strings, careful and caring table mood",
+    "rank_count": 4
+  }
+}

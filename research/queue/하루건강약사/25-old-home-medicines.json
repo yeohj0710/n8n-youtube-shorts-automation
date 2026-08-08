@@ -1,0 +1,53 @@
+{
+  "title": "아깝다고 뒀다가 병 키우는 집 약 4",
+  "lane": "daily_health_lifestyle",
+  "notes": "사용자 제안 '남용·복용' 갈래. 개봉 후 기한(안약 한 달, 연고 여섯 달)은 약국 표준 안내 수치.",
+  "topic_key": "old_home_medicines",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "medicine_literacy",
+    "topic_key": "old_home_medicines",
+    "hook_title": "아깝다고 뒀다가 병 키우는 집 약 4",
+    "subtitle": "약통 서랍 정리가 곧 건강 관리예요",
+    "visual_profile": "clinic_checklist",
+    "visual_mood_hint": "거실 서랍에서 꺼낸 약통과 연고, 안약이 놓인 탁자, 부드러운 오후 빛, 흰색과 민트 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "뜯은 지 오래된 안약",
+        "card_name": "뜯은 지 오래된 안약",
+        "reason": "안약은 뚜껑을 연 순간부터 균이 자라기 시작해요. 한 달 지난 안약을 넣으면 눈병이 나기 쉬우니, 뜯은 날짜를 병에 적어 두세요",
+        "card_reason": "안약은 뜯고 한 달 지나면 균이 자라 눈병을 일으켜요"
+      },
+      {
+        "rank": 2,
+        "name": "작년에 쓰다 남은 연고",
+        "card_name": "작년에 쓰다 남은 연고",
+        "reason": "뚜껑을 연 연고는 여섯 달쯤 지나면 효과도 위생도 믿기 어려워요. 언제 열었는지 기억나지 않는 연고는 새로 사는 게 결국 싸게 먹혀요",
+        "card_reason": "뚜껑 연 지 여섯 달 지난 연고는 효과도 위생도 못 믿어요"
+      },
+      {
+        "rank": 3,
+        "name": "먹다 남긴 항생제",
+        "card_name": "먹다 남긴 항생제",
+        "reason": "항생제는 처방받은 날수를 다 채워 먹고 끝내는 약이에요. 남겨 뒀다가 비슷한 증상에 또 먹으면 병을 가리고 내성만 키워요",
+        "card_reason": "남긴 항생제는 병을 가리고 내성을 키우니 다시 먹지 마세요"
+      },
+      {
+        "rank": 4,
+        "name": "언제 받았는지 모를 처방약",
+        "card_name": "언제 받았는지 모를 약",
+        "reason": "처방약은 진단받은 병과 받을 때 몸 상태에 맞춘 약이에요. 언제 받았는지 모를 약은 먹지 말고, 약국에 있는 폐의약품 수거함에 버리는 게 안전해요",
+        "card_reason": "처방약은 진단받은 병에만 맞춘 약이라 나중에 먹기엔 위험해요"
+      }
+    ],
+    "video_script": "약 서랍부터 열어 보세요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "약국상식"
+    ],
+    "bgm_prompt": "neat cheerful piano with light guitar, spring-cleaning afternoon mood",
+    "rank_count": 4
+  }
+}
