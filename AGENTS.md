@@ -176,7 +176,11 @@ style guide when copied verbatim. Write from the topic, then run the checks.
 - The reference-card circuit stages the already-rendered MP4 after a successful YouTube upload. It does not publish to Instagram.
 - A staging failure after YouTube upload must be recorded as `failed_after_youtube_upload` and must not cause another YouTube upload.
 - Reuse an existing folder when its `metadata.json` has the same YouTube video ID. Do not create duplicate handoff folders.
-- Instagram `공유` is a separate public-publishing action. Do not trigger it from this n8n circuit without explicit user approval and an authenticated Meta publishing setup.
+- The user's initial invocation of the full shorts workflow is explicit approval for the one Instagram
+  publication defined by the shorts manual. Do not ask for a second approval at the `공유` step. This
+  n8n reference-card circuit still stages the package only; it does not publish from n8n itself unless
+  an authenticated Meta publishing flow has been configured. The runner that owns the workflow performs
+  the publication as part of the same invocation.
 
 - Runner root: `C:\dev\n8n-youtube-shorts-automation`
 - n8n user folder: `C:\dev\n8n-youtube-shorts-automation\.n8n`
