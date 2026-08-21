@@ -169,6 +169,9 @@ style guide when copied verbatim. Write from the topic, then run the checks.
 
 ### Instagram handoff
 
+여기서 `handoff`는 인스타 게시용 파일을 준비 폴더로 넘기는 뜻이다. 브라우저 화면을 사람에게
+넘기거나 게시 버튼을 남겨 두는 뜻이 아니다.
+
 - Automation root: `G:\내 드라이브\영상 편집\AI 크리에이터\인스타그램 자동화`
 - URL entry point: `G:\내 드라이브\영상 편집\AI 크리에이터\인스타그램 자동화\scripts\prepare-instagram.ps1`
 - n8n staging script: `G:\내 드라이브\영상 편집\AI 크리에이터\인스타그램 자동화\scripts\stage-instagram-package.mjs`
