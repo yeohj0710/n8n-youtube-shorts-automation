@@ -1,0 +1,53 @@
+{
+  "title": "별거 아닌 줄 알고 다들 하는 위험한 습관 4",
+  "lane": "daily_health_lifestyle",
+  "notes": "사용자 제안 '생각보다 위험한 습관' 갈래. 감염 둘 + 민간요법 하나 + 약 남용 하나.",
+  "topic_key": "harmless_looking_risky_habits",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_choices",
+    "topic_key": "harmless_looking_risky_habits",
+    "hook_title": "별거 아닌 줄 알고 다들 하는 위험한 습관 4",
+    "subtitle": "손버릇 하나가 병원 갈 일을 만들어요",
+    "visual_profile": "myth_fact",
+    "visual_mood_hint": "세면대 거울 앞 선반에 놓인 면봉통과 손거울, 밝은 아침 빛, 흰색과 하늘색 팔레트에 노랑 경고 포인트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "코털을 손으로 뽑기",
+        "card_name": "코털 손으로 뽑기",
+        "reason": "코털이 뽑힌 자리에 상처가 나면 균이 들어가 벌겋게 곪을 수 있어요. 코 주변은 염증이 유난히 위험한 자리예요. 뽑지 말고 가위로 끝만 다듬으세요",
+        "card_reason": "뽑힌 자리로 균이 들어가 얼굴까지 크게 곪을 수 있어요"
+      },
+      {
+        "rank": 2,
+        "name": "면봉으로 귀 깊이 파기",
+        "card_name": "면봉으로 귀 깊이 파기",
+        "reason": "귀지는 저절로 밀려 나오게 돼 있어요. 면봉을 깊이 넣으면 오히려 귀지를 안으로 밀어 넣고, 상처가 나면 곪아서 귀가 먹먹해지고 아파요",
+        "card_reason": "귀지를 안으로 밀어 넣고 상처만 내서 귀가 먹먹해져요"
+      },
+      {
+        "rank": 3,
+        "name": "상처에 침 바르기",
+        "card_name": "상처에 침 바르기",
+        "reason": "입안에는 균이 많아요. 상처에 침을 바르면 소독이 아니라 균을 옮기는 셈이라 오히려 덧나기 쉬워요. 흐르는 물에 씻는 게 나아요",
+        "card_reason": "입속 균을 상처에 옮기는 셈이라 오히려 잘 덧나요"
+      },
+      {
+        "rank": 4,
+        "name": "코에 뿌리는 약을 몇 주씩 쓰기",
+        "card_name": "코 뿌리는 약 오래 쓰기",
+        "reason": "코막힘에 뿌리는 약은 그때는 시원해도 일주일을 넘기면 코가 약 없이는 더 막히는 상태가 돼요. 겉면에 적힌 날수를 지키고, 계속 막히면 약국에 물어보세요",
+        "card_reason": "일주일 넘게 뿌리면 코가 더 막히고 약을 끊기 어려워요"
+      }
+    ],
+    "video_script": "다들 하는 습관이라 더 위험해요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "생활안전"
+    ],
+    "bgm_prompt": "light friendly piano with nylon guitar, tidy and fresh morning mood",
+    "rank_count": 4
+  }
+}
