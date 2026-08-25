@@ -1,0 +1,53 @@
+{
+  "title": "베이킹소다 한 통이 하는 집안일 4",
+  "lane": "allpurpose_housekeeping",
+  "notes": "전략: 몇천 원짜리 한 통의 쓸모 명단이라 얻는 프레임이 강하다. 이긴 결인 물건 이름과 자리 명단형. 사실 근거: 베이킹소다의 탈취와 연마 용법은 제품 표준 용법. 효능 단정 없이 용법만 적었다.",
+  "topic_key": "baking_soda_uses",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "baking_soda_uses",
+    "hook_title": "베이킹소다 한 통이 하는 집안일 4",
+    "subtitle": "세제 여러 통 대신 한 통으로 되는 일이 많아요",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "부엌 조리대 위 베이킹소다 통과 숟가락, 반짝이는 싱크대, 노랑과 흰색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "냉장고 냄새 잡기",
+        "card_name": "냉장고 냄새 잡기",
+        "reason": "뚜껑을 연 통째로 냉장고 구석에 두세요. 밴 냄새를 빨아들여요. 석 달에 한 번 갈아 주세요",
+        "card_reason": "뚜껑을 연 채 넣어 둔 통이 냉장고 냄새를 빨아들여요"
+      },
+      {
+        "rank": 2,
+        "name": "가스레인지 기름때 밀기",
+        "card_name": "기름때 밀기",
+        "reason": "물에 되직하게 개어 기름때에 바르고 잠시 두세요. 문지르면 눌은 때가 밀려 나와요",
+        "card_reason": "물에 개어 바르고 문지르면 눌은 기름때가 밀려요"
+      },
+      {
+        "rank": 3,
+        "name": "과일 겉 씻기",
+        "card_name": "과일 겉 씻기",
+        "reason": "물에 한 숟갈 풀어 과일을 담갔다 헹구세요. 겉에 묻은 것이 물에 씻겨 나와 개운해요",
+        "card_reason": "한 숟갈 푼 물에 담갔다 헹궈야 겉이 개운해져요"
+      },
+      {
+        "rank": 4,
+        "name": "찻잔 얼룩 지우기",
+        "card_name": "찻잔 얼룩 지우기",
+        "reason": "커피와 차 얼룩은 세제로 잘 안 빠져요. 소다를 살짝 묻혀 문지르면 새것처럼 돼요",
+        "card_reason": "소다를 묻혀 문지르는 것만으로 찻잔 얼룩이 지워져요"
+      }
+    ],
+    "video_script": "베이킹소다 한 통이면 부엌이 달라져요.",
+    "tags": [
+      "생활정보",
+      "살림",
+      "청소"
+    ],
+    "bgm_prompt": "playful light piano with acoustic guitar, tidy home mood, warmly upbeat",
+    "rank_count": 4
+  }
+}

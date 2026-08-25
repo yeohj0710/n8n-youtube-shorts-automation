@@ -1,0 +1,53 @@
+{
+  "title": "집에 쌓인 서류, 버릴 것과 둘 것 4",
+  "lane": "paper_declutter",
+  "notes": "전략: 히트한 두 칸 가르기 형식에 서랍 정리라는 다들 미룬 숙제를 얹었다. 사실 근거: 보험금 청구 기간 3년은 보험 제도 표준, 세금 서류 5년은 국세 확인 기간 제도 표준. 그 두 숫자만 쓰고 나머지는 생활 관찰.",
+  "topic_key": "paper_keep_or_toss",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "paper_keep_or_toss",
+    "hook_title": "집에 쌓인 서류, 버릴 것과 둘 것 4",
+    "subtitle": "서랍 가득한 종이, 절반은 오늘 버려도 돼요",
+    "visual_profile": "calendar_streak",
+    "visual_mood_hint": "책상 위 서류 더미와 두 개의 정리함, 차분한 오후 빛, 베이지와 갈색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "카드 영수증은 버려도",
+        "card_name": "카드 영수증",
+        "reason": "카드로 쓴 내역은 앱과 문자에 다 남아 있어요. 종이 영수증은 모아 둘 이유가 없어요",
+        "card_reason": "쓴 내역이 앱에 다 남아 있어 종이는 버려도 돼요"
+      },
+      {
+        "rank": 2,
+        "name": "병원 영수증은 3년 보관",
+        "card_name": "병원 영수증 3년",
+        "reason": "보험금 청구는 3년까지 할 수 있어요. 병원 영수증과 진단서는 봉투 하나에 모아 두세요",
+        "card_reason": "보험금 청구가 3년까지라 병원 것은 모아 두세요"
+      },
+      {
+        "rank": 3,
+        "name": "가전 설명서는 버려도",
+        "card_name": "가전 설명서",
+        "reason": "설명서는 인터넷에서 모델명만 치면 다 나와요. 뒷면의 모델명만 폰으로 찍고 버리세요",
+        "card_reason": "모델명만 폰으로 찍어 두면 설명서는 버려도 돼요"
+      },
+      {
+        "rank": 4,
+        "name": "세금 낸 서류는 5년 보관",
+        "card_name": "세금 서류 5년",
+        "reason": "세금은 5년까지 다시 확인될 수 있어요. 낸 서류와 신고서는 한 파일에 5년치를 두세요",
+        "card_reason": "세금은 5년까지 확인될 수 있어 서류를 두세요"
+      }
+    ],
+    "video_script": "병원 영수증 3년, 세금 서류 5년만 기억하세요.",
+    "tags": [
+      "생활정보",
+      "정리",
+      "돈관리"
+    ],
+    "bgm_prompt": "tidy light piano with soft strings, organized afternoon mood, calmly satisfying",
+    "rank_count": 4
+  }
+}

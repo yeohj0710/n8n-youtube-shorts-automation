@@ -1,0 +1,53 @@
+{
+  "title": "집 냄새, 자리마다 범인이 따로 있어요 4",
+  "lane": "home_odor_fix",
+  "notes": "전략: 집 냄새는 어느 집이나 겪고, 하수구 냄새가 물 한 컵으로 끝나는 의외성이 축. 자리 이름을 대는 명단형. 사실 근거: 하수구 냄새는 배수관의 물 마개가 말라 올라오는 것이라 물을 부으면 막히는 게 배관 구조 표준. 나머지는 생활 관찰.",
+  "topic_key": "home_odor_sources",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "home_odor_sources",
+    "hook_title": "집 냄새, 자리마다 범인이 따로 있어요 4",
+    "subtitle": "향초로 덮지 말고 자리마다 범인부터 잡아요",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "환기하려 창을 연 밝은 거실과 부엌, 산뜻한 바람 느낌, 민트와 흰색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "부엌 개수대 냄새는 물 한 컵",
+        "card_name": "개수대엔 물 한 컵",
+        "reason": "며칠 물을 안 쓰면 배수관의 물 마개가 말라 냄새가 올라와요. 물 한 컵만 부으면 다시 막혀요",
+        "card_reason": "말라붙은 하수구는 물 한 컵만 부으면 냄새가 막혀요"
+      },
+      {
+        "rank": 2,
+        "name": "신발장엔 신문지",
+        "card_name": "신발장엔 신문지",
+        "reason": "신발장 냄새는 눅눅함에서 나와요. 바닥에 신문지를 깔면 물기와 냄새를 같이 잡아요",
+        "card_reason": "깔아 둔 신문지가 눅눅함과 냄새를 같이 잡아 줘요"
+      },
+      {
+        "rank": 3,
+        "name": "음식물 쓰레기는 얼려서",
+        "card_name": "음식물은 얼려서",
+        "reason": "여름 음식물 쓰레기는 반나절이면 냄새가 나요. 버리는 날까지 얼려 두면 냄새가 안 올라와요",
+        "card_reason": "여름엔 얼려 뒀다 버려야 냄새가 아예 안 올라와요"
+      },
+      {
+        "rank": 4,
+        "name": "욕실 배수구는 머리카락부터",
+        "card_name": "욕실은 머리카락부터",
+        "reason": "욕실 냄새 절반은 배수구에 낀 머리카락 뭉치예요. 걷어 내고 뜨거운 물을 부으면 가라앉아요",
+        "card_reason": "배수구 머리카락을 걷어 내고 뜨거운 물로 마무리해요"
+      }
+    ],
+    "video_script": "하수구 냄새엔 물 한 컵이면 돼요.",
+    "tags": [
+      "생활정보",
+      "살림",
+      "집관리"
+    ],
+    "bgm_prompt": "light acoustic guitar with warm piano, fresh clean home mood, gently cheerful",
+    "rank_count": 4
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "title": "술 마신 다음 날, 도움 되는 것과 안 되는 것 4",
+  "lane": "hangover_recovery",
+  "notes": "전략: 히트한 두 칸 가르기 형식. 술자리 다음 날은 다들 겪는다. 사우나 해장을 뒤집는 의외성. 사실 근거: 술 마신 뒤 몸의 물 부족과 당분 보충, 해장술과 사우나의 탈수 위험은 교과서 표준.",
+  "topic_key": "hangover_do_dont",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_choices",
+    "topic_key": "hangover_do_dont",
+    "hook_title": "술 마신 다음 날, 도움 되는 것과 안 되는 것 4",
+    "subtitle": "꿀물은 맞고 사우나는 아니에요. 두 칸으로 갈라 드릴게요",
+    "visual_profile": "myth_fact",
+    "visual_mood_hint": "아침 식탁 위 꿀물 잔과 콩나물국 그릇, 부드러운 아침 빛, 노랑과 크림색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "꿀물과 이온음료는 도움",
+        "card_name": "꿀물과 이온음료",
+        "reason": "술 마신 몸은 물과 당이 모자라요. 꿀물이나 이온음료가 그 둘을 같이 채워 줘요",
+        "card_reason": "모자란 물과 당을 같이 채워 줘서 회복이 빨라요"
+      },
+      {
+        "rank": 2,
+        "name": "사우나 땀 빼기는 안 됨",
+        "card_name": "사우나 땀 빼기",
+        "reason": "술 마신 다음 날 몸은 이미 물이 모자라요. 사우나에서 땀까지 빼면 어지럼이 더 심해져요",
+        "card_reason": "물이 모자란 몸에서 땀까지 빼면 어지럼이 심해져요"
+      },
+      {
+        "rank": 3,
+        "name": "해장술은 안 됨",
+        "card_name": "해장술 한 잔",
+        "reason": "간이 밤새 일하고 쉬려는 참에 다시 일을 시켜요. 잠깐 편한 듯해도 회복이 하루 더 늦어져요",
+        "card_reason": "간이 쉴 틈 없이 다시 일해서 회복이 하루 늦어져요"
+      },
+      {
+        "rank": 4,
+        "name": "따뜻한 콩나물국은 도움",
+        "card_name": "따뜻한 콩나물국",
+        "reason": "따뜻한 국물이 모자란 물을 채우고 속을 달래요. 맵고 짜게 끓이면 속에 부담이 되니 슴슴하게 드세요",
+        "card_reason": "따뜻한 국물이 물을 채우고 쓰린 속을 달래 줘요"
+      }
+    ],
+    "video_script": "해장은 꿀물과 슴슴한 국물이 정답이에요.",
+    "tags": [
+      "건강정보",
+      "숙취",
+      "생활건강"
+    ],
+    "bgm_prompt": "warm piano with light strings, calm recovery morning mood, gently uplifting",
+    "rank_count": 4
+  }
+}

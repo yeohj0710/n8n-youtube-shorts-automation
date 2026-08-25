@@ -1,0 +1,53 @@
+{
+  "title": "모기 물린 자리 빨리 가라앉히는 순서 4",
+  "lane": "insect_bite_care",
+  "notes": "전략: 늦여름 가을 모기가 한창이라 지금 겪는 사람이 많다. 침 바르기 같은 익숙한 습관을 뒤집는 의외성. 사실 근거: 물린 자리 세척과 냉찜질, 긁지 않기는 응급처치 표준 안내. 침의 세균 감염 위험도 표준 안내.",
+  "topic_key": "mosquito_bite_care_steps",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_choices",
+    "topic_key": "mosquito_bite_care_steps",
+    "hook_title": "모기 물린 자리 빨리 가라앉히는 순서 4",
+    "subtitle": "침 바르기와 긁기 대신, 순서만 지키면 빨리 가라앉아요",
+    "visual_profile": "clinic_checklist",
+    "visual_mood_hint": "저녁 거실에서 팔에 찬 수건을 대는 장면, 창밖 여름 저녁 빛, 민트와 크림색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "비누로 물린 자리 씻기",
+        "card_name": "비누로 먼저 씻기",
+        "reason": "긁기 전에 비누로 씻는 게 먼저예요. 침을 바르면 입속 세균이 들어가 덧날 수 있어요",
+        "card_reason": "침 속 세균이 들어갈 수 있어 비누로 먼저 씻어요"
+      },
+      {
+        "rank": 2,
+        "name": "찬 수건 대기",
+        "card_name": "찬 수건 대기",
+        "reason": "찬 수건을 몇 분 대면 가려움을 만드는 열이 식어요. 얼음은 수건에 싸서 대야 살이 안 다쳐요",
+        "card_reason": "찬 수건이 가려움을 만드는 살의 열을 식혀 줘요"
+      },
+      {
+        "rank": 3,
+        "name": "긁는 대신 두드리기",
+        "card_name": "긁는 대신 두드리기",
+        "reason": "긁을수록 가려움이 번지고 상처가 나요. 손바닥으로 살짝 두드리면 가려움이 한결 덜해요",
+        "card_reason": "긁을수록 가려움이 번져서 손바닥으로 두드려요"
+      },
+      {
+        "rank": 4,
+        "name": "가려움 연고 바르기",
+        "card_name": "가려움 연고 바르기",
+        "reason": "약국의 벌레 물린 데 연고를 얇게 바르세요. 며칠 지나도 붓고 열이 나면 약국이나 병원에 보이세요",
+        "card_reason": "가려움 연고를 얇게 바르고 계속 부으면 병원에 가요"
+      }
+    ],
+    "video_script": "모기 물리면 씻고, 식히고, 두드리세요.",
+    "tags": [
+      "건강정보",
+      "생활응급",
+      "여름건강"
+    ],
+    "bgm_prompt": "light warm piano with gentle strings, calm evening mood, softly comforting",
+    "rank_count": 4
+  }
+}

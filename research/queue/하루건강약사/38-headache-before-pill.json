@@ -1,0 +1,53 @@
+{
+  "title": "두통약 먹기 전에 해보면 듣는 것 4",
+  "lane": "headache_selfcare",
+  "notes": "전략: 두통은 전 연령이 겪어 대상이 가장 넓은 축. 약 대신 먼저 해볼 것을 주는 얻는 프레임. 사실 근거: 물 부족과 빈속이 두통을 부르고 뒷목 뭉침이 머리를 조이는 것은 교과서 표준. 약을 먹지 말라는 말은 넣지 않았다.",
+  "topic_key": "headache_before_pill",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_choices",
+    "topic_key": "headache_before_pill",
+    "hook_title": "두통약 먹기 전에 해보면 듣는 것 4",
+    "subtitle": "물과 어깨와 끼니, 세 가지만 봐도 절반은 가라앉아요",
+    "visual_profile": "morning_light",
+    "visual_mood_hint": "오후 창가에서 물컵을 든 손, 부드러운 빛과 차분한 책상, 연한 파랑과 크림색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "물 두 컵 마시기",
+        "card_name": "물 두 컵 마시기",
+        "reason": "몸에 물이 모자라도 머리가 아파요. 물 두 컵을 마시고 30분만 기다려 보세요",
+        "card_reason": "물이 모자라도 머리가 아프니 두 컵 마시고 기다려요"
+      },
+      {
+        "rank": 2,
+        "name": "뒷목과 어깨 풀기",
+        "card_name": "뒷목과 어깨 풀기",
+        "reason": "뒷목이 뭉치면 머리까지 조여요. 어깨를 크게 돌리고 뒷목을 따뜻하게 감싸 보세요",
+        "card_reason": "뒷목이 뭉치면 머리까지 조여서 어깨부터 풀어요"
+      },
+      {
+        "rank": 3,
+        "name": "눈 감고 10분 쉬기",
+        "card_name": "눈 감고 10분",
+        "reason": "화면을 오래 본 날의 두통은 눈 피로가 원인일 때가 많아요. 불을 줄이고 눈을 감는 것만으로 가라앉아요",
+        "card_reason": "화면 많이 본 날 두통은 눈만 감아도 가라앉아요"
+      },
+      {
+        "rank": 4,
+        "name": "거른 끼니 챙기기",
+        "card_name": "거른 끼니 챙기기",
+        "reason": "빈속이 길어져도 머리가 아파요. 밥때를 건너뛰었다면 먼저 조금이라도 드세요",
+        "card_reason": "빈속이 길어도 머리가 아프니 끼니부터 챙겨 드세요"
+      }
+    ],
+    "video_script": "두통엔 물부터 마셔 보세요.",
+    "tags": [
+      "건강정보",
+      "두통",
+      "생활건강"
+    ],
+    "bgm_prompt": "soft piano with warm cello, calm afternoon mood, gently soothing",
+    "rank_count": 4
+  }
+}

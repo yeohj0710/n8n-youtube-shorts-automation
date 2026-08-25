@@ -1,0 +1,53 @@
+{
+  "title": "찜질, 따뜻하게 할 때와 차게 할 때 4",
+  "lane": "hot_cold_compress",
+  "notes": "전략: 다들 아플 때마다 헷갈리는 판단을 두 칸으로 갈라 주는 히트 형식. 사실 근거: 다친 직후 이틀은 냉찜질, 오래된 결림과 뻐근함은 온찜질이라는 재활 교과서 표준. 몸에 영향 가는 내용이라 교과서 표준만 썼다.",
+  "topic_key": "hot_vs_cold_compress",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "joints_balance_falls",
+    "topic_key": "hot_vs_cold_compress",
+    "hook_title": "찜질, 따뜻하게 할 때와 차게 할 때 4",
+    "subtitle": "반대로 하면 더 붓거나 더 굳어요. 이틀이 기준이에요",
+    "visual_profile": "clinic_checklist",
+    "visual_mood_hint": "거실 소파에서 어깨에 따뜻한 찜질팩을 올린 모습, 아늑한 저녁 빛, 주황과 크림색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "막 삔 데는 차게",
+        "card_name": "막 삔 데는 차게",
+        "reason": "삔 직후 이틀은 차게 해야 붓기가 멎어요. 수건에 싼 얼음을 한 번에 15분쯤 대세요",
+        "card_reason": "삔 직후 이틀은 차게 해야 붓기가 번지지 않아요"
+      },
+      {
+        "rank": 2,
+        "name": "부어오른 자리도 차게",
+        "card_name": "부은 자리도 차게",
+        "reason": "열이 나며 부은 자리를 데우면 더 부어올라요. 가라앉을 때까지는 찬 쪽이 맞아요",
+        "card_reason": "열나며 부은 데를 데우면 오히려 더 부어올라요"
+      },
+      {
+        "rank": 3,
+        "name": "묵은 어깨 결림은 따뜻하게",
+        "card_name": "묵은 결림은 온찜질",
+        "reason": "오래된 결림은 데워야 뭉친 근육이 풀려요. 따뜻한 수건을 10분씩 올려 보세요",
+        "card_reason": "묵은 결림은 데워야 뭉친 근육이 스르르 풀려요"
+      },
+      {
+        "rank": 4,
+        "name": "뻐근한 허리도 따뜻하게",
+        "card_name": "뻐근한 허리는 온찜질",
+        "reason": "삐끗한 직후만 아니면 뻐근한 허리는 데우는 쪽이 편해져요. 뜨겁지 않게 온도를 확인하세요",
+        "card_reason": "삐끗한 직후만 빼고 허리는 데우는 쪽이 편해요"
+      }
+    ],
+    "video_script": "다친 지 이틀은 차게, 그 뒤는 따뜻하게 하세요.",
+    "tags": [
+      "건강정보",
+      "찜질",
+      "관절건강"
+    ],
+    "bgm_prompt": "calm warm piano with soft strings, cozy healing evening mood, softly reassuring",
+    "rank_count": 4
+  }
+}

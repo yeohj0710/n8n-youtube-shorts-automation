@@ -1,0 +1,53 @@
+{
+  "title": "약효 떨어뜨리는 약 먹는 습관 4",
+  "lane": "medication_habits",
+  "notes": "전략: 약을 먹는 사람 전부가 대상이라 조건이 없다. 매일 하는 동작의 잘못을 바로잡는 실용. 사실 근거: 충분한 물, 우유와 주스의 흡수 방해, 뜨거운 물과 캡슐, 복용 직후 눕지 않기는 복약지도 교과서 표준.",
+  "topic_key": "pill_taking_mistakes",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "medicine_literacy",
+    "topic_key": "pill_taking_mistakes",
+    "hook_title": "약효 떨어뜨리는 약 먹는 습관 4",
+    "subtitle": "같은 약도 먹는 법에 따라 듣는 정도가 달라져요",
+    "visual_profile": "clinic_checklist",
+    "visual_mood_hint": "저녁 식탁 위 물 한 컵과 약, 차분한 조명, 남색과 크림색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "물 반 모금으로 삼키기",
+        "card_name": "물 반 모금 삼키기",
+        "reason": "물이 적으면 약이 위까지 못 가고 식도에 붙어요. 물 한 컵을 다 마셔야 제자리에 닿아요",
+        "card_reason": "물 한 컵을 다 마셔야 약이 위까지 내려가요"
+      },
+      {
+        "rank": 2,
+        "name": "우유나 주스와 함께 먹기",
+        "card_name": "우유와 주스로",
+        "reason": "우유와 과일 주스가 어떤 약은 흡수를 막아요. 약은 맹물과 먹는 게 기본이에요",
+        "card_reason": "우유와 주스가 흡수를 막는 약이 있어 맹물이 기본이에요"
+      },
+      {
+        "rank": 3,
+        "name": "뜨거운 물로 먹기",
+        "card_name": "뜨거운 물로 먹기",
+        "reason": "뜨거운 물은 캡슐과 코팅을 미리 녹여요. 약이 정해진 자리보다 일찍 풀려 버려요",
+        "card_reason": "뜨거운 물은 캡슐을 녹여 약이 일찍 풀려 버려요"
+      },
+      {
+        "rank": 4,
+        "name": "먹자마자 눕기",
+        "card_name": "먹자마자 눕기",
+        "reason": "삼키자마자 누우면 약이 식도에 머물러 속을 다쳐요. 10분은 앉아 있다가 누우세요",
+        "card_reason": "바로 누우면 약이 식도에 걸리니 10분은 앉아 있어요"
+      }
+    ],
+    "video_script": "약은 맹물 한 컵과 드세요.",
+    "tags": [
+      "건강정보",
+      "복약상식",
+      "시니어건강"
+    ],
+    "bgm_prompt": "warm acoustic piano with soft strings, calm evening mood, steady and caring",
+    "rank_count": 4
+  }
+}

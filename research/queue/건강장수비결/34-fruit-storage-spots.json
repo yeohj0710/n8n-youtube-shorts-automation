@@ -1,0 +1,53 @@
+{
+  "title": "과일마다 두는 자리가 따로 있어요 4",
+  "lane": "fruit_storage_spot",
+  "notes": "전략: 과일은 어느 집에나 있어 대상이 넓고, 사과 옆 과일이 빨리 무르는 의외성이 축. 이긴 결인 음식 이름 명단형. 사실 근거: 바나나 냉장 갈변, 사과의 익힘 가스, 토마토 상온 후숙, 자른 수박 밀착 랩 냉장은 식약처와 농식품 보관 안내 표준.",
+  "topic_key": "fruit_storage_spots",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "longevity_meals",
+    "topic_key": "fruit_storage_spots",
+    "hook_title": "과일마다 두는 자리가 따로 있어요 4",
+    "subtitle": "냉장고가 만능이 아니에요. 과일마다 제자리가 달라요",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "부엌 조리대 위 바나나 걸이와 과일 바구니, 오후의 따뜻한 빛, 초록과 크림색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "바나나는 밖에 걸어서",
+        "card_name": "바나나는 걸어서",
+        "reason": "바나나를 냉장고에 넣으면 껍질부터 까매져요. 바람 통하는 곳에 걸어 두면 고르게 익어요",
+        "card_reason": "냉장고에선 껍질만 까매지니 바람 드는 데 걸어 둬요"
+      },
+      {
+        "rank": 2,
+        "name": "사과는 봉지에 따로",
+        "card_name": "사과는 따로 봉지에",
+        "reason": "사과는 과일을 빨리 익히는 기운을 내뿜어요. 옆에 둔 과일이 먼저 무르니 봉지에 따로 두세요",
+        "card_reason": "사과가 내뿜는 기운에 옆의 과일이 먼저 물러요"
+      },
+      {
+        "rank": 3,
+        "name": "토마토는 다 익은 뒤에만 냉장",
+        "card_name": "토마토는 상온부터",
+        "reason": "토마토는 그냥 두어야 맛이 들어요. 차가워지면 단맛이 빠지니 다 익은 뒤에만 냉장고로 옮기세요",
+        "card_reason": "차가우면 단맛이 빠지니 다 익은 뒤에만 냉장고로"
+      },
+      {
+        "rank": 4,
+        "name": "자른 수박은 랩 붙여 냉장",
+        "card_name": "자른 수박은 랩 씌워",
+        "reason": "자른 수박은 자른 자리에 랩을 딱 붙여 냉장하세요. 여름 과일은 잘라 두면 금방 상해요",
+        "card_reason": "자른 자리에 랩을 딱 붙여 냉장해야 안 상해요"
+      }
+    ],
+    "video_script": "사과는 다른 과일과 떨어뜨려 두세요.",
+    "tags": [
+      "생활정보",
+      "음식보관",
+      "살림"
+    ],
+    "bgm_prompt": "warm acoustic guitar with soft piano, cozy kitchen mood, gently cheerful",
+    "rank_count": 4
+  }
+}

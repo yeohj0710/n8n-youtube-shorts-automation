@@ -1,0 +1,53 @@
+{
+  "title": "잠 잘 오게 방 바꾸는 법 4",
+  "lane": "sleep_environment",
+  "notes": "전략: 히트한 저녁 습관 편이 행동을 다뤘다면 이번엔 방 환경이라 겹치지 않는 짝. 잠 설침은 다들 겪는다. 사실 근거: 서늘한 침실 온도와 빛 차단이 잠을 돕는 것은 수면 위생 표준 지침. 공유기 불빛과 수면양말은 그 지침의 생활 적용.",
+  "topic_key": "sleep_friendly_room",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "sleep_recovery",
+    "topic_key": "sleep_friendly_room",
+    "hook_title": "잠 잘 오게 방 바꾸는 법 4",
+    "subtitle": "약 없이도 방만 바꾸면 잠이 한결 깊어져요",
+    "visual_profile": "sleep_night",
+    "visual_mood_hint": "어둑한 침실과 꺼진 전자기기 불빛, 창밖 달빛, 짙은 남색과 회색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "방은 20도 안팎으로 서늘하게",
+        "card_name": "방은 살짝 서늘하게",
+        "reason": "몸속 온도가 내려가야 잠이 들어요. 방이 더우면 그 과정이 늦어지니 20도 안팎이 좋아요",
+        "card_reason": "몸이 식어야 잠드니 방은 20도 안팎이 좋아요"
+      },
+      {
+        "rank": 2,
+        "name": "공유기 불빛까지 가리기",
+        "card_name": "작은 불빛 가리기",
+        "reason": "공유기와 충전기의 작은 불빛도 잠을 얕게 해요. 테이프 한 조각으로 가리면 끝이에요",
+        "card_reason": "공유기 불빛만 테이프로 가려도 잠이 깊어져요"
+      },
+      {
+        "rank": 3,
+        "name": "폰은 손 안 닿는 곳에",
+        "card_name": "폰은 머리맡 말고",
+        "reason": "머리맡의 폰은 새벽에 깰 때마다 손이 가요. 화면 빛에 잠이 확 달아나니 멀리 두세요",
+        "card_reason": "폰이 손에 닿으면 새벽마다 화면을 보게 돼요"
+      },
+      {
+        "rank": 4,
+        "name": "발만 따뜻하게 하기",
+        "card_name": "발만 따뜻하게",
+        "reason": "발이 차면 잠드는 데 오래 걸려요. 방은 서늘하게 두고 수면양말로 발만 데우세요",
+        "card_reason": "방은 서늘해도 발은 수면양말로 데워야 잘 들어요"
+      }
+    ],
+    "video_script": "방은 서늘하게, 발은 따뜻하게 하세요.",
+    "tags": [
+      "건강정보",
+      "수면",
+      "생활습관"
+    ],
+    "bgm_prompt": "gentle piano with soft pad, deep quiet night mood, calm and warm",
+    "rank_count": 4
+  }
+}

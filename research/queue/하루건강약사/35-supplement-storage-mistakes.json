@@ -1,0 +1,53 @@
+{
+  "title": "영양제 보관, 다들 잘못 알고 있는 것 4",
+  "lane": "supplement_care",
+  "notes": "전략: 영양제를 한 알이라도 먹는 사람 전부가 대상이라 조건이 없다. 히트한 '매일 먹어도 되는 것' 결의 보관판. 사실 근거: 개봉 후 솜 제거, 직사광선과 습기 회피, 냉장 결로는 제조사 보관 안내 표준.",
+  "topic_key": "supplement_storage_mistakes",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "supplement_ingredients",
+    "topic_key": "supplement_storage_mistakes",
+    "hook_title": "영양제 보관, 다들 잘못 알고 있는 것 4",
+    "subtitle": "통 안의 솜부터 두는 자리까지, 오늘 바로 고칠 수 있어요",
+    "visual_profile": "myth_fact",
+    "visual_mood_hint": "아침 부엌 선반 위 영양제 통들과 물컵, 창으로 드는 부드러운 빛, 크림색과 연한 파랑 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "뚜껑 안의 솜을 그대로 두기",
+        "card_name": "솜 그대로 두기",
+        "reason": "솜은 배송 중에 알약이 깨지지 말라고 넣은 거예요. 뚜껑을 연 뒤에는 습기를 빨아들여 알약을 눅눅하게 만들어요",
+        "card_reason": "솜은 배송 보호용이라 개봉한 뒤엔 습기만 빨아들여요"
+      },
+      {
+        "rank": 2,
+        "name": "욕실이나 부엌에 두기",
+        "card_name": "욕실과 부엌에 두기",
+        "reason": "샤워할 때 김과 밥할 때 김이 통 안까지 들어가요. 눅눅해진 알약은 정해진 날짜보다 빨리 상해요",
+        "card_reason": "샤워 김과 밥 김이 통에 스며서 알약이 빨리 상해요"
+      },
+      {
+        "rank": 3,
+        "name": "햇빛 드는 식탁 위에 두기",
+        "card_name": "볕 드는 식탁 위",
+        "reason": "잊지 않으려고 식탁에 두는 분이 많아요. 볕이 계속 들면 성분이 약해지니 그늘진 서랍이 나아요",
+        "card_reason": "볕이 계속 들면 성분이 약해져서 그늘 서랍이 나아요"
+      },
+      {
+        "rank": 4,
+        "name": "아무거나 냉장고에 넣기",
+        "card_name": "아무거나 냉장고에",
+        "reason": "차가운 통을 꺼내면 겉에 이슬이 맺혀요. 그 물기가 오히려 알약을 눅눅하게 하니 냉장 표시가 있는 것만 넣으세요",
+        "card_reason": "꺼낼 때마다 통에 이슬이 맺혀 오히려 눅눅해져요"
+      }
+    ],
+    "video_script": "영양제는 그늘지고 마른 자리가 제자리예요.",
+    "tags": [
+      "건강정보",
+      "영양제",
+      "시니어건강"
+    ],
+    "bgm_prompt": "soft bright piano with warm strings, calm morning care mood, gently uplifting",
+    "rank_count": 4
+  }
+}

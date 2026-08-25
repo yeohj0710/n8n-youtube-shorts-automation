@@ -1,0 +1,53 @@
+{
+  "title": "감기약과 겹치는 줄 모르고 같이 먹는 것 4",
+  "lane": "medicine_safety",
+  "notes": "전략: 환절기 감기철 직전, 감기약은 전 연령이 먹어 대상이 넓다. 사실 근거: 종합감기약의 해열 성분과 카페인 함유, 항히스타민 중복 졸음은 복약지도 교과서 표준. 몸에 영향 가는 행이라 교과서 표준만 썼다.",
+  "topic_key": "cold_medicine_overlap",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "medicine_literacy",
+    "topic_key": "cold_medicine_overlap",
+    "hook_title": "감기약과 겹치는 줄 모르고 같이 먹는 것 4",
+    "subtitle": "성분이 겹치면 양이 두 배가 돼요. 같이 먹기 전에 확인하세요",
+    "visual_profile": "clinic_checklist",
+    "visual_mood_hint": "약국 카운터 위 감기약 상자와 컵, 차분한 조명, 남색과 흰색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "해열 진통제를 또 먹기",
+        "card_name": "해열 진통제 또 먹기",
+        "reason": "종합감기약에는 열 내리는 성분이 이미 들어 있어요. 두통약을 따로 또 먹으면 같은 성분을 두 배로 먹게 돼요",
+        "card_reason": "감기약 속에 열 내리는 성분이 이미 들어 있어요"
+      },
+      {
+        "rank": 2,
+        "name": "밤 감기약과 수면유도제",
+        "card_name": "수면유도제와 같이",
+        "reason": "밤 감기약과 수면유도제는 졸리게 하는 성분이 같아요. 같이 먹으면 다음 날 아침까지 몽롱하게 이어져요",
+        "card_reason": "둘 다 졸린 성분이라 아침까지 몽롱하게 이어져요"
+      },
+      {
+        "rank": 3,
+        "name": "커피와 카페인 드링크",
+        "card_name": "커피와 드링크",
+        "reason": "종합감기약에는 카페인이 든 것이 많아요. 커피나 드링크를 겹치면 가슴이 두근거리고 잠이 깨요",
+        "card_reason": "감기약 속 카페인과 겹쳐서 가슴이 두근거려요"
+      },
+      {
+        "rank": 4,
+        "name": "쌍화탕 같은 감기 음료",
+        "card_name": "감기 음료 겹치기",
+        "reason": "약국 감기 음료에도 약 성분이 든 것이 있어요. 알약과 음료를 세트로 먹기 전에 약사에게 겹침을 물어보세요",
+        "card_reason": "감기 음료에도 약 성분이 들어 겹칠 수 있어요"
+      }
+    ],
+    "video_script": "감기약 살 때는 지금 먹는 약부터 말해 주세요.",
+    "tags": [
+      "건강정보",
+      "감기약",
+      "복약상식"
+    ],
+    "bgm_prompt": "warm acoustic piano with soft strings, calm caring mood, steady and reassuring",
+    "rank_count": 4
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "title": "밤마다 종아리에 쥐 나게 만드는 것 4",
+  "lane": "night_leg_cramp",
+  "notes": "전략: 자다가 쥐 나는 건 5060이 흔하게 겪는 일이라 제목이 약속한 결과를 이미 겪고 있다. 사실 근거: 낮의 물 부족, 근육 피로, 찬 기운이 밤 다리 경련을 부르는 것은 교과서 표준의 생활 요인.",
+  "topic_key": "night_calf_cramp_causes",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "body_signals",
+    "topic_key": "night_calf_cramp_causes",
+    "hook_title": "밤마다 종아리에 쥐 나게 만드는 것 4",
+    "subtitle": "새벽에 깨서 다리 붙잡는 밤, 낮에 원인이 있어요",
+    "visual_profile": "sleep_night",
+    "visual_mood_hint": "새벽 침대에서 종아리를 감싸 쥔 실루엣과 머리맡 물컵, 남색과 보라 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "낮 동안 모자랐던 물",
+        "card_name": "낮에 모자란 물",
+        "reason": "낮에 물을 적게 마신 날일수록 밤에 근육이 잘 뭉쳐요. 저녁까지 물컵 수를 늘려 보세요",
+        "card_reason": "낮에 물을 적게 마신 날 밤에 근육이 잘 뭉쳐요"
+      },
+      {
+        "rank": 2,
+        "name": "종일 서서 보낸 다리",
+        "card_name": "종일 서 있던 다리",
+        "reason": "오래 서 있던 날 종아리는 지쳐 있어요. 지친 근육은 자다가도 저 혼자 뭉쳐요",
+        "card_reason": "오래 서서 지친 종아리는 자다가도 혼자 뭉쳐요"
+      },
+      {
+        "rank": 3,
+        "name": "이불 밖으로 나온 발",
+        "card_name": "이불 밖 찬 발",
+        "reason": "발이 차가워지면 근육이 움츠러들어요. 새벽 찬 공기에 나온 발이 쥐를 부를 때가 많아요",
+        "card_reason": "새벽 찬 공기에 발이 식으면 근육이 움츠러들어요"
+      },
+      {
+        "rank": 4,
+        "name": "뭉친 채로 잠든 다리",
+        "card_name": "안 풀고 잔 다리",
+        "reason": "자기 전에 발끝을 몸 쪽으로 당겨 종아리를 늘려 주세요. 뭉친 채 잠들면 새벽 쥐로 이어져요",
+        "card_reason": "뭉친 채 잠든 다리가 새벽 쥐로 그대로 이어져요"
+      }
+    ],
+    "video_script": "자기 전 발끝 당기기, 잊지 마세요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "수면"
+    ],
+    "bgm_prompt": "quiet piano with soft pad, deep night mood, calm and gentle",
+    "rank_count": 4
+  }
+}
