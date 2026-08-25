@@ -1,5 +1,5 @@
 {
-  "title": "버릴 때 돈 냈던 것, 이제 공짜로 가져가요 4",
+  "title": "돈 내고 버리던 것, 무료로 가져가요 4",
   "lane": "free_disposal",
   "notes": "전략: 버리는 비용은 모든 집의 일이고, 돈 내던 일이 공짜가 됐다는 얻는 결. 주인이 원한 생활 절차 갈래. 사실 근거: 폐가전 무상 방문수거(1599-0903, 대형 1점부터·소형은 5점 이상), 우체국 폐휴대폰 무료 수거, 주민센터 형광등·건전지 수거함. 전부 공식 제도 안내 표준.",
   "topic_key": "free_pickup_services",
@@ -7,7 +7,7 @@
     "channel_editorial_profile": "longevity_daily_function",
     "channel_content_pillar": "daily_function",
     "topic_key": "free_pickup_services",
-    "hook_title": "버릴 때 돈 냈던 것, 이제 공짜로 가져가요 4",
+    "hook_title": "돈 내고 버리던 것, 무료로 가져가요 4",
     "subtitle": "스티커 값 내던 시절은 지났어요",
     "visual_profile": "market_receipt",
     "visual_mood_hint": "현관 앞에 내놓은 선풍기와 상자, 오후 골목, 주황과 회색",

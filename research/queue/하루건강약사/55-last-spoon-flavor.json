@@ -1,0 +1,53 @@
+{
+  "title": "맛없던 반찬이 살아나는 마지막 한 숟갈 4",
+  "lane": "cooking_last_touch",
+  "notes": "전략: 실측 1위 편(평범한 집밥을 살리는 마지막 한 끗 7가지, 팔로우 391·조회 95.6만)과 같은 결을 정면으로 따라간 팩. 밥은 다 먹으니 대상이 제일 넓고, 오늘 저녁에 바로 해보고 결과가 그 자리에서 나오는 얻는 프레임이다. 행은 전부 아는 재료 둘의 안 만나본 짝. 사실 근거: 전부 A등급 생활 요리 요령이라 틀려도 몸에 해가 없다. 약과 몸 이야기를 넣지 않았다.",
+  "topic_key": "last_spoon_flavor",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "nutrition_food_choices",
+    "topic_key": "last_spoon_flavor",
+    "hook_title": "맛없던 반찬이 살아나는 마지막 한 숟갈 4",
+    "subtitle": "오늘 저녁에 바로 해볼 수 있는 것들이에요",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "저녁 부엌 조리대와 김 오르는 냄비, 따뜻한 조명, 크림색과 나무결",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "볶음밥엔 마요네즈",
+        "card_name": "볶음밥엔 마요네즈",
+        "reason": "기름 대신 마요네즈 한 숟갈을 넣고 볶아 보세요. 밥알마다 얇게 입혀져서 눌어붙지 않고 고슬고슬하게 볶아져요.",
+        "card_reason": "밥알마다 얇게 입혀져서 눌어붙지 않고 고슬고슬해져요"
+      },
+      {
+        "rank": 2,
+        "name": "부침개엔 탄산수",
+        "card_name": "부침개엔 탄산수",
+        "reason": "반죽을 물 대신 탄산수로 개면 훨씬 바삭해요. 탄산 기포가 튀겨지면서 반죽에 작은 구멍을 남겨요. 그래서 식어도 덜 눅어요.",
+        "card_reason": "탄산 기포가 튀겨지며 구멍을 남겨서 식어도 덜 눅어요"
+      },
+      {
+        "rank": 3,
+        "name": "텁텁한 된장찌개엔 우유",
+        "card_name": "된장찌개엔 우유",
+        "reason": "된장을 많이 풀어 텁텁하고 짜진 날, 우유 한 숟갈을 넣어 보세요. 짠맛과 텁텁한 맛이 눅고 국물이 부드러워져요.",
+        "card_reason": "짠맛과 텁텁한 맛이 눅어서 국물이 한결 부드러워져요"
+      },
+      {
+        "rank": 4,
+        "name": "오징어엔 무 한 조각",
+        "card_name": "오징어엔 무 한 조각",
+        "reason": "오징어를 삶을 때 무를 한 조각 같이 넣으면 살이 연해져요. 오래 삶아 질겨진 오징어로 고생할 일이 줄어요.",
+        "card_reason": "무를 같이 넣고 삶으면 살이 연해져서 안 질겨져요"
+      }
+    ],
+    "video_script": "볶음밥엔 기름 대신 마요네즈예요.",
+    "tags": [
+      "생활정보",
+      "요리팁",
+      "집밥"
+    ],
+    "bgm_prompt": "warm home cooking acoustic, evening kitchen, cozy and inviting",
+    "rank_count": 4
+  }
+}
