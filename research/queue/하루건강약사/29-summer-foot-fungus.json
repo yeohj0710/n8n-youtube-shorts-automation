@@ -1,0 +1,49 @@
+{
+  "title": "여름에 발 무좀이 도지게 만드는 습관 4",
+  "lane": "daily_health_lifestyle",
+  "notes": "260825 실측 리필. 이긴 프레임 '매일 하던 행동의 틀린 방법' 적용. 신발 건조 이틀은 제화 업계 표준 안내. 피부 갈래는 재고에 하나도 없어서 넣었다.",
+  "topic_key": "summer_foot_fungus",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "skin_vitality",
+    "topic_key": "summer_foot_fungus",
+    "hook_title": "여름에 발 무좀이 도지게 만드는 습관 4",
+    "subtitle": "약을 발라도 신발이 그대로면 여름마다 다시 올라와요",
+    "visual_profile": "myth_fact",
+    "visual_mood_hint": "현관에 나란히 둔 운동화 두 켤레와 마른 수건, 여름 오후 빛이 드는 밝은 마루, 흰색과 연파랑 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "발이 젖은 채로 신 신기",
+        "card_name": "젖은 채로 신 신기",
+        "reason": "씻고 나서 대충 닦고 바로 신을 신으면 신 속이 하루 종일 축축해요. 무좀 곰팡이는 축축하고 따뜻한 데서 제일 잘 자라요",
+        "card_reason": "물기가 남은 발에 신을 신으니까 곰팡이가 자라기 좋아져요"
+      },
+      {
+        "rank": 2,
+        "name": "같은 신을 매일 신기",
+        "card_name": "같은 신 매일 신기",
+        "reason": "하루 신은 신은 속까지 마르는 데 이틀이 걸려요. 두 켤레를 번갈아 신으시면 약을 따로 안 발라도 훨씬 덜 도져요",
+        "card_reason": "하루 신은 신은 속이 다 마르는 데 이틀이 걸려요"
+      },
+      {
+        "rank": 3,
+        "name": "발가락 틈 건너뛰기",
+        "card_name": "발가락 틈 건너뛰기",
+        "reason": "발등과 발바닥은 잘 닦으시면서 발가락 사이는 그냥 지나치는 분이 많아요. 무좀은 거의 넷째와 다섯째 발가락 사이에서 시작해요",
+        "card_reason": "발가락 사이는 잘 안 마르는 자리라 씻고 꼭 닦아 내셔야 해요"
+      },
+      {
+        "rank": 4,
+        "name": "발수건을 같이 쓰기",
+        "card_name": "발수건 같이 쓰기",
+        "reason": "한 사람이 쓰던 수건과 발매트를 온 식구가 같이 쓰면 돌아가면서 옮아요. 무좀이 있는 동안에는 발수건을 따로 쓰고 뜨거운 물에 빠세요",
+        "card_reason": "무좀은 수건 한 장으로 온 식구에게 옮아 다녀요"
+      }
+    ],
+    "video_script": "약보다 신발이 먼저예요.",
+    "tags": ["건강정보", "시니어건강", "여름건강"],
+    "bgm_prompt": "bright airy guitar with light piano, clean summer afternoon mood",
+    "rank_count": 4
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "title": "여름철 반찬 다시 데울 때 하면 안 되는 것 4",
+  "lane": "food_nutrition_table",
+  "notes": "260825 실측 리필. 이긴 프레임 '매일 하던 행동의 틀린 방법' 적용. 재고에 음식 갈래가 하나도 없어서 넣었다. 실측에서 food_nutrition_table 이 3승 1패로 제일 좋다.",
+  "topic_key": "summer_leftover_reheat",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "longevity_meals",
+    "topic_key": "summer_leftover_reheat",
+    "hook_title": "여름철 반찬 다시 데울 때 하면 안 되는 것 4",
+    "subtitle": "상한 반찬은 데워도 그대로 상한 반찬이에요",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "식탁 위 반찬통 세 개와 국냄비, 열린 냉장고에서 드는 서늘한 빛, 흰색과 연한 파랑 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "냄비째 다시 끓이기",
+        "card_name": "냄비째 다시 끓이기",
+        "reason": "국을 냄비째 몇 번씩 끓였다 식히는 사이에 균이 자라기 좋은 온도를 계속 지나가요. 먹을 만큼만 덜어 데우시고 나머지는 바로 냉장고에 넣으세요",
+        "card_reason": "끓였다 식히기를 되풀이하는 사이에 균이 더 잘 자라요"
+      },
+      {
+        "rank": 2,
+        "name": "먹던 젓가락 다시 넣기",
+        "card_name": "먹던 젓가락 넣기",
+        "reason": "입에 댄 젓가락이 반찬통에 한 번 들어가면 침에 있던 균이 통 전체에 퍼져요. 여름에는 하루 만에 쉬어 버려요. 반찬은 접시에 덜어 드세요",
+        "card_reason": "입에 댄 젓가락이 들어가니까 통 전체가 하루 만에 쉬어요"
+      },
+      {
+        "rank": 3,
+        "name": "뜨거운 채로 뚜껑 덮기",
+        "card_name": "뜨거운 채 뚜껑 덮기",
+        "reason": "김이 오르는 상태로 뚜껑을 덮으면 물방울이 맺혀 도로 떨어져요. 그 물기 때문에 이틀이면 표면부터 미끈거려요. 한 김 식히고 덮으시는 게 맞아요",
+        "card_reason": "김이 갇혀 생긴 물기 때문에 반찬 표면이 이틀이면 미끈거려요"
+      },
+      {
+        "rank": 4,
+        "name": "냄새로만 판단하기",
+        "card_name": "냄새로만 판단하기",
+        "reason": "식중독을 일으키는 균 중에는 냄새도 맛도 안 바꾸는 것이 있어요. 여름에 밖에 두 시간 넘게 나와 있던 반찬은 멀쩡해 보여도 버리셔야 해요",
+        "card_reason": "냄새를 안 바꾸는 균도 있어서 두 시간 넘긴 것은 버리세요"
+      }
+    ],
+    "video_script": "데운다고 처음으로 돌아가지 않아요.",
+    "tags": ["생활정보", "시니어건강", "여름건강"],
+    "bgm_prompt": "bright clear piano with soft strings, tidy and careful kitchen mood",
+    "rank_count": 4
+  }
+}

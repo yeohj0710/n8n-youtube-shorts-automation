@@ -1,0 +1,49 @@
+{
+  "title": "속 불편할 때 골라야 하는 약이 따로 있어요 4",
+  "lane": "daily_health_lifestyle",
+  "notes": "260825 실측 리필. 이긴 프레임 '판단 기준'(영양제 매일 29.7만, 혈압약과 음식 8.4만) 적용. 약국에서 실제로 갈라 주는 네 갈래만 썼다. 제품명은 쓰지 않는다.",
+  "topic_key": "stomach_med_by_symptom",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "medicine_literacy",
+    "topic_key": "stomach_med_by_symptom",
+    "hook_title": "속 불편할 때 골라야 하는 약이 따로 있어요 4",
+    "subtitle": "같은 소화제를 집으시니 안 듣는 날이 있어요",
+    "visual_profile": "clinic_checklist",
+    "visual_mood_hint": "약국 상담대 위에 놓인 약통 네 개와 물컵, 차분한 흰색과 연한 초록 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "위를 움직이게 하는 약",
+        "card_name": "위를 움직이는 약",
+        "reason": "먹은 것이 명치에 그대로 얹힌 느낌이면 위가 게을러진 거예요. 위를 움직이게 해서 음식을 아래로 내려 보내는 약을 찾으세요",
+        "card_reason": "명치가 꽉 막힌 느낌일 때 음식을 아래로 내려 줘요"
+      },
+      {
+        "rank": 2,
+        "name": "위산을 눌러 주는 약",
+        "card_name": "위산을 누르는 약",
+        "reason": "신물이 목까지 올라오고 가슴이 화끈거리면 위산이 식도로 넘어온 거예요. 소화를 돕는 약이 아니라 위산을 눌러 주는 약을 드셔야 가라앉아요",
+        "card_reason": "신물이 목까지 올라오는 날에는 위산부터 눌러야 가라앉아요"
+      },
+      {
+        "rank": 3,
+        "name": "효소가 들어 있는 약",
+        "card_name": "효소가 든 약",
+        "reason": "고기나 튀김을 드신 날 유난히 더부룩하면 기름을 쪼개는 힘이 모자란 거예요. 효소가 든 약이 기름과 단백질을 잘게 나눠 줘요",
+        "card_reason": "기름진 것을 먹은 날 효소가 기름을 잘게 쪼개 줘요"
+      },
+      {
+        "rank": 4,
+        "name": "장을 풀어 주는 약",
+        "card_name": "장을 풀어 주는 약",
+        "reason": "배가 쥐어짜듯 아프고 끊어질 듯한 통증은 장이 세게 조여서 생겨요. 소화제로는 안 잡히니 약국에서 배 아픈 데 쓰는 약을 따로 달라고 하세요",
+        "card_reason": "배가 쥐어짜듯 아프면 소화제로는 안 잡히니 따로 찾으세요"
+      }
+    ],
+    "video_script": "소화제가 안 듣는 날이 있어요.",
+    "tags": ["건강정보", "시니어건강", "약국상식"],
+    "bgm_prompt": "bright steady piano with soft strings, clear and helpful counter mood",
+    "rank_count": 4
+  }
+}

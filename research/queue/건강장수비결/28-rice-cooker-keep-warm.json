@@ -1,0 +1,49 @@
+{
+  "title": "밥솥 쓰면서 밥맛 떨어뜨리는 습관 4",
+  "lane": "home_kitchen_living",
+  "notes": "260825 실측 리필. 이긴 프레임 '매일 하던 행동의 틀린 방법'(안약 62.9만, 냉동실 9.1만) 적용. 재고가 행정 절차 갈래로 쏠려 있어 집안 살림 갈래로 뺐다. 보온 12시간과 고무패킹은 밥솥 설명서 표준 안내.",
+  "topic_key": "rice_cooker_keep_warm",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "rice_cooker_keep_warm",
+    "hook_title": "밥솥 쓰면서 밥맛 떨어뜨리는 습관 4",
+    "subtitle": "밥이 노래지는 것은 쌀 탓이 아니에요",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "부엌 조리대 위 전기밥솥과 주걱, 김이 오르는 흰밥 한 공기, 따뜻한 나무색과 크림 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "보온으로 하루 넘기기",
+        "card_name": "보온으로 하루 넘기기",
+        "reason": "보온은 밥을 지키는 기능이 아니라 뜨겁게 붙잡아 두는 기능이에요. 열두 시간이 넘어가면 밥이 노래지고 군내가 나요. 남으면 한 공기씩 나눠 얼려 두시는 게 나아요",
+        "card_reason": "보온을 열두 시간 넘기면 밥이 노래지고 군내가 나요"
+      },
+      {
+        "rank": 2,
+        "name": "밥을 눌러 담기",
+        "card_name": "밥을 눌러 담기",
+        "reason": "다 되면 주걱으로 아래위를 섞어 김을 빼 주셔야 해요. 그대로 눌러 두면 밑에 깔린 밥이 물기를 다 먹어서 떡처럼 뭉쳐요",
+        "card_reason": "김을 안 빼고 눌러 두니까 밑에 깔린 밥이 떡처럼 뭉쳐요"
+      },
+      {
+        "rank": 3,
+        "name": "고무패킹 그냥 두기",
+        "card_name": "고무패킹 그냥 두기",
+        "reason": "뚜껑 안쪽 고무패킹은 빼서 씻는 부품인데 몇 년째 안 빼 보신 분이 많아요. 여기에 낀 밥알이 쉬면서 새 밥에 냄새가 옮아요",
+        "card_reason": "뚜껑 고무패킹에 낀 밥알이 쉬어서 새 밥에 냄새가 옮아요"
+      },
+      {
+        "rank": 4,
+        "name": "찬밥을 도로 넣기",
+        "card_name": "찬밥을 도로 넣기",
+        "reason": "식은 밥을 밥솥에 다시 넣으면 안쪽 온도가 내려가면서 균이 자라기 좋은 상태가 돼요. 찬밥은 전자레인지에 데우시고 밥솥에 되돌리지 마세요",
+        "card_reason": "식은 밥을 도로 넣으면 솥 안 온도가 내려가 균이 자라요"
+      }
+    ],
+    "video_script": "밥솥은 보관하는 통이 아니에요.",
+    "tags": ["생활정보", "시니어건강", "살림상식"],
+    "bgm_prompt": "bright homely piano with light guitar, warm kitchen morning mood",
+    "rank_count": 4
+  }
+}

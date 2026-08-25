@@ -1,0 +1,49 @@
+{
+  "title": "나이 들수록 신발 고를 때 봐야 할 것 4",
+  "lane": "movement_mobility_longevity",
+  "notes": "260825 실측 리필. 이긴 프레임 '판단 기준'(같은 값이면 이 옵션 27.3만) 적용. 낙상 주의 나열이 아니라 살 때 쓰는 기준으로 썼다. 저녁에 발이 붓는 것과 뒤축 높이는 신발 매장 표준 안내.",
+  "topic_key": "shoe_choice_after_sixty",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "strength_walking",
+    "topic_key": "shoe_choice_after_sixty",
+    "hook_title": "나이 들수록 신발 고를 때 봐야 할 것 4",
+    "subtitle": "발이 편한 신발과 잘 걸리지 않는 신발은 달라요",
+    "visual_profile": "market_receipt",
+    "visual_mood_hint": "신발 가게 진열대 앞에 놓인 운동화 두 켤레와 의자, 환한 오후 빛, 회색과 남색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "신어 보는 시간",
+        "card_name": "신어 보는 시간",
+        "reason": "발은 하루를 지내는 동안 조금씩 부어요. 아침에 딱 맞게 산 신이 저녁에는 조여요. 신발은 오후 늦게 신어 보고 고르셔야 실제로 편해요",
+        "card_reason": "발은 저녁에 부으니 오후 늦게 신어 보고 골라야 맞아요"
+      },
+      {
+        "rank": 2,
+        "name": "앞코가 들린 정도",
+        "card_name": "앞코가 들린 정도",
+        "reason": "나이가 들면 걸을 때 발끝이 예전만큼 안 올라가요. 앞코가 바닥에서 살짝 들린 신을 신으시면 문턱이나 카펫 끝에 덜 걸려요",
+        "card_reason": "앞코가 살짝 들린 신을 신어야 문턱에 발끝이 덜 걸려요"
+      },
+      {
+        "rank": 3,
+        "name": "뒤축을 잡는 힘",
+        "card_name": "뒤축을 잡는 힘",
+        "reason": "뒤축을 손으로 눌러 봐서 쉽게 접히면 발목이 좌우로 흔들려요. 신고 벗기 편한 신일수록 이 부분이 무른 경우가 많아요. 눌러 보고 단단한 것을 고르세요",
+        "card_reason": "손으로 눌러 접히는 뒤축은 걸을 때 발목이 흔들려요"
+      },
+      {
+        "rank": 4,
+        "name": "바닥 무늬가 닳은 자리",
+        "card_name": "바닥 무늬 닳은 자리",
+        "reason": "신던 신을 계속 신으실 거면 바닥을 뒤집어 보세요. 무늬가 닳아 반들거리는 신은 비 오는 날 타일 위에서 그대로 미끄러져요",
+        "card_reason": "바닥 무늬가 닳아 반들거리면 비 오는 날 타일에서 미끄러져요"
+      }
+    ],
+    "video_script": "신발은 오후에 신어 보고 사세요.",
+    "tags": ["생활정보", "시니어건강", "걷기"],
+    "bgm_prompt": "bright walking piano with light percussion, steady and cheerful stride mood",
+    "rank_count": 4
+  }
+}

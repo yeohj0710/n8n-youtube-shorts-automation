@@ -1,0 +1,49 @@
+{
+  "title": "유산균 살 때 헛돈 쓰지 않으려면 볼 것 4",
+  "lane": "daily_health_lifestyle",
+  "notes": "260825 실측 리필. 이긴 프레임 '판단 기준' 적용. 보장균수 표시와 균주명 끝자리는 건강기능식품 표시 규정에 실제로 있는 항목이다. 특정 제품은 쓰지 않는다.",
+  "topic_key": "probiotics_label_check",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "supplement_ingredients",
+    "topic_key": "probiotics_label_check",
+    "hook_title": "유산균 살 때 헛돈 쓰지 않으려면 볼 것 4",
+    "subtitle": "앞면 숫자가 큰 것이 좋은 것은 아니에요",
+    "visual_profile": "market_receipt",
+    "visual_mood_hint": "식탁 위에 뒤집어 놓은 유산균 통과 돋보기, 옆에 영수증, 따뜻한 크림색과 연두 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "보장 균 수",
+        "card_name": "보장 균 수",
+        "reason": "앞면의 큰 숫자는 만들 때 넣은 양이고, 드실 때 살아 있는 양은 뒷면의 보장 균 수예요. 두 숫자가 열 배씩 차이 나는 제품도 있어요",
+        "card_reason": "만들 때 넣은 수가 아니라 먹을 때 남는 수를 봐야 해요"
+      },
+      {
+        "rank": 2,
+        "name": "균 이름의 끝자리",
+        "card_name": "균 이름 끝자리",
+        "reason": "같은 유산균이라도 이름 끝에 붙은 알파벳과 숫자까지 달라지면 하는 일이 달라져요. 끝까지 적혀 있어야 무엇에 좋은지 찾아볼 수 있어요",
+        "card_reason": "이름이 끝까지 적힌 것만 어디에 좋은지 알 수 있어요"
+      },
+      {
+        "rank": 3,
+        "name": "먹으라는 시간",
+        "card_name": "먹으라는 시간",
+        "reason": "위산에 견디게 만든 것은 아무 때나 드셔도 되고, 그렇지 않은 것은 밥 먹고 바로 드셔야 살아서 내려가요. 통에 적힌 대로 드시는 게 맞아요",
+        "card_reason": "빈속에 먹으라는 것과 밥 뒤에 먹으라는 것이 서로 달라요"
+      },
+      {
+        "rank": 4,
+        "name": "보관하는 방법",
+        "card_name": "보관하는 방법",
+        "reason": "냉장 보관이라 적힌 제품을 부엌 선반에 두시면 여름 몇 주 만에 균이 줄어요. 사실 때부터 냉장이 필요한 것인지 보고 고르세요",
+        "card_reason": "냉장고에 넣으라 적힌 것을 밖에 두면 균이 죽어 버려요"
+      }
+    ],
+    "video_script": "앞면 숫자는 그냥 광고예요.",
+    "tags": ["건강정보", "시니어건강", "영양제"],
+    "bgm_prompt": "bright curious piano with gentle strings, careful shopping mood",
+    "rank_count": 4
+  }
+}
