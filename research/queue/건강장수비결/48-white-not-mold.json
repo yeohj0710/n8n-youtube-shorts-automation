@@ -1,0 +1,53 @@
+{
+  "title": "곰팡이인 줄 알고 버렸던 멀쩡한 것 4",
+  "lane": "not_mold_whitish",
+  "notes": "전략: 버릴까 말까는 모든 주방의 매일 고민이고, 버리던 것을 안 버려도 된다는 얻는 결. 사실 근거: 김치 표면 흰 막은 골마지(효모)로 걷어 내고 가열 조리 가능하며 색 있는 곰팡이는 폐기(식약처 안내), 곶감 흰 가루는 과당·포도당 결정, 초콜릿 흰 얼룩은 지방 블룸, 포도 과분은 과일 스스로 만드는 보호막. 식약처와 소비자원 안내 표준.",
+  "topic_key": "white_not_mold",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "longevity_meals",
+    "topic_key": "white_not_mold",
+    "hook_title": "곰팡이인 줄 알고 버렸던 멀쩡한 것 4",
+    "subtitle": "하얗다고 다 곰팡이가 아니에요",
+    "visual_profile": "myth_fact",
+    "visual_mood_hint": "부엌 조리대의 김치통과 곶감, 밝은 낮 빛, 흰색과 주황",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "김치 위 하얀 막",
+        "card_name": "김치 위 하얀 막",
+        "reason": "김치 위에 앉는 하얀 막은 곰팡이가 아니라 효모예요. 걷어 내고 익혀 먹으면 돼요. 다만 파랗거나 검게 색이 있는 것은 곰팡이니 바로 버려요.",
+        "card_reason": "곰팡이가 아니라 효모가 만든 막이라 걷어 내고 익혀 먹어요"
+      },
+      {
+        "rank": 2,
+        "name": "곶감 겉 하얀 가루",
+        "card_name": "곶감 겉 하얀 가루",
+        "reason": "곶감 겉의 하얀 가루는 속의 단맛이 배어 나와 마른 것이에요. 오히려 잘 마른 곶감이라는 표시라 털어 내지 않아도 돼요.",
+        "card_reason": "속의 단맛이 배어 나와 겉에서 마른 것이니 그냥 먹어도 돼요"
+      },
+      {
+        "rank": 3,
+        "name": "초콜릿 흰 얼룩",
+        "card_name": "초콜릿 흰 얼룩",
+        "reason": "여름을 지난 초콜릿의 흰 얼룩은 더위에 녹았던 지방이 떠올라 굳은 자국이에요. 상한 게 아니라 맛과 결만 조금 달라져요.",
+        "card_reason": "더위에 녹았던 지방이 떠올라 굳은 자국이라 먹어도 돼요"
+      },
+      {
+        "rank": 4,
+        "name": "포도 겉 뽀얀 가루",
+        "card_name": "포도 겉 뽀얀 가루",
+        "reason": "포도 알 겉의 뽀얀 가루는 포도가 스스로 만든 보호막이에요. 물기를 막아 주는 막이라 오히려 싱싱하다는 표시에 가까워요.",
+        "card_reason": "포도가 스스로 만든 보호막이고 싱싱하다는 표시에 가까워요"
+      }
+    ],
+    "video_script": "김치 위 하얀 막은 곰팡이가 아니에요.",
+    "tags": [
+      "생활정보",
+      "음식보관",
+      "살림"
+    ],
+    "bgm_prompt": "curious light xylophone, kitchen discovery mood, playful calm",
+    "rank_count": 4
+  }
+}

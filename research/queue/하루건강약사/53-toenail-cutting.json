@@ -1,0 +1,53 @@
+{
+  "title": "발톱 잘못 깎으면 발이 고생해요 4",
+  "lane": "toenail_care",
+  "notes": "전략: 발톱은 전 연령이 평생 깎는 것인데 깎는 모양이 문제라는 걸 아는 사람이 드물다. 정성(바짝, 둥글게)이 배신하는 뒤집기 결. 사실 근거: 내향성 발톱 예방을 위한 일자 깎기, 굳은살 칼 제거 금지, 발가락 사이 건조는 피부과·약국 안내 표준.",
+  "topic_key": "toenail_cutting",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_choices",
+    "topic_key": "toenail_cutting",
+    "hook_title": "발톱 잘못 깎으면 발이 고생해요 4",
+    "subtitle": "깎는 모양 하나가 발 통증의 시작이에요",
+    "visual_profile": "morning_light",
+    "visual_mood_hint": "욕실 매트 위 발과 손톱깎이, 부드러운 아침 빛, 크림색",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "모서리를 둥글게 다듬기",
+        "card_name": "모서리 둥글게 다듬기",
+        "reason": "모서리를 둥글게 깎은 발톱은 자라면서 양옆 살을 파고들어요. 발톱은 일자로 깎고 모서리만 살짝 다듬는 게 맞아요.",
+        "card_reason": "둥근 발톱은 자라며 살을 파고들어서 일자로 깎는 게 맞아요"
+      },
+      {
+        "rank": 2,
+        "name": "바짝 짧게 깎기",
+        "card_name": "바짝 짧게 깎기",
+        "reason": "정성껏 바짝 깎을수록 발톱 앞 살이 부풀어 오르고, 자라는 발톱이 그 살을 눌러 아파요. 발끝과 나란한 길이가 알맞아요.",
+        "card_reason": "바짝 깎은 발톱은 걸을 때마다 앞쪽 살을 눌러서 아파요"
+      },
+      {
+        "rank": 3,
+        "name": "굳은살 칼로 밀기",
+        "card_name": "굳은살 칼로 밀기",
+        "reason": "칼이나 면도날로 깎은 굳은살은 더 두껍게 다시 올라와요. 따뜻한 물에 불린 뒤 발 줄로 조금씩 미는 게 맞는 방법이에요.",
+        "card_reason": "칼로 깎은 자리는 더 두껍게 올라와서 불린 뒤 줄로 밀어요"
+      },
+      {
+        "rank": 4,
+        "name": "발가락 틈 대충 말리기",
+        "card_name": "발가락 틈 대충 말리기",
+        "reason": "무좀은 씻어서 생기는 게 아니라 젖은 발가락 틈에서 시작해요. 씻은 뒤 발가락 사이까지 수건으로 닦는 게 절반이에요.",
+        "card_reason": "무좀은 젖은 발가락 틈에서 시작해 말리는 게 절반이에요"
+      }
+    ],
+    "video_script": "발톱은 일자로 깎는 게 맞아요.",
+    "tags": [
+      "건강정보",
+      "발관리",
+      "시니어건강"
+    ],
+    "bgm_prompt": "gentle self-care acoustic, soft morning bathroom mood",
+    "rank_count": 4
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "title": "벌초 가서 진드기 안 물리는 법 4",
+  "lane": "tick_prevention",
+  "notes": "전략: 추석 전 벌초·성묘 시즌이라 시기가 정확하고, 예방 동작 명단을 주는 결. 사실 근거: 진드기는 풀 끝에서 대기하다 옮겨 붙음, 돗자리 사용·긴 옷과 바지를 양말 안에 넣기·귀가 후 즉시 세탁과 샤워·물린 진드기는 손으로 제거하지 말고 의료기관 방문. 전부 질병관리청 진드기 매개 감염병 예방수칙 표준. 응급 계열이라 표준 수칙만 썼다.",
+  "topic_key": "fall_tick_safety",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "fall_tick_safety",
+    "hook_title": "벌초 가서 진드기 안 물리는 법 4",
+    "subtitle": "추석 전 벌초와 성묘, 풀밭이 문제예요",
+    "visual_profile": "magazine_cover",
+    "visual_mood_hint": "가을 풀밭과 장화, 맑은 하늘, 초록과 카키",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "돗자리부터 깔기",
+        "card_name": "돗자리부터 깔기",
+        "reason": "진드기는 풀 끝에 붙어 지나가는 것을 기다려요. 맨 풀밭에 그대로 앉으면 옷으로 옮겨 타요. 돗자리 한 장이 제일 확실한 방패예요.",
+        "card_reason": "진드기는 풀 끝에 붙어 기다리다 맨 풀밭에 앉을 때 옮겨 타요"
+      },
+      {
+        "rank": 2,
+        "name": "바지를 양말 속에 넣기",
+        "card_name": "바지를 양말 속에 넣기",
+        "reason": "진드기는 아래에서 위로 기어올라요. 바지 끝을 양말 속에 넣어 발목 길을 막는 게 제일 확실한 차림이에요.",
+        "card_reason": "발목으로 기어오르는 길을 막는 제일 확실한 차림이에요"
+      },
+      {
+        "rank": 3,
+        "name": "다녀와서 바로 씻기",
+        "card_name": "다녀와서 바로 씻기",
+        "reason": "입던 옷을 소파에 두면 옷에 붙어 온 진드기가 집에 퍼져요. 옷은 바로 벗어 털어 빨고, 몸을 씻으며 물린 데가 없는지 살펴요.",
+        "card_reason": "옷은 바로 벗어 털어 빨고 몸 구석구석 물린 데를 살펴요"
+      },
+      {
+        "rank": 4,
+        "name": "붙었으면 병원에서 떼기",
+        "card_name": "붙었으면 병원에서 떼기",
+        "reason": "붙은 진드기를 손으로 뜯으면 입 부분이 살에 남아요. 병원에서 빼고, 며칠 사이 열이 나면 꼭 진료를 받아요.",
+        "card_reason": "손으로 뜯다간 입이 살에 남아서 병원에서 빼는 게 맞아요"
+      }
+    ],
+    "video_script": "풀밭에 앉기 전에 돗자리부터 깔아요.",
+    "tags": [
+      "생활정보",
+      "벌초",
+      "가을나들이"
+    ],
+    "bgm_prompt": "autumn field acoustic, outdoor fresh air, steady walking rhythm",
+    "rank_count": 4
+  }
+}

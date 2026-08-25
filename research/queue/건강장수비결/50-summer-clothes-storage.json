@@ -1,0 +1,53 @@
+{
+  "title": "여름옷 그대로 넣으면 내년에 못 입어요 4",
+  "lane": "summer_clothes_storage",
+  "notes": "전략: 환절기 옷 정리는 이 계절 모든 집의 일이고, 정성(꽉 압축, 서랍 바닥 방충제)이 반대로 일한다는 뒤집기 결. 사실 근거: 땀 성분의 보관 중 황변, 니트·면 티 옷걸이 변형, 충전재 압축 보관 시 복원력 저하, 방충제는 성분이 공기보다 무거워 보관함 위쪽 배치. 의류 관리와 방충제 제품 설명서 안내 표준.",
+  "topic_key": "summer_clothes_storage",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "summer_clothes_storage",
+    "hook_title": "여름옷 그대로 넣으면 내년에 못 입어요 4",
+    "subtitle": "옷 정리는 넣는 날 반나절이 일 년을 정해요",
+    "visual_profile": "calendar_streak",
+    "visual_mood_hint": "옷장 앞에 개어 둔 여름옷, 오후의 방, 베이지와 연한 하늘색",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "땀 얼룩 그대로 넣기",
+        "card_name": "땀 얼룩 그대로 넣기",
+        "reason": "입을 때는 안 보이던 땀 자국이 옷장 속에서 겨울을 나며 누렇게 변해요. 넣기 전에 한 번 빨아 완전히 말리는 게 정리의 절반이에요.",
+        "card_reason": "안 보이던 땀 자국이 옷장 속에서 겨울 내내 누렇게 변해요"
+      },
+      {
+        "rank": 2,
+        "name": "면 티셔츠 옷걸이에 걸기",
+        "card_name": "면 티셔츠 걸어 두기",
+        "reason": "면 티와 니트는 제 무게로 아래로 늘어나요. 어깨에는 옷걸이 자국이 뿔처럼 남아요. 개서 서랍에 두는 게 맞아요.",
+        "card_reason": "면 티는 제 무게로 늘어나 어깨에 옷걸이 자국이 남아요"
+      },
+      {
+        "rank": 3,
+        "name": "이불까지 꽉 눌러 압축",
+        "card_name": "이불까지 꽉 눌러 압축",
+        "reason": "자리를 아끼려고 세게 압축한 솜이불은 꺼냈을 때 다 부풀지 않아요. 눌린 솜은 예전만큼 따뜻하지 않아서 헐렁하게 눌러 두는 게 나아요.",
+        "card_reason": "세게 눌린 솜은 다 안 부풀어서 예전만큼 따뜻하지 않아요"
+      },
+      {
+        "rank": 4,
+        "name": "방충제 서랍 바닥에 두기",
+        "card_name": "방충제 서랍 바닥에",
+        "reason": "방충제 기운은 공기보다 무거워 아래로 내려가요. 옷 밑이 아니라 옷 위 칸에 둬야 서랍 전체에 골고루 퍼져요.",
+        "card_reason": "방충제 기운은 아래로 내려가서 옷 위 칸에 둬야 골고루 퍼져요"
+      }
+    ],
+    "video_script": "여름옷은 빨아서 완전히 말려 넣어요.",
+    "tags": [
+      "생활정보",
+      "옷정리",
+      "살림"
+    ],
+    "bgm_prompt": "season change acoustic, tidy afternoon mood, soft rhythm",
+    "rank_count": 4
+  }
+}

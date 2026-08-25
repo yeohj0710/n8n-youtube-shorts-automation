@@ -1,0 +1,53 @@
+{
+  "title": "먹다 남은 약, 함부로 다루면 위험해요 4",
+  "lane": "leftover_meds",
+  "notes": "전략: 남은 약은 모든 집에 있는데 처리법은 아무도 안 배웠다. 명단형으로 갈라 주는 결. 사실 근거: 항생제는 처방 기간을 끝까지 복용하고 남겨 재사용하지 않는다(내성·오용), 처방약 가족 공유 금지, 폐의약품은 약국·보건소 수거함(하수 오염 방지), 안약 개봉 후 공유 금지. 전부 약사회 복약지도와 환경부 폐의약품 안내 표준.",
+  "topic_key": "leftover_med_mistakes",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "medicine_literacy",
+    "topic_key": "leftover_med_mistakes",
+    "hook_title": "먹다 남은 약, 함부로 다루면 위험해요 4",
+    "subtitle": "약 서랍 정리에도 약국이 알려주는 순서가 있어요",
+    "visual_profile": "morning_light",
+    "visual_mood_hint": "서랍 속 약봉투와 알약, 부드러운 오후 빛, 정리된 책상",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "항생제 남겨 두었다 먹기",
+        "card_name": "항생제 남겨 두었다 먹기",
+        "reason": "항생제는 정해진 기간을 끝까지 먹는 약이에요. 남겨 두었다가 다음에 아플 때 먹으면 병의 균이 달라 듣지 않고, 균만 강하게 만들어요.",
+        "card_reason": "다음에 아픈 병은 균이 달라서 남긴 항생제는 안 들어요"
+      },
+      {
+        "rank": 2,
+        "name": "가족끼리 나눠 먹기",
+        "card_name": "가족끼리 나눠 먹기",
+        "reason": "처방약은 그 사람의 병과 몸에 맞춘 약이에요. 같은 감기로 보여도 사람마다 양과 병이 달라서 나눠 먹으면 탈이 나요.",
+        "card_reason": "같은 감기로 보여도 사람마다 양과 병이 달라 탈이 나요"
+      },
+      {
+        "rank": 3,
+        "name": "변기에 흘려 버리기",
+        "card_name": "변기에 흘려 버리기",
+        "reason": "약을 변기나 하수구에 버리면 정수 시설이 약 성분까지는 거르지 못해 강으로 흘러가요. 약국과 보건소의 폐의약품 수거함에 내면 돼요.",
+        "card_reason": "정수 시설이 약 성분까진 못 걸러서 약국 수거함에 내요"
+      },
+      {
+        "rank": 4,
+        "name": "안약을 식구끼리 돌려 쓰기",
+        "card_name": "안약 식구끼리 돌려 쓰기",
+        "reason": "안약 병 끝에는 쓰던 사람의 눈에 있던 균이 묻아 있어요. 식구끼리 돌려 쓰면 눈병이 그대로 옮아요.",
+        "card_reason": "병 끝에 눈병 균이 묻으니 식구 눈으로 그대로 옮아요"
+      }
+    ],
+    "video_script": "남은 약은 약국 수거함으로 가져가요.",
+    "tags": [
+      "건강정보",
+      "폐의약품",
+      "약국상식"
+    ],
+    "bgm_prompt": "soft tidy-up piano, calm household afternoon, warm and simple",
+    "rank_count": 4
+  }
+}

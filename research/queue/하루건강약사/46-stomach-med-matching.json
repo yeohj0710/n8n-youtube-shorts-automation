@@ -1,0 +1,53 @@
+{
+  "title": "소화제, 증상마다 집는 약이 달라요 4",
+  "lane": "digestive_med_matching",
+  "notes": "전략: 소화제는 온 국민이 사면서 종류 구별 없이 집는 약이라 대상이 제일 넓고, 증상별 명단을 주는 얻는 프레임. 이긴 카드의 결(가진 것을 두 칸으로 갈라 주기)을 따랐다. 사실 근거: 소화효소제·제산제·가스제거제 구분과 반복 증상 시 진료 권고는 약사 복약지도 표준. 한 달 기준은 일반 안내 수준의 표현.",
+  "topic_key": "stomach_med_matching",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "medicine_literacy",
+    "topic_key": "stomach_med_matching",
+    "hook_title": "소화제, 증상마다 집는 약이 달라요 4",
+    "subtitle": "더부룩함과 속쓰림은 다른 약이 맡는 일이에요",
+    "visual_profile": "clinic_checklist",
+    "visual_mood_hint": "약국 진열대 앞 밝은 아침, 흰 선반과 연한 파랑 포장, 정돈된 안내판 느낌",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "더부룩할 땐 소화효소제",
+        "card_name": "더부룩엔 효소 알약",
+        "reason": "과식해서 더부룩한 것은 음식이 덜 쪼개진 상태예요. 음식을 분해해 주는 소화효소제가 맞는 약이에요.",
+        "card_reason": "안 꺼진 음식을 쪼개 주는 약이라 과식 더부룩함에 맞아요"
+      },
+      {
+        "rank": 2,
+        "name": "속 쓰릴 땐 제산제",
+        "card_name": "속쓰림엔 제산제",
+        "reason": "속쓰림은 위산이 위벽을 자극하는 증상이라, 산을 눌러 주는 제산제가 맞아요. 효소제를 먹어도 소용이 없어요.",
+        "card_reason": "쓰린 속은 위산이 낸 자극이라 산을 눌러 주는 약이 맞아요"
+      },
+      {
+        "rank": 3,
+        "name": "가스 찼을 땐 가스제거제",
+        "card_name": "가스엔 거품 빼는 약",
+        "reason": "배가 빵빵하게 부풀 때는 장 속 거품을 꺼 주는 가스제거 성분이 따로 있어요. 약국에 가스 때문이라고 말하면 돼요.",
+        "card_reason": "배가 빵빵한 날은 장 속 거품을 꺼 주는 성분이 따로 있어요"
+      },
+      {
+        "rank": 4,
+        "name": "한 달 넘게 반복되면 진료",
+        "card_name": "반복되면 검사부터",
+        "reason": "한 달 넘게 체기가 되풀이되면 소화제로 덮을 일이 아니에요. 위 검사로 원인을 확인하는 게 먼저예요.",
+        "card_reason": "한 달 넘도록 이어지는 체기는 소화제 말고 위 검사가 먼저예요"
+      }
+    ],
+    "video_script": "소화제도 증상 따라 골라야 들어요.",
+    "tags": [
+      "건강정보",
+      "소화제",
+      "약국상식"
+    ],
+    "bgm_prompt": "light acoustic guitar, tidy pharmacy morning, gentle and clear",
+    "rank_count": 4
+  }
+}

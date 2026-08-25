@@ -1,0 +1,53 @@
+{
+  "title": "연고 잘못 고르면 상처가 더 덧나요 4",
+  "lane": "ointment_matching",
+  "notes": "전략: 연고 서랍은 모든 집에 있는데 종류 구분 없이 바르는 게 보통이라, 아는 물건을 갈라 주는 결. 사실 근거: 스테로이드 연고(습진·피부염용)는 감염 상처에 부적합, 입가 물집은 헤르페스 바이러스로 별도 항바이러스 연고 필요, 항생제 연고는 습진에 무효, 연고는 얇게 도포가 원칙. 약사 복약지도 표준. 행에는 성분명 대신 사람이 쓰는 말(습진 연고, 균 잡는 연고)로 적었다.",
+  "topic_key": "ointment_wrong_use",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "skin_vitality",
+    "topic_key": "ointment_wrong_use",
+    "hook_title": "연고 잘못 고르면 상처가 더 덧나요 4",
+    "subtitle": "집에 있는 연고도 하는 일이 서로 달라요",
+    "visual_profile": "magazine_cover",
+    "visual_mood_hint": "구급상자와 연고 튜브들, 밝은 세면대 앞, 흰색과 민트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "까진 상처에 습진 연고",
+        "card_name": "까진 데에 습진 연고",
+        "reason": "가려움에 쓰는 습진 연고는 균을 잡는 약이 아니에요. 까진 상처에 바르면 면역을 눌러서 오히려 덧날 수 있어요.",
+        "card_reason": "습진 연고는 균을 못 잡아서 까진 데엔 오히려 덧나요"
+      },
+      {
+        "rank": 2,
+        "name": "입가 물집에 아무 연고",
+        "card_name": "입가 물집에 아무 연고",
+        "reason": "입가에 오르는 물집은 바이러스가 원인이라 전용 연고가 따로 있어요. 아무 연고나 바르면 더 번지고 오래가요.",
+        "card_reason": "입가 물집은 바이러스가 원인이라 전용 연고가 따로 있어요"
+      },
+      {
+        "rank": 3,
+        "name": "습진에 균 잡는 연고",
+        "card_name": "습진에 균 잡는 연고",
+        "reason": "상처에 쓰는 균 잡는 연고는 습진에는 효과가 없어요. 가려움만 길어지고 피부는 그대로예요.",
+        "card_reason": "균 잡는 연고는 습진엔 헛일이니 가려움만 오래가요"
+      },
+      {
+        "rank": 4,
+        "name": "두껍게 잔뜩 바르기",
+        "card_name": "두껍게 잔뜩 바르기",
+        "reason": "연고는 얇게 펴 발라야 스며들어요. 두껍게 덧바른 만큼 더 듣는 게 아니라 남은 약이 옷에만 묻어요.",
+        "card_reason": "연고는 얇게 펴야 스며들고 두꺼운 덧칠은 옷에만 묻어요"
+      }
+    ],
+    "video_script": "연고는 상처마다 맡은 약이 달라요.",
+    "tags": [
+      "건강정보",
+      "연고",
+      "약국상식"
+    ],
+    "bgm_prompt": "clean minimal acoustic, careful and tidy, first-aid kit mood",
+    "rank_count": 4
+  }
+}

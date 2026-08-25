@@ -1,0 +1,53 @@
+{
+  "title": "버릴 때 돈 냈던 것, 이제 공짜로 가져가요 4",
+  "lane": "free_disposal",
+  "notes": "전략: 버리는 비용은 모든 집의 일이고, 돈 내던 일이 공짜가 됐다는 얻는 결. 주인이 원한 생활 절차 갈래. 사실 근거: 폐가전 무상 방문수거(1599-0903, 대형 1점부터·소형은 5점 이상), 우체국 폐휴대폰 무료 수거, 주민센터 형광등·건전지 수거함. 전부 공식 제도 안내 표준.",
+  "topic_key": "free_pickup_services",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "free_pickup_services",
+    "hook_title": "버릴 때 돈 냈던 것, 이제 공짜로 가져가요 4",
+    "subtitle": "스티커 값 내던 시절은 지났어요",
+    "visual_profile": "market_receipt",
+    "visual_mood_hint": "현관 앞에 내놓은 선풍기와 상자, 오후 골목, 주황과 회색",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "냉장고 같은 큰 가전",
+        "card_name": "냉장고 같은 큰 가전",
+        "reason": "냉장고와 세탁기는 폐가전 무상 방문수거에 전화하면 집까지 와서 무료로 가져가요. 전화번호는 1599-0903, 스티커를 살 필요가 없어요.",
+        "card_reason": "폐가전 무상 수거에 전화하면 집까지 와서 그냥 들고 가요"
+      },
+      {
+        "rank": 2,
+        "name": "작은 가전 다섯 개 묶음",
+        "card_name": "작은 가전 다섯 개 묶음",
+        "reason": "선풍기와 밥솥 같은 작은 가전은 다섯 점부터 무료 방문수거 대상이에요. 모아 두었다가 한 번에 내놓으면 돼요.",
+        "card_reason": "선풍기 같은 소형도 다섯 점부터는 무료로 걷어 가요"
+      },
+      {
+        "rank": 3,
+        "name": "형광등과 다 쓴 건전지",
+        "card_name": "형광등과 다 쓴 건전지",
+        "reason": "형광등과 건전지는 일반 쓰레기로 버리면 안 되는 품목이에요. 동 주민센터 앞 수거함이 언제든 무료로 받아요.",
+        "card_reason": "동 주민센터 앞 수거함이 언제든 무료로 받아 줘요"
+      },
+      {
+        "rank": 4,
+        "name": "서랍 속 옛날 휴대폰",
+        "card_name": "서랍 속 옛날 휴대폰",
+        "reason": "안 쓰는 휴대폰은 우체국이 무료로 받아 재활용해요. 남는 값은 기부로 이어져서 서랍에 묵히는 것보다 나아요.",
+        "card_reason": "우체국이 무료로 받아 재활용하고 남는 값은 기부로 이어져요"
+      }
+    ],
+    "video_script": "폐가전은 전화 한 통이면 무료 수거예요.",
+    "tags": [
+      "생활정보",
+      "폐가전",
+      "생활꿀팁"
+    ],
+    "bgm_prompt": "light tidy-up beat, doorstep afternoon, simple and bright",
+    "rank_count": 4
+  }
+}

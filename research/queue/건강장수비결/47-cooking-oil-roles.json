@@ -1,0 +1,53 @@
+{
+  "title": "참기름과 들기름, 완전 반대로 써야 해요 4",
+  "lane": "cooking_oil_roles",
+  "notes": "전략: 참기름과 들기름은 모든 부엌에 있는데 보관과 사용이 서로 반대라는 건 모르는 사람이 많다. 아는 물건 둘을 갈라 주는 결. 사실 근거: 들기름은 산패가 빨라 냉장 보관, 참기름은 냉장 시 침전·응고로 실온 어두운 곳 보관, 발연점 높은 기름이 볶음·부침에 적합, 향 기름은 가열 시 향 소실. 식품 보관 안내 표준.",
+  "topic_key": "cooking_oil_roles",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "longevity_meals",
+    "topic_key": "cooking_oil_roles",
+    "hook_title": "참기름과 들기름, 완전 반대로 써야 해요 4",
+    "subtitle": "두 기름은 두는 곳도 쓰는 때도 서로 반대예요",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "부엌 선반의 기름병들, 저녁 조리대, 갈색과 초록",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "들기름은 냉장고에",
+        "card_name": "들기름은 냉장고에",
+        "reason": "들기름은 기름 중에서 제일 빨리 상해요. 그냥 두면 몇 주 만에 쩐내가 올라와서 냉장고에 넣고 두 달 안에 먹는 게 맞아요.",
+        "card_reason": "들기름은 그냥 두면 몇 주 만에 쩐내가 나서 냉장이 맞아요"
+      },
+      {
+        "rank": 2,
+        "name": "참기름은 어두운 찬장에",
+        "card_name": "참기름은 어두운 찬장에",
+        "reason": "참기름은 반대로 냉장고에 넣으면 뿌옇게 굳어요. 빛만 피하면 오래가는 기름이라 어두운 찬장이면 충분해요.",
+        "card_reason": "참기름은 냉장고에서 뿌옇게 굳어서 어두운 찬장이 맞아요"
+      },
+      {
+        "rank": 3,
+        "name": "볶음엔 콩기름 카놀라유",
+        "card_name": "볶음엔 콩기름 카놀라유",
+        "reason": "높은 불로 볶고 지질 때는 연기가 늦게 나는 콩기름과 카놀라유가 맞아요. 향 좋은 기름으로 볶는 건 기름도 요리도 버리는 일이에요.",
+        "card_reason": "높은 불에도 연기가 늦게 나는 기름이 볶음과 부침에 맞아요"
+      },
+      {
+        "rank": 4,
+        "name": "향 기름은 불 끄고 나서",
+        "card_name": "향 기름은 불 끄고 나서",
+        "reason": "참기름과 들기름의 고소한 향은 끓이는 동안 날아가요. 불을 끄고 마지막에 둘러야 향이 살아요.",
+        "card_reason": "참기름 들기름 향은 끓이는 동안 날아가서 마지막에 둘러요"
+      }
+    ],
+    "video_script": "들기름은 냉장고, 참기름은 찬장이에요.",
+    "tags": [
+      "생활정보",
+      "기름보관",
+      "살림"
+    ],
+    "bgm_prompt": "savory kitchen acoustic, warm evening cooking mood",
+    "rank_count": 4
+  }
+}

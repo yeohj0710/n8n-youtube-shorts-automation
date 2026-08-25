@@ -1,0 +1,53 @@
+{
+  "title": "손주 볼 땐 우리 때 방식을 내려놔요 4",
+  "lane": "grandchild_care_safety",
+  "notes": "전략: 명절과 돌봄 시즌에 조부모 육아가 늘어나는데, 옛 방식 그대로가 위험하다는 뒤집기 결. 사실 근거: 돌 전 영아 꿀 금지(영아 보툴리눔), 소아 약은 성인 약 분할 금지(성분·농도 상이), 포도·방울토마토 등 둥근 과일 절단 급여(기도 막힘 예방), 영아 침구는 단단하게(질식 예방). 전부 소아과 교과서와 질병관리청 안내 표준. 응급 계열이라 교과서 표준만 손으로 골라 썼다.",
+  "topic_key": "grandchild_care_safety",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "grandchild_care_safety",
+    "hook_title": "손주 볼 땐 우리 때 방식을 내려놔요 4",
+    "subtitle": "그때는 맞고 지금은 위험한 것들이에요",
+    "visual_profile": "morning_light",
+    "visual_mood_hint": "거실 놀이 매트와 아기 용품, 부드러운 낮 빛, 파스텔 톤",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "돌 전 아기에게 꿀물",
+        "card_name": "돌 전 아기에게 꿀물",
+        "reason": "어른에게 좋은 꿀이 돌 전 아기에게는 위험해요. 아기 장은 꿀 속 균을 이기지 못해서 한 방울도 주면 안 돼요.",
+        "card_reason": "아기 장은 꿀 속 균을 못 이겨서 돌 전엔 한 방울도 안 돼요"
+      },
+      {
+        "rank": 2,
+        "name": "어른 약 쪼개 먹이기",
+        "card_name": "어른 약 쪼개 먹이기",
+        "reason": "우리 때는 어른 약을 반으로 나눠 먹였지만, 아이 약은 양이 아니라 종류와 농도부터 달라요. 꼭 아이용 약을 써야 해요.",
+        "card_reason": "아이 약은 양이 아니라 종류부터 달라서 반 알도 위험해요"
+      },
+      {
+        "rank": 3,
+        "name": "포도알 통째로 주기",
+        "card_name": "포도알 통째로 주기",
+        "reason": "포도와 방울토마토처럼 말랑하고 둥근 것은 아이 목을 딱 막는 크기예요. 어린 손주에게는 반드시 잘라서 줘요.",
+        "card_reason": "말랑하고 둥근 알은 아이 목을 딱 막는 크기라 잘라서 줘요"
+      },
+      {
+        "rank": 4,
+        "name": "푹신한 이불에 재우기",
+        "card_name": "푹신한 이불에 재우기",
+        "reason": "폭신한 이불과 베개가 좋아 보여도, 돌 전 아기는 얼굴을 덮은 이불을 밀어내지 못해요. 단단한 요에 가볍게 덮어 재워요.",
+        "card_reason": "돌 전 아기는 덮인 이불을 못 밀어내서 단단한 요가 안전해요"
+      }
+    ],
+    "video_script": "돌 전 아기에게 꿀은 절대 안 돼요.",
+    "tags": [
+      "생활정보",
+      "손주육아",
+      "가족"
+    ],
+    "bgm_prompt": "tender family piano, warm daycare mood, soft and safe",
+    "rank_count": 4
+  }
+}

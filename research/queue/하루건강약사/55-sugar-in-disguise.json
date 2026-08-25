@@ -1,0 +1,53 @@
+{
+  "title": "이름만 다르지 속은 설탕 덩어리 4",
+  "lane": "sugar_in_disguise",
+  "notes": "전략: 장보기는 매일의 일이고, 몸에 좋다고 믿고 돈을 더 내던 것을 뒤집는 결. 사실 근거: 흑설탕은 백설탕을 가열해 색을 낸 당류로 영양 차이가 미미, 과일주스의 당 함량, 무설탕 표시는 설탕 무첨가일 뿐 당류 존재 가능, 가당 요거트 당 함량은 식약처 영양표시 기준과 소비자원 조사 안내 표준.",
+  "topic_key": "sugar_in_disguise",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "nutrition_food_choices",
+    "topic_key": "sugar_in_disguise",
+    "hook_title": "이름만 다르지 속은 설탕 덩어리 4",
+    "subtitle": "건강해 보여서 돈을 더 내는 게 아까운 것들이에요",
+    "visual_profile": "market_receipt",
+    "visual_mood_hint": "마트 진열대와 장바구니, 밝은 조명, 노랑과 갈색 포장",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "몸에 좋다는 흑설탕",
+        "card_name": "몸에 좋다는 흑설탕",
+        "reason": "흑설탕은 백설탕을 더 끓여 색과 향을 낸 것이에요. 몸에 들어가면 같은 설탕이라, 색을 보고 건강을 기대할 이유가 없어요.",
+        "card_reason": "백설탕을 더 끓여 색만 낸 것이라 몸속에선 같은 설탕이에요"
+      },
+      {
+        "rank": 2,
+        "name": "백 퍼센트 과일주스",
+        "card_name": "백 퍼센트 과일주스",
+        "reason": "과일만 짜서 담아도 컵에 모이면 당 양이 상당해요. 마시는 과일은 씹는 과일과 달리 당이 한꺼번에 들어와요.",
+        "card_reason": "과일만 짜도 컵에 담기면 당 양은 설탕물과 크게 다르지 않아요"
+      },
+      {
+        "rank": 3,
+        "name": "무설탕 적힌 과자",
+        "card_name": "무설탕 적힌 과자",
+        "reason": "무설탕은 설탕을 안 넣었다는 뜻이지 단맛 성분이 없다는 뜻이 아니에요. 물엿과 시럽 같은 당은 그대로 들어 있을 수 있어요.",
+        "card_reason": "설탕만 뺐다는 뜻이라 물엿과 시럽 당은 그대로 들어 있어요"
+      },
+      {
+        "rank": 4,
+        "name": "떠먹는 달콤한 요거트",
+        "card_name": "떠먹는 달콤한 요거트",
+        "reason": "건강 식품으로 알고 먹는 떠먹는 요거트 중에는 작은 한 통에 각설탕 몇 개 몫의 당이 든 제품이 많아요. 뒷면 당류 숫자를 보고 고르면 돼요.",
+        "card_reason": "작은 한 통에도 각설탕 몇 개 몫 당이 든 제품이 많아요"
+      }
+    ],
+    "video_script": "흑설탕도 결국 설탕이에요.",
+    "tags": [
+      "건강정보",
+      "식품표시",
+      "장보기"
+    ],
+    "bgm_prompt": "curious light marimba, market stroll mood, playful but calm",
+    "rank_count": 4
+  }
+}

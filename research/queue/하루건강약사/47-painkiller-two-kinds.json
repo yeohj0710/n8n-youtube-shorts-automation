@@ -1,0 +1,53 @@
+{
+  "title": "빈속이냐 술이냐, 진통제 고르기 4",
+  "lane": "painkiller_two_kinds",
+  "notes": "전략: 진통제는 전 연령이 상비하는 약인데 두 계열 구분을 아는 사람이 드물다. 아는 물건(진통제)을 두 칸으로 갈라 주는 이긴 결. 사실 근거: 아세트아미노펜은 위장 부담이 적고 음주 시 간 손상 위험, 이부프로펜은 소염 효과와 위장 자극, 두 계열 교차 복용 가능은 허가사항과 약사 복약지도 표준.",
+  "topic_key": "painkiller_two_kinds",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "medicine_literacy",
+    "topic_key": "painkiller_two_kinds",
+    "hook_title": "빈속이냐 술이냐, 진통제 고르기 4",
+    "subtitle": "진통제 두 계열은 몸에서 하는 일이 달라요",
+    "visual_profile": "myth_fact",
+    "visual_mood_hint": "식탁 위 물컵과 알약 두 알, 아침 햇살, 차분한 크림색과 파랑",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "빈속엔 아세트아미노펜",
+        "card_name": "빈속엔 아세트아미노펜",
+        "reason": "이부프로펜 계열은 위를 자극해서 빈속에는 부담이 돼요. 빈속에 급히 먹어야 한다면 위를 덜 건드리는 아세트아미노펜 쪽이에요.",
+        "card_reason": "위를 덜 건드리는 약이라 빈속에 급할 땐 아세트아미노펜이에요"
+      },
+      {
+        "rank": 2,
+        "name": "술 마신 날은 아세트아미노펜 금지",
+        "card_name": "술 마신 날은 반대로",
+        "reason": "아세트아미노펜은 간에서 분해되는데, 간이 술을 치우는 중에 겹치면 간이 크게 상할 수 있어요. 술 마신 날은 피하세요.",
+        "card_reason": "간이 술을 치우는 중이라 아세트아미노펜과 겹치면 크게 상해요"
+      },
+      {
+        "rank": 3,
+        "name": "붓는 통증엔 이부프로펜",
+        "card_name": "부은 데엔 이부프로펜",
+        "reason": "잇몸이 붓거나 발목을 삔 통증은 염증이 원인이라, 염증을 가라앉히는 이부프로펜 계열이 맞아요.",
+        "card_reason": "잇몸이 붓거나 삔 자리는 염증이니 가라앉히는 쪽이 들어요"
+      },
+      {
+        "rank": 4,
+        "name": "심한 날은 두 계열 번갈아",
+        "card_name": "심한 날은 번갈아 가며",
+        "reason": "두 계열은 몸에서 다르게 일해서, 통증이 심한 날은 시간을 나눠 번갈아 쓸 수 있어요. 같은 계열을 겹쳐 먹는 게 위험한 거예요.",
+        "card_reason": "둘은 다르게 일해서 심한 통증엔 시간을 나눠 번갈아 써도 돼요"
+      }
+    ],
+    "video_script": "진통제는 빈속이냐 아니냐부터 봐요.",
+    "tags": [
+      "건강정보",
+      "진통제",
+      "약국상식"
+    ],
+    "bgm_prompt": "calm piano with soft strings, reassuring pharmacy consult mood",
+    "rank_count": 4
+  }
+}

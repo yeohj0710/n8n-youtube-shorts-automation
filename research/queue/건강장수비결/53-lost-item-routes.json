@@ -1,0 +1,53 @@
+{
+  "title": "지갑 잃어버려도 찾아오는 길 4",
+  "lane": "lost_item_routes",
+  "notes": "전략: 분실은 누구나 겪는 일인데 찾는 절차를 아는 사람이 드물다. 길 명단을 주는 얻는 결. 주인이 원한 생활 절차 갈래. 사실 근거: 로스트112는 경찰청 유실물 통합 포털(습득물 등록 조회), 교통카드 사용 내역으로 승차 버스 확인 가능, 지하철 호선별 유실물센터 운영, 택시 카드 결제 기록으로 차량 확인. 전부 공식 제도 안내 표준.",
+  "topic_key": "lost_item_routes",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "lost_item_routes",
+    "hook_title": "지갑 잃어버려도 찾아오는 길 4",
+    "subtitle": "잃어버린 물건마다 모이는 곳이 따로 있어요",
+    "visual_profile": "broadcast_countdown",
+    "visual_mood_hint": "버스 정류장과 지하철 입구, 도시 낮 풍경, 파랑과 회색",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "경찰 유실물 사이트 검색",
+        "card_name": "경찰 유실물 사이트",
+        "reason": "누가 주워서 맡긴 물건은 로스트112라는 경찰청 사이트에 모여요. 물건 이름으로 검색만 하면 전국 습득물이 나와요.",
+        "card_reason": "주운 물건은 로스트112 한곳에 모여 이름 검색으로 나와요"
+      },
+      {
+        "rank": 2,
+        "name": "버스는 교통카드 회사에",
+        "card_name": "버스는 교통카드 회사에",
+        "reason": "몇 번 버스였는지 몰라도 괜찮아요. 교통카드 회사에 물으면 그날 탄 버스가 나와서 차고지 분실물 문의로 바로 이어져요.",
+        "card_reason": "카드 회사가 탄 버스를 찾아 줘서 차고지로 바로 이어져요"
+      },
+      {
+        "rank": 3,
+        "name": "지하철은 유실물센터에",
+        "card_name": "지하철은 유실물센터에",
+        "reason": "지하철에 두고 내린 물건은 호선마다 정해진 유실물센터로 모여요. 내린 역과 시간을 말하면 찾기가 훨씬 빨라요.",
+        "card_reason": "호선마다 유실물이 모이는 역이 따로 정해져 있어요"
+      },
+      {
+        "rank": 4,
+        "name": "택시는 결제 기록으로",
+        "card_name": "택시는 결제 기록으로",
+        "reason": "카드로 낸 택시는 결제 기록이 차 번호까지 이어져요. 카드사나 택시 회사에 물으면 기사와 닿을 수 있어요.",
+        "card_reason": "카드 결제 기록이 차 번호까지 이어져 기사와 닿을 수 있어요"
+      }
+    ],
+    "video_script": "잃어버리면 로스트112부터 검색해요.",
+    "tags": [
+      "생활정보",
+      "분실물",
+      "생활꿀팁"
+    ],
+    "bgm_prompt": "city daytime light beat, hopeful and moving, transit mood",
+    "rank_count": 4
+  }
+}

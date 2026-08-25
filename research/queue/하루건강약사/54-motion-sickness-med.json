@@ -1,0 +1,53 @@
+{
+  "title": "멀미약, 미리 먹어야 듣는 약이에요",
+  "lane": "motion_sickness_med",
+  "notes": "전략: 추석 귀성길 직전 시즌이라 온 가족 관심사이고, 차에 타서야 먹는 흔한 습관을 뒤집는 결. 사실 근거: 먹는 멀미약은 승차 30분에서 1시간 전 복용, 붙이는 패치는 출발 4시간 전 한쪽 귀 뒤 부착, 먹는 약과 패치 병용 금지(같은 계열 성분 중복), 복용 시 졸음으로 운전자 금지. 전부 식약처 명절 멀미약 안전사용 안내 표준.",
+  "topic_key": "motion_sickness_med",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_choices",
+    "topic_key": "motion_sickness_med",
+    "hook_title": "멀미약, 미리 먹어야 듣는 약이에요",
+    "subtitle": "귀성길 멀미약은 시간이 절반이에요",
+    "visual_profile": "market_receipt",
+    "visual_mood_hint": "고속도로 휴게소 아침, 차창 밖 하늘, 밝은 파랑과 회색",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "타기 한 시간 전에 먹기",
+        "card_name": "한 시간 전에 미리 먹기",
+        "reason": "먹는 멀미약은 속에서 퍼질 시간이 필요해요. 차에 타서 먹으면 늦고, 타기 30분에서 1시간 전에 먹어야 제대로 들어요.",
+        "card_reason": "약이 속에서 퍼질 시간이 필요해서 차 타기 전에 먹어 둬요"
+      },
+      {
+        "rank": 2,
+        "name": "붙이는 약은 네 시간 전",
+        "card_name": "붙이는 약은 네 시간 전",
+        "reason": "귀 뒤에 붙이는 멀미약은 천천히 스며드는 약이에요. 출발 4시간 전에 한쪽 귀 뒤에만 붙여야 이동 내내 들어요.",
+        "card_reason": "패치는 천천히 스며서 출발 네 시간 전 귀 뒤에 붙여요"
+      },
+      {
+        "rank": 3,
+        "name": "먹는 약과 패치 중 하나만",
+        "card_name": "먹는 약과 패치 중 하나만",
+        "reason": "먹는 멀미약과 붙이는 패치는 비슷한 성분이라 같이 쓰면 겹쳐요. 어지럽고 몽롱해질 수 있어서 하나만 골라 써요.",
+        "card_reason": "같은 성분이 겹치면 어지럽고 몽롱해져서 하나만 골라요"
+      },
+      {
+        "rank": 4,
+        "name": "운전할 사람은 건너뛰기",
+        "card_name": "운전할 사람은 건너뛰기",
+        "reason": "멀미약 성분은 졸음을 불러요. 운전대를 잡는 사람은 멀미약을 먹지 말고, 환기와 휴식으로 버티는 게 맞아요.",
+        "card_reason": "멀미약 성분은 졸음을 부르니 운전대 잡는 날은 먹지 않아요"
+      }
+    ],
+    "video_script": "멀미약은 타기 한 시간 전에 먹어요.",
+    "tags": [
+      "건강정보",
+      "멀미약",
+      "귀성길"
+    ],
+    "bgm_prompt": "road trip light acoustic, moving and easy, morning highway",
+    "rank_count": 4
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "title": "건강검진 전날, 재검 부르는 행동 4",
+  "lane": "checkup_prep",
+  "notes": "전략: 국가검진은 50대 이후 매년 다 받는 일이라 대상이 넓고, 전날 밤 행동이 결과를 흔든다는 뜻밖의 연결. 사실 근거: 검진 전 금식은 물 이외 금지(커피·껌 포함), 기름진 저녁이 중성지방 수치를 올림, 혈압약 등 상시 복용약은 소량의 물과 복용 유지가 원칙(의사 안내에 따름). 국가건강검진 안내문 표준.",
+  "topic_key": "checkup_eve_mistakes",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_choices",
+    "topic_key": "checkup_eve_mistakes",
+    "hook_title": "건강검진 전날, 재검 부르는 행동 4",
+    "subtitle": "검사 결과는 전날 저녁부터 만들어져요",
+    "visual_profile": "wellness_dashboard",
+    "visual_mood_hint": "검진표와 물 한 컵이 놓인 밤 책상, 차분한 남색과 흰색",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "혈압약까지 굶고 가기",
+        "card_name": "혈압약까지 굶고 가기",
+        "reason": "금식한다고 혈압약까지 거르면 검진 중 혈압이 치솟을 수 있어요. 혈압약은 검진 날 아침에도 물 한 모금과 먹는 게 원칙이에요. 미리 병원에 확인하면 돼요.",
+        "card_reason": "혈압약은 검진 날 아침에도 물 한 모금과 먹는 게 원칙이에요"
+      },
+      {
+        "rank": 2,
+        "name": "저녁 늦게 기름진 회식",
+        "card_name": "저녁 늦게 기름진 회식",
+        "reason": "전날 밤 기름진 안주와 늦은 저녁은 다음 날 피 검사의 지방 수치를 바로 끌어올려요. 재검 통지의 흔한 이유예요.",
+        "card_reason": "늦은 기름진 안주는 다음 날 피 검사 수치를 바로 끌어올려요"
+      },
+      {
+        "rank": 3,
+        "name": "아침에 블랙커피 한 잔",
+        "card_name": "아침에 블랙커피 한 잔",
+        "reason": "설탕 없는 블랙커피도 물이 아니에요. 금식이 깨지고 위 검사 화면도 흐려져요. 검진 아침에는 물만 조금 마셔요.",
+        "card_reason": "커피는 물이 아니라서 금식이 깨지고 속 검사가 흐려져요"
+      },
+      {
+        "rank": 4,
+        "name": "기다리며 껌 씹기",
+        "card_name": "기다리며 껌 씹기",
+        "reason": "껌을 씹으면 먹은 게 없어도 위액이 나와요. 내시경 화면이 뿌예져서 검사가 어려워져요. 사탕도 마찬가지예요.",
+        "card_reason": "껌만 씹어도 위액이 나와서 내시경 화면이 뿌예져요"
+      }
+    ],
+    "video_script": "검진 전날 저녁부터 검사가 시작돼요.",
+    "tags": [
+      "건강정보",
+      "건강검진",
+      "시니어건강"
+    ],
+    "bgm_prompt": "quiet evening piano, focused and calm, night desk mood",
+    "rank_count": 4
+  }
+}
