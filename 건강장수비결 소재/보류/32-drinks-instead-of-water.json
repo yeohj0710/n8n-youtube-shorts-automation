@@ -1,0 +1,53 @@
+{
+  "title": "물 대신 마셔도 되는 것과 안 되는 것 4",
+  "lane": "food_nutrition_table",
+  "notes": "260825 갈이 견본. 팔로우 축은 '매일 다시 꺼내 쓰는 기준'. 카페인이 소변으로 나가는 양을 늘린다는 것과 떫은 성분이 철분과 엉긴다는 것은 복약지도 표준 안내다. 하루 몇 잔 같은 숫자는 지어내지 않았다.",
+  "topic_key": "drinks_instead_of_water",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "longevity_meals",
+    "topic_key": "drinks_instead_of_water",
+    "hook_title": "물 대신 마셔도 되는 것과 안 되는 것 4",
+    "subtitle": "물처럼 마셔도 되는 것이 따로 있어요",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "식탁 위에 나란히 놓인 물컵과 보리차 주전자와 커피잔, 낮의 환한 빛, 흰색과 연갈색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "보리차와 옥수수차",
+        "card_name": "보리차와 옥수수차",
+        "reason": "구수한 곡물차는 카페인이 없어 물 대신 드셔도 돼요. 미지근하게 드시면 찬물보다 속이 편하고 더 많이 넘어가요",
+        "card_reason": "카페인이 없어서 물처럼 하루 종일 드셔도 괜찮아요"
+      },
+      {
+        "rank": 2,
+        "name": "녹차와 홍차",
+        "card_name": "녹차와 홍차",
+        "reason": "차 자체는 좋지만 떫은 성분이 음식 속 철분과 엉겨 붙어요. 밥 먹고 바로 말고 사이사이에 드시는 게 나아요",
+        "card_reason": "떫은 성분이 철분과 엉겨서 밥 때는 피하는 게 좋아요"
+      },
+      {
+        "rank": 3,
+        "name": "커피",
+        "card_name": "커피",
+        "reason": "커피에도 물이 들어 있지만 소변으로 나가는 양이 같이 늘어요. 한두 잔은 괜찮고 그 위로는 물을 따로 챙기셔야 해요",
+        "card_reason": "커피는 마신 만큼 소변으로 더 나가서 셈이 안 맞아요"
+      },
+      {
+        "rank": 4,
+        "name": "단 음료",
+        "card_name": "단 음료",
+        "reason": "당이 많은 음료는 마실 때는 시원한데 곧 다시 목이 말라요. 갈증을 채우려고 드시면 오히려 더 드시게 돼요",
+        "card_reason": "달수록 갈증이 다시 오니 물을 대신하지 못해요"
+      }
+    ],
+    "video_script": "다 물이 되지는 않아요.",
+    "tags": [
+      "생활정보",
+      "시니어건강",
+      "물마시기"
+    ],
+    "bgm_prompt": "bright airy piano with soft guitar, refreshing daytime mood",
+    "rank_count": 4
+  }
+}

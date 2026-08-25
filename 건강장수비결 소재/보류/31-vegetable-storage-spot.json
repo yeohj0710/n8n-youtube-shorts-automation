@@ -1,0 +1,53 @@
+{
+  "title": "채소 오래 두고 먹는 자리가 따로 있어요 4",
+  "lane": "home_kitchen_living",
+  "notes": "260825 갈이 견본. 팔로우 축은 '장 볼 때마다 다시 꺼내 쓰는 부엌 기술'. 실측에서 냉동실 편이 0.050%로 2위였고 같은 결이다. 냉장과 실온을 가르는 것은 농산물 보관 표준 안내다. 온도 숫자는 쓰지 않았다.",
+  "topic_key": "vegetable_storage_spot",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "vegetable_storage_spot",
+    "hook_title": "채소 오래 두고 먹는 자리가 따로 있어요 4",
+    "subtitle": "같은 채소도 두는 자리로 며칠이 달라져요",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "부엌 조리대에 놓인 채소 바구니와 열린 냉장고 야채칸, 서늘한 아침 빛, 초록과 흰색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "세워서 두는 채소",
+        "card_name": "세워서 두는 채소",
+        "reason": "대파나 아욱처럼 서서 자란 채소는 눕혀 두면 다시 서려고 힘을 써서 빨리 시들어요. 통에 세워 담으시면 훨씬 오래 가요",
+        "card_reason": "자라던 대로 세워 두면 눕혀 둘 때보다 오래 가요"
+      },
+      {
+        "rank": 2,
+        "name": "감자와 양파",
+        "card_name": "감자와 양파",
+        "reason": "감자는 차가운 데 두면 단맛이 이상하게 돌고 양파는 물러져요. 둘 다 서늘하고 어두운 데 따로 두시는 게 맞아요",
+        "card_reason": "감자와 양파는 냉장고에 넣으면 맛이 되레 나빠져요"
+      },
+      {
+        "rank": 3,
+        "name": "사과 옆자리",
+        "card_name": "사과 옆자리",
+        "reason": "사과와 토마토는 곁에 있는 채소를 빨리 익히는 기운을 내요. 같은 칸에 두면 옆에 있던 잎채소가 먼저 물러요",
+        "card_reason": "사과가 내는 기운에 옆에 둔 채소가 먼저 늙어요"
+      },
+      {
+        "rank": 4,
+        "name": "미리 씻어 두기",
+        "card_name": "미리 씻어 두기",
+        "reason": "장 봐 오자마자 다 씻어 두면 편할 것 같지만 물기가 남아 더 빨리 물러요. 잎채소는 드시기 직전에 씻는 게 오래 가요",
+        "card_reason": "미리 씻어 두면 물기 때문에 무르는 속도가 빨라져요"
+      }
+    ],
+    "video_script": "채소는 자리가 절반이에요.",
+    "tags": [
+      "생활정보",
+      "시니어건강",
+      "장보기"
+    ],
+    "bgm_prompt": "bright fresh guitar with light piano, crisp kitchen morning mood",
+    "rank_count": 4
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "title": "무릎이 오래 버티는 사람들의 앉는 자세 4",
+  "lane": "daily_health_lifestyle",
+  "notes": "260825 갈이 견본. 팔로우 축은 '평생 들고 가는 몸 관리'. 실측에서 무릎 허리 편이 0.053%로 1위였다. 오늘 한 번으로 안 끝나는 주제라 다음 편을 기다리게 된다. 쪼그려 앉기와 양반다리가 무릎에 부담이라는 것은 정형외과 표준 안내다. 몇 배 같은 숫자는 쓰지 않았다.",
+  "topic_key": "knee_sitting_posture",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_choices",
+    "topic_key": "knee_sitting_posture",
+    "hook_title": "무릎이 오래 버티는 사람들의 앉는 자세 4",
+    "subtitle": "무릎은 걷는 시간보다 앉는 자세에 더 닳아요",
+    "visual_profile": "morning_light",
+    "visual_mood_hint": "거실 소파와 낮은 의자, 창으로 드는 아침 빛, 따뜻한 나무색과 크림 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "쪼그려 앉기",
+        "card_name": "쪼그려 앉기",
+        "reason": "김장하거나 밭일할 때 쪼그려 앉는 시간이 길어요. 무릎 안쪽이 서로 눌리는 자세라 낮은 의자를 놓고 앉으시는 게 훨씬 나아요",
+        "card_reason": "쪼그려 앉으면 무릎 안쪽이 서로 눌려서 제일 부담돼요"
+      },
+      {
+        "rank": 2,
+        "name": "양반다리",
+        "card_name": "양반다리",
+        "reason": "바닥에 오래 앉으실 일이 있으면 다리를 앞으로 뻗거나 벽에 기대세요. 비튼 채로 오래 두면 무릎 옆이 먼저 상해요",
+        "card_reason": "양반다리로 앉은 동안 무릎 옆이 계속 비틀린 채로 있어요"
+      },
+      {
+        "rank": 3,
+        "name": "다리 꼬기",
+        "card_name": "다리 꼬기",
+        "reason": "의자에 앉아 습관처럼 다리를 꼬면 골반이 틀어지고 무릎 한쪽만 계속 눌려요. 두 발을 바닥에 붙이고 앉으세요",
+        "card_reason": "다리를 꼬는 습관 때문에 한쪽 무릎에만 몸이 실려요"
+      },
+      {
+        "rank": 4,
+        "name": "오래 앉아 있기",
+        "card_name": "오래 앉아 있기",
+        "reason": "한 자세로 오래 앉아 있으면 무릎 안이 마르고 굳어요. 텔레비전 한 편 볼 때마다 일어나 몇 걸음 걸으세요",
+        "card_reason": "한 자세로 오래 앉아 있는데 무릎 안은 그동안 말라 가요"
+      }
+    ],
+    "video_script": "무릎은 앉을 때 더 닳아요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "관절관리"
+    ],
+    "bgm_prompt": "bright calm piano with warm strings, steady and reassuring mood",
+    "rank_count": 4
+  }
+}

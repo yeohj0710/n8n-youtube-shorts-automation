@@ -1,0 +1,53 @@
+{
+  "title": "걸을 때 숨이 덜 차게 하는 법 4",
+  "lane": "movement_mobility_longevity",
+  "notes": "260825 갈이 견본. 팔로우 축은 '평생 들고 가는 몸 관리'. 실측에서 걷기 습관 0.040%, 장수 운동 0.039%로 위쪽이다. 코로 들이쉬고 입으로 내쉬는 것과 오르막에서 보폭을 줄이는 것은 운동 지도 표준 안내다. 숨이 갑자기 차면 병원에 가라는 전제를 지켰다.",
+  "topic_key": "walk_without_breathlessness",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "strength_walking",
+    "topic_key": "walk_without_breathlessness",
+    "hook_title": "걸을 때 숨이 덜 차게 하는 법 4",
+    "subtitle": "숨이 차는 건 폐가 아니라 걷는 법 탓일 때가 많아요",
+    "visual_profile": "morning_light",
+    "visual_mood_hint": "아침 공원 산책로와 벤치, 나무 사이로 드는 맑은 빛, 초록과 하늘색 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "내쉬는 숨 먼저",
+        "card_name": "내쉬는 숨 먼저",
+        "reason": "숨이 차면 더 들이마시려고 애쓰게 되는데 그럴수록 가슴만 답답해져요. 입으로 길게 내쉬면 그 자리로 숨이 알아서 들어와요",
+        "card_reason": "들이쉬려 애쓰지 말고 길게 내쉬어야 다음 숨이 들어와요"
+      },
+      {
+        "rank": 2,
+        "name": "오르막에서 보폭",
+        "card_name": "오르막에서 보폭",
+        "reason": "언덕에서 평지처럼 성큼 걸으면 한 걸음마다 힘이 몰려요. 종종걸음으로 바꾸시면 같은 길도 훨씬 덜 힘들어요",
+        "card_reason": "오르막에서는 보폭을 줄여야 다리와 숨이 같이 버텨요"
+      },
+      {
+        "rank": 3,
+        "name": "처음 오 분",
+        "card_name": "처음 오 분",
+        "reason": "출발하자마자 속도를 내면 몸이 아직 준비가 안 돼 금방 지쳐요. 처음 얼마간은 천천히 걷다가 올리시는 게 멀리 가요",
+        "card_reason": "처음부터 빨리 걸으면 몸이 데워지기 전에 숨이 차요"
+      },
+      {
+        "rank": 4,
+        "name": "가방 메는 쪽",
+        "card_name": "가방 메는 쪽",
+        "reason": "무거운 가방을 늘 한쪽 어깨에 메면 몸이 기울어 가슴 한쪽이 눌려요. 등에 지거나 번갈아 메시는 게 좋아요",
+        "card_reason": "한쪽으로만 메면 그쪽 가슴이 눌려 숨이 얕아져요"
+      }
+    ],
+    "video_script": "숨은 걷는 법으로 달라져요.",
+    "tags": [
+      "생활정보",
+      "시니어건강",
+      "걷기"
+    ],
+    "bgm_prompt": "bright walking piano with light percussion, steady and cheerful stride mood",
+    "rank_count": 4
+  }
+}

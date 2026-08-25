@@ -1,0 +1,53 @@
+{
+  "title": "영양제 살 때 뒷면에서 꼭 봐야 하는 것 4",
+  "lane": "daily_health_lifestyle",
+  "notes": "260825 갈이 견본. 팔로우 축은 '살 때마다 다시 꺼내 쓰는 기준'. 영양제는 몇 달에 한 번씩 계속 사는 물건이라 기준을 알려 주면 다음에도 이 계정을 찾는다. 원료명 괄호 표기와 일일 섭취량 기준 표기는 건강기능식품 표시 규정 그대로다. 제품명과 용량 숫자는 쓰지 않았다.",
+  "topic_key": "supplement_label_check",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "supplement_ingredients",
+    "topic_key": "supplement_label_check",
+    "hook_title": "영양제 살 때 뒷면에서 꼭 봐야 하는 것 4",
+    "subtitle": "앞면 문구는 광고고 뒷면 네 줄이 제품이에요",
+    "visual_profile": "market_receipt",
+    "visual_mood_hint": "식탁 위에 뒤집어 놓은 영양제 통과 돋보기, 밝은 아침 빛, 흰색과 연두 팔레트",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "원료명 뒤 괄호",
+        "card_name": "원료명 뒤 괄호",
+        "reason": "앞면에 큰 글씨로 적힌 이름 말고 뒷면 원료명 뒤 괄호 안을 보셔야 해요. 괄호 안에 적힌 것이 실제로 들어간 원료고 나머지는 이름을 꾸민 말이에요",
+        "card_reason": "원료명 뒤 괄호 안에 적힌 것이 실제로 들어간 원료예요"
+      },
+      {
+        "rank": 2,
+        "name": "하루 먹는 양",
+        "card_name": "하루 먹는 양",
+        "reason": "함량이 커 보여도 하루에 몇 알을 다 먹었을 때 기준일 수 있어요. 한 알에 얼마가 들었는지로 견주셔야 값이 맞게 비교돼요",
+        "card_reason": "표에 적힌 함량은 하루치를 다 먹었을 때 값이에요"
+      },
+      {
+        "rank": 3,
+        "name": "기능성 문구",
+        "card_name": "기능성 문구",
+        "reason": "뒷면에 어디에 도움을 줄 수 있다는 문구가 적혀 있으면 심사를 거친 제품이에요. 그 줄이 없으면 그냥 식품이라고 보시면 돼요",
+        "card_reason": "몸에 어떻게 좋은지 적힌 줄이 있어야 심사를 거친 제품이에요"
+      },
+      {
+        "rank": 4,
+        "name": "만든 날짜",
+        "card_name": "만든 날짜",
+        "reason": "영양제는 한 통을 몇 달에 걸쳐 드세요. 만든 지 오래된 것을 사면 다 드시기도 전에 날짜가 지나요. 진열대 안쪽 것이 대개 새것이에요",
+        "card_reason": "같은 값이면 만든 지 얼마 안 된 것이 남는 날이 길어요"
+      }
+    ],
+    "video_script": "앞면 말고 뒷면을 뒤집어 보세요.",
+    "tags": [
+      "건강정보",
+      "시니어건강",
+      "영양제"
+    ],
+    "bgm_prompt": "bright curious piano with soft strings, careful shopping mood",
+    "rank_count": 4
+  }
+}
