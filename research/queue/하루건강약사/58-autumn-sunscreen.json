@@ -1,0 +1,53 @@
+{
+  "title": "선크림 가을에 끊으면 기미가 남아요 4",
+  "lane": "autumn_sunscreen",
+  "notes": "전략: 260830 카드읽기 기준. 여름 끝나면 선크림을 치우는 게 상식처럼 굳어 있어서, 그 믿음을 뒤집는 (b) 문법. 기미는 50대 남녀 모두의 걱정이라 대상이 넓고, 계절이 정확히 지금이다. 얻는 프레임(얼룩 안 남기는 법)이고 행마다 뜻밖의 자리(구름, 유리창)를 이름으로 댄다. 사실 근거: 자외선 A는 구름과 유리창을 통과하고, 자외선 B보다 계절과 시간대에 따른 변동이 작으며, 색소 침착은 누적 노출로 생긴다. 전부 피부과 교과서 표준 지식이라 수치 주장은 넣지 않았다.",
+  "topic_key": "autumn_sunscreen",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "skin_vitality",
+    "topic_key": "autumn_sunscreen",
+    "hook_title": "선크림 가을에 끊으면 기미가 남아요 4",
+    "subtitle": "가을볕이 얼굴에 얼룩을 남기는 자리들이에요",
+    "visual_profile": "morning_light",
+    "visual_mood_hint": "가을 아침 창가와 화장대 위 선크림, 부드러운 금빛 햇살",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "구름 낀 가을 하늘",
+        "card_name": "구름 낀 하늘",
+        "reason": "해가 안 보이면 마음을 놓기 쉬운데, 기미를 만드는 자외선 A는 구름을 그대로 뚫고 내려와요. 흐린 날 나들이가 더 방심하기 쉬워요.",
+        "card_reason": "기미를 만드는 자외선 A는 구름을 그대로 뚫고 내려와요"
+      },
+      {
+        "rank": 2,
+        "name": "차 유리창 옆자리",
+        "card_name": "차 유리창 옆자리",
+        "reason": "유리창이 자외선 B는 걸러도 A는 못 막아요. 그래서 운전을 오래 한 분들은 창가 쪽 뺨과 팔에 얼룩이 먼저 올라와요.",
+        "card_reason": "유리창도 자외선 A는 못 막아요. 운전하는 쪽 뺨부터 얼룩져요"
+      },
+      {
+        "rank": 3,
+        "name": "선선해진 가을볕",
+        "card_name": "선선한 가을볕",
+        "reason": "덥지 않으니 볕도 약해진 줄 알기 쉬운데, 피부 깊이 들어오는 자외선 A는 여름과 가을의 차이가 크지 않아요. 체감 온도와 따로 놀아요.",
+        "card_reason": "덥지 않아도 자외선 A는 여름과 가을 차이가 크지 않아요"
+      },
+      {
+        "rank": 4,
+        "name": "쌓여서 올라오는 기미",
+        "card_name": "쌓여서 오는 기미",
+        "reason": "기미는 그날 바로 생기지 않아요. 몇 달 동안 쌓인 볕이 나중에 얼룩으로 올라와서, 가을에 끊은 값을 겨울에 치러요.",
+        "card_reason": "기미는 그날 안 보여도 몇 달 쌓인 볕이 얼룩으로 올라와요"
+      }
+    ],
+    "video_script": "자외선 A는 구름도 유리창도 뚫어요.",
+    "tags": [
+      "기미",
+      "피부관리",
+      "생활정보"
+    ],
+    "bgm_prompt": "bright autumn morning pop, light acoustic guitar, clean and airy",
+    "rank_count": 4
+  }
+}

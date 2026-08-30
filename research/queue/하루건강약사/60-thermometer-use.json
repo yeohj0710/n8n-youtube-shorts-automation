@@ -1,0 +1,53 @@
+{
+  "title": "체온계 숫자가 들쭉날쭉한 이유 4",
+  "lane": "thermometer_use",
+  "notes": "전략: 260830 카드읽기 기준. 집집마다 체온계가 있고 잴 때마다 숫자가 달라 헷갈린 경험은 다들 있다(대상 넓음). 안약 편과 같은 절차 교정 결로, 행마다 자리와 동작을 이름으로 대고 바로 고칠 수 있는 얻는 프레임. 환절기 감기철 진입 시점과 맞다. 사실 근거: 귀 체온계는 귓바퀴를 당겨 외이도를 펴야 고막 온도가 정확히 재지고, 겨드랑이는 땀을 닦고 팔을 밀착해야 하며, 비접촉 이마 체온계는 외기와 땀에 흔들리고, 측정 부위마다 정상 범위가 달라 귀가 겨드랑이보다 대략 반 도 높게 나온다. 전부 의료기기 사용 안내와 간호학 교과서 표준이다.",
+  "topic_key": "thermometer_use",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "medicine_literacy",
+    "topic_key": "thermometer_use",
+    "hook_title": "체온계 숫자가 들쭉날쭉한 이유 4",
+    "subtitle": "재는 법만 맞추면 숫자가 흔들리지 않아요",
+    "visual_profile": "wellness_dashboard",
+    "visual_mood_hint": "거실 탁자 위 체온계와 손, 정돈된 흰색과 하늘색",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "귀 체온계 그냥 꽂기",
+        "card_name": "귀에 그냥 꽂기",
+        "reason": "귓길이 굽어 있어서 그냥 꽂으면 벽 온도를 재요. 귓바퀴를 뒤로 살짝 당긴 채 재야 고막 쪽 온도가 제대로 나와요.",
+        "card_reason": "귓바퀴를 뒤로 살짝 당겨야 귓길이 펴져 제 온도가 나와요"
+      },
+      {
+        "rank": 2,
+        "name": "겨드랑이 땀 그대로 재기",
+        "card_name": "겨드랑이 땀 그대로",
+        "reason": "땀이 마르면서 피부를 식혀서 실제보다 낮게 나와요. 땀을 닦고 체온계를 겨드랑이 가운데에 끼운 뒤 팔을 꼭 붙이고 재요.",
+        "card_reason": "땀이 마르며 살을 식혀요. 닦고 팔을 꼭 붙인 채 재야 맞아요"
+      },
+      {
+        "rank": 3,
+        "name": "외출하고 오자마자 이마 재기",
+        "card_name": "외출 직후 이마 재기",
+        "reason": "이마 체온계는 피부 겉 온도를 읽어요. 찬바람을 쐬고 온 직후에는 낮게 나오니 10분쯤 실내에 있다가 재야 맞아요.",
+        "card_reason": "이마 체온계는 바람 쐰 피부 온도를 읽어서 낮게 나와요"
+      },
+      {
+        "rank": 4,
+        "name": "잴 때마다 자리 바꾸기",
+        "card_name": "자리마다 다른 정상",
+        "reason": "귀는 겨드랑이보다 반 도쯤 높게 나오는 게 정상이에요. 잴 때마다 자리를 바꾸면 열이 오른 건지 알 수 없으니 한 자리로 정해요.",
+        "card_reason": "귀는 겨드랑이보다 반 도쯤 높게 나오니 같은 자리로 재요"
+      }
+    ],
+    "video_script": "귀 체온계는 귓바퀴를 당겨서 재요.",
+    "tags": [
+      "체온계",
+      "생활정보",
+      "건강상식"
+    ],
+    "bgm_prompt": "soft tidy rhythm, light plucks, precise and homey mood",
+    "rank_count": 4
+  }
+}

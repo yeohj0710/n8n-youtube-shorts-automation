@@ -1,0 +1,53 @@
+{
+  "title": "화분 죽이는 물주기 버릇 4",
+  "lane": "plant_watering",
+  "notes": "전략: 260830 카드읽기 기준. 정성껏 챙길수록 죽는다는 뒤집기 (b) 문법. 화분은 50대 베란다마다 있고 자꾸 죽는 경험은 다들 있어서 제목이 약속한 문제를 이미 겪고 있다. 행마다 버릇을 이름으로 대고 기전 한 줄이 붙는다. 옮겨 말할 문장: 화분은 물이 모자라서보다 넘쳐서 죽는대. 사실 근거: 과습이 뿌리 호흡을 막고 뿌리썩음을 부르는 것, 받침 고인 물 제거, 겉흙이 아니라 흙 속 수분으로 판단하는 것, 아침 물주기가 과습과 곰팡이를 줄이는 것 모두 원예 표준 요령이다. 몸에 위험한 주장이 없다.",
+  "topic_key": "plant_watering",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "plant_watering",
+    "hook_title": "화분 죽이는 물주기 버릇 4",
+    "subtitle": "물이 모자라서가 아니라 넘쳐서 죽어요",
+    "visual_profile": "morning_light",
+    "visual_mood_hint": "아침 햇살 드는 베란다 화분과 물뿌리개, 초록과 테라코타",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "날마다 조금씩 주기",
+        "card_name": "날마다 조금씩 주기",
+        "reason": "정성 같지만 겉흙만 늘 축축해져서 뿌리가 숨을 못 쉬어요. 흙이 말랐을 때 화분 밑으로 흘러나올 만큼 흠뻑 주는 게 맞아요.",
+        "card_reason": "겉흙만 늘 축축해서 뿌리가 숨을 못 쉬어요. 마르면 흠뻑이 맞아요"
+      },
+      {
+        "rank": 2,
+        "name": "받침에 고인 물 그대로 두기",
+        "card_name": "받침에 고인 물",
+        "reason": "받침에 고인 물에 뿌리 끝이 계속 잠겨 있으면 썩기 시작해요. 화분이 죽는 제일 흔한 자리라 물 주고 나면 받침부터 비워요.",
+        "card_reason": "받침 물에 뿌리가 잠겨서 썩어요. 흘러나온 물은 바로 버려요"
+      },
+      {
+        "rank": 3,
+        "name": "잎이 처지면 무조건 물 주기",
+        "card_name": "처지면 무조건 물",
+        "reason": "물이 넘쳐 뿌리가 상해도 잎은 똑같이 처져요. 그때 또 주면 끝장이니 흙 속에 손가락을 두 마디 넣어 말랐는지부터 확인해요.",
+        "card_reason": "물이 넘쳐도 잎은 처져요. 흙 속에 손가락 두 마디를 넣어 봐요"
+      },
+      {
+        "rank": 4,
+        "name": "해 진 뒤에 물 주기",
+        "card_name": "해 진 뒤에 주기",
+        "reason": "저녁에 주면 밤새 마르지 않고 고여 있어서 곰팡이가 슬고 날벌레가 꼬여요. 물은 해 뜨고 오전에 주는 게 맞아요.",
+        "card_reason": "밤새 마르지 않고 고여 곰팡이가 슬어요. 물은 아침에 줘요"
+      }
+    ],
+    "video_script": "화분은 흙이 말랐을 때 흠뻑이 맞아요.",
+    "tags": [
+      "화분",
+      "생활꿀팁",
+      "살림"
+    ],
+    "bgm_prompt": "sunny morning garden folk, gentle strums, green and fresh",
+    "rank_count": 4
+  }
+}

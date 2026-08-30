@@ -1,0 +1,53 @@
+{
+  "title": "생선 비리지 않게 굽는 순서 4",
+  "lane": "fish_grilling",
+  "notes": "전략: 260830 카드읽기 기준. 실측 1위 집밥 한 끗(391명)의 요리 맛 얻기 결을 이번 배치에서 잇는 팩. 생선구이는 50대 밥상에 매주 오르는데 비린내와 부서짐은 다들 겪는 문제라 대상이 넓고, 오늘 저녁에 해보면 결과가 그 자리에서 나온다. 행마다 아는 재료 둘의 짝(생선과 우유, 냉동 생선과 소금물)을 이름으로 댄다. 사실 근거: 우유 단백질이 비린내 성분을 붙잡는 것, 소금을 미리 뿌려 삼투로 수분과 비린내를 빼고 살을 단단하게 하는 것, 소금물 해동이 살 풀림을 막는 것, 물기 제거가 기름 튐과 들러붙음을 줄이는 것 모두 요리과학 표준 요령이다. 몸에 위험한 주장이 없다.",
+  "topic_key": "fish_grilling",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "longevity_meals",
+    "topic_key": "fish_grilling",
+    "hook_title": "생선 비리지 않게 굽는 순서 4",
+    "subtitle": "굽기 전 준비가 맛을 거의 다 정해요",
+    "visual_profile": "broadcast_countdown",
+    "visual_mood_hint": "지글거리는 생선 팬과 저녁 부엌, 노릇한 금빛과 진한 남색",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "냉동 생선은 소금물에 녹이기",
+        "card_name": "냉동 생선은 소금물에",
+        "reason": "맹물에 녹이면 감칠맛이 물로 빠져나가요. 바닷물처럼 짭짤한 소금물에 녹이면 맛이 덜 빠지고 살도 안 풀어져요.",
+        "card_reason": "맹물에 녹이면 맛이 빠져요. 짭짤한 소금물이면 살이 안 풀려요"
+      },
+      {
+        "rank": 2,
+        "name": "우유에 10분 담그기",
+        "card_name": "우유에 10분 담그기",
+        "reason": "비린내가 심한 생선은 우유에 10분 담가요. 우유 단백질이 비린내 성분을 붙잡아 줘서 씻은 듯 가벼워져요.",
+        "card_reason": "우유가 비린내를 붙잡아요. 건진 다음 물기만 닦아요"
+      },
+      {
+        "rank": 3,
+        "name": "소금은 굽기 20분 전에",
+        "card_name": "소금은 20분 전에",
+        "reason": "굽기 직전이 아니라 20분 전에 뿌려요. 그사이 물과 비린내가 함께 빠져나오고 살은 간이 배며 단단해져요.",
+        "card_reason": "미리 뿌려야 물과 비린내가 빠지고 살이 단단하게 잡혀요"
+      },
+      {
+        "rank": 4,
+        "name": "물기 닦고 팬에 올리기",
+        "card_name": "물기 닦고 굽기",
+        "reason": "겉에 물기가 남아 있으면 기름이 사방으로 튀고 껍질이 팬에 눌어붙어요. 종이행주로 꾹꾹 눌러 닦고 올리면 껍질까지 바삭해요.",
+        "card_reason": "물기가 남으면 기름이 튀고 껍질이 팬에 눌어붙어요"
+      }
+    ],
+    "video_script": "생선은 우유에 10분 담갔다 구워요.",
+    "tags": [
+      "생선구이",
+      "요리팁",
+      "집밥"
+    ],
+    "bgm_prompt": "sizzling evening kitchen jazz, warm brushes, appetizing and cozy",
+    "rank_count": 4
+  }
+}

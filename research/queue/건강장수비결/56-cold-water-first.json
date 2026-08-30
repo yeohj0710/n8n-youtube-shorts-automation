@@ -1,0 +1,53 @@
+{
+  "title": "찬물부터 헹궈야 지워지는 것 4",
+  "lane": "cold_water_first",
+  "notes": "전략: 260830 카드읽기 기준. 설거지는 뜨거운 물이 만능이라는 믿음을 뒤집는 (b) 문법. 행마다 그릇 이름을 대고 기전(단백질은 열에 굳는다)이 한 줄로 붙어서 오늘 저녁 설거지에서 바로 결과가 나온다. 냉동실 편(45명)과 같은 부엌 과학 결. 옮겨 말할 문장: 계란 그릇은 찬물부터래. 사실 근거: 계란과 우유의 단백질, 핏물 단백질은 열에 응고해 표면에 달라붙고, 생선 비린내 성분도 단백질과 함께 익어 배어든다. 찬물로 먼저 헹군 뒤 세제와 더운물로 마무리하는 것은 생활과학 표준 요령이라 몸에 위험한 주장이 없다.",
+  "topic_key": "cold_water_first",
+  "final_pack": {
+    "channel_editorial_profile": "longevity_daily_function",
+    "channel_content_pillar": "daily_function",
+    "topic_key": "cold_water_first",
+    "hook_title": "찬물부터 헹궈야 지워지는 것 4",
+    "subtitle": "뜨거운 물이 오히려 얼룩을 익혀서 붙여요",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "저녁 부엌 개수대와 흐르는 물, 깨끗한 흰 그릇과 옅은 파랑",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "계란 묻은 그릇",
+        "card_name": "계란 묻은 그릇",
+        "reason": "계란은 단백질이라 뜨거운 물이 닿는 순간 익어서 그릇에 눌어붙어요. 찬물로 먼저 헹궈 흘려보내고 나서 더운물로 닦아야 금방 끝나요.",
+        "card_reason": "뜨거운 물이 닿으면 계란이 익어서 그릇에 눌어붙어요"
+      },
+      {
+        "rank": 2,
+        "name": "우유 마신 컵",
+        "card_name": "우유 마신 컵",
+        "reason": "우유 속 단백질도 열에 굳어요. 뜨거운 물부터 부으면 컵 안쪽에 뿌연 막이 생겨 남으니, 찬물로 휙 헹군 다음 씻어요.",
+        "card_reason": "우유 속 단백질이 열에 굳어 컵에 뿌연 막으로 남아요"
+      },
+      {
+        "rank": 3,
+        "name": "피 묻은 옷",
+        "card_name": "피 묻은 옷",
+        "reason": "핏물은 뜨거운 물에 닿으면 굳어서 얼룩으로 박혀요. 찬물에 담가 두면 스르르 풀려 나오니 온도만 바꿔도 결과가 달라져요.",
+        "card_reason": "핏물은 뜨거운 물에 굳어 박혀요. 찬물에 담가야 빠져요"
+      },
+      {
+        "rank": 4,
+        "name": "생선 만진 도마와 칼",
+        "card_name": "생선 만진 도마",
+        "reason": "뜨거운 물부터 부으면 비린내 성분이 도마에 익어 배요. 찬물로 먼저 씻어내고 그다음에 뜨거운 물과 세제로 소독해야 냄새가 안 남아요.",
+        "card_reason": "뜨거운 물부터 부으면 비린내가 익어 배요. 찬물이 먼저예요"
+      }
+    ],
+    "video_script": "계란 그릇은 찬물부터예요.",
+    "tags": [
+      "설거지",
+      "생활꿀팁",
+      "살림"
+    ],
+    "bgm_prompt": "fresh kitchen acoustic, light water sparkle, tidy evening mood",
+    "rank_count": 4
+  }
+}
