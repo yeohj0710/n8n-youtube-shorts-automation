@@ -1,0 +1,53 @@
+{
+  "title": "단것 없이도 치아가 상하는 버릇 4",
+  "lane": "oral_daily_habits",
+  "notes": "2026-09-06 큐 전면 교체. 목적: 하루건강약사 인스타 릴스별 팔로우 유입 수 확대. 비교 카드: 무릎 허리 습관 115명. 전략: 이미 아는 충치 상식 대신 치아에 가하는 힘을 구체적인 행동으로 보여준다. 치아 관리 소재의 새 시험이다. 관측 자료만으로 인과나 예상 팔로우 수를 보장하지 않는다. 사실 근거(2026-09-06 원문 확인): 1행: https://www.mouthhealthy.org/bad-habits-for-dental-health 2행: https://www.mouthhealthy.org/bad-habits-for-dental-health 3행: https://www.mouthhealthy.org/bad-habits-for-dental-health 4행: https://www.mouthhealthy.org/bad-habits-for-dental-health 적용 조건: 미국치과의사협회 ADA의 일반 구강 관리 안내다. 질환 진단이나 치료법을 제시하지 않는다.",
+  "topic_key": "teeth_mechanical_habits",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "teeth_mechanical_habits",
+    "hook_title": "단것 없이도 치아가 상하는 버릇 4",
+    "subtitle": "치아에 무리 주는 네 가지 행동",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "얼음 깨물어 먹기",
+        "card_name": "얼음 깨물어 먹기",
+        "reason": "단맛이 없는 얼음도 씹는 힘 때문에 치아나 충전재를 깨뜨릴 수 있어요. 얼음은 깨물지 마세요.",
+        "card_reason": "얼음을 깨물면 치아나 때운 부분이 깨질 수 있어요"
+      },
+      {
+        "rank": 2,
+        "name": "뻣뻣한 칫솔로 문지르기",
+        "card_name": "뻣뻣한 칫솔로 문지르기",
+        "reason": "부드러운 칫솔을 쓰고 힘을 과하게 주지 마세요. 세게 문지르는 행동이 치아와 잇몸을 손상할 수 있어요.",
+        "card_reason": "뻣뻣한 칫솔로 세게 닦으면 치아와 잇몸이 상해요"
+      },
+      {
+        "rank": 3,
+        "name": "포장을 이로 뜯기",
+        "card_name": "포장을 이로 뜯기",
+        "reason": "포장을 뜯거나 물건을 붙잡는 도구로 치아를 쓰지 마세요. 치아가 깨지거나 턱을 다칠 수 있어요.",
+        "card_reason": "포장지를 이로 뜯다가 치아에 금이 갈 수 있어요"
+      },
+      {
+        "rank": 4,
+        "name": "이를 꽉 물고 버티기",
+        "card_name": "이를 꽉 물고 버티기",
+        "reason": "무심코 이를 악무는 행동은 치아 균열과 턱 근육 통증을 일으킬 수 있어요. 턱 통증이나 이갈이가 계속되면 치과에 상담하세요.",
+        "card_reason": "이를 꽉 무는 버릇은 치아에 금을 내고 턱을 아프게 해요"
+      }
+    ],
+    "video_script": "얼음을 깨물면 치아나 때운 부분이 깨질 수 있어요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

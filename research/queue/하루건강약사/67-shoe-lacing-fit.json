@@ -1,0 +1,53 @@
+{
+  "title": "운동화 끈을 발에 맞춰 묶는 요령 4",
+  "lane": "walking_shoe_fit",
+  "notes": "2026-09-06 큐 전면 교체. 목적: 하루건강약사 인스타 릴스별 팔로우 유입 수 확대. 비교 카드: 무릎 허리 습관 115명. 전략: 걷는 사람의 발등 압박과 뒤꿈치 들뜸을 끈의 구체적인 모양으로 해결하는 시험이다. 관측 자료만으로 인과나 예상 팔로우 수를 보장하지 않는다. 사실 근거(2026-09-06 원문 확인): 1행: https://www.rei.com/learn/expert-advice/lacing-running-shoes.html 2행: https://www.rei.com/learn/expert-advice/lacing-running-shoes.html 3행: https://www.rei.com/learn/expert-advice/lacing-running-shoes.html 4행: https://www.rei.com/learn/expert-advice/lacing-running-shoes.html 적용 조건: 일반 운동화 끈 조절법이다. 신발 크기가 맞는 것이 먼저다. 조절해도 통증이나 저림이 계속되면 신발 착용을 멈추고 상태를 확인한다.",
+  "topic_key": "shoe_lacing_fit",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "shoe_lacing_fit",
+    "hook_title": "운동화 끈을 발에 맞춰 묶는 요령 4",
+    "subtitle": "발에 맞는 신발에서 끈만 조절하는 방법",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "발등 누른 곳 비우기",
+        "card_name": "발등 누른 곳 비우기",
+        "reason": "발등이 눌리는 구간 바로 아래까지 끈을 풀어요. 그 구간만 좌우로 교차하지 않고 같은 쪽 다음 구멍에 올린 뒤 다시 교차해 묶어요.",
+        "card_reason": "눌리는 발등 구간은 끈을 교차하지 않고 양옆으로 올려요"
+      },
+      {
+        "rank": 2,
+        "name": "뒤꿈치 고리 묶기",
+        "card_name": "뒤꿈치 고리 묶기",
+        "reason": "맨 위의 여분 구멍에 같은 쪽 끈을 넣어 고리를 만들어요. 반대쪽 끈을 그 고리에 통과시켜 조이면 뒤꿈치를 고정하는 데 도움이 돼요.",
+        "card_reason": "윗구멍 고리에 반대편 끈을 통과시켜 뒤꿈치를 잡아요"
+      },
+      {
+        "rank": 3,
+        "name": "리본을 가로로 묶기",
+        "card_name": "리본을 가로로 묶기",
+        "reason": "매듭을 묶고 신발 양옆을 당겼을 때 리본이 세로로 틀어지는지 보세요. 리본 고리를 감는 방향을 한 단계 바꿔 가로로 놓이는 매듭을 만들어요.",
+        "card_reason": "세로로 서는 리본은 고리 감는 방향을 바꿔 다시 묶어요"
+      },
+      {
+        "rank": 4,
+        "name": "잘 풀리는 끈 바꾸기",
+        "card_name": "잘 풀리는 끈 바꾸기",
+        "reason": "매듭이 자주 풀리면 둥근 끈 대신 납작한 끈을 시도할 수 있어요. 신발에 맞는 길이를 고르세요.",
+        "card_reason": "잘 풀리는 둥근 끈은 납작한 끈으로 바꿔 볼 수 있어요"
+      }
+    ],
+    "video_script": "눌리는 발등 구간은 끈을 교차하지 않고 양옆으로 올려요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

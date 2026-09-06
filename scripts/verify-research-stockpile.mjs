@@ -9,6 +9,8 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const root = 'C:/dev/n8n-youtube-shorts-automation';
 const queueDir = path.join(root, 'research', 'queue');
+const policyFile = path.join(root, 'config', 'topic-queue-policy.json');
+const policy = fs.existsSync(policyFile) ? JSON.parse(fs.readFileSync(policyFile, 'utf8')) : {};
 
 const channels = {
   '하루건강약사': { file: 'workflows/n8n_하루건강약사_수동실행.json', profile: 'haru_health_literacy' },
@@ -27,6 +29,12 @@ for (const [channelDir, channel] of Object.entries(channels)) {
   const dir = path.join(queueDir, channelDir);
   assert.ok(fs.existsSync(dir), `${channelDir}: stockpile folder missing`);
   const files = fs.readdirSync(dir).filter((name) => name.endsWith('.json')).sort();
+  if (policy.channels?.[channelDir]?.status === 'held') {
+    assert.equal(files.length, 0, `${channelDir}: held stockpile contains pending packs`);
+    assert.ok(policy.channels[channelDir].reason, `${channelDir}: hold reason missing`);
+    perChannel[channelDir] = 'held';
+    continue;
+  }
   assert.ok(files.length >= 1, `${channelDir}: the stockpile is empty, so the next run has nothing to publish`);
   perChannel[channelDir] = files.length;
 

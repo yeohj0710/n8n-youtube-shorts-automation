@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import sqlite3 from 'sqlite3';
+import { createHash } from 'node:crypto';
 
 const root = 'C:/dev/n8n-youtube-shorts-automation';
 const bundleRoot = path.join(root, 'data/source-reel-bundles');
@@ -33,7 +34,24 @@ const mdIds = new Set();
 function mdFiles(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => entry.isDirectory() ? mdFiles(path.join(dir, entry.name)) : (entry.name.endsWith('.md') ? [path.join(dir, entry.name)] : []));
 }
-for (const topicDir of topicDirs) for (const file of mdFiles(topicDir)) {
+const topicFiles = topicDirs.flatMap(mdFiles);
+const policyFile = path.join(root, 'config/topic-queue-policy.json');
+const policy = fs.existsSync(policyFile) ? JSON.parse(fs.readFileSync(policyFile, 'utf8')) : {};
+// Held source documents still belong to their bundles. Check their exact saved
+// bytes without putting them back into the active publishing folders.
+for (const manifestPath of policy.hold_manifests || []) {
+  const manifestFile = path.resolve(root, manifestPath);
+  if (!manifestFile.startsWith(path.resolve(root, 'etc') + path.sep)) throw new Error('hold manifest outside etc');
+  const held = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+  for (const item of held.items || []) {
+    const file = path.resolve(root, item.held);
+    if (!file.startsWith(path.resolve(root, 'etc') + path.sep)) throw new Error('held file outside etc');
+    const bytes = fs.readFileSync(file);
+    if (createHash('sha256').update(bytes).digest('hex') !== item.sha256) throw new Error(`held file changed: ${file}`);
+    if (file.endsWith('.md')) topicFiles.push(file);
+  }
+}
+for (const file of topicFiles) {
   const name = path.basename(file);
   const text = fs.readFileSync(file, 'utf8');
   const sourceId = text.match(/^SOURCE_ID=(.+)$/m)?.[1]?.trim();

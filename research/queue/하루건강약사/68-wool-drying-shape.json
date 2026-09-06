@@ -1,0 +1,53 @@
+{
+  "title": "울 니트 모양 지키는 건조 요령 4",
+  "lane": "wool_knit_care",
+  "notes": "2026-09-06 큐 전면 교체. 목적: 하루건강약사 인스타 릴스별 팔로우 유입 수 확대. 비교 카드: 집안일 258명. 전략: 빨래를 마친 뒤 니트가 늘어나는 원인을 건조 방식으로 구분한다. 여름옷 보관 카드의 행은 반복하지 않는다. 관측 자료만으로 인과나 예상 팔로우 수를 보장하지 않는다. 사실 근거(2026-09-06 원문 확인): 1행: https://www.woolmark.com/care/how-to-dry-wool/ 2행: https://www.woolmark.com/care/how-to-dry-wool/ 3행: https://www.woolmark.com/care/how-to-dry-wool/ 4행: https://www.woolmark.com/care/how-to-dry-wool/ 적용 조건: 물세탁 가능한 울 니트 기준이다. 옷의 세탁 표시가 우선이며 드라이 전용 옷은 제외한다. 건조기 사용 가능 표시가 있는 제품은 예외다.",
+  "topic_key": "wool_drying_shape",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "wool_drying_shape",
+    "hook_title": "울 니트 모양 지키는 건조 요령 4",
+    "subtitle": "물세탁 가능한 울 니트 기준",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "수평으로 눕혀 말리기",
+        "card_name": "수평으로 눕혀 말리기",
+        "reason": "젖은 니트를 옷걸이나 빨랫줄에 걸면 물의 무게로 옷 길이가 늘어날 수 있어요. 평평하게 눕혀 말리세요.",
+        "card_reason": "젖은 울 니트는 물 무게로 늘어나서 눕혀 말려요"
+      },
+      {
+        "rank": 2,
+        "name": "흰 수건 위에 펴기",
+        "card_name": "흰 수건 위에 펴기",
+        "reason": "평평하게 말릴 때는 보풀이 적고 흰색이나 옅은색인 수건을 받쳐요. 전용 건조망도 쓸 수 있어요.",
+        "card_reason": "울 니트는 보풀 없는 흰 수건 위에 펴서 말려요"
+      },
+      {
+        "rank": 3,
+        "name": "젖었을 때 모양 잡기",
+        "card_name": "젖었을 때 모양 잡기",
+        "reason": "눕힌 니트의 모양과 크기를 손으로 부드럽게 정돈해요. 접힌 부분을 최대한 펴고 자연스럽게 말리세요.",
+        "card_reason": "젖은 울 니트는 손으로 원래 모양을 잡은 뒤 말려요"
+      },
+      {
+        "rank": 4,
+        "name": "난방기에서 떨어뜨리기",
+        "card_name": "난방기에서 떨어뜨리기",
+        "reason": "난방기 위나 강한 직사광선 아래에서 울 니트를 말리지 마세요. 특정 부위가 빠르게 마르며 색이나 섬유가 상할 수 있어요.",
+        "card_reason": "난방기에 걸친 울 니트는 닿은 부분의 색이 변할 수 있어요"
+      }
+    ],
+    "video_script": "젖은 울 니트는 물 무게로 늘어나서 눕혀 말려요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

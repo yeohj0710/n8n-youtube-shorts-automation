@@ -1,0 +1,53 @@
+{
+  "title": "아는 재료로 맛을 바꾸는 집밥 요령 4",
+  "lane": "cooking_texture",
+  "notes": "2026-09-06 큐 전면 교체. 목적: 하루건강약사 인스타 릴스별 팔로우 유입 수 확대. 비교 카드: 집밥 한 끗 391명. 전략: 익숙한 음식 네 가지에 각각 다른 조리 요령을 준다. 기존 집밥 카드의 케첩·콜라 조합은 반복하지 않는다. 관측 자료만으로 인과나 예상 팔로우 수를 보장하지 않는다. 사실 근거(2026-09-06 원문 확인): 1행: https://www.maangchi.com/recipe/gamjajeon 2행: https://www.maangchi.com/recipe/dubu-jorim 3행: https://www.maangchi.com/recipe/mattang 4행: https://www.maangchi.com/recipe/broccoli-dubu-muchim 적용 조건: 음식의 질감과 조리법만 설명한다. 건강 개선이나 특정 조리법의 우월함을 보장하지 않는다.",
+  "topic_key": "cooking_small_changes",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "nutrition_food_choices",
+    "topic_key": "cooking_small_changes",
+    "hook_title": "아는 재료로 맛을 바꾸는 집밥 요령 4",
+    "subtitle": "오늘 저녁에 써볼 네 가지 조리 요령",
+    "visual_profile": "kitchen_table",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "감자전에 앙금 넣기",
+        "card_name": "감자전에 앙금 넣기",
+        "reason": "감자를 간 뒤 체에 받친 물은 잠시 두세요. 바닥에 가라앉은 전분을 건져 감자 반죽에 섞으면 밀가루 없이 감자전을 부칠 수 있어요.",
+        "card_reason": "감자 간 물을 가라앉혀 나온 전분을 반죽에 다시 넣어요"
+      },
+      {
+        "rank": 2,
+        "name": "두부 양념 먼저 졸이기",
+        "card_name": "두부 양념 먼저 졸이기",
+        "reason": "두부를 노릇하게 구워 꺼낸 뒤 양파와 양념을 따로 졸여요. 구운 두부를 마지막에 넣어 짧게 버무리는 조리법이에요.",
+        "card_reason": "두부조림은 양념부터 졸여 구운 두부를 마지막에 넣어요"
+      },
+      {
+        "rank": 3,
+        "name": "맛탕 설탕 젓지 않기",
+        "card_name": "맛탕 설탕 젓지 않기",
+        "reason": "맛탕용 설탕을 기름 위에서 녹일 때는 주걱으로 젓지 않고 팬을 기울여요. 설탕이 다시 알갱이로 굳는 현상을 줄이는 요령이에요.",
+        "card_reason": "맛탕 시럽은 설탕을 젓지 않고 팬을 기울여 녹여요"
+      },
+      {
+        "rank": 4,
+        "name": "브로콜리에 두부 무치기",
+        "card_name": "브로콜리에 두부 무치기",
+        "reason": "데친 두부를 식혀 물기를 짠 뒤 데친 브로콜리와 함께 으깨 무쳐요. 초장에 찍어 먹던 브로콜리를 고소한 반찬으로 바꾸는 방법이에요.",
+        "card_reason": "데친 두부의 물기를 짜서 브로콜리에 으깨 넣고 무쳐요"
+      }
+    ],
+    "video_script": "감자 간 물을 가라앉혀 나온 전분을 반죽에 다시 넣어요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "집밥"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

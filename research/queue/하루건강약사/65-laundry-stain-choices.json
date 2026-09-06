@@ -1,0 +1,53 @@
+{
+  "title": "옷 얼룩마다 달라지는 첫 세탁 방법 4",
+  "lane": "laundry_stains",
+  "notes": "2026-09-06 큐 전면 교체. 목적: 하루건강약사 인스타 릴스별 팔로우 유입 수 확대. 비교 카드: 집안일 258명·계란 보관 144명. 전략: 같은 물세탁도 오염물마다 첫 대응을 구분한다. 토마토 얼룩의 뒷면 헹굼을 첫 행에 둔다. 관측 자료만으로 인과나 예상 팔로우 수를 보장하지 않는다. 사실 근거(2026-09-06 원문 확인): 1행: https://www.cleaninginstitute.org/cleaning-tips/clothes/stain-guide/tomato-sauce-and-spaghetti-dinner-stains 2행: https://www.cleaninginstitute.org/cleaning-tips/clothes/stain-removal-guide 3행: https://www.cleaninginstitute.org/cleaning-tips/clothes/stain-guide/tomato-sauce-and-spaghetti-dinner-stains 4행: https://www.cleaninginstitute.org/cleaning-tips/clothes/stain-removal-guide 적용 조건: 물세탁 가능한 옷에만 적용한다. 옷의 세탁 표시를 따르고 눈에 안 띄는 곳에서 변색 여부를 먼저 확인한다. 드라이 전용 옷은 제외한다.",
+  "topic_key": "laundry_stain_choices",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "laundry_stain_choices",
+    "hook_title": "옷 얼룩마다 달라지는 첫 세탁 방법 4",
+    "subtitle": "물세탁 가능한 옷 기준 · 세탁 표시 확인",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "토마토 얼룩은 뒷면부터",
+        "card_name": "토마토 얼룩은 뒷면부터",
+        "reason": "물세탁 가능한 옷의 토마토 소스는 덩어리를 걷어 낸 뒤 얼룩 뒷면에서 찬물을 흘려요. 앞면에서 밀어 넣지 않는 것이 요령이에요.",
+        "card_reason": "토마토 얼룩은 옷 뒷면에서 찬물을 흘려 밀어내요"
+      },
+      {
+        "rank": 2,
+        "name": "막 묻은 피는 찬물로",
+        "card_name": "막 묻은 피는 찬물로",
+        "reason": "갓 묻은 핏자국은 찬물에 담가 먼저 빼세요. 뜨거운 물은 얼룩을 더 고착시킬 수 있어요. 오래된 핏자국은 세탁 방법이 달라요.",
+        "card_reason": "막 묻은 핏자국은 뜨거운 물에 더 굳어서 찬물로 빼요"
+      },
+      {
+        "rank": 3,
+        "name": "버터는 얼룩제부터",
+        "card_name": "버터는 얼룩제부터",
+        "reason": "버터가 묻은 부분에 세탁 전용 얼룩제부터 쓰세요. 그다음 옷의 세탁 표시에서 허용하는 물 온도로 세탁해요.",
+        "card_reason": "버터 얼룩은 얼룩제부터 바른 뒤 옷에 맞는 온도로 빨아요"
+      },
+      {
+        "rank": 4,
+        "name": "얼룩 남으면 건조 미루기",
+        "card_name": "얼룩 남으면 건조 미루기",
+        "reason": "세탁이 끝나도 얼룩이 남았으면 건조기에 넣기 전에 다시 처리하세요. 건조기 열로 자국이 굳으면 제거가 더 어려워요.",
+        "card_reason": "얼룩이 남은 옷은 건조기 열에 자국이 더 굳을 수 있어요"
+      }
+    ],
+    "video_script": "토마토 얼룩은 옷 뒷면에서 찬물을 흘려 밀어내요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

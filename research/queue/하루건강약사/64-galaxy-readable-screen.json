@@ -1,0 +1,53 @@
+{
+  "title": "갤럭시 작은 글씨를 또렷하게 보는 기능 4",
+  "lane": "phone_accessibility",
+  "notes": "2026-09-06 큐 전면 교체. 목적: 하루건강약사 인스타 릴스별 팔로우 유입 수 확대. 비교 카드: 돈 쓰는 순서 83명·안약 사용 86명. 전략: 매일 겪는 읽기 불편을 바로 줄이는 기능을 실험한다. 설정 위치와 실제 메뉴 이름을 함께 남긴다. 관측 자료만으로 인과나 예상 팔로우 수를 보장하지 않는다. 사실 근거(2026-09-06 원문 확인): 1행: https://www.samsung.com/sec/sustainability/accessibility/mobile/ 2행: https://www.samsung.com/sec/sustainability/accessibility/mobile/ 3행: https://www.samsung.com/sec/sustainability/accessibility/mobile/ 4행: https://www.samsung.com/sec/sustainability/accessibility/mobile/ 적용 조건: 삼성 갤럭시 기준이다. 설정의 검색창에서 기능 이름을 찾는다. 기종과 One UI 버전에 따라 메뉴 이름과 지원 여부가 다르다.",
+  "topic_key": "galaxy_readable_screen",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "galaxy_readable_screen",
+    "hook_title": "갤럭시 작은 글씨를 또렷하게 보는 기능 4",
+    "subtitle": "갤럭시 설정 검색창에서 기능 이름 찾기",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "화면 모드 크게 보기",
+        "card_name": "화면 모드 크게 보기",
+        "reason": "설정에서 화면 모드를 검색하고 큰 화면 표시를 고르세요. 지원 기종에서는 글자와 화면 배율을 함께 조절할 수 있어요.",
+        "card_reason": "갤럭시 화면 모드의 큰 화면은 글자와 화면을 함께 키워요"
+      },
+      {
+        "rank": 2,
+        "name": "고대비 글자 켜기",
+        "card_name": "고대비 글자 켜기",
+        "reason": "설정의 접근성 메뉴에서 고대비 글자를 찾으세요. 글자와 윤곽선의 색을 조절해 배경에서 더 잘 구분하도록 해줘요.",
+        "card_reason": "고대비 글자는 글씨 테두리를 또렷하게 보여줘요"
+      },
+      {
+        "rank": 3,
+        "name": "고대비 키보드 켜기",
+        "card_name": "고대비 키보드 켜기",
+        "reason": "설정에서 고대비 키보드를 검색하세요. 삼성 키보드의 글자판과 배경색을 구분하기 쉬운 조합으로 바꿀 수 있어요.",
+        "card_reason": "고대비 키보드는 글자판과 배경의 색을 뚜렷하게 나눠요"
+      },
+      {
+        "rank": 4,
+        "name": "돋보기로 작은 글씨 보기",
+        "card_name": "돋보기로 작은 글씨 보기",
+        "reason": "설정의 접근성에서 돋보기를 찾으세요. 카메라로 비춘 물건의 글씨를 크게 볼 수 있어요. 화면 안을 확대하는 기능과는 달라요.",
+        "card_reason": "갤럭시 돋보기는 카메라로 비춘 작은 글씨를 키워줘요"
+      }
+    ],
+    "video_script": "갤럭시 화면 모드의 큰 화면은 글자와 화면을 함께 키워요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

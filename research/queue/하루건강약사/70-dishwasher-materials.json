@@ -1,0 +1,53 @@
+{
+  "title": "식기세척기에서 상하기 쉬운 주방용품 4",
+  "lane": "dishwasher_materials",
+  "notes": "2026-09-06 큐 전면 교체. 목적: 하루건강약사 인스타 릴스별 팔로우 유입 수 확대. 비교 카드: 집안일 258명·계란 보관 144명. 전략: 세척하면 더 좋을 것 같은 물건을 재질별로 구분한다. 기존 뜨거운 음식 용기 카드와 다른 물건을 고른다. 관측 자료만으로 인과나 예상 팔로우 수를 보장하지 않는다. 사실 근거(2026-09-06 원문 확인): 1행: https://media3.bosch-home.com/Documents/9001179846_A.pdf 2행: https://media3.bosch-home.com/Documents/9001179846_A.pdf 3행: https://media3.bosch-home.com/Documents/9001179846_A.pdf 4행: https://media3.bosch-home.com/Documents/9001179846_A.pdf 적용 조건: 일반적인 재질 안내다. 제품에 식기세척기 사용 가능 표시가 있으면 제품 설명을 우선한다. 무쇠는 코팅 없는 제품을 뜻한다.",
+  "topic_key": "dishwasher_materials",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "dishwasher_materials",
+    "hook_title": "식기세척기에서 상하기 쉬운 주방용품 4",
+    "subtitle": "제품의 식기세척기 사용 표시 먼저 확인",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "나무 손잡이 조리도구",
+        "card_name": "나무 손잡이 조리도구",
+        "reason": "나무 그릇뿐 아니라 손잡이만 나무인 조리도구도 손세척해요. 나무는 갈라지거나 뒤틀리고 표면 마감이 벗겨질 수 있어요.",
+        "card_reason": "나무 손잡이는 식기세척기에서 갈라지거나 뒤틀릴 수 있어요"
+      },
+      {
+        "rank": 2,
+        "name": "코팅 없는 무쇠팬",
+        "card_name": "코팅 없는 무쇠팬",
+        "reason": "코팅 없는 철제·무쇠 조리도구는 손으로 씻고 바로 말리세요. 에나멜 코팅 제품은 별도 사용 설명을 따르세요.",
+        "card_reason": "코팅 없는 무쇠팬은 식기세척기로 씻으면 녹이 슬 수 있어요"
+      },
+      {
+        "rank": 3,
+        "name": "손으로 그린 장식 그릇",
+        "card_name": "손으로 그린 장식 그릇",
+        "reason": "손으로 그린 장식 무늬가 있는 그릇은 손세척하는 편이 좋아요. 식기세척기 사용을 허용한 제품은 제품 안내를 따르세요.",
+        "card_reason": "손으로 그린 그릇 무늬는 식기세척기에서 바랠 수 있어요"
+      },
+      {
+        "rank": 4,
+        "name": "접착제로 붙인 손잡이",
+        "card_name": "접착제로 붙인 손잡이",
+        "reason": "손잡이나 장식을 접착제로 붙인 조리도구는 식기세척기에서 접합부가 약해질 수 있어요. 소재뿐 아니라 붙인 방식도 살펴보세요.",
+        "card_reason": "접착제로 붙인 손잡이는 식기세척기에서 느슨해질 수 있어요"
+      }
+    ],
+    "video_script": "나무 손잡이는 식기세척기에서 갈라지거나 뒤틀릴 수 있어요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

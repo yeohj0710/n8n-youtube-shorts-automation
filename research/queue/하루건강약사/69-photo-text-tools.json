@@ -1,0 +1,53 @@
+{
+  "title": "사진 글자를 복사·번역하는 구글 렌즈 사용법 4",
+  "lane": "phone_photo_text",
+  "notes": "2026-09-06 큐 전면 교체. 목적: 하루건강약사 인스타 릴스별 팔로우 유입 수 확대. 비교 카드: 돈 쓰는 순서 83명. 전략: 읽고 입력하는 수고를 줄이는 무료 기능을 시험한다. 각각의 버튼을 누르면 무엇을 얻는지 보여준다. 관측 자료만으로 인과나 예상 팔로우 수를 보장하지 않는다. 사실 근거(2026-09-06 원문 확인): 1행: https://support.google.com/websearch/answer/14516623?hl=ko 2행: https://support.google.com/websearch/answer/14516623?hl=ko 3행: https://support.google.com/websearch/answer/14516623?hl=ko 4행: https://support.google.com/websearch/answer/14516623?hl=ko 적용 조건: Google 앱의 렌즈에서 사진을 열고 텍스트를 선택하는 기능이다. 기기와 앱 버전에 따라 메뉴가 다르다. 글자 인식과 번역 결과는 원문과 대조한다.",
+  "topic_key": "photo_text_tools",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "photo_text_tools",
+    "hook_title": "사진 글자를 복사·번역하는 구글 렌즈 사용법 4",
+    "subtitle": "Google 앱에서 렌즈 열고 사진 선택",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "글씨 복사하기",
+        "card_name": "글씨 복사하기",
+        "reason": "Google 앱의 검색창에서 렌즈를 열고 사진을 고르세요. 텍스트 선택 뒤 복사를 누르면 사진의 글씨를 다른 앱에 붙여넣을 수 있어요.",
+        "card_reason": "구글 렌즈에서 사진 속 글씨를 골라 복사할 수 있어요"
+      },
+      {
+        "rank": 2,
+        "name": "외국어 번역하기",
+        "card_name": "외국어 번역하기",
+        "reason": "사진에서 번역할 글씨를 선택하고 번역을 누르세요. 원문과 번역할 언어를 지정할 수 있어요. 중요한 문장은 원문을 다시 확인하세요.",
+        "card_reason": "구글 렌즈는 사진 속 외국어를 골라 한국어로 바꿔줘요"
+      },
+      {
+        "rank": 3,
+        "name": "안내문 소리로 듣기",
+        "card_name": "안내문 소리로 듣기",
+        "reason": "텍스트를 선택한 뒤 듣기를 누르면 선택한 부분을 소리로 들을 수 있어요. 지원 언어와 메뉴는 앱 버전에 따라 달라요.",
+        "card_reason": "구글 렌즈에서 글씨를 골라 듣기를 누르면 읽어줘요"
+      },
+      {
+        "rank": 4,
+        "name": "주소를 지도로 열기",
+        "card_name": "주소를 지도로 열기",
+        "reason": "사진에서 인식한 주소를 선택하면 지도 보기 메뉴를 사용할 수 있어요. 길을 찾기 전에 인식한 주소가 맞는지 확인하세요.",
+        "card_reason": "구글 렌즈에서 주소를 고른 뒤 지도 메뉴로 위치를 찾아요"
+      }
+    ],
+    "video_script": "구글 렌즈에서 사진 속 글씨를 골라 복사할 수 있어요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

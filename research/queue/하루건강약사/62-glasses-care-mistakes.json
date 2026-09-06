@@ -1,0 +1,53 @@
+{
+  "title": "안경 수명 줄이는 뜻밖의 관리 습관 4",
+  "lane": "vision_daily_care",
+  "notes": "2026-09-06 큐 전면 교체. 목적: 하루건강약사 인스타 릴스별 팔로우 유입 수 확대. 비교 카드: 집안일 258명·계란 보관 144명. 전략: 매일 쓰는 물건과 선의의 관리 실수를 묶는다. 안경닦이에 섬유유연제를 쓰는 실수를 첫 행에 둔다. 관측 자료만으로 인과나 예상 팔로우 수를 보장하지 않는다. 사실 근거(2026-09-06 원문 확인): 1행: https://www.zeiss.com/vision-care/en/eye-health-and-care/health-prevention/whats-the-right-way-to-clean-and-care-for-your-glasses.html 2행: https://www.zeiss.com/vision-care/en/eye-health-and-care/health-prevention/whats-the-right-way-to-clean-and-care-for-your-glasses.html 3행: https://www.zeiss.com/vision-care/en/eye-health-and-care/health-prevention/whats-the-right-way-to-clean-and-care-for-your-glasses.html 4행: https://www.zeiss.com/vision-care/en/eye-health-and-care/health-prevention/whats-the-right-way-to-clean-and-care-for-your-glasses.html 적용 조건: 일반 렌즈 관리 안내다. 특수 코팅과 안경테는 제품 관리 설명을 우선한다.",
+  "topic_key": "glasses_care_mistakes",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "glasses_care_mistakes",
+    "hook_title": "안경 수명 줄이는 뜻밖의 관리 습관 4",
+    "subtitle": "일반 렌즈 기준 · 제품 관리법 먼저 확인",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "안경닦이에 유연제 쓰기",
+        "card_name": "안경닦이에 유연제 쓰기",
+        "reason": "안경닦이를 세탁할 때 섬유유연제를 빼세요. 렌즈에 줄무늬와 닦은 자국이 남을 수 있어요.",
+        "card_reason": "섬유유연제로 빤 안경닦이는 렌즈에 닦은 자국을 남겨요"
+      },
+      {
+        "rank": 2,
+        "name": "옷소매로 렌즈 닦기",
+        "card_name": "옷소매로 렌즈 닦기",
+        "reason": "옷소매나 일반 휴지에 묻은 먼지와 이물질은 렌즈를 문지를 때 잔흠집을 낼 수 있어요. 전용 천과 적합한 세정제를 쓰세요.",
+        "card_reason": "옷소매에 묻은 먼지 때문에 렌즈에 잔흠집이 나요"
+      },
+      {
+        "rank": 3,
+        "name": "안경을 차 안에 두기",
+        "card_name": "안경을 차 안에 두기",
+        "reason": "한여름 차 안 대시보드처럼 뜨거운 곳에 안경을 오래 두지 마세요. 높은 온도와 온도 변화가 렌즈 코팅을 손상할 수 있어요.",
+        "card_reason": "여름철 뜨거운 차 안에서는 안경 렌즈 코팅이 상해요"
+      },
+      {
+        "rank": 4,
+        "name": "렌즈를 바닥으로 놓기",
+        "card_name": "렌즈를 바닥으로 놓기",
+        "reason": "안경집이 없을 때는 렌즈가 위를 향하도록 안전한 곳에 놓으세요. 렌즈가 바닥에 닿아 긁히는 일을 피할 수 있어요.",
+        "card_reason": "안경 렌즈가 바닥에 닿으면 잔흠집이 생길 수 있어요"
+      }
+    ],
+    "video_script": "섬유유연제로 빤 안경닦이는 렌즈에 닦은 자국을 남겨요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "updated_at": "2026-09-06",
+  "instagram_account": "haruyaksa",
+  "hold_manifests": ["etc/held-haruyaksa-queue/hold-manifest.json"],
+  "reason": "사용자 요청에 따라 기존 소재를 보류하고 최신 실적으로 큐를 다시 작성함. 새 소재는 하루건강약사 회로에서 순서대로 사용함.",
+  "channels": {
+    "하루건강약사": {"status": "active", "replacement_pack_count": 10},
+    "건강장수비결": {
+      "status": "held",
+      "reason": "같은 인스타 계정으로 들어가는 별도 제작 큐를 보류함. 이번 신규 배치는 하루건강약사 회로에 모음.",
+      "hold_manifest": "etc/held-haruyaksa-queue/hold-manifest.json"
+    }
+  }
+}

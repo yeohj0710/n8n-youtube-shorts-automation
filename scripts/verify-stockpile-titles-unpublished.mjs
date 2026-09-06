@@ -8,6 +8,8 @@ import path from 'node:path';
 
 const root = 'C:/dev/n8n-youtube-shorts-automation';
 const queueDir = path.join(root, 'research', 'queue');
+const policyFile = path.join(root, 'config', 'topic-queue-policy.json');
+const policy = fs.existsSync(policyFile) ? JSON.parse(fs.readFileSync(policyFile, 'utf8')) : {};
 const parents = [
   { dir: '하루건강약사', file: 'workflows/n8n_하루건강약사_수동실행.json' },
   { dir: '건강장수비결', file: 'workflows/n8n_geongangjangsubigyeol_manual.json' },
@@ -36,6 +38,16 @@ for (const parent of parents) {
   assert.ok(fs.existsSync(dir), `${parent.dir}: stockpile folder missing`);
 
   const files = fs.readdirSync(dir).filter((name) => name.endsWith('.json')).sort();
+  const channelPolicy = policy.channels?.[parent.dir];
+  if (channelPolicy?.status === 'held') {
+    assert.ok(channelPolicy.reason, `${parent.dir}: held queue needs a reason`);
+    assert.equal(files.length, 0, `${parent.dir}: held queue must not contain pending packs`);
+    const drop = path.join(root, `${parent.dir} 소재`);
+    const pending = fs.readdirSync(drop).filter(name => !name.startsWith('.') && !['README.md','README.txt','queue.txt','줄소재.txt'].includes(name) && /\.(json|md|txt)$/i.test(name));
+    assert.equal(pending.length, 0, `${parent.dir}: held drop must not contain pending topics`);
+    console.log(`HELD: ${parent.dir} — ${channelPolicy.reason}`);
+    continue;
+  }
   assert.ok(files.length >= 1, `${parent.dir}: stockpile is empty`);
 
   for (const file of files) {
