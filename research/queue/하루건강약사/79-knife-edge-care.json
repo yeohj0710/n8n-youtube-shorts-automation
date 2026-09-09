@@ -1,0 +1,53 @@
+{
+  "title": "칼날을 금방 무디게 만드는 주방 습관 4",
+  "lane": "kitchenware",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 집안일 손실 방지 형식을 칼날 관리로 확장하며 무조건 비싼 칼을 사라는 결론을 피한다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.zwilling.com/us/magazine/product-guide-knives/knife-use-care.html 2. https://www.zwilling.com/on/demandware.static/-/Sites-zwilling-be-Library/default/v271bce3f9aba9e50cab586e2531e76dca1900bcf/downloads/zwilling-knives-8003149_LR.pdf 3. https://www.zwilling.com/us/about-us/use-care/article-use-care-knife-sharpening/",
+  "topic_key": "knife_edge_care",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "knife_edge_care",
+    "hook_title": "칼날을 금방 무디게 만드는 주방 습관 4",
+    "subtitle": "생활에서 바로 써먹는 구체적인 방법 네 가지",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "유리판 위에서 썰기",
+        "card_name": "유리판 위에서 썰기",
+        "reason": "유리나 도자기 위에서 칼질하면 칼날이 빨리 무뎌져요. 칼날이 닿는 도마 재질도 날 유지에 영향을 줘요. 나무 등 칼날을 덜 상하게 하는 도마를 써요.",
+        "card_reason": "유리나 도자기 위에서 칼질하면 칼날이 빨리 무뎌져요"
+      },
+      {
+        "rank": 2,
+        "name": "서랍에 칼 섞어 넣기",
+        "card_name": "서랍에 칼 섞어 넣기",
+        "reason": "칼을 수저와 섞어 넣으면 부딪치며 날이 상할 수 있어요. 칼집이나 칼 전용 칸으로 날이 다른 물건과 부딪치지 않게 해요.",
+        "card_reason": "칼을 수저와 섞어 넣으면 부딪치며 날이 상할 수 있어요"
+      },
+      {
+        "rank": 3,
+        "name": "식기세척기에 넣기",
+        "card_name": "식기세척기에 넣기",
+        "reason": "식기세척기의 세제와 충돌은 칼날 수명을 줄일 수 있어요. 세척기 사용 가능 표시가 있어도 날 보존에는 손세척이 권장돼요.",
+        "card_reason": "식기세척기의 세제와 충돌은 칼날 수명을 줄일 수 있어요"
+      },
+      {
+        "rank": 4,
+        "name": "톱니칼 일반 연마하기",
+        "card_name": "톱니칼 일반 연마하기",
+        "reason": "톱니칼은 일반 칼처럼 연마봉에 문질러 갈지 않아요. 톱니칼은 제조사나 전문 연마 안내를 따르세요. 일반 칼과 날 모양이 달라요.",
+        "card_reason": "톱니칼은 일반 칼처럼 연마봉에 문질러 갈지 않아요"
+      }
+    ],
+    "video_script": "유리나 도자기 위에서 칼질하면 칼날이 빨리 무뎌져요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

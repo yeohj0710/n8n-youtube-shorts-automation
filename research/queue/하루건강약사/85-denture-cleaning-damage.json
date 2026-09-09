@@ -1,0 +1,53 @@
+{
+  "title": "틀니 망가뜨리는 세척과 보관 습관 4",
+  "lane": "health",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 기존 치아 습관과 다른 틀니 관리로 약 복용 설명보다 즉시 적용할 행동을 시험한다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.cuh.nhs.uk/patient-information-leaflets/denture-care-looking-after-your-dentures/ 2. https://www.ncic.nhs.uk/patients-visitors/patient-information-leaflets/denture-care-instructions-for-plastic-dentures 3. https://www.mouthhealthy.org/all-topics-a-z/dentures-partial 4. https://www.whittington.nhs.uk/document.ashx?id=14375 적용 조건: 틀니의 재료와 치과 지시에 맞는 세척제를 사용한다. 보관 시 물에 담글지 여부도 재료와 치과 안내를 따른다.",
+  "topic_key": "denture_cleaning_damage",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "denture_cleaning_damage",
+    "hook_title": "틀니 망가뜨리는 세척과 보관 습관 4",
+    "subtitle": "틀니의 재료와 치과 지시에 맞는 세척제를 사용한다. 보관 시 물에 담글지 여부도 재료와 치과 안내를 따른다.",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "치약으로 세게 문지르기",
+        "card_name": "치약으로 세게 문지르기",
+        "reason": "틀니에 일반 치약을 쓰면 표면에 잔흠집이 생길 수 있어요. 연마 성분이 있는 일반 치약 대신 틀니용 세정제와 부드러운 솔을 써요.",
+        "card_reason": "틀니에 일반 치약을 쓰면 표면에 잔흠집이 생길 수 있어요"
+      },
+      {
+        "rank": 2,
+        "name": "뜨거운 물로 소독하기",
+        "card_name": "뜨거운 물로 소독하기",
+        "reason": "뜨거운 물은 틀니 모양을 바꿔 입에 안 맞게 할 수 있어요. 틀니를 삶거나 뜨거운 물에 담가 소독하지 않아요.",
+        "card_reason": "뜨거운 물은 틀니 모양을 바꿔 입에 안 맞게 할 수 있어요"
+      },
+      {
+        "rank": 3,
+        "name": "빈 세면대 위에서 닦기",
+        "card_name": "빈 세면대 위에서 닦기",
+        "reason": "딱딱한 세면대에 틀니를 떨어뜨리면 깨질 수 있어요. 세면대에 수건을 깔거나 물을 받아 낙하 충격을 줄이고 닦아요.",
+        "card_reason": "딱딱한 세면대에 틀니를 떨어뜨리면 깨질 수 있어요"
+      },
+      {
+        "rank": 4,
+        "name": "금속 틀니 표백제 담그기",
+        "card_name": "금속 틀니 표백제 담그기",
+        "reason": "금속이 든 틀니는 표백 성분 세정제에 상할 수 있어요. 부분 틀니의 금속 고리를 손상시킬 수 있어요. 금속 틀니용으로 허용된 세정제인지 확인해요.",
+        "card_reason": "금속이 든 틀니는 표백 성분 세정제에 상할 수 있어요"
+      }
+    ],
+    "video_script": "틀니에 일반 치약을 쓰면 표면에 잔흠집이 생길 수 있어요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

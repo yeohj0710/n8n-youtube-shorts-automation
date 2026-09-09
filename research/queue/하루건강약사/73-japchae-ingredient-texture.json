@@ -1,0 +1,53 @@
+{
+  "title": "잡채, 당면부터 지단까지 다르게 다뤄요 4",
+  "lane": "cooking",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 집밥 상위 카드의 구체적인 재료별 요령을 이어가되 기존 케첩·콜라 조합을 반복하지 않는다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.maangchi.com/recipe/japchae",
+  "topic_key": "japchae_ingredient_texture",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "japchae_ingredient_texture",
+    "hook_title": "잡채, 당면부터 지단까지 다르게 다뤄요 4",
+    "subtitle": "생활에서 바로 써먹는 구체적인 방법 네 가지",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "당면부터 따로 버무리기",
+        "card_name": "당면부터 따로 버무리기",
+        "reason": "삶은 당면은 참기름과 양념에 먼저 버무려 덜 붙게 해요. 당면을 건져 먹기 좋은 길이로 자른 뒤 참기름·간장·설탕에 버무려요. 보관 중 불지 않는다는 뜻은 아니에요.",
+        "card_reason": "삶은 당면은 참기름과 양념에 먼저 버무려 덜 붙게 해요"
+      },
+      {
+        "rank": 2,
+        "name": "시금치 물기 짜기",
+        "card_name": "시금치 물기 짜기",
+        "reason": "데친 시금치는 물기를 짜야 잡채 양념이 덜 묽어져요. 찬물로 식힌 시금치를 짜서 별도로 무친 뒤 섞어요.",
+        "card_reason": "데친 시금치는 물기를 짜야 잡채 양념이 덜 묽어져요"
+      },
+      {
+        "rank": 3,
+        "name": "채소 나눠 볶기",
+        "card_name": "채소 나눠 볶기",
+        "reason": "당근과 버섯은 따로 볶아 재료마다 익는 때를 맞춰요. 재료별 두께와 수분이 다르므로 한 팬에 한꺼번에 넣지 않고 차례로 볶아요.",
+        "card_reason": "당근과 버섯은 따로 볶아 재료마다 익는 때를 맞춰요"
+      },
+      {
+        "rank": 4,
+        "name": "달걀지단 마지막에",
+        "card_name": "달걀지단 마지막에",
+        "reason": "잘 찢어지는 달걀지단은 잡채를 버무린 뒤 올려요. 다른 재료를 섞고 간을 맞춘 뒤 지단을 넣어 가볍게 마무리해요.",
+        "card_reason": "잘 찢어지는 달걀지단은 잡채를 버무린 뒤 올려요"
+      }
+    ],
+    "video_script": "삶은 당면은 참기름과 양념에 먼저 버무려 덜 붙게 해요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "title": "우체국 창구 밖에서도 쓰는 우편 서비스 4",
+  "lane": "public_service",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 무료 수거처럼 기관 이름과 실제 신청 방법이 남는 생활 서비스를 시험한다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.koreapost.go.kr/kpost/subIndex/225.do?pSiteIdx=125 2. https://play.google.com/store/apps/details?hl=ko&id=kr.go.epost.app.findZip 3. https://ems.epost.go.kr/upFile/guide/2022emsPrice.pdf 4. https://www.koreapost.go.kr/kpost/subIndex/221.do?pSiteIdx=125 5. https://www.koreapost.go.kr/site/kpost/download/%EA%B5%AD%EB%82%B4%ED%86%B5%EC%83%81%EC%9A%B0%ED%8E%B8%EC%9A%94%EA%B8%88%EB%B0%8F%EC%9A%B0%ED%8E%B8%EC%9D%B4%EC%9A%A9%EC%97%90%EA%B4%80%ED%95%9C%EC%88%98%EC%88%98%EB%A3%8C.pdf?ver=230601 적용 조건: 인터넷우체국 공식 서비스 기준. 이용 가능 지역·물품·수수료·본인 확인 조건은 신청 화면에서 확인한다. 모든 서비스가 무료인 것은 아니다.",
+  "topic_key": "post_office_remote_services",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "post_office_remote_services",
+    "hook_title": "우체국 창구 밖에서도 쓰는 우편 서비스 4",
+    "subtitle": "인터넷우체국 공식 서비스 기준. 이용 가능 지역·물품·수수료·본인 확인 조건은 신청 화면에서 확인한다. 서비스마다 요금과 신청 조건이 달라요.",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "주거이전 우편물 전송",
+        "card_name": "주거이전 우편물 전송",
+        "reason": "주거이전 전송을 신청하면 옛 주소 우편물을 새집으로 보내줘요. 우체국의 주거이전 우편물 전송서비스예요. 기관별 등록 주소를 바꾸는 서비스는 아니며 기간과 요금 조건이 있어요.",
+        "card_reason": "주거이전 전송을 신청하면 옛 주소 우편물을 새집으로 보내줘요"
+      },
+      {
+        "rank": 2,
+        "name": "방문접수소포 예약",
+        "card_name": "방문접수소포 예약",
+        "reason": "우체국 방문접수소포는 신청한 장소에서 택배를 받아가요. 물품과 포장을 준비하고 수거 날짜와 요금을 확인해 예약해요.",
+        "card_reason": "우체국 방문접수소포는 신청한 장소에서 택배를 받아가요"
+      },
+      {
+        "rank": 3,
+        "name": "국제우편 미리 접수",
+        "card_name": "국제우편 미리 접수",
+        "reason": "국제우편 스마트접수로 주소와 물품 정보를 미리 입력해요. 인터넷우체국에서 접수 정보를 입력한 뒤 우체국에 물품을 가져가요.",
+        "card_reason": "국제우편 스마트접수로 주소와 물품 정보를 미리 입력해요"
+      },
+      {
+        "rank": 4,
+        "name": "e-그린우편 신청",
+        "card_name": "e-그린우편 신청",
+        "reason": "우체국 e-그린우편은 문서를 인쇄해 실제 우편으로 보내요. 이메일 발송 기능이 아니라 온라인으로 접수한 문서를 제작·배달하는 유료 서비스예요.",
+        "card_reason": "우체국 e-그린우편은 문서를 인쇄해 실제 우편으로 보내요"
+      }
+    ],
+    "video_script": "주거이전 전송을 신청하면 옛 주소 우편물을 새집으로 보내줘요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

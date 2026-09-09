@@ -1,0 +1,53 @@
+{
+  "title": "믹서기 재료가 헛돌 때 바꿀 것 4",
+  "lane": "appliance",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 집밥과 가전 관리의 공통 관심을 연결해 믹서가 헛도는 상황에 바로 쓸 요령을 준다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.vitamix.com/us/en_us/owners-resources/product-support/faqs 2. https://www.vitamix.com/us/en_us/tips 적용 조건: 바닥에 칼날이 달린 일반 대용량 믹서통 기준. 거꾸로 끼우는 컵형은 재료 순서가 다르다. 기종별 설명서를 우선한다.",
+  "topic_key": "blender_loading_air_pocket",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "blender_loading_air_pocket",
+    "hook_title": "믹서기 재료가 헛돌 때 바꿀 것 4",
+    "subtitle": "바닥에 칼날이 달린 일반 대용량 믹서통 기준. 거꾸로 끼우는 컵형은 재료 순서가 다르다. 기종별 설명서를 우선한다.",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "액체부터 넣기",
+        "card_name": "액체부터 넣기",
+        "reason": "바닥 칼날형 믹서통은 액체를 먼저 넣어 잘 섞어요. 액체 다음에 부드러운 재료, 단단한 재료를 넣어요. 거꾸로 끼우는 컵형에는 그대로 적용하지 않아요.",
+        "card_reason": "바닥 칼날형 믹서통은 액체를 먼저 넣어 잘 섞어요"
+      },
+      {
+        "rank": 2,
+        "name": "얼음은 맨 위에",
+        "card_name": "얼음은 맨 위에",
+        "reason": "바닥 칼날형 믹서통의 얼음은 재료 맨 위에 올려요. 냉동 재료와 얼음을 마지막에 넣는 대용량 통 기준이에요.",
+        "card_reason": "바닥 칼날형 믹서통의 얼음은 재료 맨 위에 올려요"
+      },
+      {
+        "rank": 3,
+        "name": "뻑뻑하면 액체 보태기",
+        "card_name": "뻑뻑하면 액체 보태기",
+        "reason": "재료가 너무 뻑뻑할 땐 액체를 조금 보태 잘 섞어요. 전원을 멈춘 뒤 뚜껑을 열고 조리법에 맞는 액체를 조금씩 더해요.",
+        "card_reason": "재료가 너무 뻑뻑할 땐 액체를 조금 보태 잘 섞어요"
+      },
+      {
+        "rank": 4,
+        "name": "전용 누름봉만 쓰기",
+        "card_name": "전용 누름봉만 쓰기",
+        "reason": "믹서 누름봉은 호환되는 전용 뚜껑과 함께 써요. 누름봉 사용을 허용하는 기종만 해당해요. 주걱이나 숟가락을 돌아가는 칼날 쪽으로 넣지 않아요.",
+        "card_reason": "믹서 누름봉은 호환되는 전용 뚜껑과 함께 써요"
+      }
+    ],
+    "video_script": "바닥 칼날형 믹서통은 액체를 먼저 넣어 잘 섞어요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

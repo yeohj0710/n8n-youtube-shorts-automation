@@ -1,0 +1,53 @@
+{
+  "title": "삼치 양념구이, 양념은 마지막에 넣어요 4",
+  "lane": "cooking",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 집밥 요령을 생선 굽기에 적용하며 양념을 처음부터 붓는 대신 마무리에 입히는 방법을 준다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.maangchi.com/recipe/samchi-yangnyeom-gui 적용 조건: 토막 낸 삼치를 팬에 양념구이로 익히는 조리법 기준. 생선 종류·두께에 따라 충분히 익히고 생선에 쓴 양념은 반드시 가열한다.",
+  "topic_key": "fish_pan_flour_finish",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "fish_pan_flour_finish",
+    "hook_title": "삼치 양념구이, 양념은 마지막에 넣어요 4",
+    "subtitle": "토막 낸 삼치를 팬에 양념구이로 익히는 조리법 기준. 생선 종류·두께에 따라 충분히 익히고 생선에 쓴 양념은 반드시 가열한다.",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "밀가루 얇게 묻히기",
+        "card_name": "밀가루 얇게 묻히기",
+        "reason": "토막 삼치에 밀가루를 얇게 묻혀 겉에 막을 만들어요. 남는 가루를 털고 달군 기름에 구워요.",
+        "card_reason": "토막 삼치에 밀가루를 얇게 묻혀 겉에 막을 만들어요"
+      },
+      {
+        "rank": 2,
+        "name": "한쪽 익힌 뒤 뒤집기",
+        "card_name": "한쪽 익힌 뒤 뒤집기",
+        "reason": "삼치는 한쪽을 노릇하게 익힌 뒤 뒤집어 살을 지켜요. 계속 뒤집지 않고 한 면씩 익혀요. 두께에 따라 속까지 충분히 익었는지 확인해요.",
+        "card_reason": "삼치는 한쪽을 노릇하게 익힌 뒤 뒤집어 살을 지켜요"
+      },
+      {
+        "rank": 3,
+        "name": "남는 기름 걷기",
+        "card_name": "남는 기름 걷기",
+        "reason": "삼치가 다 익으면 팬의 남는 기름을 걷고 양념을 넣어요. 생선을 다 익힌 다음에 남는 기름을 제거하는 조리법이에요.",
+        "card_reason": "삼치가 다 익으면 팬의 남는 기름을 걷고 양념을 넣어요"
+      },
+      {
+        "rank": 4,
+        "name": "양념 끓여 입히기",
+        "card_name": "양념 끓여 입히기",
+        "reason": "삼치는 팬 한쪽에서 양념을 끓인 뒤 생선에 입혀요. 생선 재움에 쓴 양념은 그대로 끼얹지 않고 충분히 끓여 사용해요.",
+        "card_reason": "삼치는 팬 한쪽에서 양념을 끓인 뒤 생선에 입혀요"
+      }
+    ],
+    "video_script": "토막 삼치에 밀가루를 얇게 묻혀 겉에 막을 만들어요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

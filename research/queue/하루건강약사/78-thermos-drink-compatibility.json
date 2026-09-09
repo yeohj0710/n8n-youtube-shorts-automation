@@ -1,0 +1,53 @@
+{
+  "title": "보온병에 넣기 전 구분할 음료 4",
+  "lane": "kitchenware",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 뜨거운 음식 접촉 용품 15.9만 조회를 참고해 보온병도 내용물에 따라 사용 조건이 다름을 알린다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.zojirushi.global/manual/pdf/SFCC%28EN%29.pdf 2. https://www.zojirushi.com/app/faq/vacuum-insulated-mugs-bottles 적용 조건: 일반 스테인리스 보온병 중 제조사가 이 음료를 금지한 제품 기준. 탄산 전용 등 허용 제품은 설명서를 따른다.",
+  "topic_key": "thermos_drink_compatibility",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "thermos_drink_compatibility",
+    "hook_title": "보온병에 넣기 전 구분할 음료 4",
+    "subtitle": "일반 스테인리스 보온병 중 제조사가 이 음료를 금지한 제품 기준. 탄산 전용 등 허용 제품은 설명서를 따른다.",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "탄산음료",
+        "card_name": "탄산음료",
+        "reason": "탄산 전용이 아닌 보온병은 가스 압력이 찰 수 있어요. 탄산수와 탄산음료는 압력 대응을 허용한 전용 제품에만 담아요.",
+        "card_reason": "탄산 전용이 아닌 보온병은 가스 압력이 찰 수 있어요"
+      },
+      {
+        "rank": 2,
+        "name": "우유와 주스",
+        "card_name": "우유와 주스",
+        "reason": "우유나 주스는 보온병 안에서 상하며 가스가 생길 수 있어요. 조지루시 안내는 우유·유제품·과즙을 담지 말라는 내용이에요. 보온병을 장기 보관 용기로 쓰지 않아요.",
+        "card_reason": "우유나 주스는 보온병 안에서 상하며 가스가 생길 수 있어요"
+      },
+      {
+        "rank": 3,
+        "name": "소금 든 국물",
+        "card_name": "소금 든 국물",
+        "reason": "짠 국물은 스테인리스 보온병 안쪽을 부식시킬 수 있어요. 수프 전용 용기와 일반 음료용 보온병의 허용 내용물을 구분해요.",
+        "card_reason": "짠 국물은 스테인리스 보온병 안쪽을 부식시킬 수 있어요"
+      },
+      {
+        "rank": 4,
+        "name": "찻잎과 과육",
+        "card_name": "찻잎과 과육",
+        "reason": "찻잎이나 과육은 보온병의 좁은 마개 통로를 막아요. 마개 막힘과 누출 위험 때문에 알갱이는 걸러 담아요.",
+        "card_reason": "찻잎이나 과육은 보온병의 좁은 마개 통로를 막아요"
+      }
+    ],
+    "video_script": "탄산 전용이 아닌 보온병은 가스 압력이 찰 수 있어요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

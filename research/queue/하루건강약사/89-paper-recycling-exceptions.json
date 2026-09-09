@@ -1,0 +1,53 @@
+{
+  "title": "종이 수거함에 섞기 쉬운 일반쓰레기 4",
+  "lane": "recycling",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 무료 수거의 최근 17.2만 조회를 참고하되 서비스 반복 대신 종이처럼 보이는 일반쓰레기를 구분한다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.geumcheon.go.kr/portal/selectBbsNttView.do?bbsNo=4&id=&integrDeptCode=&key=687&nttNo=210204&pageIndex=9&searchCnd=all&searchCtgry=&searchDeptCode=&searchKrwd= 적용 조건: 금천구가 안내한 환경부 종이류 분리배출 지침을 참고했다. 지역의 품목별 수거 안내를 우선한다.",
+  "topic_key": "paper_recycling_exceptions",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "paper_recycling_exceptions",
+    "hook_title": "종이 수거함에 섞기 쉬운 일반쓰레기 4",
+    "subtitle": "금천구가 안내한 환경부 종이류 분리배출 지침을 참고했다. 지역의 품목별 수거 안내를 우선한다.",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "마트 감열지 영수증",
+        "card_name": "마트 감열지 영수증",
+        "reason": "마트 감열지 영수증은 종이 수거함 대신 종량제에 넣어요. 일반 인쇄용지 영수증과 감열지는 구분해요. 개인정보가 보이지 않도록 처리해요.",
+        "card_reason": "마트 감열지 영수증은 종이 수거함 대신 종량제에 넣어요"
+      },
+      {
+        "rank": 2,
+        "name": "비닐 코팅 종이",
+        "card_name": "비닐 코팅 종이",
+        "reason": "비닐 코팅을 벗길 수 없는 종이는 종량제에 버려요. 광택이 난다는 이유만으로 모든 인쇄물을 코팅지로 보지 않아요. 비닐 코팅 여부를 구분해요.",
+        "card_reason": "비닐 코팅을 벗길 수 없는 종이는 종량제에 버려요"
+      },
+      {
+        "rank": 3,
+        "name": "기름 밴 종이",
+        "card_name": "기름 밴 종이",
+        "reason": "기름이 깊게 밴 종이는 깨끗한 종이와 섞지 않아요. 오염을 제거할 수 없는 부분은 종량제로 배출해요.",
+        "card_reason": "기름이 깊게 밴 종이는 깨끗한 종이와 섞지 않아요"
+      },
+      {
+        "rank": 4,
+        "name": "떼어낸 벽지",
+        "card_name": "떼어낸 벽지",
+        "reason": "떼어낸 벽지는 종이처럼 보여도 종이류로 재활용하지 않아요. 일반적인 소량 배출 기준이에요. 인테리어 공사 폐기물은 별도 배출 안내를 따라요.",
+        "card_reason": "떼어낸 벽지는 종이처럼 보여도 종이류로 재활용하지 않아요"
+      }
+    ],
+    "video_script": "마트 감열지 영수증은 종이 수거함 대신 종량제에 넣어요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

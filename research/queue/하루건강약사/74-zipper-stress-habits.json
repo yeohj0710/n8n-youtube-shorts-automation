@@ -1,0 +1,53 @@
+{
+  "title": "지퍼 고장 부르는 사용 습관 4",
+  "lane": "clothing",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 여름옷 9.8만 조회와 생활용품 관리 반응을 참고해 지퍼의 구체적인 손상 원인을 시험한다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://lyncs.ykkfastening.com/shop/pages/about_products_09.aspx",
+  "topic_key": "zipper_stress_habits",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "zipper_stress_habits",
+    "hook_title": "지퍼 고장 부르는 사용 습관 4",
+    "subtitle": "생활에서 바로 써먹는 구체적인 방법 네 가지",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "가방 억지로 잠그기",
+        "card_name": "가방 억지로 잠그기",
+        "reason": "가득 찬 가방을 억지로 잠그면 지퍼 이가 벌어져요. 내용물을 줄이고 양쪽을 가지런히 맞춘 뒤 잠가요.",
+        "card_reason": "가득 찬 가방을 억지로 잠그면 지퍼 이가 벌어져요"
+      },
+      {
+        "rank": 2,
+        "name": "낀 천 잡아당기기",
+        "card_name": "낀 천 잡아당기기",
+        "reason": "지퍼에 천이 끼었을 땐 조금 되돌려 천부터 빼요. 힘으로 밀어붙이면 천과 지퍼가 함께 손상될 수 있어요.",
+        "card_reason": "지퍼에 천이 끼었을 땐 조금 되돌려 천부터 빼요"
+      },
+      {
+        "rank": 3,
+        "name": "덜 열고 옷 벗기",
+        "card_name": "덜 열고 옷 벗기",
+        "reason": "바지 지퍼를 덜 내리고 벗으면 끝부분에 힘이 몰려요. 끝까지 연 뒤 옷을 벗어 지퍼 아래쪽에 걸리는 힘을 줄여요.",
+        "card_reason": "바지 지퍼를 덜 내리고 벗으면 끝부분에 힘이 몰려요"
+      },
+      {
+        "rank": 4,
+        "name": "지퍼 열고 세탁하기",
+        "card_name": "지퍼 열고 세탁하기",
+        "reason": "옷 지퍼를 열고 세탁하면 다른 옷감을 긁을 수 있어요. 지퍼를 닫아 세탁하고 긴 손잡이가 달린 옷은 세탁망을 써요.",
+        "card_reason": "옷 지퍼를 열고 세탁하면 다른 옷감을 긁을 수 있어요"
+      }
+    ],
+    "video_script": "가득 찬 가방을 억지로 잠그면 지퍼 이가 벌어져요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

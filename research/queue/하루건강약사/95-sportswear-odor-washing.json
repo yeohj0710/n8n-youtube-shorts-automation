@@ -1,0 +1,53 @@
+{
+  "title": "운동복 냄새 남기는 세탁 실수 4",
+  "lane": "clothing",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 옷 보관 반응을 참고하되 기존 얼룩 제거·울 건조와 다른 기능성 운동복의 땀 냄새를 다룬다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.nike.com/a/get-sweat-smell-out-of-clothes 2. https://www.persillaundry.com/us/en/laundry-help/laundry-tips/fabric-care/performance-and-sports-clothes.html",
+  "topic_key": "sportswear_odor_washing",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "sportswear_odor_washing",
+    "hook_title": "운동복 냄새 남기는 세탁 실수 4",
+    "subtitle": "생활에서 바로 써먹는 구체적인 방법 네 가지",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "땀 젖은 채 뭉치기",
+        "card_name": "땀 젖은 채 뭉치기",
+        "reason": "땀 밴 운동복을 가방에 뭉쳐 두면 냄새가 더 짙어져요. 바로 세탁하지 못할 때는 펼쳐 말린 뒤 빨래통에 넣어요.",
+        "card_reason": "땀 밴 운동복을 가방에 뭉쳐 두면 냄새가 더 짙어져요"
+      },
+      {
+        "rank": 2,
+        "name": "겉면만 바깥으로 빨기",
+        "card_name": "겉면만 바깥으로 빨기",
+        "reason": "운동복은 뒤집어 빨아야 땀 밴 안쪽이 더 잘 씻겨요. 세탁 라벨을 따르고 피부에 닿던 면을 바깥으로 뒤집어요.",
+        "card_reason": "운동복은 뒤집어 빨아야 땀 밴 안쪽이 더 잘 씻겨요"
+      },
+      {
+        "rank": 3,
+        "name": "냄새 난다고 세제 더 넣기",
+        "card_name": "냄새 난다고 세제 더 넣기",
+        "reason": "세제를 너무 많이 넣으면 운동복에 잔여물이 남기 쉬워요. 냄새가 심하다는 이유로 정량보다 더 붓지 않아요.",
+        "card_reason": "세제를 너무 많이 넣으면 운동복에 잔여물이 남기 쉬워요"
+      },
+      {
+        "rank": 4,
+        "name": "향 강한 유연제로 덮기",
+        "card_name": "향 강한 유연제로 덮기",
+        "reason": "기능성 운동복은 유연제가 땀 흡수 기능을 떨어뜨릴 수 있어요. 땀을 밖으로 보내는 기능성 섬유는 라벨을 확인하고 유연제를 피하는 안내를 따라요.",
+        "card_reason": "기능성 운동복은 유연제가 땀 흡수 기능을 떨어뜨릴 수 있어요"
+      }
+    ],
+    "video_script": "땀 밴 운동복을 가방에 뭉쳐 두면 냄새가 더 짙어져요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

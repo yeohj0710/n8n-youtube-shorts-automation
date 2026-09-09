@@ -1,0 +1,53 @@
+{
+  "title": "감자채볶음 모양을 살리는 조리 요령 4",
+  "lane": "cooking",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 집밥 카드의 팔로우 391명에서 출발해 감자채의 전분·수분·익힘 순서를 시험한다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.maangchi.com/wp-content/downloads/Cooking_Korean_Food_With_Maangchi_Cookbook_book_2.pdf",
+  "topic_key": "potato_julienne_texture",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "potato_julienne_texture",
+    "hook_title": "감자채볶음 모양을 살리는 조리 요령 4",
+    "subtitle": "생활에서 바로 써먹는 구체적인 방법 네 가지",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "전분 먼저 헹구기",
+        "card_name": "전분 먼저 헹구기",
+        "reason": "감자채를 물에 헹궈 겉전분을 빼면 덜 달라붙어요. 체에 담아 흐르는 물로 헹군 뒤 물기를 빼고 볶아요.",
+        "card_reason": "감자채를 물에 헹궈 겉전분을 빼면 덜 달라붙어요"
+      },
+      {
+        "rank": 2,
+        "name": "기름에 물 조금 더하기",
+        "card_name": "기름에 물 조금 더하기",
+        "reason": "감자채가 설익었을 땐 물을 조금 넣고 약불로 익혀요. 기름만 계속 보태는 대신 물을 조금 넣고 불을 낮춰요.",
+        "card_reason": "감자채가 설익었을 땐 물을 조금 넣고 약불로 익혀요"
+      },
+      {
+        "rank": 3,
+        "name": "잠깐 뚜껑 덮기",
+        "card_name": "잠깐 뚜껑 덮기",
+        "reason": "감자채는 잠깐 뚜껑을 덮어 속까지 고르게 익혀요. 오래 세게 뒤적이기보다 약불에서 잠깐 뜸을 들이고 익은 상태를 확인해요.",
+        "card_reason": "감자채는 잠깐 뚜껑을 덮어 속까지 고르게 익혀요"
+      },
+      {
+        "rank": 4,
+        "name": "참기름은 마지막에",
+        "card_name": "참기름은 마지막에",
+        "reason": "감자채가 다 익은 뒤 참기름을 넣어 향을 더해요. 마지막에 소금으로 간을 맞추고 참기름을 넣은 뒤 불을 꺼요.",
+        "card_reason": "감자채가 다 익은 뒤 참기름을 넣어 향을 더해요"
+      }
+    ],
+    "video_script": "감자채를 물에 헹궈 겉전분을 빼면 덜 달라붙어요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

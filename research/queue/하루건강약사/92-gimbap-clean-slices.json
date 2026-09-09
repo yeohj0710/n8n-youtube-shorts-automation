@@ -1,0 +1,53 @@
+{
+  "title": "김밥 썰 때 터지지 않게 만드는 요령 4",
+  "lane": "cooking",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 김밥이라는 넓은 관심사에서 이음매 방향과 칼의 전분 제거처럼 따라 할 요령을 준다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.maangchi.com/recipe/gimbap",
+  "topic_key": "gimbap_clean_slices",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "gimbap_clean_slices",
+    "hook_title": "김밥 썰 때 터지지 않게 만드는 요령 4",
+    "subtitle": "생활에서 바로 써먹는 구체적인 방법 네 가지",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "밥의 김 먼저 빼기",
+        "card_name": "밥의 김 먼저 빼기",
+        "reason": "김밥용 밥은 뜨거운 김이 멎은 뒤 김 위에 펼쳐요. 밥을 넓은 그릇에 펼쳐 김을 빼되 오래 실온에 방치하지 않아요.",
+        "card_reason": "김밥용 밥은 뜨거운 김이 멎은 뒤 김 위에 펼쳐요"
+      },
+      {
+        "rank": 2,
+        "name": "김 끝은 비워 두기",
+        "card_name": "김 끝은 비워 두기",
+        "reason": "김밥을 말 때 김 끝을 비워야 이음매를 붙이기 쉬워요. 김 전체를 밥으로 덮지 말고 끝부분을 남겨 말아요.",
+        "card_reason": "김밥을 말 때 김 끝을 비워야 이음매를 붙이기 쉬워요"
+      },
+      {
+        "rank": 3,
+        "name": "이음매 아래로 놓기",
+        "card_name": "이음매 아래로 놓기",
+        "reason": "다 만 김밥은 이음매를 아래로 두어 잘 붙게 해요. 완성한 김밥을 잠깐 놓아 이음매가 자리 잡은 뒤 썰어요.",
+        "card_reason": "다 만 김밥은 이음매를 아래로 두어 잘 붙게 해요"
+      },
+      {
+        "rank": 4,
+        "name": "칼에 붙은 밥 닦기",
+        "card_name": "칼에 붙은 밥 닦기",
+        "reason": "김밥 써는 칼은 젖은 깨끗한 천으로 밥풀을 닦아 써요. 날카로운 칼로 썰고 중간중간 전분을 닦아 달라붙음을 줄여요. 손을 다치지 않게 칼등 쪽에서 닦아요.",
+        "card_reason": "김밥 써는 칼은 젖은 깨끗한 천으로 밥풀을 닦아 써요"
+      }
+    ],
+    "video_script": "김밥용 밥은 뜨거운 김이 멎은 뒤 김 위에 펼쳐요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

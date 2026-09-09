@@ -1,0 +1,53 @@
+{
+  "title": "호두 맛이 변하기 전에 바꾸는 보관법 4",
+  "lane": "food_storage",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 계란 보관 팔로우 144명과 최근 109만 조회를 참고하되 새 식재료의 보관 특성으로 바꾼다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://walnuts.org/how-to/how-to-buy-care/",
+  "topic_key": "walnut_storage_flavor",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "walnut_storage_flavor",
+    "hook_title": "호두 맛이 변하기 전에 바꾸는 보관법 4",
+    "subtitle": "생활에서 바로 써먹는 구체적인 방법 네 가지",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "오래 둘 호두는 냉동",
+        "card_name": "오래 둘 호두는 냉동",
+        "reason": "호두는 오래 보관할수록 실온보다 냉동 보관이 좋아요. 곧 먹을 호두는 냉장, 더 오래 둘 호두는 냉동 보관하는 안내예요.",
+        "card_reason": "호두는 오래 보관할수록 실온보다 냉동 보관이 좋아요"
+      },
+      {
+        "rank": 2,
+        "name": "개봉 뒤 밀폐하기",
+        "card_name": "개봉 뒤 밀폐하기",
+        "reason": "호두 봉지를 뜯었다면 공기가 덜 닿게 밀폐해 두어요. 입구를 벌려 둔 원래 봉지보다 밀폐 용기나 밀봉 주머니에 넣어요.",
+        "card_reason": "호두 봉지를 뜯었다면 공기가 덜 닿게 밀폐해 두어요"
+      },
+      {
+        "rank": 3,
+        "name": "냄새 강한 음식과 분리",
+        "card_name": "냄새 강한 음식과 분리",
+        "reason": "호두는 냄새를 잘 머금어 생선이나 양파와 떨어뜨려 둬요. 냉장·냉동실에서도 냄새가 강한 식품 옆을 피하고 밀폐해요.",
+        "card_reason": "호두는 냄새를 잘 머금어 생선이나 양파와 떨어뜨려 둬요"
+      },
+      {
+        "rank": 4,
+        "name": "다질 건 먹기 직전에",
+        "card_name": "다질 건 먹기 직전에",
+        "reason": "호두는 미리 잘게 다지지 않고 먹기 직전에 손질해요. 껍데기 까기, 다지기, 갈기는 사용 직전에 해서 맛을 보존해요.",
+        "card_reason": "호두는 미리 잘게 다지지 않고 먹기 직전에 손질해요"
+      }
+    ],
+    "video_script": "호두는 오래 보관할수록 실온보다 냉동 보관이 좋아요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "title": "가죽 가방 망가뜨리는 보관 실수 4",
+  "lane": "clothing",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 안경·옷 관리의 최근 반응을 참고해 가죽 가방 보관에서 놓치기 쉬운 눌림과 이염을 다룬다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.chanel.com/puls-img/1730293417891-chanelcaresac022021enapacpdf.pdf",
+  "topic_key": "leather_bag_storage",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "leather_bag_storage",
+    "hook_title": "가죽 가방 망가뜨리는 보관 실수 4",
+    "subtitle": "생활에서 바로 써먹는 구체적인 방법 네 가지",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "체인 그대로 얹기",
+        "card_name": "체인 그대로 얹기",
+        "reason": "가방 위에 얹은 체인은 가죽에 눌린 자국을 남겨요. 끈이나 체인은 부드러운 종이로 감싸 가방 안에 넣어 보관해요.",
+        "card_reason": "가방 위에 얹은 체인은 가죽에 눌린 자국을 남겨요"
+      },
+      {
+        "rank": 2,
+        "name": "가방 눌러 쌓기",
+        "card_name": "가방 눌러 쌓기",
+        "reason": "가죽 가방은 겹쳐 누르지 않고 세워 두어 모양을 지켜요. 제품 보관 주머니에 넣고 형태가 찌그러지지 않도록 공간을 확보해요.",
+        "card_reason": "가죽 가방은 겹쳐 누르지 않고 세워 두어 모양을 지켜요"
+      },
+      {
+        "rank": 3,
+        "name": "햇볕 드는 곳에 두기",
+        "card_name": "햇볕 드는 곳에 두기",
+        "reason": "햇볕과 뜨거운 열기는 가죽의 색과 모양을 바꿔요. 직사광선과 난방기 주변을 피해 보관해요.",
+        "card_reason": "햇볕과 뜨거운 열기는 가죽의 색과 모양을 바꿔요"
+      },
+      {
+        "rank": 4,
+        "name": "진한 옷과 붙여 두기",
+        "card_name": "진한 옷과 붙여 두기",
+        "reason": "밝은 가죽은 진한 청바지와 닿아 물들 수 있어요. 가방 겉면이 진한 옷이나 색이 빠지는 물건에 오래 닿지 않게 해요.",
+        "card_reason": "밝은 가죽은 진한 청바지와 닿아 물들 수 있어요"
+      }
+    ],
+    "video_script": "가방 위에 얹은 체인은 가죽에 눌린 자국을 남겨요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

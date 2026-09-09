@@ -1,0 +1,53 @@
+{
+  "title": "부침개 가운데까지 바삭하게 굽는 요령 4",
+  "lane": "cooking",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 집밥 카드에서 보인 바로 옮겨 말할 수 있는 요령을 부침개 한 장에 적용한다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.maangchi.com/recipe/yachaejeon",
+  "topic_key": "pancake_crisp_center",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "pancake_crisp_center",
+    "hook_title": "부침개 가운데까지 바삭하게 굽는 요령 4",
+    "subtitle": "생활에서 바로 써먹는 구체적인 방법 네 가지",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "반죽 적게 섞기",
+        "card_name": "반죽 적게 섞기",
+        "reason": "채소전은 밀가루 반죽이 채소를 살짝 감쌀 만큼 섞어요. 채소보다 밀가루가 두드러지는 두꺼운 반죽을 피하는 야채전 방식이에요.",
+        "card_reason": "채소전은 밀가루 반죽이 채소를 살짝 감쌀 만큼 섞어요"
+      },
+      {
+        "rank": 2,
+        "name": "가운데 얇게 펴기",
+        "card_name": "가운데 얇게 펴기",
+        "reason": "부침개 가운데를 주걱으로 펴야 두꺼운 곳이 덜 남아요. 반죽을 팬 전체에 얇고 고르게 펼쳐 구워요.",
+        "card_reason": "부침개 가운데를 주걱으로 펴야 두꺼운 곳이 덜 남아요"
+      },
+      {
+        "rank": 3,
+        "name": "가장자리 들어 기름 넣기",
+        "card_name": "가장자리 들어 기름 넣기",
+        "reason": "전을 살짝 들어 기름을 넣으면 가운데까지 퍼져요. 팬 가장자리에만 기름을 붓지 않고 전 아래로 흐르게 해요. 기름이 튀지 않도록 조금씩 넣어요.",
+        "card_reason": "전을 살짝 들어 기름을 넣으면 가운데까지 퍼져요"
+      },
+      {
+        "rank": 4,
+        "name": "뒤집은 면 눌러 굽기",
+        "card_name": "뒤집은 면 눌러 굽기",
+        "reason": "뒤집은 전을 주걱으로 살짝 눌러 팬에 고르게 닿게 해요. 팬에 닿지 않는 부분을 가볍게 눌러 반대쪽도 노릇하게 익혀요.",
+        "card_reason": "뒤집은 전을 주걱으로 살짝 눌러 팬에 고르게 닿게 해요"
+      }
+    ],
+    "video_script": "채소전은 밀가루 반죽이 채소를 살짝 감쌀 만큼 섞어요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

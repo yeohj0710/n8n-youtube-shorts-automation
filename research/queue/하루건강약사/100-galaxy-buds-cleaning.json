@@ -1,0 +1,53 @@
+{
+  "title": "갤럭시 버즈 망가뜨리는 청소 습관 4",
+  "lane": "phone_accessory",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 귀 건강의 과장 대신 이어폰 소리를 막는 귀지와 기기 관리법을 연결해 일상용품 주제를 넓힌다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.samsung.com/uk/support/mobile-devices/how-to-clean-your-samsung-galaxy-buds/ 2. https://www.samsung.com/us/support/answer/ANS10001320/ 적용 조건: 갤럭시 버즈 기준. 모델별 설명서를 우선한다. 물세척은 허용된 분리형 실리콘 이어팁에 한하며 본체에는 적용하지 않는다.",
+  "topic_key": "galaxy_buds_cleaning",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "galaxy_buds_cleaning",
+    "hook_title": "갤럭시 버즈 망가뜨리는 청소 습관 4",
+    "subtitle": "갤럭시 버즈 기준. 모델별 설명서를 우선한다. 물세척은 허용된 분리형 실리콘 이어팁에 한하며 본체에는 적용하지 않는다.",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "소리망 위로 두고 털기",
+        "card_name": "소리망 위로 두고 털기",
+        "reason": "이어폰 소리망은 아래로 향하게 닦아 이물이 안으로 덜 들어가요. 이어팁을 분리한 뒤 부드러운 마른 솔로 바깥쪽 이물을 제거해요.",
+        "card_reason": "이어폰 소리망은 아래로 향하게 닦아 이물이 안으로 덜 들어가요"
+      },
+      {
+        "rank": 2,
+        "name": "망을 바늘로 쑤시기",
+        "card_name": "망을 바늘로 쑤시기",
+        "reason": "이어폰 소리망을 바늘로 쑤시면 망이 손상될 수 있어요. 금속이나 뾰족한 도구로 귀지를 파내지 않아요.",
+        "card_reason": "이어폰 소리망을 바늘로 쑤시면 망이 손상될 수 있어요"
+      },
+      {
+        "rank": 3,
+        "name": "알코올로 본체 닦기",
+        "card_name": "알코올로 본체 닦기",
+        "reason": "갤럭시 버즈 본체는 알코올 대신 부드러운 마른 천을 써요. 본체에 액체를 바르거나 세정제를 뿌리지 않아요.",
+        "card_reason": "갤럭시 버즈 본체는 알코올 대신 부드러운 마른 천을 써요"
+      },
+      {
+        "rank": 4,
+        "name": "젖은 이어팁 바로 끼우기",
+        "card_name": "젖은 이어팁 바로 끼우기",
+        "reason": "물로 씻은 이어팁은 완전히 말린 뒤 이어폰에 끼워요. 물세척을 허용한 분리형 실리콘 팁만 해당해요. 젖은 이어폰은 충전 케이스에 넣지 않아요.",
+        "card_reason": "물로 씻은 이어팁은 완전히 말린 뒤 이어폰에 끼워요"
+      }
+    ],
+    "video_script": "이어폰 소리망은 아래로 향하게 닦아 이물이 안으로 덜 들어가요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

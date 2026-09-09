@@ -1,0 +1,53 @@
+{
+  "title": "자동차 앞유리 김 서릴 때 맞출 버튼 4",
+  "lane": "car",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 살림에서 자동차로 대상을 넓히고 에어컨은 여름에만 쓴다는 오해를 구체적 버튼 설명으로 바꾼다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://ownersmanual.hyundai.com/full_webhelp/NH2/2026/ko_KR/id042e6950a36.html 2. https://ownersmanual.hyundai.com/full_webhelp/US4/2026/ko_KR/topic_ozh_zkm_2hc.html 적용 조건: 앞유리 안쪽의 습기로 김이 서릴 때 기준. 차종별 자동 설정은 설명서를 따른다. 시야가 안 보이면 안전한 곳에 정차해 김을 없앤 뒤 운전한다.",
+  "topic_key": "windshield_defog_buttons",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "windshield_defog_buttons",
+    "hook_title": "자동차 앞유리 김 서릴 때 맞출 버튼 4",
+    "subtitle": "앞유리 안쪽의 습기로 김이 서릴 때 기준. 차종별 자동 설정은 설명서를 따른다. 시야가 안 보이면 안전한 곳에 정차해 김을 없앤 뒤 운전한다.",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "앞유리 김 제거 켜기",
+        "card_name": "앞유리 김 제거 켜기",
+        "reason": "앞유리 김 제거 버튼은 바람을 앞유리 쪽으로 보내요. 앞유리 모양 아이콘을 찾으세요. 사각형 뒷유리 열선 버튼과 구분해요.",
+        "card_reason": "앞유리 김 제거 버튼은 바람을 앞유리 쪽으로 보내요"
+      },
+      {
+        "rank": 2,
+        "name": "에어컨도 함께 켜기",
+        "card_name": "에어컨도 함께 켜기",
+        "reason": "찬 날에도 에어컨을 켜면 차 안 습기를 줄이는 데 도움 돼요. 제습을 위해 에어컨을 함께 사용해요. 추울 때는 난방 온도와 함께 조절해요.",
+        "card_reason": "찬 날에도 에어컨을 켜면 차 안 습기를 줄이는 데 도움 돼요"
+      },
+      {
+        "rank": 3,
+        "name": "바깥 공기 들어오게 하기",
+        "card_name": "바깥 공기 들어오게 하기",
+        "reason": "차 안 습기로 앞유리에 김이 서리면 외기 유입을 켜요. 실내 공기만 계속 도는 내기 순환을 해제해요.",
+        "card_reason": "차 안 습기로 앞유리에 김이 서리면 외기 유입을 켜요"
+      },
+      {
+        "rank": 4,
+        "name": "온도와 바람 올리기",
+        "card_name": "온도와 바람 올리기",
+        "reason": "앞유리 안쪽 김은 따뜻한 바람을 세게 보내 없애요. 유리 바깥에 맺힌 습기는 조건이 다르므로 안쪽 김에 적용해요. 시야가 확보되기 전에는 운전하지 않아요.",
+        "card_reason": "앞유리 안쪽 김은 따뜻한 바람을 세게 보내 없애요"
+      }
+    ],
+    "video_script": "앞유리 김 제거 버튼은 바람을 앞유리 쪽으로 보내요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

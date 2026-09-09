@@ -1,0 +1,53 @@
+{
+  "title": "양송이버섯 노릇하게 볶는 팬 사용법 4",
+  "lane": "cooking",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 익숙한 양송이가 삶은 듯 되는 원인을 팬 사용법으로 바꿔 집밥 관심을 시험한다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.mushroomcouncil.com/articles/kitchen-tip-how-to-saute-mushrooms/",
+  "topic_key": "mushroom_browning_pan",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "mushroom_browning_pan",
+    "hook_title": "양송이버섯 노릇하게 볶는 팬 사용법 4",
+    "subtitle": "생활에서 바로 써먹는 구체적인 방법 네 가지",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "팬 넓게 쓰기",
+        "card_name": "팬 넓게 쓰기",
+        "reason": "양송이는 팬에 한 겹만 깔아야 수분이 잘 날아가요. 팬이 작으면 한꺼번에 넣지 말고 나눠 볶아요.",
+        "card_reason": "양송이는 팬에 한 겹만 깔아야 수분이 잘 날아가요"
+      },
+      {
+        "rank": 2,
+        "name": "달군 기름에 넣기",
+        "card_name": "달군 기름에 넣기",
+        "reason": "양송이는 기름을 먼저 달군 팬에 넣어 겉을 노릇하게 해요. 기름을 두른 팬을 달구되 연기가 날 만큼 과열하지 않아요.",
+        "card_reason": "양송이는 기름을 먼저 달군 팬에 넣어 겉을 노릇하게 해요"
+      },
+      {
+        "rank": 3,
+        "name": "처음엔 뒤적이지 않기",
+        "card_name": "처음엔 뒤적이지 않기",
+        "reason": "팬에 닿은 양송이가 갈색이 될 때까지 잠깐 그대로 둬요. 처음부터 계속 젓지 않고 한쪽이 갈색으로 변한 뒤 뒤집어요.",
+        "card_reason": "팬에 닿은 양송이가 갈색이 될 때까지 잠깐 그대로 둬요"
+      },
+      {
+        "rank": 4,
+        "name": "양념은 볶은 뒤에",
+        "card_name": "양념은 볶은 뒤에",
+        "reason": "양송이는 노릇하게 볶은 뒤 소금과 후추로 간을 해요. 버섯협회 조리 안내처럼 마지막에 간을 맞추는 방식이에요.",
+        "card_reason": "양송이는 노릇하게 볶은 뒤 소금과 후추로 간을 해요"
+      }
+    ],
+    "video_script": "양송이는 팬에 한 겹만 깔아야 수분이 잘 날아가요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

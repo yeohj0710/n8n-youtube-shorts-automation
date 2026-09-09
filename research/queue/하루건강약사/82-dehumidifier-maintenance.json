@@ -1,0 +1,53 @@
+{
+  "title": "제습기 물통만 비우면 놓치는 것 4",
+  "lane": "appliance",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 에어컨 2.1만·집안일 상위 사례를 참고하되 기존 에어컨 절전과 다른 제습기 관리 정보를 준다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.lge.co.kr/support/solutions-20150464133463 2. https://www.lge.co.kr/story/user-guide/thinq-discover-atmosphere-009 적용 조건: LG 제습기 안내를 참고했다. 필터 종류, 내부 건조 기능, 배수 호스 사용법은 모델 설명서를 우선한다. 청소 전 전원을 끄고 플러그를 뺀다.",
+  "topic_key": "dehumidifier_maintenance",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "dehumidifier_maintenance",
+    "hook_title": "제습기 물통만 비우면 놓치는 것 4",
+    "subtitle": "LG 제습기 안내를 참고했다. 필터 종류, 내부 건조 기능, 배수 호스 사용법은 모델 설명서를 우선한다. 청소 전 전원을 끄고 플러그를 뺀다.",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "필터 종류 구분하기",
+        "card_name": "필터 종류 구분하기",
+        "reason": "제습기 공기청정용 필터는 물로 씻지 않는 종류도 있어요. 기본 먼지 필터와 별도 공기청정 필터의 세척 가능 여부를 나눠 확인해요.",
+        "card_reason": "제습기 공기청정용 필터는 물로 씻지 않는 종류도 있어요"
+      },
+      {
+        "rank": 2,
+        "name": "물통에 향료 빼기",
+        "card_name": "물통에 향료 빼기",
+        "reason": "제습기 물통에는 세제나 방향제를 넣어 두지 않아요. 물통은 부드러운 천으로 청소해요. 뜨거운 물이나 향료를 넣어 사용하지 않아요.",
+        "card_reason": "제습기 물통에는 세제나 방향제를 넣어 두지 않아요"
+      },
+      {
+        "rank": 3,
+        "name": "호스 아래로 내리기",
+        "card_name": "호스 아래로 내리기",
+        "reason": "연속 배수 호스는 물통보다 낮게 두고 꺾이지 않게 해요. 호스 끝이 물에 잠기지 않도록 설치해 자연 배수가 막히지 않게 해요.",
+        "card_reason": "연속 배수 호스는 물통보다 낮게 두고 꺾이지 않게 해요"
+      },
+      {
+        "rank": 4,
+        "name": "보관 전 내부 말리기",
+        "card_name": "보관 전 내부 말리기",
+        "reason": "제습기는 물통만 비우지 말고 내부도 말려 보관해요. 내부 건조나 송풍 기능이 있는 모델은 설명서대로 안쪽 습기를 말린 뒤 보관해요.",
+        "card_reason": "제습기는 물통만 비우지 말고 내부도 말려 보관해요"
+      }
+    ],
+    "video_script": "제습기 공기청정용 필터는 물로 씻지 않는 종류도 있어요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

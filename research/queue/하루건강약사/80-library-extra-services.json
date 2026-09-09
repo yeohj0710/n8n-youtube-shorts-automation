@@ -1,0 +1,53 @@
+{
+  "title": "도서관 회원증으로 더 누리는 서비스 4",
+  "lane": "public_service",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 무료 수거 17.2만 조회를 참고해 이미 가진 회원증으로 찾을 수 있는 서비스를 시험한다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://org.jje.go.kr/lib/index.jje?menuCd=DOM_000000802009002000 2. https://www.gygl.go.kr/sub/contents/default_page.asp?mNo=MB040030000 3. https://lib.goe.go.kr/board/boardFile/download/233/179582/82285.do 적용 조건: 참여 도서관과 정회원 자격에 따라 이용 범위가 다르다. 책바다는 배송비가 들 수 있으며 희망도서는 심사 후 구입한다.",
+  "topic_key": "library_extra_services",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "library_extra_services",
+    "hook_title": "도서관 회원증으로 더 누리는 서비스 4",
+    "subtitle": "참여 도서관과 정회원 자격에 따라 이용 범위가 다르다. 책바다는 배송비가 들 수 있으며 희망도서는 심사 후 구입한다.",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "책이음 가입",
+        "card_name": "책이음 가입",
+        "reason": "책이음 회원증은 참여 도서관 여러 곳에서 쓸 수 있어요. 참여 도서관에서 책이음 회원으로 전환하거나 가입해요. 모든 도서관이 참여하는 것은 아니에요.",
+        "card_reason": "책이음 회원증은 참여 도서관 여러 곳에서 쓸 수 있어요"
+      },
+      {
+        "rank": 2,
+        "name": "책바다 신청",
+        "card_name": "책바다 신청",
+        "reason": "책바다는 다른 도서관 책을 받아 빌리는 유료 서비스예요. 소속 도서관에 없는 책을 신청해 받아요. 배송비와 지자체 지원 여부를 신청 화면에서 확인해요.",
+        "card_reason": "책바다는 다른 도서관 책을 받아 빌리는 유료 서비스예요"
+      },
+      {
+        "rank": 3,
+        "name": "희망도서 신청",
+        "card_name": "희망도서 신청",
+        "reason": "도서관에 없는 책은 희망도서로 구입을 요청할 수 있어요. 회원 자격과 신청 기준을 충족해야 하며 모든 신청 도서를 구입하는 것은 아니에요.",
+        "card_reason": "도서관에 없는 책은 희망도서로 구입을 요청할 수 있어요"
+      },
+      {
+        "rank": 4,
+        "name": "전자도서관 이용",
+        "card_name": "전자도서관 이용",
+        "reason": "전자도서관을 운영하는 곳은 집에서도 전자책을 빌려줘요. 소속 도서관이 운영하는 전자책 서비스에 도서관 계정으로 접속해요.",
+        "card_reason": "전자도서관을 운영하는 곳은 집에서도 전자책을 빌려줘요"
+      }
+    ],
+    "video_script": "책이음 회원증은 참여 도서관 여러 곳에서 쓸 수 있어요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

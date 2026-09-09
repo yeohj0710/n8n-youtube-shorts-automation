@@ -1,0 +1,53 @@
+{
+  "title": "주방저울 버튼을 제대로 쓰는 계량 요령 4",
+  "lane": "kitchen_tools",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 집밥 관심을 조리 도구 사용으로 넓히고 그릇 무게를 빼는 구체적 기능을 준다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.oxo.com/media/wysiwyg/11176800_booklet.pdf 적용 조건: 영점·단위 전환 기능을 갖춘 전자저울 기준. 버튼 이름과 최대 용량은 제품마다 다르다.",
+  "topic_key": "kitchen_scale_tare",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "kitchen_scale_tare",
+    "hook_title": "주방저울 버튼을 제대로 쓰는 계량 요령 4",
+    "subtitle": "영점·단위 전환 기능을 갖춘 전자저울 기준. 버튼 이름과 최대 용량은 제품마다 다르다.",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "그릇 올린 뒤 영점 맞추기",
+        "card_name": "그릇 올린 뒤 영점 맞추기",
+        "reason": "빈 그릇을 올리고 영점을 누르면 재료 무게만 재요. TARE 또는 ZERO 버튼으로 그릇 무게를 빼고 시작해요.",
+        "card_reason": "빈 그릇을 올리고 영점을 누르면 재료 무게만 재요"
+      },
+      {
+        "rank": 2,
+        "name": "재료마다 영점 다시 누르기",
+        "card_name": "재료마다 영점 다시 누르기",
+        "reason": "재료를 더하기 전 영점을 눌러 추가한 양만 따로 재요. 그릇을 바꾸지 않고 재료를 순서대로 계량할 수 있어요.",
+        "card_reason": "재료를 더하기 전 영점을 눌러 추가한 양만 따로 재요"
+      },
+      {
+        "rank": 3,
+        "name": "그램 단위로 바꾸기",
+        "card_name": "그램 단위로 바꾸기",
+        "reason": "저울의 단위가 온스면 그램으로 바꾼 뒤 계량해요. g는 그램, oz는 온스예요. 숫자만 보고 같은 무게로 읽지 않아요.",
+        "card_reason": "저울의 단위가 온스면 그램으로 바꾼 뒤 계량해요"
+      },
+      {
+        "rank": 4,
+        "name": "그릇 포함 한도 지키기",
+        "card_name": "그릇 포함 한도 지키기",
+        "reason": "영점을 눌러도 저울의 최대 무게에는 그릇이 포함돼요. 영점은 표시만 바꿔요. 저울이 버틸 수 있는 전체 무게가 늘어나는 것은 아니에요.",
+        "card_reason": "영점을 눌러도 저울의 최대 무게에는 그릇이 포함돼요"
+      }
+    ],
+    "video_script": "빈 그릇을 올리고 영점을 누르면 재료 무게만 재요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

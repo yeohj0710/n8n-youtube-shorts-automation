@@ -1,0 +1,53 @@
+{
+  "title": "청소기 흡입력이 약해지는 뜻밖의 원인 4",
+  "lane": "appliance",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 집안일 카드의 팔로우 258명과 최근 197.1만 조회를 참고해 청소기 교체 전 확인할 원인을 준다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.dyson.com/support/journey/troubleshooting/332037-01",
+  "topic_key": "vacuum_airflow_check",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "vacuum_airflow_check",
+    "hook_title": "청소기 흡입력이 약해지는 뜻밖의 원인 4",
+    "subtitle": "생활에서 바로 써먹는 구체적인 방법 네 가지",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "가득 찬 먼지통",
+        "card_name": "가득 찬 먼지통",
+        "reason": "먼지통의 최대선 위로 쌓인 먼지는 공기길을 막아요. 먼지가 꽉 찰 때까지 기다리지 말고 MAX 표시를 기준으로 비워요.",
+        "card_reason": "먼지통의 최대선 위로 쌓인 먼지는 공기길을 막아요"
+      },
+      {
+        "rank": 2,
+        "name": "막힌 연결관",
+        "card_name": "막힌 연결관",
+        "reason": "먼지통을 비워도 연결관 안의 뭉친 먼지는 남아요. 전원을 끄고 연결관을 분리해 내부 막힘을 확인해요. 작동 중에는 손을 넣지 않아요.",
+        "card_reason": "먼지통을 비워도 연결관 안의 뭉친 먼지는 남아요"
+      },
+      {
+        "rank": 3,
+        "name": "먼지 낀 필터",
+        "card_name": "먼지 낀 필터",
+        "reason": "겉이 멀쩡한 필터도 고운 먼지가 쌓여 흡입을 막아요. 물세척 가능한 필터만 설명서대로 씻어요. 씻을 수 없는 필터는 교체 안내를 따라요.",
+        "card_reason": "겉이 멀쩡한 필터도 고운 먼지가 쌓여 흡입을 막아요"
+      },
+      {
+        "rank": 4,
+        "name": "덜 마른 필터",
+        "card_name": "덜 마른 필터",
+        "reason": "씻은 필터는 속까지 말린 뒤 청소기에 다시 끼워요. 다이슨 안내는 최소 24시간 건조예요. 습한 날에는 더 오래 말리고 물기가 남은 필터는 장착하지 않아요.",
+        "card_reason": "씻은 필터는 속까지 말린 뒤 청소기에 다시 끼워요"
+      }
+    ],
+    "video_script": "먼지통의 최대선 위로 쌓인 먼지는 공기길을 막아요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}

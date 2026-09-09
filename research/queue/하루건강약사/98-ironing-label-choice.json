@@ -1,0 +1,53 @@
+{
+  "title": "다리미 자국 남기지 않는 온도 선택 4",
+  "lane": "clothing",
+  "notes": "2026-09-09 30편 추가. 전략 근거: 울 니트 건조와 달리 다림질 표시가 뜻하는 온도·스팀·천 덧대기 정보를 시험한다. 최근 공개 조회수는 반올림된 누적값이며 영상별 팔로우와 다르다. 기존 78편의 귀속 팔로우와 함께 가설을 세웠으며 인과나 예상 팔로우를 보장하지 않는다. 사실 근거(2026-09-09 확인): 1. https://www.ginetex.net/fr/labelling/care-labelling/care-symbols/ 적용 조건: 옷에 붙은 취급 표시와 다리미 설명서를 우선한다. 국가·표준 개정에 따른 온도 표시 차이 때문에 점 개수를 특정 온도로 단정하지 않는다.",
+  "topic_key": "ironing_label_choice",
+  "final_pack": {
+    "channel_editorial_profile": "haru_health_literacy",
+    "channel_content_pillar": "daily_health_literacy",
+    "topic_key": "ironing_label_choice",
+    "hook_title": "다리미 자국 남기지 않는 온도 선택 4",
+    "subtitle": "옷에 붙은 취급 표시와 다리미 설명서를 우선한다. 국가·표준 개정에 따른 온도 표시 차이 때문에 점 개수를 특정 온도로 단정하지 않는다.",
+    "visual_profile": "daily_living",
+    "visual_mood_hint": "생활용품을 크게 그린 따뜻한 크림색 카드, 읽기 쉬운 진한 글씨와 차분한 주황색 강조",
+    "rank_items": [
+      {
+        "rank": 1,
+        "name": "섬유명보다 라벨 먼저",
+        "card_name": "섬유명보다 라벨 먼저",
+        "reason": "다림질 온도는 면이나 울 이름보다 옷의 취급 표시를 따라요. 혼방·가공·장식에 따라 같은 섬유라도 허용 온도가 달라요.",
+        "card_reason": "다림질 온도는 면이나 울 이름보다 옷의 취급 표시를 따라요"
+      },
+      {
+        "rank": 2,
+        "name": "스팀 금지 구분하기",
+        "card_name": "스팀 금지 구분하기",
+        "reason": "다림질이 가능해도 스팀은 쓰면 안 되는 옷이 있어요. 낮은 온도 다림질과 스팀 금지 표시를 구분하고 제품 안내를 읽어요.",
+        "card_reason": "다림질이 가능해도 스팀은 쓰면 안 되는 옷이 있어요"
+      },
+      {
+        "rank": 3,
+        "name": "반들거리는 옷은 천 덧대기",
+        "card_name": "반들거리는 옷은 천 덧대기",
+        "reason": "반들거리는 옷은 천을 덧대거나 뒤집어 다려 자국을 줄여요. 열에 민감하거나 광택이 생기기 쉬운 옷은 허용 온도 안에서 보호천을 써요.",
+        "card_reason": "반들거리는 옷은 천을 덧대거나 뒤집어 다려 자국을 줄여요"
+      },
+      {
+        "rank": 4,
+        "name": "금지 표시는 열 피하기",
+        "card_name": "금지 표시는 열 피하기",
+        "reason": "다리미에 가위표가 있는 옷은 약한 열로도 다리지 않아요. 다림질 금지 표시예요. 낮은 온도라 괜찮다고 임의로 판단하지 않아요.",
+        "card_reason": "다리미에 가위표가 있는 옷은 약한 열로도 다리지 않아요"
+      }
+    ],
+    "video_script": "다림질 온도는 면이나 울 이름보다 옷의 취급 표시를 따라요",
+    "tags": [
+      "생활정보",
+      "하루건강약사",
+      "생활습관"
+    ],
+    "bgm_prompt": "warm acoustic instrumental, gentle and clear, cozy everyday mood",
+    "rank_count": 4
+  }
+}
