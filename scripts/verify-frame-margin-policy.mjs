@@ -12,6 +12,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { shortsMarginPromptLines, safeBoxFor } from './lib/safe-zone.mjs';
+import { placementDeferralLine } from './lib/card-colour-variation.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const workflowDir = path.join(root, 'workflows');
@@ -54,11 +55,20 @@ for (const file of fs.readdirSync(workflowDir).filter((name) => name.endsWith('.
     assert.ok(code.includes(JSON.stringify(line).slice(1, -1)), `${file}: margin instruction lost a line -> ${line.slice(0, 48)}...`);
   }
   assert.ok(code.includes('shortsMarginInstruction'), `${file}: margin block is declared but never joined onto the prompt`);
+  // 여백 지시 뒤에 올 수 있는 것은 카드 색 변주 하나뿐이다. 색 블록은 배치를
+  // 건드리지 않겠다고 첫 문장에서 좌표로 밝히고, verify-card-colour-variants.mjs
+  // 가 그 문장을 따로 검사한다. 그 밖의 무언가가 뒤에 붙으면 여기서 걸린다.
   assert.match(
     code,
-    /const imagePrompt[\s\S]*?\.join\([^)]*\) \+ (LF|'\\n') \+ shortsMarginInstruction;/,
-    `${file}: margin instruction is not appended at the very end of the prompt`,
+    /const imagePrompt[\s\S]*?\.join\([^)]*\) \+ (LF|'\\n') \+ shortsMarginInstruction( \+ (LF|'\\n') \+ cardColourVariantInstruction)?;/,
+    `${file}: margin instruction is not appended at the end of the prompt`,
   );
+  if (code.includes('cardColourVariantInstruction')) {
+    assert.ok(
+      code.includes(placementDeferralLine()),
+      `${file}: the colour block sits after the margin instruction without restating the placement rule`,
+    );
+  }
   // 좌표를 손으로 베낀 사본이 남아 있으면 표를 고쳐도 한쪽만 바뀐다.
   assert.ok(
     !code.includes('REFERENCE_CARD_MARGIN_V1'),

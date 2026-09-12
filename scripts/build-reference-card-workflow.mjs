@@ -13,6 +13,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { safeBoxFor } from './lib/safe-zone.mjs';
 import { applyFrameMarginPolicy } from './lib/frame-margin-policy.mjs';
+import { applyCardColourVariation } from './lib/card-colour-variation.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const workflowDir = path.join(root, 'workflows');
@@ -1241,6 +1242,12 @@ if (!fs.existsSync(gatePath)) {
 // 여백 정책은 빌드의 마지막 단계다. 여기서 얹지 않으면 이 빌더를 다시 돌릴 때마다
 // 정책이 벗겨진다.
 applyFrameMarginPolicy(workflow);
+// 카드 색 변주도 같은 이유로 여기서 다시 얹는다. 순서까지 본편과 같아야 한다.
+// 여백 정책이 자기 지시를 프롬프트 맨 뒤로 다시 옮기기 때문에, 색 블록을 얹지 않으면
+// 이 회로만 색과 여백의 순서가 뒤바뀌고 복제 검사가 갈렸다고 잡는다.
+const colourVariantNode = nodes.find((node) => node.name === 'Prepare Image and BGM Payloads');
+if (!colourVariantNode) throw new Error('Prepare Image and BGM Payloads is missing, so the card colour block cannot be re-applied');
+applyCardColourVariation(colourVariantNode);
 
 const outputPath = path.join(workflowDir, OUTPUT_FILE);
 fs.writeFileSync(outputPath, JSON.stringify(workflow, null, 2) + '\n', 'utf8');

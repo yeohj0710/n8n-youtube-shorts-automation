@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto';
 import sqlite3 from 'sqlite3';
 import { safeBoxFor, shortsSafeZoneInstructionSource } from './lib/safe-zone.mjs';
 import { applyFrameMarginPolicy } from './lib/frame-margin-policy.mjs';
+import { applyCardColourVariation, PALETTE_COOLDOWN, BACKDROP_COOLDOWN } from './lib/card-colour-variation.mjs';
 import {
   BGM_PROFILE_POOL,
   BGM_CONSTRAINT_LINES,
@@ -696,6 +697,66 @@ config.recent_titles = uniqueStrings([\n`,
   );
 }
 
+// 직전 편들이 쓴 카드 색과 배경을 업로드 기록에서 읽어 온다. BGM 이
+// recent_bgm_profiles 로 하는 것과 같은 구조다. 이게 없으면 색을 12개 중에서
+// 무작위로 뽑아도 이틀 연속 같은 색이 나오는 일이 생긴다.
+function patchCardColourHistory(code, target) {
+  if (!code.includes('function loadRecentCardVariantHistory(')) {
+    code = replaceRequired(
+      code,
+      '\nfunction slug(value) {',
+      `
+function loadRecentCardVariantHistory(filePath, field, limit) {
+  try {
+    if (!filePath || !fs.existsSync(filePath)) return [];
+    const ids = fs.readFileSync(filePath, 'utf8')
+      .split(/\\r?\\n/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => {
+        try { return JSON.parse(line); } catch (error) { return null; }
+      })
+      .filter(Boolean)
+      .reverse()
+      .map((row) => cleanString(row[field]))
+      .filter(Boolean);
+    return uniqueStrings(ids).slice(0, limit);
+  } catch (error) {
+    return [];
+  }
+}
+
+function slug(value) {`,
+      `${target.id}: recent card variant loader`,
+    );
+  }
+  if (!code.includes('config.recent_card_palettes =')) {
+    code = replaceRequired(
+      code,
+      ']).slice(0, Number(incoming.recent_bgm_history_limit || 8));',
+      `]).slice(0, Number(incoming.recent_bgm_history_limit || 8));
+config.recent_card_palettes = uniqueStrings([
+  ...list(incoming.recent_card_palettes),
+  ...loadRecentCardVariantHistory(config.upload_log_path, 'card_palette_id', ${PALETTE_COOLDOWN}),
+]).slice(0, Number(incoming.recent_card_palette_limit || ${PALETTE_COOLDOWN}));
+config.recent_card_backdrops = uniqueStrings([
+  ...list(incoming.recent_card_backdrops),
+  ...loadRecentCardVariantHistory(config.upload_log_path, 'card_backdrop_id', ${BACKDROP_COOLDOWN}),
+]).slice(0, Number(incoming.recent_card_backdrop_limit || ${BACKDROP_COOLDOWN}));`,
+      `${target.id}: recent card colour config`,
+    );
+  }
+  if (!code.includes('card_palette_override:')) {
+    code = replaceRequired(
+      code,
+      '  bgm_profile_override: cleanString(incoming.bgm_profile || incoming.bgm_profile_override),',
+      '  bgm_profile_override: cleanString(incoming.bgm_profile || incoming.bgm_profile_override),\n  card_palette_override: cleanString(incoming.card_palette || incoming.card_palette_override),\n  card_backdrop_override: cleanString(incoming.card_backdrop || incoming.card_backdrop_override),',
+      `${target.id}: card colour overrides`,
+    );
+  }
+  return code;
+}
+
 function patchUploadIdempotency(code, target) {
   code = code.replace(/\/\/ ALREADY_UPLOADED_GUARD_V1_BEGIN[\s\S]*?\/\/ ALREADY_UPLOADED_GUARD_V1_END\n/, '');
   code = code.replace(
@@ -785,6 +846,18 @@ function patchFinalResult(code, target) {
     '    video_id: youtube.video_id || null,\n    topic_queue:',
     "    video_id: youtube.video_id || null,\n    topic_key: data.topic_key || data.config?.topic_queue?.selected?.topic_key || data.prepared_card_pack?.topic_key || null,\n    bgm_profile_id: data.diversity?.bgm_profile?.id || null,\n    bgm_profile_title: data.diversity?.bgm_profile?.title || null,\n    topic_queue:",
     `${target.id}: upload log BGM profile`,
+  );
+}
+
+// 업로드 기록에 이번 편의 카드 색과 배경을 남긴다. Load Config 가 다음 편에서
+// 이 두 값을 읽어 같은 색을 피한다. 기록이 없으면 냉각이 통째로 무력해진다.
+function patchFinalResultCardColour(code, target) {
+  if (code.includes('card_palette_id:')) return code;
+  return replaceRequired(
+    code,
+    '    bgm_profile_title: data.diversity?.bgm_profile?.title || null,',
+    "    bgm_profile_title: data.diversity?.bgm_profile?.title || null,\n    card_palette_id: data.diversity?.card_palette?.id || null,\n    card_backdrop_id: data.diversity?.card_backdrop?.id || null,",
+    `${target.id}: upload log card colour`,
   );
 }
 
@@ -1459,6 +1532,13 @@ const visibleText = [`,
     "  'Style ingredients: ' + sanitizeImageInstruction(visualProfile.prompt),",
     "  'Styling reference for palette and material only; ignore layout or widget suggestions: ' + sanitizeImageInstruction(visualProfile.prompt),",
   );
+  // POSTER_READABILITY_V2 의 "하나의 절제된 색 체계"가 뒤에 오는 카드 색 지시와
+  // 다투고 있었다. 절제하라는 말만 있고 무슨 색인지가 없으면 모델은 무채색에
+  // 가까운 자기 기본값으로 돌아간다. 색을 어디서 받아 오는지 여기서 가리킨다.
+  code = code.replace(
+    /'Keep one restrained color system[^']*'/,
+    "'Keep one restrained color system, taken from the card colours named at the end of this prompt, with strong contrast, generous spacing, and consistent row alignment. Remove secondary decoration whenever it competes with the title or ranked copy. The frame must read clearly at channel-grid thumbnail size and during a 5-second Short.'",
+  );
   code = code.replace(
     "  pack.visual_mood_hint ? 'Topic visual hint: ' + sanitizeImageInstruction(pack.visual_mood_hint) : '',",
     "  pack.visual_mood_hint ? 'Topic mood and subject hint only; do not change the poster structure: ' + sanitizeImageInstruction(pack.visual_mood_hint) : '',",
@@ -1682,12 +1762,12 @@ function patchWorkflow(workflow, target) {
   const retry = workflow.nodes.find((node) => node.name === 'Prepare Medical Retry Request');
   const createBgm = workflow.nodes.find((node) => node.name === 'KIE Create BGM Task');
   if (!load || !build || !parse || !prepare || !mock || !final || !retry || !createBgm) throw new Error(`${target.id}: required editorial nodes missing`);
-  load.parameters.jsCode = patchLoadConfig(load.parameters.jsCode, target);
+  load.parameters.jsCode = patchCardColourHistory(patchLoadConfig(load.parameters.jsCode, target), target);
   build.parameters.jsCode = patchBuild(build.parameters.jsCode, target);
   parse.parameters.jsCode = patchParse(parse.parameters.jsCode);
   prepare.parameters.jsCode = patchPrepare(prepare.parameters.jsCode, target);
   mock.parameters.jsCode = patchPreparedCardPackPassthrough(patchFallbackTone(mock.parameters.jsCode), target);
-  final.parameters.jsCode = patchFinalResultConsumeGate(patchFinalResult(final.parameters.jsCode, target), target);
+  final.parameters.jsCode = patchFinalResultCardColour(patchFinalResultConsumeGate(patchFinalResult(final.parameters.jsCode, target), target), target);
   const attach = workflow.nodes.find((node) => node.name === 'Attach Downloaded MP4');
   const skipUpload = workflow.nodes.find((node) => node.name === 'Skip YouTube Upload');
   if (!attach || !skipUpload) throw new Error(`${target.id}: upload guard nodes missing`);
@@ -1765,6 +1845,11 @@ const pack = {
   // 다시 돌리는 순간 지워지고, 그러면 회로마다 정책이 어긋난다 —
   // 실제로 여백 지시가 5개 회로 중 1개에만 들어 있던 적이 있다.
   applyFrameMarginPolicy(workflow);
+  // 카드 색 변주는 여백 정책 다음에 얹는다. 프롬프트 맨 뒤가 가장 세게 먹히는데
+  // 색 지시가 중간에 있으면 모델이 자기 기본값(아이보리 패널에 주황 배지)으로
+  // 돌아간다. 발행본 8장이 그렇게 나왔다. 배치 규칙을 내주지 않으려고 이 블록의
+  // 첫 문장이 좌표를 다시 확인해 준다.
+  applyCardColourVariation(prepare);
   workflow.versionId = randomUUID();
   return workflow;
 }

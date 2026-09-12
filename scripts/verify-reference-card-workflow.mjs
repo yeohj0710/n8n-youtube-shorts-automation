@@ -6,6 +6,7 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { safeBoxFor } from './lib/safe-zone.mjs';
 import { BGM_CONSTRAINT_LINES } from './lib/bgm-variation.mjs';
+import { VARIANT_CLOSING_LINE, placementDeferralLine } from './lib/card-colour-variation.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const require = createRequire(import.meta.url);
@@ -387,10 +388,23 @@ try {
   // 발행된 프레임이 실제로 상자 안에 들어갔는지는 렌더 결과를 눈으로 봐야 안다.
   // 문구 자체와 5개 회로 일괄 적용은 verify-frame-margin-policy.mjs가 본다.
   assert.match(handled.image_payload.input.prompt, /SHORTS_MARGIN_V1/, 'the shared margin instruction is missing');
-  assert.ok(
-    handled.image_payload.input.prompt.trimEnd().endsWith('so any Korean text placed there is lost.'),
-    'the margin instruction must be the last thing the model reads',
-  );
+  // 여백 지시 뒤에 올 수 있는 것은 카드 색 변주 하나뿐이다. 그 블록은 배치를 건드리지
+  // 않겠다고 첫 문장에서 좌표로 다시 밝히므로, 마지막으로 읽는 것은 여전히 배치 규칙이다.
+  const marginTail = 'so any Korean text placed there is lost.';
+  const promptTail = handled.image_payload.input.prompt.trimEnd();
+  const afterMargin = promptTail.slice(promptTail.lastIndexOf(marginTail) + marginTail.length).trim();
+  if (afterMargin) {
+    assert.ok(
+      afterMargin.startsWith(placementDeferralLine()),
+      'something other than the card colour block follows the margin instruction',
+    );
+    assert.ok(afterMargin.endsWith(VARIANT_CLOSING_LINE), 'the card colour block is cut off');
+    assert.match(afterMargin, /CARD_PANEL_COLOUR: the rounded panel is filled in \S/, 'the card colour block reached the prompt without a panel colour');
+    assert.match(afterMargin, /CARD_ACCENT_COLOUR: \S/, 'the card colour block reached the prompt without an accent colour');
+    assert.match(afterMargin, /CARD_BACKDROP: the open strip above the panel and the open strip below it show \S/, 'the card colour block reached the prompt without a backdrop');
+  } else {
+    assert.ok(promptTail.endsWith(marginTail), 'the margin instruction must be the last thing the model reads');
+  }
   assert.match(handled.image_payload.input.prompt, /Create one finished vertical 9:16/i, 'prompt must request a full-height 9:16 source');
   // 좌표는 lib/safe-zone.mjs 표에서 받는다. 여기 숫자를 박아두면 표를 고칠 때마다
   // 이 검사가 먼저 깨진다(왼쪽 여백을 0으로 내릴 때 실제로 그랬다).

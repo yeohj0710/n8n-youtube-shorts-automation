@@ -195,6 +195,7 @@ style guide when copied verbatim. Write from the topic, then run the checks.
 - Renderer: `C:\dev\n8n-youtube-shorts-automation\scripts\render-static-card.mjs`
 - Shorts card derivation — makes the `(유튜브 9x16)` card from the `(인스타 4x5)` one: `scripts\derive-shorts-card.mjs`. GPT Image flattens per-edge margins into one uniform inset, so it will not reserve the 22% bottom band a 9:16 card needs; five prompt attempts failed the same way. The 9:16 is composited, not generated.
 - Dead-zone single source of truth (margin table, prompt coordinates, content measurement, render-time fit): `scripts\lib\safe-zone.mjs`
+- Card colour single source of truth (panel and accent palettes, backdrops, cooldown depth, the prompt block): `scripts\lib\card-colour-variation.mjs`. Edit the pools there, never in a workflow JSON, then re-run `simplify-legacy-editorial-flow.mjs` and `npm run build:reference-card`.
 - Card safe-zone check (draws the dead-zone bands onto a copy in `검수\`): `scripts\preview-card-safe-zone.mjs`
 - Card safe-zone fix (shrinks the card inside the dead zones, backs the original up to `보정전\`): `scripts\enforce-card-safe-zone.mjs`
 - Both scripts, `derive-shorts-card.mjs`, the renderer, and every image prompt read the table from `lib\safe-zone.mjs`. Never copy the numbers.
@@ -887,6 +888,66 @@ asserts the policy reaches `render_payload`, not merely that it appears in the
 config — the reference-card circuit once lost the same flag mid-chain when
 `Normalize Image Task` swapped its base object. Deleting the config line makes
 the chain fall back to `auto`, which the check catches.
+
+### Five Varying Style Axes Still Produced One Look (2026-09-12)
+
+Symptom:
+
+The last eight published 하루건강약사 frames were the same card: a warm ivory
+rounded panel, orange circular rank badges, and a blurred wood tabletop with
+plants behind it. Only the Korean copy changed.
+
+The circuit was not short of variety. Pulling `diversity` out of the last
+fourteen executions shows `visual_profile`, `layout_family`, `palette_family`,
+`badge_family` and `motif_family` all rotating per run, on a per-title hash, as
+designed. `palette_family` asked for `plum, peach, cream, and moss green` on one
+of those runs and `lavender, midnight indigo, lamp amber` on another. Neither
+reached the frame.
+
+Cause, three things at once:
+
+- The colour lines sat mid-prompt and opened with `Styling reference for palette
+  and material only; ignore layout or widget suggestions`. A style word next to
+  the word *ignore* gets ignored with it.
+- Nothing named the panel fill or the badge colour. An unnamed slot is filled
+  from the model's own defaults, and its default for a Korean ranking card is an
+  ivory panel with orange badges.
+- `SHORTS_MARGIN_V1` closes the prompt — the strongest position — and spells the
+  backdrop out as `photographed scene, soft blur, plants, wood, cloth, light`.
+  So the backdrop converged on wood and plants no matter what `motif_family` said.
+
+This is the same lesson as the dead zones, one level up: a value that varies in
+the payload proves nothing about the frame. Check the value that leaves *and*
+look at the render.
+
+Fix (`scripts/lib/card-colour-variation.mjs`):
+
+- 12 palettes, each naming a panel fill and one accent, plus 7 text-free
+  backdrops. Panels stay light because the body copy is dark and the audience is
+  50 and over. Backdrops stay topic-neutral so a sleep card never gets a
+  chopping board again.
+- The block is appended after `shortsMarginInstruction`, so the colours are the
+  last thing the model reads. Placement was not given up to get there: the
+  block's first sentence restates the panel edges at y 154 and y 1498 from the
+  shared margin table, so the closing line is still a placement rule.
+  `verify-frame-margin-policy.mjs` allows exactly this one suffix and asserts
+  that sentence is present.
+- `POSTER_READABILITY_V2` said `Keep one restrained color system` with no colours
+  named, which pulled toward neutral. It now points at the block.
+- Cooldown mirrors the BGM one: `Final Result` logs `card_palette_id` and
+  `card_backdrop_id`, `Load Config` reads the last 4 palettes and 3 backdrops out
+  of the upload log into `recent_card_palettes` / `recent_card_backdrops`, and the
+  picker drops them. `card_palette` / `card_backdrop` in the trigger body force
+  one for a single run.
+- The reference-card builder reclones this node, so it calls
+  `applyCardColourVariation` after `applyFrameMarginPolicy` for the same reason
+  the margin policy is re-applied there: the margin pass moves its own block back
+  to the end, which flips the order and trips the clone-parity check.
+
+`verify-card-colour-variants.mjs` cuts the block and the real `hashText`/`pick`
+out of the live DB and runs them: 20 draws must yield at least 6 palettes and 4
+backdrops, and 100 draws under a full cooldown must never return a cooled id.
+It does not prove the model obeyed. Look at `renders\*.png`.
 
 ### Copy Comes From the Caption File, Not From Reading the Image (2026-07-30)
 
